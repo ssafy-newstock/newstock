@@ -50,3 +50,4 @@ dist-ssr/
 
 # macOS 특유의 파일
 .DS_Store
+*storybook.log
