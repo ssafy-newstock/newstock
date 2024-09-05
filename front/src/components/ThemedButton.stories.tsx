@@ -1,7 +1,7 @@
 import { Meta, StoryFn } from '@storybook/react';
 import ThemedButton from './ThemedButton';
 import { ThemeProvider } from 'styled-components';
-import { lightTheme } from '../styles/theme';
+import { lightTheme } from '@styles/theme';
 
 export default {
   title: 'Components/ThemedButton',
