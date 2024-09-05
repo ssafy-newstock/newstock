@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 
 type ThemeMode = 'light' | 'dark';
 
@@ -9,7 +9,8 @@ interface ThemeStore {
 
 export const useThemeStore = create<ThemeStore>((set) => ({
   theme: 'light',
-  toggleTheme: () => set((state) => ({
-    theme: state.theme === 'light' ? 'dark' : 'light',
-  })),
+  toggleTheme: () =>
+    set((state) => ({
+      theme: state.theme === 'light' ? 'dark' : 'light',
+    })),
 }));
