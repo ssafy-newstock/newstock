@@ -15,4 +15,4 @@ deploy_job:
     - kubectl get pods
     - kubectl run nginx --image=nginx
   tags:
-    - shell-executor
+    - newstock-runner
