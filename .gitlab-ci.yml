@@ -1,0 +1,30 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  OCI_REGION: "ap-singapore-2"
+  OCI_KEY_FILE: "/home/ec2-user/.oci/oci_api_key.pem"  # GitLab Runner에서 사용할 키 파일 경로
+  OCI_REPO: "axzbwuphhddr/test"
+  IMAGE_TAG: "latest"
+  PATH: "$PATH:/home/ec2-user/bin"
+
+# GitLab에서 저장한 OCI 인증 토큰을 사용
+before_script:
+  - echo "$OCI_AUTH_TOKEN" | docker login -u axzbwuphhddr/thswltjr12@gmail.com --password-stdin ocir.$OCI_REGION.oci.oraclecloud.com
+
+build_and_push:
+  stage: build
+  script:
+    - echo "Building and pushing Docker image with cache..."
+    - |
+      docker buildx build \
+        --platform linux/arm64 \
+        --cache-from=type=local,src=./cache \
+        --cache-to=type=local,dest=./cache,mode=max \
+        -t ocir.$OCI_REGION.oci.oraclecloud.com/$OCI_REPO:$IMAGE_TAG \
+        --push .
+
+cache:
+  paths:
+    - cache/
