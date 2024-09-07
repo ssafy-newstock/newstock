@@ -10,6 +10,7 @@ build_job:
 deploy_job:
   stage: deploy
   script:
-    - sudo -u ec2-user KUBECONFIG=/home/ec2-user/.kube/config kubectl apply -f deployment.yaml
+    - echo "Deploying an nginx pod to the OKE cluster"
+    - sudo -u ec2-user KUBECONFIG=/home/ec2-user/.kube/config /usr/local/bin/kubectl apply -f deployment.yaml
   tags:
     - newstock-runner2
