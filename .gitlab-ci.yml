@@ -21,8 +21,6 @@ build_and_push:
     - |
       docker buildx build \
         --platform linux/arm64 \
-        --cache-from=type=local,src=./cache \
-        --cache-to=type=local,dest=./cache,mode=max \
         -t ocir.$OCI_REGION.oci.oraclecloud.com/$OCI_REPO:$IMAGE_TAG \
         --push .
 
