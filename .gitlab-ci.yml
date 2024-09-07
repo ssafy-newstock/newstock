@@ -9,8 +9,10 @@ build_job:
 
 deploy_job:
   stage: deploy
+  before_script:
+    - echo "$KUBECONFIG_CONTENT" | base64 -d > ~/.kube/config
   script:
     - echo "Deploying an nginx pod to the OKE cluster"
-    - sudo kubectl apply -f deployment.yaml
+    - kubectl apply -f deployment.yaml
   tags:
     - newstock-runner
