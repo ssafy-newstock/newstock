@@ -15,20 +15,8 @@ before_script:
 build_service1:
   stage: build
   tags:
-    - newstock-runner # 여기에 사용할 Runner 태그 추가
+    - newstock-runner-arm # 사용할 Runner 태그
   script:
-    - docker buildx create --use
     - echo "Building service1..."
-    - docker buildx build --platform linux/arm64 -f test/Dockerfile -t ocir.$OCI_REGION.oci.oraclecloud.com/axzbwuphhddr/newstock-ocir:latest --push test/
-# build_service2:
-#   stage: build
-#   script:
-#     - echo "Building service2..."
-#     - docker buildx build -f service2/Dockerfile -t ocir.$OCI_REGION.oci.oraclecloud.com/axzbwuphhddr/service2:latest --push .
-
-# build_service3:
-#   stage: build
-#   script:
-#     - echo "Building service3..."
-#     - docker buildx build -f service3/Dockerfile -t ocir.$OCI_REGION.oci.oraclecloud.com/axzbwuphhddr/service3:latest --push .
-
+    - docker build -f test/Dockerfile -t ocir.$OCI_REGION.oci.oraclecloud.com/axzbwuphhddr/newstock-ocir:latest test/
+    - docker push ocir.$OCI_REGION.oci.oraclecloud.com/axzbwuphhddr/newstock-ocir:latest
