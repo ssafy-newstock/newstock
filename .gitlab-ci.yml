@@ -15,4 +15,4 @@ deploy_job:
     - echo "Deploying an nginx pod to the OKE cluster"
     - kubectl apply -f deployment.yaml
   tags:
-    - newstock-runner
+    - newstock-runner2
