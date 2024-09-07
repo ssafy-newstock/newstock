@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
       - name: spring-boot-container
-        image: ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/test:latest
+        image: ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstock-ocir:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080  # 스프링 부트 애플리케이션의 기본 포트
         resources:
