@@ -5,15 +5,14 @@ stages:
 build_job:
   stage: build
   script:
-    - echo "Building the ServiceAccount project..."
+    - echo "Building the project..."
 
 deploy_job:
   stage: deploy
   script:
-    - echo "Deploying an nginx pod to the OKE cluster"
-    - export KUBECONFIG=/home/ec2-user/.kube/config
+    - echo "Deploying to OKE using Kubernetes ServiceAccount"
+    - export KUBECONFIG=$HOME/.kube/config # 서비스 계정 토큰이 포함된 kubeconfig
+    - kubectl get pods
     - kubectl run nginx --image=nginx
-    - kubectl get pods # 클러스터 접근 확인
-
   tags:
     - shell-executor
