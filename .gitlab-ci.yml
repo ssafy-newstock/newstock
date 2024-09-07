@@ -1,3 +1,4 @@
+$ cat ~/demo-oke/.gitlab-ci.yml
 stages:
   - build
   - deploy
@@ -5,16 +6,12 @@ stages:
 build_job:
   stage: build
   script:
-    - echo "Building the project..."
+    - echo "Building the ServiceAccount project..."
 
 deploy_job:
   stage: deploy
-  image: oraclelinux:7-slim # Kubernetes와 OCI CLI가 포함된 이미지 사용
   script:
-    - echo "Deploying to OKE using Kubernetes ServiceAccount"
-    - yum install -y oracle-oci-cli kubectl # 필요한 도구 설치 (이미 이미지에 있을 수 있음)
-    - export KUBECONFIG=$HOME/.kube/config # 서비스 계정 토큰이 포함된 kubeconfig
-    - kubectl get pods
+    - echo "Deploying an nginx pod to the OKE cluster"
     - kubectl run nginx --image=nginx
   tags:
     - newstock-runner
