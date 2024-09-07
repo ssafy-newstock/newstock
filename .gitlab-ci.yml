@@ -12,5 +12,6 @@ deploy_job:
   script:
     - echo "Deploying an nginx pod to the OKE cluster"
     - kubectl run nginx --image=nginx
+
   tags:
     - shell-executor
