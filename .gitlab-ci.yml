@@ -12,18 +12,20 @@ variables:
 before_script:
   - echo "$OCI_AUTH_TOKEN" | docker login -u axzbwuphhddr/thswltjr12@gmail.com --password-stdin ocir.$OCI_REGION.oci.oraclecloud.com
 
-build_and_push:
+build_service1:
   stage: build
-  tags:
-    - newstock-runner # 여기에 Runner 태그를 추가
   script:
-    - echo "Building and pushing Docker image with cache..."
-    - |
-      docker buildx build \
-        --platform linux/arm64 \
-        -t ocir.$OCI_REGION.oci.oraclecloud.com/$OCI_REPO:$IMAGE_TAG \
-        --push .
+    - echo "Building service1..."
+    - docker buildx build -f test/Dockerfile -t ocir.$OCI_REGION.oci.oraclecloud.com/axzbwuphhddr/service1:latest --push test/
+# build_service2:
+#   stage: build
+#   script:
+#     - echo "Building service2..."
+#     - docker buildx build -f service2/Dockerfile -t ocir.$OCI_REGION.oci.oraclecloud.com/axzbwuphhddr/service2:latest --push .
 
-cache:
-  paths:
-    - cache/
+# build_service3:
+#   stage: build
+#   script:
+#     - echo "Building service3..."
+#     - docker buildx build -f service3/Dockerfile -t ocir.$OCI_REGION.oci.oraclecloud.com/axzbwuphhddr/service3:latest --push .
+
