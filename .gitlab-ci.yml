@@ -10,7 +10,9 @@ build_job:
 deploy_job:
   stage: deploy
   before_script:
-    - echo "$KUBECONFIG_CONTENT" | base64 -d > ~/.kube/config
+    - mkdir -p /home/ec2-user/.kube
+    - echo "$KUBECONFIG_CONTENT" | base64 -d > /home/ec2-user/.kube/config
+    - export KUBECONFIG=/home/ec2-user/.kube/config # 명시적으로 KUBECONFIG 경로 설정
   script:
     - echo "Deploying an nginx pod to the OKE cluster"
     - kubectl apply -f deployment.yaml
