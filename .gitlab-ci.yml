@@ -1,4 +1,3 @@
-$ cat ~/demo-oke/.gitlab-ci.yml
 stages:
   - build
   - deploy
