@@ -1,5 +1,5 @@
 # Gradle 이미지 (ARM 아키텍처 지원) 사용
-FROM gradle:7.5.1-jdk17-alpine AS build
+FROM gradle:7.5.1-jdk17 AS build
 
 # 작업 디렉토리를 설정합니다.
 WORKDIR /app
