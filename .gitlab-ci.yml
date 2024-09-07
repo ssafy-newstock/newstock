@@ -11,6 +11,6 @@ deploy_job:
   stage: deploy
   script:
     - echo "Deploying an nginx pod to the OKE cluster"
-    - kubectl apply -f deployment.yaml
+    - sudo kubectl apply -f deployment.yaml
   tags:
     - newstock-runner
