@@ -17,6 +17,7 @@ build_service1:
   tags:
     - newstock-runner # 여기에 사용할 Runner 태그 추가
   script:
+    - docker buildx create --use
     - echo "Building service1..."
     - docker buildx build --platform linux/arm64 -f test/Dockerfile -t ocir.$OCI_REGION.oci.oraclecloud.com/axzbwuphhddr/newstock-ocir:latest --push test/
 # build_service2:
