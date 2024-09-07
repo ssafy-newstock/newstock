@@ -9,9 +9,8 @@ build_job:
 
 deploy_job:
   stage: deploy
-  image: roffe/kubectl
   script:
     - echo "Deploying an nginx pod to the OKE cluster"
-    - kubectl run nginx --image=nginx
+    - kubectl apply -f deployment.yaml
   tags:
     - newstock-runner
