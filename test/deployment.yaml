@@ -16,8 +16,7 @@ spec:
     spec:
       containers:
       - name: spring-boot-container
-        image: ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstock-ocir:latest
-        imagePullPolicy: Always
+        image: ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/test:TAG_PLACEHOLDER
         ports:
         - containerPort: 8080  # 스프링 부트 애플리케이션의 기본 포트
         resources:
@@ -30,6 +29,8 @@ spec:
         env:
         - name: JAVA_OPTS
           value: "-Xms512m -Xmx1024m"  # 메모리 설정 등 스프링 부트 설정
+      imagePullSecrets:
+        - name: ocirsecret
 ---
 apiVersion: v1
 kind: Service
