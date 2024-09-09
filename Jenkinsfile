@@ -51,9 +51,10 @@ pipeline {
 //             }
             steps {
                 script {
+                    def deploymentPath = 'k8s/backend/deployment-member.yaml'  // deploymentPath 정의
                     sh """
                         sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
-                        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f k8s/backend/deployment-member.yaml
+                        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f ${deploymentPath}
                     """
                 }
             }
@@ -79,9 +80,10 @@ pipeline {
 //             }
             steps {
                 script {
+                    def deploymentPath = 'k8s/backend/deployment-news.yaml'  // deploymentPath 정의
                     sh """
                         sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
-                        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f k8s/backend/deployment-news.yaml
+                        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f ${deploymentPath}
                     """
                 }
             }
@@ -107,9 +109,10 @@ pipeline {
 //             }
             steps {
                 script {
+                    def deploymentPath = 'k8s/backend/deployment-stock.yaml'  // deploymentPath 정의
                     sh """
                         sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
-                        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f k8s/backend/deployment-stock.yaml
+                        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f ${deploymentPath}
                     """
                 }
             }
