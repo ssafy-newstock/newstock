@@ -1,17 +1,3 @@
-def buildAndPush(imageName, projectPath) {
-    sh """
-        docker build -t ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/${imageName}:${IMAGE_TAG} ${projectPath}
-        docker push ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/${imageName}:${IMAGE_TAG}
-    """
-}
-
-def updateDeployment(deploymentPath) {
-    sh """
-        sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
-        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f ${deploymentPath}
-    """
-}
-
 pipeline {
     agent any
     environment {
@@ -51,7 +37,10 @@ pipeline {
 //             }
             steps {
                 script {
-                    buildAndPush('newstockmember')
+                    sh """
+                        docker build -t ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/${imageName}:${IMAGE_TAG} back/member/
+                        docker push ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/${imageName}:${IMAGE_TAG}
+                    """
                 }
             }
         }
@@ -62,7 +51,10 @@ pipeline {
 //             }
             steps {
                 script {
-                    updateDeployment('k8s/backend/deployment-member.yaml')
+                    sh """
+                        sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
+                        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f k8s/backend/deployment-member.yaml
+                    """
                 }
             }
         }
@@ -73,7 +65,10 @@ pipeline {
 //             }
             steps {
                 script {
-                    buildAndPush('newstocknews')
+                    sh """
+                        docker build -t ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/${imageName}:${IMAGE_TAG} back/news/
+                        docker push ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/${imageName}:${IMAGE_TAG}
+                    """
                 }
             }
         }
@@ -84,7 +79,10 @@ pipeline {
 //             }
             steps {
                 script {
-                    updateDeployment('k8s/backend/deployment-news.yaml')
+                    sh """
+                        sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
+                        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f k8s/backend/deployment-news.yaml
+                    """
                 }
             }
         }
@@ -95,7 +93,10 @@ pipeline {
 //             }
             steps {
                 script {
-                    buildAndPush('newstockstock')
+                    sh """
+                        docker build -t ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/${imageName}:${IMAGE_TAG} back/stock/
+                        docker push ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/${imageName}:${IMAGE_TAG}
+                    """
                 }
             }
         }
@@ -106,7 +107,10 @@ pipeline {
 //             }
             steps {
                 script {
-                    updateDeployment('k8s/backend/deployment-stock.yaml')
+                    sh """
+                        sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
+                        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f k8s/backend/deployment-stock.yaml
+                    """
                 }
             }
         }
