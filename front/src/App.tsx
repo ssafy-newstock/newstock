@@ -1,9 +1,8 @@
 import RoutesConfig from './routes';
 import { ThemeProvider } from 'styled-components';
-import { GlobalStyle } from './styles/GlobalStyle';
-import { lightTheme, darkTheme } from './styles/theme';
-import { useThemeStore } from './store/themeStore';
-// import ThemedButton from './components/ThemedButton';
+import { GlobalStyle } from '@styles/GlobalStyle';
+import { lightTheme, darkTheme } from '@styles/theme';
+import { useThemeStore } from '@store/themeStore';
 import ThemedButton from '@components/ThemedButton';
 
 const App = () => {

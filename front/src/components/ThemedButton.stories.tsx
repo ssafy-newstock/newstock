@@ -1,20 +1,28 @@
 import { Meta, StoryFn } from '@storybook/react';
-import ThemedButton from './ThemedButton';
 import { ThemeProvider } from 'styled-components';
-import { lightTheme } from '../styles/theme';
+import ThemedButton from './ThemedButton';
+import { lightTheme, darkTheme } from '@styles/theme';
 
 export default {
   title: 'Components/ThemedButton',
   component: ThemedButton,
+  tags: ['autodocs']
 } as Meta;
 
 const Template: StoryFn = (args) => (
-  <ThemeProvider theme={lightTheme}>
+  <ThemeProvider theme={args.theme}>
     <ThemedButton {...args} />
   </ThemeProvider>
 );
 
-export const Default = Template.bind({});
-Default.args = {
-  children: 'Click Me',
+export const LightMode = Template.bind({});
+LightMode.args = {
+  children: 'Light Mode Button',
+  theme: lightTheme,
+};
+
+export const DarkMode = Template.bind({});
+DarkMode.args = {
+  children: 'Dark Mode Button',
+  theme: darkTheme,
 };
