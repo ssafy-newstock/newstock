@@ -4,29 +4,30 @@ metadata:
   name: my-app-ingress
   namespace: default
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
-  ingressClassName: nginx  # Ingress Class 설정
+  ingressClassName: nginx
   rules:
   - host: withhim-jenkins.site
     http:
       paths:
-      - path: /member
-        pathType: Prefix
+      - path: /member(/|$)(.*)
+        pathType: ImplementationSpecific
         backend:
           service:
             name: newstock-stock-member-service
             port:
               number: 8001
-      - path: /news
-        pathType: Prefix
+      - path: /news(/|$)(.*)
+        pathType: ImplementationSpecific
         backend:
           service:
             name: newstock-stock-news-service
             port:
               number: 8002
-      - path: /stock
-        pathType: Prefix
+      - path: /stock(/|$)(.*)
+        pathType: ImplementationSpecific
         backend:
           service:
             name: newstock-stock-stock-service
