@@ -11,10 +11,24 @@ spec:
   - host: withhim-jenkins.site
     http:
       paths:
-      - path: /test
+      - path: /member
         pathType: Prefix
         backend:
           service:
-            name: spring-boot-service
+            name: newstock-stock-member-service
+            port:
+              number: 80
+      - path: /news
+        pathType: Prefix
+        backend:
+          service:
+            name: newstock-stock-news-service
+            port:
+              number: 80
+      - path: /stock
+        pathType: Prefix
+        backend:
+          service:
+            name: newstock-stock-stock-service
             port:
               number: 80
