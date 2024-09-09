@@ -6,7 +6,9 @@ const About = () => {
   return (
     <>
       <Left />
-      <Center />
+      <Center>
+        <h1>hi</h1>
+      </Center>
       <Right />
     </>
   );

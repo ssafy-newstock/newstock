@@ -1,5 +1,5 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Home from '@pages/Home';
+import { createBrowserRouter } from 'react-router-dom';
+import App from './App';
 import About from '@pages/About';
 import NotFound from '@pages/NotFound';
 import OnBoardingPage from '@pages/OnBoarding';
@@ -24,90 +24,42 @@ import MyStockPage from '@pages/MyStock';
 
 const router = createBrowserRouter([
   {
-    path: '/onBoarding',
-    element: <OnBoardingPage />,
-    errorElement: <NotFound />,
-  },
-  // 질문 1. Home이 있어야 할까? 우린 NewsMain과 StockMain이 Home일 것 같다..
-  {
     path: '/',
-    element: <Home />,
-    errorElement: <NotFound />,
-  },
-  {
-    path: '/newsMain',
-    element: <NewsMainPage />,
-    errorElement: <NotFound />,
-  },
-  { 
-    path: '/subNewsMain',
-    element: <SubNewsMainPage />,
+    element: <App />,
     errorElement: <NotFound />,
     children: [
-      { path: 'economicNews', element: <EconomicNewsPage />, errorElement: <NotFound />},
-      { path: 'economicNewsDetail', element: <EconomicNewsDetailPage />, errorElement: <NotFound />},
-      { path: 'stockNews', element: <StockNewsPage />, errorElement: <NotFound />},
-      { path: 'stockNewsDetail', element: <StockNewsDetailPage />, errorElement: <NotFound />},
+      // { index: true, element: <Navigate to="/newsMain" replace /> },
+      { path: 'onBoarding', element: <OnBoardingPage /> },
+      { path: 'newsMain', element: <NewsMainPage /> },
+      { 
+        path: 'subNewsMain',
+        element: <SubNewsMainPage />,
+        children: [
+          { path: 'economicNews', element: <EconomicNewsPage /> },
+          { path: 'economicNewsDetail', element: <EconomicNewsDetailPage /> },
+          { path: 'stockNews', element: <StockNewsPage /> },
+          { path: 'stockNewsDetail', element: <StockNewsDetailPage /> },
+        ],
+      },
+      { path: 'dailyReport', element: <DailyReportPage /> },
+      { path: 'aiChatBot', element: <AIChatBotPage /> },
+      { path: 'myNews', element: <MyNewsPage /> },
+      { path: 'scrapDetail', element: <ScrapDetailPage /> },
+      { path: 'scrapCreate', element: <ScrapCreatePage /> },
+      { path: 'scrapEdit', element: <ScrapEditPage /> },
+      { path: 'stockMain', element: <StockMainPage /> },
+      { 
+        path: 'stockDetail',
+        element: <StockDetailPage />,
+        children: [
+          { path: 'stockDetailGraph', element: <StockDetailGraphPage /> },
+          { path: 'stockDetailSimilarity', element: <StockDetailSimilarityPage /> },
+        ]
+      },
+      { path: 'myStock', element: <MyStockPage /> },
+      { path: 'about', element: <About /> },
     ],
-  },
-  {
-    path: '/dailyReport',
-    element: <DailyReportPage />,
-    errorElement: <NotFound />,
-  },
-  {
-    path: '/aiChatBot',
-    element: <AIChatBotPage />,
-    errorElement: <NotFound />,
-  },
-  {
-    path: '/myNews',
-    element: <MyNewsPage />,
-    errorElement: <NotFound />,
-  },
-  {
-    path: '/scrapDetail',
-    element: <ScrapDetailPage />,
-    errorElement: <NotFound />,
-  },
-  {
-    path: '/scrapCreate',
-    element: <ScrapCreatePage />,
-    errorElement: <NotFound />,
-  },
-  {
-    path: '/scrapEdit',
-    element: <ScrapEditPage />,
-    errorElement: <NotFound />,
-  },
-  {
-    path: '/stockMain',
-    element: <StockMainPage />,
-    errorElement: <NotFound />,
-  },
-  {
-    path: '/stockDetail',
-    element: <StockDetailPage />,
-    errorElement: <NotFound />,
-    children: [
-      { path: 'stockDetailGraph', element: <StockDetailGraphPage />, errorElement: <NotFound />},
-      { path: 'stockDetailSimilarity', element: <StockDetailSimilarityPage />, errorElement: <NotFound />},
-    ]
-  },
-  {
-    path: '/myStock',
-    element: <MyStockPage />,
-    errorElement: <NotFound />,
-  },
-  {
-    path: '/about',
-    element: <About />,
-    errorElement: <NotFound />,
   },
 ]);
 
-const RoutesConfig = () => {
-  return <RouterProvider router={router} />;
-};
-
-export default RoutesConfig;
+export default router;

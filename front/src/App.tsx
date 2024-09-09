@@ -1,20 +1,15 @@
-import RoutesConfig from './routes';
 import styled, { ThemeProvider } from 'styled-components';
 import { GlobalStyle } from '@styles/GlobalStyle';
 import { lightTheme, darkTheme } from '@styles/theme';
 import { useThemeStore } from '@store/themeStore';
 import Navbar from '@components/Navbar';
-// import ThemedButton from '@components/ThemedButton';
+import Header from '@components/Header';
+import { Outlet } from 'react-router-dom';
 
 const Container = styled.div`
   display: flex;
   width: 100%;
   height: 100vh;
-`;
-
-const Header = styled.div`
-  width: 100%;
-  height: 90px;
 `;
 
 const Main = styled.div`
@@ -41,11 +36,10 @@ const App = () => {
         <Main>
           <Header />
           <Content>
-            <RoutesConfig />
+            <Outlet />
           </Content>
         </Main>
       </Container>
-      {/* <ThemedButton onClick={toggleTheme}>Toggle Theme</ThemedButton> */}
     </ThemeProvider>
   );
 };
