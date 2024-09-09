@@ -20,7 +20,7 @@ RUN gradle clean build --no-daemon --stacktrace
 FROM openjdk:17-jdk-slim
 
 # 빌드된 jar 파일을 Docker 이미지에 복사합니다.
-COPY --from=build /app/build/libs/news-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /app/build/libs/stock-0.0.1-SNAPSHOT.jar app.jar
 
 # 애플리케이션을 실행합니다.
 ENTRYPOINT ["java", "-jar", "/app.jar"]
