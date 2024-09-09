@@ -38,8 +38,8 @@ pipeline {
             steps {
                 script {
                     sh """
-                        docker build -t ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/${imageName}:${IMAGE_TAG} back/member/
-                        docker push ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/${imageName}:${IMAGE_TAG}
+                        docker build -t ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstockmember:${IMAGE_TAG} back/member/
+                        docker push ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstockmember:${IMAGE_TAG}
                     """
                 }
             }
@@ -66,8 +66,8 @@ pipeline {
             steps {
                 script {
                     sh """
-                        docker build -t ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/${imageName}:${IMAGE_TAG} back/news/
-                        docker push ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/${imageName}:${IMAGE_TAG}
+                        docker build -t ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstocknews:${IMAGE_TAG} back/news/
+                        docker push ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstocknews:${IMAGE_TAG}
                     """
                 }
             }
@@ -94,8 +94,8 @@ pipeline {
             steps {
                 script {
                     sh """
-                        docker build -t ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/${imageName}:${IMAGE_TAG} back/stock/
-                        docker push ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/${imageName}:${IMAGE_TAG}
+                        docker build -t ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstockstock:${IMAGE_TAG} back/stock/
+                        docker push ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstockstock:${IMAGE_TAG}
                     """
                 }
             }
