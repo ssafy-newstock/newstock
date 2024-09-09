@@ -1,10 +1,10 @@
 # 제목
 
 ## 파트
-- [] FE
-- [] BE
-- [] Common
-- [] Infra
+- [ ] FE
+- [ ] BE
+- [ ] Common
+- [ ] Infra
 
 ## 목적
 -
