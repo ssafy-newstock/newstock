@@ -122,18 +122,20 @@ pipeline {
             }
         }
     }
+
+    def buildAndPush(imageName, projectPath) {
+        sh """
+            docker build -t ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/${imageName}:${IMAGE_TAG} .
+            docker push ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/${imageName}:${IMAGE_TAG}
+        """
+    }
+
+    def updateDeployment(deploymentPath) {
+        sh """
+            sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
+            kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f ${deploymentPath}
+        """
+    }
 }
 
-def buildAndPush(imageName, projectPath) {
-    sh """
-        docker build -t ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/${imageName}:${IMAGE_TAG} .
-        docker push ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/${imageName}:${IMAGE_TAG}
-    """
-}
 
-def updateDeployment(deploymentPath) {
-    sh """
-        sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
-        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f ${deploymentPath}
-    """
-}
