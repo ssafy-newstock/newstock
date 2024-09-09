@@ -8,4 +8,4 @@ def apple():
     print("apple")
 
 def check():
-    return "check~"
+    return "check!"
