@@ -1,5 +1,13 @@
+import { Left } from "@components/Left";
+import { Center } from "@components/Center";
+
 const Home = () => {
-  return <div>Home</div>;
+  return(
+    <>
+      <Left></Left>
+      <Center></Center>
+    </>
+  );
 };
 
 export default Home;
