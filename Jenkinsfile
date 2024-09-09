@@ -124,7 +124,7 @@ pipeline {
     }
 }
 
-def buildAndPush(imageName) {
+def buildAndPush(imageName, projectPath) {
     sh """
         docker build -t ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/${imageName}:${IMAGE_TAG} .
         docker push ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/${imageName}:${IMAGE_TAG}
