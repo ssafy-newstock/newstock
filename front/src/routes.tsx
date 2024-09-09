@@ -21,7 +21,6 @@ import StockDetailGraphPage from '@pages/StockDetailGraph';
 import StockDetailSimilarityPage from '@pages/StockDetailSimilarity';
 import MyStockPage from '@pages/MyStock';
 
-
 const router = createBrowserRouter([
   {
     path: '/onBoarding',
@@ -39,15 +38,31 @@ const router = createBrowserRouter([
     element: <NewsMainPage />,
     errorElement: <NotFound />,
   },
-  { 
+  {
     path: '/subNewsMain',
     element: <SubNewsMainPage />,
     errorElement: <NotFound />,
     children: [
-      { path: 'economicNews', element: <EconomicNewsPage />, errorElement: <NotFound />},
-      { path: 'economicNewsDetail', element: <EconomicNewsDetailPage />, errorElement: <NotFound />},
-      { path: 'stockNews', element: <StockNewsPage />, errorElement: <NotFound />},
-      { path: 'stockNewsDetail', element: <StockNewsDetailPage />, errorElement: <NotFound />},
+      {
+        path: 'economicNews',
+        element: <EconomicNewsPage />,
+        errorElement: <NotFound />,
+      },
+      {
+        path: 'economicNewsDetail',
+        element: <EconomicNewsDetailPage />,
+        errorElement: <NotFound />,
+      },
+      {
+        path: 'stockNews',
+        element: <StockNewsPage />,
+        errorElement: <NotFound />,
+      },
+      {
+        path: 'stockNewsDetail',
+        element: <StockNewsDetailPage />,
+        errorElement: <NotFound />,
+      },
     ],
   },
   {
@@ -90,9 +105,17 @@ const router = createBrowserRouter([
     element: <StockDetailPage />,
     errorElement: <NotFound />,
     children: [
-      { path: 'stockDetailGraph', element: <StockDetailGraphPage />, errorElement: <NotFound />},
-      { path: 'stockDetailSimilarity', element: <StockDetailSimilarityPage />, errorElement: <NotFound />},
-    ]
+      {
+        path: 'stockDetailGraph',
+        element: <StockDetailGraphPage />,
+        errorElement: <NotFound />,
+      },
+      {
+        path: 'stockDetailSimilarity',
+        element: <StockDetailSimilarityPage />,
+        errorElement: <NotFound />,
+      },
+    ],
   },
   {
     path: '/myStock',
