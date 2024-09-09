@@ -3,6 +3,7 @@ import styled from 'styled-components';
 const LeftDiv = styled.div`
   display: flex;
   width: 220px;
+  height: 100px;
   padding: 20px;
   flex-direction: column;
   align-items: flex-start;
