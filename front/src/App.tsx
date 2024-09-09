@@ -3,17 +3,13 @@ import styled, { ThemeProvider } from 'styled-components';
 import { GlobalStyle } from '@styles/GlobalStyle';
 import { lightTheme, darkTheme } from '@styles/theme';
 import { useThemeStore } from '@store/themeStore';
+import Navbar from '@components/Navbar';
 // import ThemedButton from '@components/ThemedButton';
 
 const Container = styled.div`
   display: flex;
   width: 100%;
   height: 100vh;
-`;
-
-const Nav = styled.div`
-  width: 100px;
-  height: 100%;
 `;
 
 const Header = styled.div`
@@ -33,7 +29,6 @@ const Content = styled.div`
   height: 100%;
 `;
 
-
 const App = () => {
   const { theme, toggleTheme } = useThemeStore();
   const currentTheme = theme === 'light' ? lightTheme : darkTheme;
@@ -42,11 +37,10 @@ const App = () => {
     <ThemeProvider theme={currentTheme}>
       <GlobalStyle />
       <Container>
-        <Nav />
+        <Navbar />
         <Main>
           <Header />
           <Content>
-
             <RoutesConfig />
           </Content>
         </Main>
