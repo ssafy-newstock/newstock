@@ -81,7 +81,7 @@ public class StockService {
      * 갱신 목록 : 주식 현재가, 전일 대비, 전일 대비율
      */
     @Scheduled(fixedDelay = 10000)
-    private void fetchStockPrices() {
+    public void fetchStockPrices() {
         List<StocksRedis> stocksInfo = getStocksInfo();
         List<StocksRedis> stockCodes1 = stocksInfo.subList(0, stocksInfo.size() / 2);
         List<StocksRedis> stockCodes2 = stocksInfo.subList(stocksInfo.size() / 2, stocksInfo.size());
@@ -116,7 +116,7 @@ public class StockService {
      * @param appSecret
      * @return 코스피 958개의 종목코드, 종목이름, 현재가, 전일 대비, 전일 대비율
      */
-    private List<StockPricesResponseDto> getStockPrices(List<StocksRedis> stocksInfo,
+    public List<StockPricesResponseDto> getStockPrices(List<StocksRedis> stocksInfo,
                                                         String accessToken,
                                                         String appKey,
                                                         String appSecret) {
@@ -155,9 +155,9 @@ public class StockService {
      * 한국투자증권 API 요청 대시 메소드
      * 1초에 20회 제한으로 인해 대기 시간 필요
      */
-    private static void waitNextKsiApi() {
+    public static void waitNextKsiApi() {
         try {
-            Thread.sleep(700);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
