@@ -7,7 +7,7 @@ const About = () => {
     <>
       <Left />
       <Center>
-        <h1>hi</h1>
+        <h1>About</h1>
       </Center>
       <Right />
     </>
