@@ -1,10 +1,10 @@
-import RoutesConfig from './routes';
 import styled, { ThemeProvider } from 'styled-components';
 import { GlobalStyle } from '@styles/GlobalStyle';
 import { lightTheme, darkTheme } from '@styles/theme';
 import { useThemeStore } from '@store/themeStore';
 import Navbar from '@components/Navbar';
-// import ThemedButton from '@components/ThemedButton';
+import Header from '@components/Header';
+import { Outlet } from 'react-router-dom';
 
 const Container = styled.div`
   display: flex;
@@ -12,12 +12,8 @@ const Container = styled.div`
   height: 100vh;
 `;
 
-const Header = styled.div`
-  width: 100%;
-  height: 90px;
-`;
-
 const Main = styled.div`
+  padding-left: 100px;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -31,7 +27,7 @@ const Content = styled.div`
 `;
 
 const App = () => {
-  const { theme, toggleTheme } = useThemeStore();
+  const { theme } = useThemeStore();
   const currentTheme = theme === 'light' ? lightTheme : darkTheme;
 
   return (
@@ -42,11 +38,10 @@ const App = () => {
         <Main>
           <Header />
           <Content>
-            <RoutesConfig />
+            <Outlet />
           </Content>
         </Main>
       </Container>
-      {/* <ThemedButton onClick={toggleTheme}>Toggle Theme</ThemedButton> */}
     </ThemeProvider>
   );
 };
