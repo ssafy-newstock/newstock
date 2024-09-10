@@ -37,8 +37,7 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions().disable())
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/", "api/home", "api/login", "/css/**", "/images/**", "/js/**",
-                                        "/h2-console/**", "/login/oauth2/code/google", "api/public/**", "/login", "api/oauth/login", "/api/websocket/**",
+                                .requestMatchers("/", "/login/oauth2/code/google", "/login",
                                         "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/swagger-resources/**", "/webjars/**").permitAll()
                                 .anyRequest().authenticated()
                 )
@@ -58,10 +57,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(
                 "http://localhost:3000",
-                "http://localhost:5173",
-                "https://i11c209.p.ssafy.io",
-                "https://sarrr.s3.ap-northeast-2.amazonaws.com",
-                "https://sarrr.s3.ap-northeast-2.amazonaws.com/assets"
+                "http://localhost:5173"
         ));
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
