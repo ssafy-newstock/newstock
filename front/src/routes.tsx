@@ -21,7 +21,6 @@ import StockDetailGraphPage from '@pages/StockDetailGraph';
 import StockDetailSimilarityPage from '@pages/StockDetailSimilarity';
 import MyStockPage from '@pages/MyStock';
 
-
 const router = createBrowserRouter([
   {
     path: '/',

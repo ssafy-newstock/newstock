@@ -23,6 +23,7 @@ const Main = styled.div`
 const Content = styled.div`
   display: flex;
   height: 100%;
+  flex-direction: row;
 `;
 
 const App = () => {
