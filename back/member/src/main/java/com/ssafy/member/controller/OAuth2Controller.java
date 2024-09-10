@@ -1,7 +1,7 @@
 package com.ssafy.member.controller;
 
 
-import com.ssafy.member.service.TokenProvider;
+import com.ssafy.member.security.token.TokenProvider;
 import com.ssafy.member.controller.response.LoginResponseDto;
 import com.ssafy.member.entity.Member;
 import com.ssafy.member.service.MemberService;
@@ -24,7 +24,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/oauth")
+@RequestMapping("/")
 public class OAuth2Controller {
 
     private final OAuth2Service oAuth2Service;
