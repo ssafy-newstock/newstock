@@ -1,5 +1,4 @@
 from airflow import DAG
-from airflow.hooks.base_hook import BaseHook
 from airflow.operators.http_operator import SimpleHttpOperator
 from airflow.operators.python_operator import PythonOperator, BranchPythonOperator
 from airflow.utils.dates import days_ago
@@ -8,7 +7,6 @@ from datetime import timedelta
 import json
 import logging
 import requests
-
 
 """
 default_args의 on_failure_callback:
@@ -30,15 +28,14 @@ default_args = {
     'retry_delay': timedelta(minutes=5),  # 재시도 사이의 대기 시간
 }
 
-def get_connection_url(conn_id):
-    connection = BaseHook.get_connection(conn_id)
-    return connection.get_uri()
 
 def check_table(**kwargs):
-    url = 'http://'get_connection_url('http_bulk') + '/check'
-    response = requests.get(url)
-    response.raise_for_status()  # To raise an exception for HTTP error responses
+    response = requests.get(
+        url='http://j11c207.p.ssafy.io:8000/check',  # Use the appropriate endpoint URL here
+    )    
     return response.json()
+
+
 
 # 테이블 생성 성공 시 호출되는 함수
 def print_success():
