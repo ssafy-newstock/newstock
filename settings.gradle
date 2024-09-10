@@ -1,7 +1,6 @@
 // settings.gradle
 rootProject.name = 'monorepo-root'
 
-include ':front'
 include ':back:stock'  // backend/stock 경로에 있는 프로젝트 추가
 include ':back:member'  // backend/stock 경로에 있는 프로젝트 추가
 include ':back:news'  // backend/stock 경로에 있는 프로젝트 추가
