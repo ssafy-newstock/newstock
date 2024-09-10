@@ -6,6 +6,7 @@ import com.ssafy.member.entity.oauth.CustomOAuth2User;
 import com.ssafy.member.entity.Member;
 import com.ssafy.member.exception.TokenException;
 import com.ssafy.member.repository.MemberRepository;
+import com.ssafy.member.security.token.TokenProvider;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
