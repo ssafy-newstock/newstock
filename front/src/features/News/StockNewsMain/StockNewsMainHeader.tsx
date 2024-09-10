@@ -18,7 +18,7 @@ const NewsHeaderTextWrapper = styled.div`
 `;
 
 const NewsHeaderText = styled.div`
-  color: #000;
+  color: ${({ theme }) => theme.textColor};
   font-family: Inter;
   font-size: 32px;
   font-style: normal;

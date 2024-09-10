@@ -18,12 +18,12 @@ const NewsHeaderTextWrapper = styled.div`
 `;
 
 const NewsHeaderText = styled.div`
-  color: #000;
+  color: ${({ theme }) => theme.textColor};
   font-family: Inter;
   font-size: 32px;
   font-style: normal;
-  font-weight: 400;
-  line-height: 30px; /* 93.75% */
+  /* font-weight: 400; */
+  /* line-height: 30px; */
 `;
 
 const MoreInfoTextWrapper1 = styled.div`
@@ -44,8 +44,8 @@ const MoreInfoText = styled.div`
   font-family: Inter;
   font-size: 20px;
   font-style: normal;
-  font-weight: 400;
-  line-height: 30px; /* 150% */
+  /* font-weight: 400;
+  line-height: 30px; */
 `;
 
 const MoreInfoSVGWrapper = styled.div`
@@ -56,8 +56,8 @@ const MoreInfoSVGWrapper = styled.div`
 `;
 
 const MoreInfoSVG = styled.div`
-  width: 9.001px;
-  height: 16.026px;
+  width: 9px;
+  height: 16px;
   fill: #828282;
 `;
 

@@ -11,13 +11,13 @@ const NewsBodyContentWrapper = styled.div`
 
 const NewsBodyContentText = styled.div`
   width: 275px;
-  flex-shrink: 0;
+  /* flex-shrink: 0; */
   color: #828282;
   font-family: Inter;
   font-size: 15px;
   font-style: normal;
-  font-weight: 400;
-  line-height: 25px; /* 166.667% */
+  /* font-weight: 400; */
+  line-height: 25px;
 `;
 
 interface NewsBodyContentProps {

@@ -17,6 +17,8 @@ export const lightTheme: DefaultTheme = {
   // 다크 모드 토글 스위치
   switchBackgroundColor: '#453DE0',
   switchHandleColor: '#fff',
+  // 뉴스 백그라운드
+  newsBackgroundColor: '#FFF',
 };
 
 export const darkTheme: DefaultTheme = {
@@ -36,4 +38,6 @@ export const darkTheme: DefaultTheme = {
   // 다크 모드 토글 스위치
   switchBackgroundColor: '#A9ACBB',
   switchHandleColor: '#192340',
+  // 뉴스 백그라운드
+  newsBackgroundColor: '#17223B',
 };

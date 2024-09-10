@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const NewsBodyHeaderWrapper = styled.div`
   display: flex;
-  width: 294px;
+  /* width: 294px; */
   align-items: flex-start;
 `;
 
@@ -12,8 +12,8 @@ const NewsBodyHeaderText = styled.div`
   font-family: Inter;
   font-size: 16px;
   font-style: normal;
-  font-weight: 400;
-  line-height: 30px; /* 187.5% */
+  /* font-weight: 400; */
+  line-height: 30px;
 `;
 
 interface NewsBodyHeaderProps {

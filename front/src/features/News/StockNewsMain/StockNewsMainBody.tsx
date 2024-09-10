@@ -14,7 +14,7 @@ const NewsBodyInnerWrapper = styled.div`
   align-items: center;
   gap: 10px;
   border-radius: 20px;
-  background: #fff;
+  background-color: ${({ theme }) => theme.newsBackgroundColor};
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 `;
 

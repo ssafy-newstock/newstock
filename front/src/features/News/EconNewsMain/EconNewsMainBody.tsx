@@ -7,14 +7,14 @@ import NewsBodyHeader from './EconNewsBodyHeader';
 
 const NewsBodyInnerWrapper = styled.div`
   display: flex;
-  width: 334px;
+  /* width: 334px; */
   padding: 13px 14px;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 10px;
   border-radius: 20px;
-  background: #fff;
+  background-color: ${({ theme }) => theme.newsBackgroundColor};
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 `;
 

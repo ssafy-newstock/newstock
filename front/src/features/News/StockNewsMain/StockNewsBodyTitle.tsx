@@ -21,7 +21,7 @@ const NewsBodyTitleText = styled.div`
   width: 299px;
   height: 64px;
   flex-shrink: 0;
-  color: #1a1a1a;
+  color: ${({ theme }) => theme.highlightColor};
   font-family: Inter;
   font-size: 25px;
   font-style: normal;
