@@ -43,7 +43,8 @@ public class StockConverter {
                 .collect(Collectors.toList());
     }
 
-    public StockPricesResponseDto ConvertToStockPricesResponseDto(StocksRedis stockInfo, StockPricesOutputKisResponseDto stockOutput) {
+    public StockPricesResponseDto ConvertToStockPricesResponseDto(StocksRedis stockInfo,
+                                                                  StockPricesOutputKisResponseDto stockOutput) {
         return new StockPricesResponseDto(stockInfo.getStockCode(),
                 stockInfo.getStockName(),
                 stockOutput.getStckPrpr(),
@@ -59,7 +60,10 @@ public class StockConverter {
      * @param stockInfo
      * @return
      */
-    public ResponseEntity<StockPricesKisResponseDto> exchangeRestTemplate(String accessToken, String appKey, String appSecret, StocksRedis stockInfo) {
+    public ResponseEntity<StockPricesKisResponseDto> exchangeRestTemplate(String accessToken,
+                                                                          String appKey,
+                                                                          String appSecret,
+                                                                          StocksRedis stockInfo) {
         String url = UriComponentsBuilder.fromHttpUrl(KIS_STOCK_PRICE_URL)
                 .queryParam("FID_COND_MRKT_DIV_CODE", "J")
                 .queryParam("FID_INPUT_ISCD", stockInfo.getStockCode())
@@ -82,7 +86,9 @@ public class StockConverter {
      * @param appSecret
      * @return
      */
-    private HttpEntity<Void> getVoidHttpEntity(String accessToken, String appKey, String appSecret) {
+    private HttpEntity<Void> getVoidHttpEntity(String accessToken,
+                                               String appKey,
+                                               String appSecret) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", accessToken);
         headers.set("appkey", appKey);

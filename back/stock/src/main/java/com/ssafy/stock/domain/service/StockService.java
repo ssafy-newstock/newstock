@@ -116,7 +116,10 @@ public class StockService {
      * @param appSecret
      * @return 코스피 958개의 종목코드, 종목이름, 현재가, 전일 대비, 전일 대비율
      */
-    private List<StockPricesResponseDto> getStockPrices(List<StocksRedis> stocksInfo, String accessToken, String appKey, String appSecret) {
+    private List<StockPricesResponseDto> getStockPrices(List<StocksRedis> stocksInfo,
+                                                        String accessToken,
+                                                        String appKey,
+                                                        String appSecret) {
         List<StockPricesResponseDto> stockPricesResponseDtos = new ArrayList<>();
 
         int totalStockCodes = stocksInfo.size();
