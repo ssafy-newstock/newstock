@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 // 스타일드 컴포넌트 정의
 const HeaderWrapper = styled.div`
@@ -61,13 +62,22 @@ const MoreInfoSVG = styled.div`
 `;
 
 const NewsMainHeader: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleMoreInfoClick = () => {
+    navigate('/subNewsMain/economicNews');
+  };
+
   return (
     <HeaderWrapper>
       <NewsHeaderTextWrapper>
         <NewsHeaderText>시황 뉴스</NewsHeaderText>
       </NewsHeaderTextWrapper>
       <MoreInfoTextWrapper1>
-        <MoreInfoTextWrapper2>
+        <MoreInfoTextWrapper2
+          onClick={handleMoreInfoClick}
+          style={{ cursor: 'pointer' }}
+        >
           <MoreInfoText>더보기</MoreInfoText>
         </MoreInfoTextWrapper2>
         <MoreInfoSVGWrapper>
