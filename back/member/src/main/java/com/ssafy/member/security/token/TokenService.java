@@ -1,4 +1,4 @@
-package com.ssafy.member.service;
+package com.ssafy.member.security.token;
 
 import com.ssafy.member.entity.oauth.Token;
 import com.ssafy.member.exception.TokenException;
