@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, status
 from config.settings import settings
 
 from newstock_scraper.test import *
+from newstock_scraper.stock_list import StockListScraper
 from newstock_scraper.settings import Setting
 
 # FastAPI 애플리케이션 인스턴스 생성
@@ -51,6 +52,22 @@ def create_table():
         return create_response("success", status.HTTP_200_OK, "Successfully Created")
     else:
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to create {table_name}")
+    
+# stock list를 매번 krx에서 얻어오는 함수
+@app.post("/download")
+def download_stock_list():
+    scraper = StockListScraper()
+    
+    download_result = scraper.get_stock_list()
+
+    if download_result:
+        return create_response("success", status.HTTP_200_OK, "Successfully Downloaded Stock List")
+    else:
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to Downloaded Stock List")
+    
+
+
+
 
 
 

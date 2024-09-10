@@ -32,9 +32,12 @@ default_args = {
 def check_table(**kwargs):
     response = requests.get(
         url='http://j11c207.p.ssafy.io:8000/check',  # Use the appropriate endpoint URL here
-    )    
-    return response.json()
-
+    )
+    # Push both the status code and response body to XCom
+    return {
+        'status_code': response.status_code,
+        'response_body': response.json()
+    }
 
 
 # 테이블 생성 성공 시 호출되는 함수
@@ -44,12 +47,12 @@ def print_success():
 # 브랜칭 결정을 위한 함수
 def branch_decision(**kwargs):
     ti = kwargs['task_instance']
-    response = ti.xcom_pull(task_ids='check_stockmetadata_table')
+    result = ti.xcom_pull(task_ids='check_stockmetadata_table')
     
-    logging.info(f"Response JSON: {response}")
+    logging.info(f"Response JSON: {result}")
 
     # 상태 코드 확인
-    status_code = response.get('status_code', 500)  # 기본값 500으로 설정
+    status_code = result.get('status_code', 500)  # 기본값 500으로 설정
     if status_code == 200:
         return 'print_success_task'
     else:
@@ -72,6 +75,13 @@ with DAG(
         do_xcom_push=True,
     )
 
+    # BranchPythonOperator로 경로 선택
+    branch_task = BranchPythonOperator(
+        task_id='branch_task',
+        python_callable=branch_decision,
+        provide_context=True,
+    )
+
     # 테이블 생성 태스크
     create_table_task = SimpleHttpOperator(
         task_id='create_stockmetadata_table',
@@ -80,11 +90,12 @@ with DAG(
         method='POST',
     )
 
-    # BranchPythonOperator로 경로 선택
-    branch_task = BranchPythonOperator(
-        task_id='branch_task',
-        python_callable=branch_decision,
-        provide_context=True,
+    # KRX에서 주식 리스트 다운로드 코드
+    download_stock_list_task = SimpleHttpOperator(
+        task_id='download_stock_list_task',
+        http_conn_id='http_bulk',
+        endpoint='download',
+        method='POST',
     )
 
     # 성공 시 출력 태스크
@@ -96,4 +107,4 @@ with DAG(
     # DAG 구성
     check_table_task >> branch_task
     branch_task >> [create_table_task, print_success_task]
-    create_table_task >> print_success_task
+    create_table_task >> download_stock_list_task >> print_success_task

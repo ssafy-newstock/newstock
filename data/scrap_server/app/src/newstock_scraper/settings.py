@@ -20,6 +20,9 @@ class Setting:
     def __init__(self):
         self.engine = create_engine(DATABASE_URL)
 
+    def get_engine(self):
+        return self.engine
+
     # 테이블이 존재하는지 확인하는 함수
     def is_table_exist(self, table_name: str) -> None:
         check_table_sql = text(f"""
