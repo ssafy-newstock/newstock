@@ -28,32 +28,11 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenProvider tokenProvider;
 
-    private static final List<String> EXCLUDED_PATHS = Arrays.asList(
-            "/login",
-            "/api/oauth/login",
-            "/v3/api-docs",
-            "/swagger-ui",
-            "/swagger-ui.html",
-            "/swagger-resources",
-            "/webjars",
-            "/css",
-            "/images",
-            "/js",
-            "/h2-console",
-            "/api/public",
-            "/api/login",
-            "/api/home",
-            "/api/websocket"
-    );
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String requestURI = request.getRequestURI();
-        if (isExcludedPath(requestURI)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+
         String accessToken = resolveToken(request);
         log.info("accesstoken: {}", accessToken);
         // 1. 우선 filter을 통해 accessToken에 이상이 없을 경우
@@ -83,7 +62,4 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         return token.substring(TokenKey.TOKEN_PREFIX.length());
     }
 
-    private boolean isExcludedPath(String requestURI) {
-        return EXCLUDED_PATHS.stream().anyMatch(requestURI::startsWith);
-    }
 }
