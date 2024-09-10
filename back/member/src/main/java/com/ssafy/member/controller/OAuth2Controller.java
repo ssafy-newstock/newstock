@@ -1,6 +1,7 @@
 package com.ssafy.member.controller;
 
 
+import com.ssafy.member.constant.TokenKey;
 import com.ssafy.member.security.token.TokenProvider;
 import com.ssafy.member.controller.response.LoginResponseDto;
 import com.ssafy.member.entity.Member;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+
+import static com.ssafy.member.constant.TokenKey.*;
 
 @Slf4j
 @RestController
@@ -47,7 +50,7 @@ public class OAuth2Controller {
 
         // accessToken을 HTTP 헤더에 설정
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + accessToken);
+        headers.set("Authorization", TOKEN_PREFIX + " " + accessToken);
 
         // refreshToken을 HTTP Only 쿠키로 설정
         ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", refreshToken)
@@ -100,7 +103,7 @@ public class OAuth2Controller {
 
         // accessToken을 HTTP 헤더에 설정
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + accessToken);
+        headers.set("Authorization", TOKEN_PREFIX + " " + accessToken);
 
         // refreshToken을 HTTP Only 쿠키로 설정
         ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", refreshToken)
