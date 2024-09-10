@@ -2,13 +2,11 @@ import styled from 'styled-components';
 
 export const CenterDiv = styled.div`
   display: flex;
-  width: 1024px;
   padding: 20px;
   flex-direction: column;
   align-items: flex-start;
   gap: 10px;
   align-self: stretch;
-  overflow: auto;
 `;
 
 export const CenterTitleDiv = styled.div`
@@ -51,7 +49,7 @@ export const SelectDateDiv = styled.div`
 `;
 
 export const CenterHr = styled.hr`
-  width: 984px;
+  width: 100%;
   height: 3px;
   background: #000;
 `;

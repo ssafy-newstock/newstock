@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const LeftDiv = styled.div`
@@ -51,13 +52,17 @@ const Lefthr = styled.hr`
 `;
 
 const LeftNews: React.FC = () => {
+  const navigate = useNavigate();
   return (
     <LeftDiv>
       <SubNav>
         <TextDiv>
           <TextTitle>뉴스</TextTitle>
         </TextDiv>
-        <TextDiv>
+        <TextDiv
+          onClick={() => navigate('/subNewsMain/economicNews')}
+          style={{ cursor: 'pointer' }}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -78,7 +83,10 @@ const LeftNews: React.FC = () => {
           </svg>
           <TextP>시황 뉴스</TextP>
         </TextDiv>
-        <TextDiv>
+        <TextDiv
+          onClick={() => navigate('/subNewsMain/stockNews')}
+          style={{ cursor: 'pointer' }}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -93,7 +101,10 @@ const LeftNews: React.FC = () => {
           </svg>
           <TextP>종목 뉴스</TextP>
         </TextDiv>
-        <TextDiv>
+        <TextDiv
+          onClick={() => navigate('/myNews')}
+          style={{ cursor: 'pointer' }}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -106,9 +117,12 @@ const LeftNews: React.FC = () => {
               fill="#828282"
             />
           </svg>
-          <TextP>저장한뉴스</TextP>
+          <TextP>저장한 뉴스</TextP>
         </TextDiv>
-        <TextDiv>
+        <TextDiv
+          onClick={() => navigate('/scrapDetail')}
+          style={{ cursor: 'pointer' }}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -121,7 +135,7 @@ const LeftNews: React.FC = () => {
               fill="#828282"
             />
           </svg>
-          <TextP>스크랩뉴스</TextP>
+          <TextP>스크랩</TextP>
         </TextDiv>
       </SubNav>
       <Lefthr />

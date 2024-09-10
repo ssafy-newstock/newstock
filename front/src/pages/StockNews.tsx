@@ -1,8 +1,11 @@
+import LeftStock from '@components/LeftStock';
+
 const StockNewsPage = () => {
-  return(
-  <>
-    <div>종목뉴스 메인페이지</div>
-  </>
+  return (
+    <>
+      <LeftStock />
+      <h1>종목뉴스 메인페이지</h1>
+    </>
   );
 };
 

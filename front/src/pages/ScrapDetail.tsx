@@ -1,10 +1,15 @@
+import { Center } from '@components/Center';
+import LeftNews from '@components/LeftNews';
+import { Right } from '@components/Right';
+
 const ScrapDetailPage = () => {
-    return (
-      <div>
-        <h1>스크랩상세 페이지</h1>
-      </div>
-    );
-  };
-  
-  export default ScrapDetailPage;
-  
+  return (
+    <>
+      <LeftNews />
+      <Center></Center>
+      <Right></Right>
+    </>
+  );
+};
+
+export default ScrapDetailPage;
