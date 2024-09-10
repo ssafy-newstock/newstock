@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const LeftDiv = styled.div`
@@ -50,13 +51,17 @@ const Lefthr = styled.hr`
 `;
 
 const LeftStock: React.FC = () => {
+  const navigate = useNavigate();
   return (
     <LeftDiv>
       <SubNav>
         <TextDiv>
           <TextTitle>뉴스</TextTitle>
         </TextDiv>
-        <TextDiv>
+        <TextDiv
+          onClick={() => navigate('/allStock')}
+          style={{ cursor: 'pointer' }}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -71,9 +76,12 @@ const LeftStock: React.FC = () => {
               fill="#828282"
             />
           </svg>
-          <TextP>주식 종목 조회</TextP>
+          <TextP>전체 종목 조회</TextP>
         </TextDiv>
-        <TextDiv>
+        <TextDiv
+          onClick={() => navigate('/favoriteStock')}
+          style={{ cursor: 'pointer' }}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -88,7 +96,28 @@ const LeftStock: React.FC = () => {
           </svg>
           <TextP>관심 종목 조회</TextP>
         </TextDiv>
-        <TextDiv>
+        <TextDiv
+          onClick={() => navigate('/sectionStock')}
+          style={{ cursor: 'pointer' }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <path
+              d="M21 2H3C2.73478 2 2.48043 2.10536 2.29289 2.29289C2.10536 2.48043 2 2.73478 2 3V21C2 21.2652 2.10536 21.5196 2.29289 21.7071C2.48043 21.8946 2.73478 22 3 22H21C21.2652 22 21.5196 21.8946 21.7071 21.7071C21.8946 21.5196 22 21.2652 22 21V3C22 2.73478 21.8946 2.48043 21.7071 2.29289C21.5196 2.10536 21.2652 2 21 2ZM8 20H4V10H8V20ZM14 20H10V10H14V20ZM20 20H16V10H20V20ZM20 8H4V4H20V8Z"
+              fill="#828282"
+            />
+          </svg>
+          <TextP>분야별 주식 조회</TextP>
+        </TextDiv>
+        <TextDiv
+          onClick={() => navigate('/myStock')}
+          style={{ cursor: 'pointer' }}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -111,7 +140,7 @@ const LeftStock: React.FC = () => {
               stroke-linejoin="round"
             />
           </svg>
-          <TextP>전체 거래 내역 조회</TextP>
+          <TextP>내 주식 조회</TextP>
         </TextDiv>
       </SubNav>
       <Lefthr />

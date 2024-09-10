@@ -1,12 +1,12 @@
 import LeftStock from '@components/LeftStock';
 
-const StockMainPage = () => {
+const FavoriteStockPage = () => {
   return (
     <div>
       <LeftStock />
-      <h1>주식 메인페이지</h1>
+      <h1>관심 주식 페이지</h1>
     </div>
   );
 };
 
-export default StockMainPage;
+export default FavoriteStockPage;

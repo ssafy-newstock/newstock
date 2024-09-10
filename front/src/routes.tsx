@@ -20,6 +20,9 @@ import StockDetailPage from '@pages/StockDetail';
 import StockDetailGraphPage from '@pages/StockDetailGraph';
 import StockDetailSimilarityPage from '@pages/StockDetailSimilarity';
 import MyStockPage from '@pages/MyStock';
+import AllStockPage from '@pages/AllStock';
+import FavoriteStockPage from '@pages/FavoriteStock';
+import SectionStockPage from '@pages/SectionStock';
 
 const router = createBrowserRouter([
   {
@@ -30,7 +33,7 @@ const router = createBrowserRouter([
       // { index: true, element: <Navigate to="/newsMain" replace /> },
       { path: 'onBoarding', element: <OnBoardingPage /> },
       { path: 'newsMain', element: <NewsMainPage /> },
-      { 
+      {
         path: 'subNewsMain',
         element: <SubNewsMainPage />,
         children: [
@@ -47,13 +50,19 @@ const router = createBrowserRouter([
       { path: 'scrapCreate', element: <ScrapCreatePage /> },
       { path: 'scrapEdit', element: <ScrapEditPage /> },
       { path: 'stockMain', element: <StockMainPage /> },
-      { 
+      { path: 'allStock', element: <AllStockPage /> },
+      { path: 'favoriteStock', element: <FavoriteStockPage /> },
+      { path: 'sectionStock', element: <SectionStockPage /> },
+      {
         path: 'stockDetail',
         element: <StockDetailPage />,
         children: [
           { path: 'stockDetailGraph', element: <StockDetailGraphPage /> },
-          { path: 'stockDetailSimilarity', element: <StockDetailSimilarityPage /> },
-        ]
+          {
+            path: 'stockDetailSimilarity',
+            element: <StockDetailSimilarityPage />,
+          },
+        ],
       },
       { path: 'myStock', element: <MyStockPage /> },
       { path: 'about', element: <About /> },
