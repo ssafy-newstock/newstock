@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 // 스타일드 컴포넌트를 사용하여 네비게이션 바의 스타일 정의
 const NavbarContainer = styled.nav`
+  position: fixed;
   display: flex;
   width: 100px;
   height: 100%;

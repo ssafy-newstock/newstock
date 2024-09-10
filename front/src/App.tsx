@@ -13,6 +13,7 @@ const Container = styled.div`
 `;
 
 const Main = styled.div`
+  padding-left: 100px;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -25,7 +26,7 @@ const Content = styled.div`
 `;
 
 const App = () => {
-  const { theme, toggleTheme } = useThemeStore();
+  const { theme } = useThemeStore();
   const currentTheme = theme === 'light' ? lightTheme : darkTheme;
 
   return (
