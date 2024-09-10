@@ -1,11 +1,11 @@
-import { Left } from '@components/Left';
 import { Center } from '@components/Center';
 import { Right } from '@components/Right';
+import LeftNews from '@components/LeftNews';
 
 const About = () => {
   return (
     <>
-      <Left />
+      <LeftNews />
       <Center />
       <Right />
     </>
