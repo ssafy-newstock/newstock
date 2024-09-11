@@ -13,8 +13,8 @@ const NewsBodyFooterWriter = styled.div`
   font-family: Inter;
   font-size: 18px;
   font-style: normal;
-  font-weight: 400;
-  line-height: 30px; /* 166.667% */
+  /* font-weight: 400; */
+  line-height: 30px;
 `;
 
 const LineSVG = styled.div`
@@ -28,8 +28,8 @@ const NewsBodyFooterDate = styled.div`
   font-family: Inter;
   font-size: 18px;
   font-style: normal;
-  font-weight: 400;
-  line-height: 30px; /* 166.667% */
+  /* font-weight: 400; */
+  line-height: 30px;
 `;
 
 interface NewsBodyFooterProps {

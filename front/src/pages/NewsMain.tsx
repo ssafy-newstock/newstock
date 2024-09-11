@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Center } from '@components/Center';
+import LeftNews from '@components/LeftNews';
 import EconNewsMainHeader from '@features/News/EconNewsMain/EconNewsMainHeader';
 import StockNewsMainHeader from '@features/News/StockNewsMain/StockNewsMainHeader';
 import EconNewsMainBody from '@features/News/EconNewsMain/EconNewsMainBody';
@@ -17,7 +18,6 @@ const NewsMainCenter = styled(Center)`
   gap: 10px;
   flex: 1 0 0;
   align-self: stretch;
-  background: #f6f8ff;
 `;
 
 const NewsMainBodyWrapper = styled.div`
@@ -33,34 +33,37 @@ const NewsMain: React.FC = () => {
   const top4News = newsData.data.slice(0, 4);
 
   return (
-    <NewsMainCenter>
-      <EconNewsMainHeader />
-      <NewsMainBodyWrapper>
-        {top4News.map((news, index) => (
-          <EconNewsMainBody
-            key={index}
-            title={news.title} // 29자
-            description={news.description} // 70자
-            media={news.media}
-            date={news.uploadDatetime}
-            header="벤처/스타트업"
-          />
-        ))}
-      </NewsMainBodyWrapper>
-      <StockNewsMainHeader />
-      <NewsMainBodyWrapper>
-        {top4News.map((news, index) => (
-          <StockNewsMainBody
-            key={index}
-            title={news.title} // 29자
-            description={news.description} // 70자
-            media={news.media}
-            date={news.uploadDatetime}
-            header="삼성전자"
-          />
-        ))}
-      </NewsMainBodyWrapper>
-    </NewsMainCenter>
+    <>
+      <LeftNews />
+      <NewsMainCenter>
+        <EconNewsMainHeader />
+        <NewsMainBodyWrapper>
+          {top4News.map((news, index) => (
+            <EconNewsMainBody
+              key={index}
+              title={news.title} // 29자
+              description={news.description} // 70자
+              media={news.media}
+              date={news.uploadDatetime}
+              header="벤처/스타트업"
+            />
+          ))}
+        </NewsMainBodyWrapper>
+        <StockNewsMainHeader />
+        <NewsMainBodyWrapper>
+          {top4News.map((news, index) => (
+            <StockNewsMainBody
+              key={index}
+              title={news.title} // 29자
+              description={news.description} // 70자
+              media={news.media}
+              date={news.uploadDatetime}
+              header="삼성전자"
+            />
+          ))}
+        </NewsMainBodyWrapper>
+      </NewsMainCenter>
+    </>
   );
 };
 

@@ -14,13 +14,7 @@ export const PositiveIcon = styled.div`
   border: 1px solid #ea1212;
 `;
 
-export const PositiveIconText = styled.div`
-  display: flex;
-  width: 23px;
-  height: 16px;
-  flex-direction: column;
-  justify-content: center;
-  flex-shrink: 0;
+export const PositiveIconText = styled.p`
   color: #e31837;
   font-family: Inter;
   font-size: 12px;
@@ -43,13 +37,7 @@ export const NeutralIcon = styled.div`
   border: 1px solid #828282;
 `;
 
-export const NeutralIconText = styled.div`
-  display: flex;
-  width: 23px;
-  height: 16px;
-  flex-direction: column;
-  justify-content: center;
-  flex-shrink: 0;
+export const NeutralIconText = styled.p`
   color: #828282;
   font-family: Inter;
   font-size: 12px;
@@ -72,13 +60,7 @@ export const NegativeIcon = styled.div`
   border: 1px solid #006dff;
 `;
 
-export const NegativeIconText = styled.div`
-  display: flex;
-  width: 23px;
-  height: 16px;
-  flex-direction: column;
-  justify-content: center;
-  flex-shrink: 0;
+export const NegativeIconText = styled.p`
   color: #006dff;
   font-family: Inter;
   font-size: 12px;

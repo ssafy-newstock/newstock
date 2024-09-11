@@ -12,5 +12,6 @@ declare module 'styled-components' {
     profileColor: string;
     switchBackgroundColor: string;
     switchHandleColor: string;
+    newsBackgroundColor: string;
   }
 }

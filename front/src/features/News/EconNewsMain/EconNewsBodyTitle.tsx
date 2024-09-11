@@ -11,22 +11,22 @@ import {
 
 const NewsBodyTitleWrapper = styled.div`
   display: flex;
-  width: 299px;
+  /* width: 299px; */
   justify-content: space-between;
   align-items: flex-start;
   position: relative;
 `;
 
-const NewsBodyTitleText = styled.div`
+const NewsBodyTitleText = styled.p`
   width: 299px;
-  height: 64px;
-  flex-shrink: 0;
-  color: #1a1a1a;
+  /* height: 64px; */
+  /* flex-shrink: 0; */
+  color: ${({ theme }) => theme.highlightColor};
   font-family: Inter;
   font-size: 25px;
   font-style: normal;
-  font-weight: 400;
-  line-height: 32px; /* 아이콘 크기에 맞춰 수정 */
+  /* font-weight: 400; */
+  line-height: 32px;
   text-indent: 55px;
 `;
 
