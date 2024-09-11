@@ -138,7 +138,7 @@ public class StockService {
                     if (stockApiResponse != null) {
                         StockPricesOutputKisResponseDto stockOutput = stockApiResponse.getOutput();
                         if (stockOutput != null) {
-                            StockPricesResponseDto stockPricesResponseDto = stockConverter.ConvertToStockPricesResponseDto(stockInfo, stockOutput);
+                            StockPricesResponseDto stockPricesResponseDto = stockConverter.convertToStockPricesResponseDtoByRedis(stockInfo, stockOutput);
                             stockPricesResponseDtos.add(stockPricesResponseDto);
                         }
                     }
