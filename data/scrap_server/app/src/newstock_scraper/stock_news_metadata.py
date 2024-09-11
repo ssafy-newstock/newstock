@@ -20,6 +20,14 @@ DEFAULT_PER_PAGE = 100
 DEFAULT_CATEGORY = "economy"
 CURRENT_DATE= datetime.now().strftime("%Y%m%d")
 
+# 로그 설정
+logging.basicConfig(
+    level=logging.INFO,  # 로그 레벨을 INFO로 설정
+    format="%(asctime)s - %(levelname)s - %(message)s",  # 로그 출력 포맷
+    handlers=[
+        logging.StreamHandler()  # 콘솔에 로그를 출력하기 위한 핸들러
+    ]
+)
 
 class StockNewsMetadataScraper:
     """
@@ -289,249 +297,255 @@ class StockNewsMetadataScraper:
     
 
 
-# class IndustryNewsMetadataScraper:
-#     def __init__(self):
-#         self.url = "https://news.daum.net/breakingnews/economic/"
-#         self.subsection = ["finance", "industry", "employ", "autos", "stock", "estate", "consumer", "worldeconomy", "coin", "pension", "policy", "startup"]
-#         self.news_id_dict = {}
-#         self.news_id_set = set()
-#         self.current_datetime = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
-#         self.stock_bucket_name = 'newstock-stock-metadata'
-#         self.industry_bucket_name = 'newstock-industry-metadata'
-#         self.start_date = None
-#         self.end_date = None
+class IndustryNewsMetadataScraper:
+    def __init__(self):
+        self.url = "https://news.daum.net/breakingnews/economic/"
+        self.subsection = ["finance", "industry", "employ", "autos", "stock", "estate", "consumer", "worldeconomy", "coin", "pension", "policy", "startup"]
+        self.news_id_dict = {}
+        self.news_id_set = set()
+        self.current_datetime = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+        self.stock_bucket_name = 'newstock-stock-metadata'
+        self.industry_bucket_name = 'newstock-industry-metadata'
+        self.start_date = None
+        self.end_date = None
     
-#     def get_total_metadata_size(self, date: str) -> int:
-#         logging.info(f"Metadata size for date: {date}")
-#         total_count = 0
+    def get_total_metadata_size(self, date: str) -> int:
+        logging.info(f"Metadata size for date: {date}")
+        total_count = 0
 
-#         # Loop through each section in subsection
-#         for section in self.subsection:
-#             # Check how many news IDs are stored for the section
-#             count = len(self.news_id_dict.get(section, []))
-#             total_count += count
-#             logging.info(f"Section: {section}, Count: {count}")
+        # Loop through each section in subsection
+        for section in self.subsection:
+            # Check how many news IDs are stored for the section
+            count = len(self.news_id_dict.get(section, []))
+            total_count += count
+            logging.info(f"Section: {section}, Count: {count}")
         
-#         logging.info(f"Total metadata count across all sections: {total_count}")
-#         return total_count
+        logging.info(f"Total metadata count across all sections: {total_count}")
+        return total_count
     
-#     # "date(2024-09-01)" => "20240901"
-#     def convert_date_to_str(self, date: datetime.date) -> str:
-#         return date.strftime("%Y%m%d")
+    # "date(2024-09-01)" => "20240901"
+    def convert_date_to_str(self, date: datetime.date) -> str:
+        return date.strftime("%Y%m%d")
 
-#     def _set_ranges(self, start_date, end_date):
-#         date_format = "%Y-%m-%d"  # Adjust format as needed
+    def _set_ranges(self, start_date, end_date):
+        date_format = "%Y-%m-%d"  # Adjust format as needed
 
-#         # Convert string to datetime.date
-#         self.start_date = datetime.strptime(start_date, date_format).date()
-#         self.end_date = datetime.strptime(end_date, date_format).date()
+        # Convert string to datetime.date
+        self.start_date = datetime.strptime(start_date, date_format).date()
+        self.end_date = datetime.strptime(end_date, date_format).date()
     
-#     def load_stock_metadata(self, date: str) -> None:
-#         s3 = S3Connection()
-#         s3.connect_to_s3()
+    def load_stock_metadata(self, date: str) -> None:
+        s3 = S3Connection()
+        s3.connect_to_s3()
 
-#         # 기존 str데이터 : '2024.09.05' => 변환시키려고
-#         s3_file_name = f"{date}.json"
-#         content = s3.download_from_s3(self.stock_bucket_name, s3_file_name)
-#         content_data = json.loads(content)['data']
+        # 기존 str데이터 : '2024.09.05' => 변환시키려고
+        s3_file_name = f"{date}.json"
+        content = s3.download_from_s3(self.stock_bucket_name, s3_file_name)
+        content_data = json.loads(content)['data']
         
-#         # 중복체크 할 거이므로 set
-#         self.news_id_set = set([data['newsId'] for data in content_data])
+        # 중복체크 할 거이므로 set
+        self.news_id_set = set([data['newsId'] for data in content_data])
     
-#     def request_daum_news(self, url: str, date: str, params: dict) -> requests.Response:
-#         headers = {
-#             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
-#             "Referer": "https://finance.daum.net/"
-#         }
+    def request_daum_news(self, url: str, date: str, params: dict) -> requests.Response:
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
+            "Referer": "https://finance.daum.net/"
+        }
         
-#         response = requests.get(url, headers=headers, params=params)
-#         return response
+        response = requests.get(url, headers=headers, params=params)
+        return response
     
-#     # 데이터가 아예 없는 경우도 있음(코인 등)
-#     def check_empty_page(self, soup):
-#         none_tag = soup.find('p', {'class': 'txt_none'})
+    # 데이터가 아예 없는 경우도 있음(코인 등)
+    def check_empty_page(self, soup):
+        none_tag = soup.find('p', {'class': 'txt_none'})
         
-#         return none_tag != None
+        return none_tag != None
 
-#     def check_same_page(self, req_page, soup, section):
-#         # 현재 parsing상 페이지
-#         page_tag = soup.find('em', {'class': 'num_page'})
-#         if page_tag:
-#             # <em> 태그의 모든 텍스트를 가져오고, 공백을 제거
-#             text = page_tag.get_text(strip=True)
+    def check_same_page(self, req_page, soup, section):
+        # 현재 parsing상 페이지
+        page_tag = soup.find('em', {'class': 'num_page'})
+        if page_tag:
+            # <em> 태그의 모든 텍스트를 가져오고, 공백을 제거
+            text = page_tag.get_text(strip=True)
             
-#             # 숫자만 추출하기 위해 정규 표현식 사용
-#             match = re.search(r'\d+', text)
+            # 숫자만 추출하기 위해 정규 표현식 사용
+            match = re.search(r'\d+', text)
             
-#             if match:
-#                 # 추출된 숫자 문자열을 정수로 변환하여 반환
-#                 now_page = int(match.group())
-#                 return req_page == now_page
+            if match:
+                # 추출된 숫자 문자열을 정수로 변환하여 반환
+                now_page = int(match.group())
+                return req_page == now_page
             
-#             else:
-#                 logging.info(f"{section} 페이지 번호를 추출할 수 없습니다.")
-#                 return False
-#         else:
-#             logging.info(f"{section} 지정된 <em> 태그를 찾을 수 없습니다.")
-#             return False
+            else:
+                logging.info(f"{section} 페이지 번호를 추출할 수 없습니다.")
+                return False
+        else:
+            logging.info(f"{section} 지정된 <em> 태그를 찾을 수 없습니다.")
+            return False
     
-#     # 기존에 주식 뉴스 기사랑 새롭게 수집하려는 산업 기사랑 겹치는지 확인
-#     def compare_metadata(self, soup, section: str)-> None:
-#         # list_allnews라는 이름을 가진 ul에서 모든 li를 찾음
-#         list_items = soup.find('ul', {'class': 'list_allnews'}).find_all('li')
+    # 기존에 주식 뉴스 기사랑 새롭게 수집하려는 산업 기사랑 겹치는지 확인
+    def compare_metadata(self, soup, section: str)-> None:
+        # list_allnews라는 이름을 가진 ul에서 모든 li를 찾음
+        list_items = soup.find('ul', {'class': 'list_allnews'}).find_all('li')
         
-#         for item in list_items:
-#             # 링크 추출
-#             link_tag = item.find('a', {'class': 'link_txt'})
+        for item in list_items:
+            # 링크 추출
+            link_tag = item.find('a', {'class': 'link_txt'})
             
-#             # 만약 link_tag가 없거나 'href' 속성이 없으면 건너뜀
-#             if not link_tag or 'href' not in link_tag.attrs:
-#                 continue
+            # 만약 link_tag가 없거나 'href' 속성이 없으면 건너뜀
+            if not link_tag or 'href' not in link_tag.attrs:
+                continue
 
-#             news_id = link_tag['href'].split('/')[-1]
+            news_id = link_tag['href'].split('/')[-1]
 
-#             # 만약 그 id가 이미 존재하다면
-#             if news_id in self.news_id_set:
-#                 continue
+            # 만약 그 id가 이미 존재하다면
+            if news_id in self.news_id_set:
+                continue
             
-#             # 존재하지 않는 경우만 넣음
-#             self.news_id_dict[section].append(news_id)
+            # 존재하지 않는 경우만 넣음
+            self.news_id_dict[section].append(news_id)
             
-#     def scraping_news_metadata(self, url: str, params: dict, section: str) -> bool:
-#     # URL에 요청을 보냄
-#         response = self.request_daum_news(url, date, params)
+    def scraping_news_metadata(self, url: str, params: dict, section: str) -> bool:
+    # URL에 요청을 보냄
+        response = self.request_daum_news(url, date, params)
 
-#         # 응답 상태 코드가 200일 때 처리
-#         if response.status_code == 200:
-#             # 응답의 콘텐츠 타입 확인
-#             content_type = response.headers.get('Content-Type')
+        # 응답 상태 코드가 200일 때 처리
+        if response.status_code == 200:
+            # 응답의 콘텐츠 타입 확인
+            content_type = response.headers.get('Content-Type')
             
 
-#             # HTML 데이터일 경우
-#             if 'text/html' in content_type or 'application/xhtml+xml' in content_type:
-#                 # 인코딩을 EUC-KR로 지정 (필요한 경우에만)
-#                 # response.encoding = 'euc-kr'
-#                 html_data = response.text
+            # HTML 데이터일 경우
+            if 'text/html' in content_type or 'application/xhtml+xml' in content_type:
+                # 인코딩을 EUC-KR로 지정 (필요한 경우에만)
+                # response.encoding = 'euc-kr'
+                html_data = response.text
 
-#                 # BeautifulSoup 객체로 변환
-#                 soup = BeautifulSoup(html_data, 'html.parser')
+                # BeautifulSoup 객체로 변환
+                soup = BeautifulSoup(html_data, 'html.parser')
 
-#                 # 만약 페이지에 아무것도 없다면
-#                 if self.check_empty_page(soup):
-#                     logging.info(f"{section}페이지는 정보가 없습니다")
-#                     return False
+                # 만약 페이지에 아무것도 없다면
+                if self.check_empty_page(soup):
+                    logging.info(f"{section}페이지는 정보가 없습니다")
+                    return False
                 
-#                 # 만약 페이지 한계에 다다랐을 경우
-#                 if not self.check_same_page(params['page'], soup, section):
-#                     logging.info("마지막 페이지 도달")
-#                     return False
+                # 만약 페이지 한계에 다다랐을 경우
+                if not self.check_same_page(params['page'], soup, section):
+                    logging.info(f"{section} 마지막 페이지 도달")
+                    return False
 
-#                 # 기존에 이미 있나 확인
-#                 self.compare_metadata(soup, section)
+                # 기존에 이미 있나 확인
+                self.compare_metadata(soup, section)
 
-#                 return True
+                return True
             
-#             # 그 외 다른 바이너리 데이터일 경우
-#             else:
-#                 logging.error("Unknown content type or binary data received")
-#                 raise
-#         else:
-#             logging.error("Error: ", response.status_code)
-#             raise
+            # 그 외 다른 바이너리 데이터일 경우
+            else:
+                logging.error("Unknown content type or binary data received")
+                raise
+        else:
+            logging.error("Error: ", response.status_code)
+            raise
         
-#     # 함수: 특정 섹션의 모든 페이지를 크롤링하는 함수
-#     def crawl_section(self, section, now_date):
-#         page = 1
-#         # result_lists = []
+    # 함수: 특정 섹션의 모든 페이지를 크롤링하는 함수
+    def crawl_section(self, section, now_date):
+        page = 1
+        # result_lists = []
         
-#         while True:
-#             url = self.url + section
-#             params = {
-#                 "page": page,
-#                 "regDate": now_date,
-#             }
-#             can_scrap = self.scraping_news_metadata(url, params, section)
+        while True:
+            url = self.url + section
+            params = {
+                "page": page,
+                "regDate": now_date,
+            }
+            can_scrap = self.scraping_news_metadata(url, params, section)
             
-#             # 더 이상 진행하기 힘들 경우 그만하기!
-#             if not can_scrap:
-#                 break;
+            # 더 이상 진행하기 힘들 경우 그만하기!
+            if not can_scrap:
+                break;
             
-#             # print(f"[{section}] {page} 페이지 완료")
-#             page += 1
+            # print(f"[{section}] {page} 페이지 완료")
+            page += 1
             
-#             if page % 31 == 0:
-#                 time.sleep(5)
+            if page % 31 == 0:
+                time.sleep(5)
     
-#     # 멀티스레딩으로 각 section별. 날짜별 크롤링
-#     def fetch_news_for_industry(self, now_date: str):
-#         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
-#             future_to_section = {executor.submit(self.crawl_section, section, now_date): section for section in self.subsection}
+    # 멀티스레딩으로 각 section별. 날짜별 크롤링
+    def fetch_news_for_industry(self, now_date: str):
+        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+            future_to_section = {executor.submit(self.crawl_section, section, now_date): section for section in self.subsection}
             
-#             while future_to_section:
-#                 # 완료된 작업들을 확인하고 결과 처리
-#                 for future in concurrent.futures.as_completed(future_to_section):
-#                     section = future_to_section.pop(future)
-#                     try:
-#                         future.result()
+            while future_to_section:
+                # 완료된 작업들을 확인하고 결과 처리
+                for future in concurrent.futures.as_completed(future_to_section):
+                    section = future_to_section.pop(future)
+                    try:
+                        future.result()
 
-#                     except Exception as e:
-#                         logging.error(f"{section} 크롤링 중 오류 발생: {e}")
-#                         raise
-#     # 저장하기
-#     def save_stocknews_metadata(self, news_date: str):
-#         # 우선 총 개수 계산하기
-#         total_count = self.get_total_metadata_size(news_date)
+                    except Exception as e:
+                        logging.error(f"{section} 크롤링 중 오류 발생: {e}")
+                        raise
+    # 저장하기
+    def save_stocknews_metadata(self, news_date: str):
+        # 우선 총 개수 계산하기
+        total_count = self.get_total_metadata_size(news_date)
         
-#         # s3 connection
-#         s3 = S3Connection()
-#         s3.connect_to_s3()
+        # s3 connection
+        s3 = S3Connection()
+        s3.connect_to_s3()
         
-#         total_dict = {
-#             'newsDate' : news_date,
-#             'collectDate': self.current_datetime,
-#             'totalCnt': total_count,
-#             'data': self.news_id_dict 
-#         }
+        total_dict = {
+            'newsDate' : news_date,
+            'collectDate': self.current_datetime,
+            'totalCnt': total_count,
+            'data': self.news_id_dict 
+        }
 
-#         # JSON 데이터로 변환
-#         json_data = json.dumps(total_dict, ensure_ascii=False, indent=4)
+        # JSON 데이터로 변환
+        json_data = json.dumps(total_dict, ensure_ascii=False, indent=4)
 
-#         # S3 파일명 설정 (날짜별로 구분)
-#         s3_file_name = f'{news_date}.json'
+        # S3 파일명 설정 (날짜별로 구분)
+        s3_file_name = f'{news_date}.json'
         
-#         # S3에 업로드
-#         s3.upload_to_s3(json_data, self.industry_bucket_name, s3_file_name)
+        # S3에 업로드
+        s3.upload_to_s3(json_data, self.industry_bucket_name, s3_file_name)
 
-# def get_industry_news_metadata(**kwargs):
+    def get_industry_news_metadata(self, **kwargs):
 
-#     params = kwargs.get('params', {})
-#     start_date = params.get('start_date')
-#     end_date = params.get('end_date')
-    
-#     scraper = IndustryNewsMetadataScraper()
-#     # start_date부터 end_date까지 모두 순회하면서
-#     scraper._set_ranges(start_date, end_date)
+        try:
 
-    
-#     pivot_date = scraper.start_date
-#     while pivot_date >= scraper.end_date:
-#         date = scraper.convert_date_to_str(pivot_date)
-#         # s3에서 메타데이터 가져와서 self.news_id_set 매번 초기화
-#         scraper.load_stock_metadata(date)
+            params = kwargs.get('params', {})
+            start_date = params.get('start_date')
+            end_date = params.get('end_date')
+            
+            scraper = IndustryNewsMetadataScraper()
+            # start_date부터 end_date까지 모두 순회하면서
+            scraper._set_ranges(start_date, end_date)
+
+            
+            pivot_date = scraper.start_date
+            while pivot_date >= scraper.end_date:
+                date = scraper.convert_date_to_str(pivot_date)
+                # s3에서 메타데이터 가져와서 self.news_id_set 매번 초기화
+                scraper.load_stock_metadata(date)
+                
+                # 여기서부터 다음 뉴스 스크레이핑을 section별로 진행한다.
+                # 매번 id_dict 초기화
+                scraper.news_id_dict = {section: [] for section in scraper.subsection} # Key : 산업, Value : 해당 산업에 대한 news_id
+                
+                # 멀티스레딩으로 메타데이터데이터 수집
+                scraper.fetch_news_for_industry(date)
+                
+                # 수집이 끝났으면 데이터 저장
+                scraper.save_stocknews_metadata(date)
+                
+                
+                # Decrement the current_date by one day
+                pivot_date -= timedelta(days=1)
+                
+            logging.info(f"metadata save from {start_date} to {end_date} completed!")
+            return True
+        except Exception as e:
+            logging.error(e)
+            return False
         
-#         # 여기서부터 다음 뉴스 스크레이핑을 section별로 진행한다.
-#         # 매번 id_dict 초기화
-#         scraper.news_id_dict = {section: [] for section in scraper.subsection} # Key : 산업, Value : 해당 산업에 대한 news_id
-        
-#         # 멀티스레딩으로 메타데이터데이터 수집
-#         scraper.fetch_news_for_industry(date)
-        
-#         # 수집이 끝났으면 데이터 저장
-#         scraper.save_stocknews_metadata(date)
-        
-        
-#         # Decrement the current_date by one day
-#         pivot_date -= timedelta(days=1)
-        
-#     logging.info(f"metadata save from {start_date} to {end_date} completed!")
-    

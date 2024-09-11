@@ -4,7 +4,7 @@ from config.settings import settings
 from newstock_scraper.test import *
 from newstock_scraper.stock_list import StockListScraper
 from newstock_scraper.stock_limit import StockNewsLimitScraper
-from newstock_scraper.stock_news_metadata import StockNewsMetadataScraper
+from newstock_scraper.stock_news_metadata import StockNewsMetadataScraper, IndustryNewsMetadataScraper
 from newstock_scraper.settings import Setting
 from pydantic import BaseModel, validator
 from datetime import datetime
@@ -100,7 +100,7 @@ class StockMetadataRequest(BaseModel):
             raise ValueError('Incorrect date format, should be YYYY-MM-DD')
         return value
 
-# 뉴스 메타데이터 스크래핑
+# 종목뉴스 메타데이터 스크래핑
 @app.post('/stock/metadata')
 def scrap_stock_metadata(request: StockMetadataRequest):
     scraper = StockNewsMetadataScraper()
@@ -113,6 +113,18 @@ def scrap_stock_metadata(request: StockMetadataRequest):
     else:
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to scrap Stock Metadata")
 
+# 시황뉴스 메타데이터 스크래핑
+@app.post('/industry/metadata')
+def scrap_stock_metadata(request: StockMetadataRequest):
+    scraper = IndustryNewsMetadataScraper()
+
+    # start_date와 end_date를 파라미터로 전달
+    scrap_result = scraper.get_industry_news_metadata(params={"start_date": request.start_date, "end_date": request.end_date})
+
+    if scrap_result:
+        return create_response("success", status.HTTP_200_OK, "Successfully scrapped Industry Metadata")
+    else:
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to scrap Industry Metadata")
 
 
 def create_response(status: str, code: int, message: str, data=None):
