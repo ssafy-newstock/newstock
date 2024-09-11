@@ -4,7 +4,7 @@ from config.settings import settings
 from newstock_scraper.test import *
 from newstock_scraper.stock_list import StockListScraper
 from newstock_scraper.stock_limit import StockNewsLimitScraper
-from newstock_scraper.stock_news_metadata import StockNewsMetadataScraper, IndustryNewsMetadataScraper
+from newstock_scraper.news_metadata import StockNewsMetadataScraper, IndustryNewsMetadataScraper
 from newstock_scraper.settings import Setting
 from pydantic import BaseModel, validator
 from datetime import datetime
