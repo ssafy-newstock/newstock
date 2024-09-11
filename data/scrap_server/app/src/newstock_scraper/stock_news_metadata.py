@@ -225,9 +225,8 @@ class StockNewsMetadataScraper:
                 'keywords': data['keywords']
             })
         
-            # s3 connection
-            s3 = S3Connection()
-            s3.connect_to_s3()
+        # s3 connection
+        s3 = S3Connection()
         
         # 날짜별로 파일을 생성하여 S3에 업로드
         for news_date, news_data in news_by_date.items():
@@ -271,16 +270,20 @@ class StockNewsMetadataScraper:
             print("fetch_news_for_all")
             logging.info("fetch_news_for_all")
 
+
+            # S3 저장
+            self.save_stocknews_limit()
+            print("메타데이터 업데이터")
+            logging.info("메타데이터 저장")
+
             # MySQL에 메타데이터 저장
             self.update_metadata()
             print("메타데이터 업데이터")
             logging.info("메타데이터 업데이트")
-            # S3 저장
-            self.save_stocknews_limit()
-            logging.info("메타데이터 저장")
 
             return True
         except Exception as e:
+            print(e)
             logging.info(e)
         return False
     

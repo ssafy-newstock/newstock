@@ -80,7 +80,7 @@ class Setting:
 
 class S3Connection:
     def __init__(self):
-        self.connection = None
+        self.connection = self.connect_to_s3()
         
     def connect_to_s3(self):
         try:
