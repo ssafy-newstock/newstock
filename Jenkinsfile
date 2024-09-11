@@ -7,8 +7,6 @@ pipeline {
         OKE_MASTER = 'https://140.245.55.18:6443'
         OKE_TOKEN = credentials('OKE_TOKEN')
         OCI_AUTH_TOKEN = credentials('OCI_AUTH_TOKEN')
-        LANG = 'en_US.UTF-8'
-        LC_ALL = 'en_US.UTF-8'
     }
     stages {
 //         stage('Check for Changes') {
@@ -126,10 +124,9 @@ pipeline {
             script {
                 def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
                 def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
-                echo "Author_ID: ${Author_ID}"
-                echo "Author_Name: ${Author_Name}"
+
                 mattermostSend (color: 'good',
-                message: "Build Success: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)",
+                message: "Build Success: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${BUILD_USER}(${Build_User_ID})\n(<${env.BUILD_URL}|Details>)",
                 endpoint: 'https://meeting.ssafy.com/hooks/x91hu5m9gfy9mbp8ns8n1m5xqw',
                 channel: 'newstock-jenkins'
                 )
