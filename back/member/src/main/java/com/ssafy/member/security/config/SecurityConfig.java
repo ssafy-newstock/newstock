@@ -34,14 +34,7 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
-                .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
-                .requestMatchers("/login")
-                .requestMatchers("/v3/api-docs")
-                .requestMatchers("/swagger-ui")
-                .requestMatchers("/swagger-ui.html")
-                .requestMatchers("/swagger-resources")
-                .requestMatchers("/webjars")
-                .requestMatchers("/h2-console");
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 
     @Bean
