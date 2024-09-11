@@ -19,7 +19,7 @@ export const CenterTitleDiv = styled.div`
 `;
 
 export const CenterTitleFontStyle = styled.p`
-  color: #000;
+  color: ${({ theme }) => theme.textColor};
   font-family: Inter;
   font-size: 32px;
   font-style: normal;
@@ -80,11 +80,11 @@ export const CenterContentSection = styled.div`
   align-items: flex-start;
   gap: 20px;
   border-radius: 20px;
-  background: #f7f7f7;
+  background: ${({ theme }) => theme.centerContentSectionBackgroundColor};
 `;
 
 export const CenterContentSectionTitle = styled.p`
-  color: #000;
+  color: ${({ theme }) => theme.textColor};
   text-align: center;
   font-family: Inter;
   font-size: 20px;
@@ -103,12 +103,12 @@ export const CardContainer = styled.div`
   gap: 10px;
   align-self: stretch;
   border-radius: 20px;
-  background: #fff;
+  background: ${({ theme }) => theme.newsBackgroundColor};
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 `;
 
 export const CardTitleFontStyle = styled.p`
-  color: #1a1a1a;
+  color: ${({ theme }) => theme.textColor};
   font-family: Inter;
   font-size: 22px;
   font-style: normal;
@@ -146,7 +146,7 @@ export const CardKeywordDiv = styled.div`
   justify-content: center;
   align-items: center;
   gap: 10px;
-  border-radius: 5px;
+  border-radius: 10px;
   background: #81b5fc;
   margin-left: 10px;
 `;

@@ -27,7 +27,7 @@ const TextDiv = styled.div`
 `;
 
 const TextTitle = styled.p`
-  color: #000;
+  color: ${({ theme }) => theme.textColor};
   font-family: Inter;
   font-size: 24px;
   font-style: normal;
