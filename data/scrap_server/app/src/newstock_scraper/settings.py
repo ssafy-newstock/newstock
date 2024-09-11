@@ -80,7 +80,7 @@ class Setting:
 
 class S3Connection:
     def __init__(self):
-        self.connection = self.connect_to_s3()
+        self.connection = None
         
     def connect_to_s3(self):
         try:
@@ -94,9 +94,8 @@ class S3Connection:
         except Exception as e:
             logging.error("Failed to connect to s3")
             raise
-        else:
-            logging.info("s3 bucket connected!") 
-            return s3
+        logging.info("s3 bucket connected!") 
+        return s3
     
     def upload_to_s3(self, file_content, bucket_name, s3_file_name):
         try:
@@ -129,10 +128,10 @@ class S3Connection:
 # 사용 예시
 if __name__ == "__main__":
     # MySQL
-    setting = Setting()
-    table_name = "stock_metadata"
-    table_exists = setting.is_table_exist(table_name)
-    print(f"Table '{table_name}' exists: {table_exists}")
+    # setting = Setting()
+    # table_name = "stock_metadata"
+    # table_exists = setting.is_table_exist(table_name)
+    # print(f"Table '{table_name}' exists: {table_exists}")
 
     # S3 예시
     s3 = S3Connection()

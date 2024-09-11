@@ -5,6 +5,8 @@ from airflow.utils.dates import days_ago
 from airflow.utils.log.logging_mixin import LoggingMixin
 from datetime import timedelta
 import requests
+from datetime import date
+import json
 
 # 기본 설정
 """
@@ -70,7 +72,7 @@ def branch_decision_limit(**kwargs):
     
     status_code = result.get('status_code', 500)
     if status_code == 200:
-        return 'print_success_task'
+        return 'scrap_stock_metadata_task'
     else:
         return 'download_stock_limit_task'
 
@@ -82,6 +84,7 @@ with DAG(
     schedule_interval=None,
     start_date=days_ago(1),
     catchup=False,
+    params={"start_date": date(2024, 9, 7).isoformat(), "end_date": date(2024, 9, 5).isoformat()}
 ) as dag:
 
     # 테이블 존재 여부 체크
@@ -140,6 +143,17 @@ with DAG(
         method='POST',
     )
 
+    # 주식 메타데이터 다운로드
+    scrap_stock_metadata_task = SimpleHttpOperator(
+        task_id='scrap_stock_metadata_task',
+        http_conn_id='http_bulk',
+        endpoint='stock/metadata',
+        method='POST',
+        headers={"Content-Type": "application/json"},  # JSON 데이터로 전송할 것을 명시
+        data=json.dumps({"start_date": "{{ params.start_date }}", "end_date": "{{ params.end_date }}"}),  # JSON 문자열로 변환
+        trigger_rule = 'all_done'
+    )
+
     # 성공 시 출력 태스크
     print_success_task = PythonOperator(
         task_id='print_success_task',
@@ -157,5 +171,7 @@ with DAG(
     check_limit_task >> branch_limit_task
 
     # branch_limit_task 분기 처리
-    branch_limit_task >> print_success_task
-    branch_limit_task >> download_stock_limit_task >> print_success_task
+    branch_limit_task >> scrap_stock_metadata_task
+    branch_limit_task >> download_stock_limit_task >> scrap_stock_metadata_task
+
+    scrap_stock_metadata_task >> print_success_task

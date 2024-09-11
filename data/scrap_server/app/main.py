@@ -4,7 +4,10 @@ from config.settings import settings
 from newstock_scraper.test import *
 from newstock_scraper.stock_list import StockListScraper
 from newstock_scraper.stock_limit import StockNewsLimitScraper
+from newstock_scraper.stock_news_metadata import StockNewsMetadataScraper
 from newstock_scraper.settings import Setting
+from pydantic import BaseModel, validator
+from datetime import datetime
 
 
 # FastAPI 애플리케이션 인스턴스 생성
@@ -63,7 +66,6 @@ def download_stock_list():
 def check_limit_date():
     scraper = StockNewsLimitScraper()
     check_result = scraper.check_limit_exist()
-    print(check_result)
 
     if check_result:
         return create_response("success", status.HTTP_200_OK, "Start date, end date limit exist")
@@ -83,6 +85,33 @@ def check_date():
     else:
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to Downloaded Stock List")
 
+
+# 요청 본문을 정의하는 Pydantic 모델
+class StockMetadataRequest(BaseModel):
+    start_date: str
+    end_date: str
+
+    @validator('start_date', 'end_date')
+    def check_date_format(cls, value):
+        try:
+            print(value)
+            datetime.strptime(value, '%Y-%m-%d')
+        except ValueError:
+            raise ValueError('Incorrect date format, should be YYYY-MM-DD')
+        return value
+
+# 뉴스 메타데이터 스크래핑
+@app.post('/stock/metadata')
+def scrap_stock_metadata(request: StockMetadataRequest):
+    scraper = StockNewsMetadataScraper()
+
+    # start_date와 end_date를 파라미터로 전달
+    scrap_result = scraper.get_news_metadata(params={"start_date": request.start_date, "end_date": request.end_date})
+
+    if scrap_result:
+        return create_response("success", status.HTTP_200_OK, "Successfully scrapped Stock Metadata")
+    else:
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to scrap Stock Metadata")
 
 
 
