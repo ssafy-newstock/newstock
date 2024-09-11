@@ -18,15 +18,6 @@ app = FastAPI(
 def read_root():
     return {"message": f"{check()}"}
 
-@app.get("/test")
-def read_root():
-    try:
-        result = "Good"
-        # 응답 성공 시 200 상태 코드와 메시지 반환
-        return {"message": result}
-    except Exception as e:
-        # 예외 발생 시 500 상태 코드와 에러 메시지 반환
-        raise HTTPException(status_code=500, detail="An internal server error occurred")
 
 # TODO : URI 바꾸기 => /check/table
 @app.get("/check")
