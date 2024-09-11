@@ -23,6 +23,7 @@ import MyStockPage from '@pages/MyStock';
 import AllStockPage from '@pages/AllStock';
 import FavoriteStockPage from '@pages/FavoriteStock';
 import SectionStockPage from '@pages/SectionStock';
+import Auth from '@pages/Auth';
 
 const router = createBrowserRouter([
   {
@@ -32,6 +33,7 @@ const router = createBrowserRouter([
     children: [
       // { index: true, element: <Navigate to="/newsMain" replace /> },
       { path: 'onBoarding', element: <OnBoardingPage /> },
+      { path: 'login/oauth2/code/*', element: <Auth /> },
       { path: 'newsMain', element: <NewsMainPage /> },
       {
         path: 'subNewsMain',
