@@ -16,5 +16,10 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
+  data:
+    redis:
+      host: redis-service
+      port: 6379
 server:
   port: 8001
+
