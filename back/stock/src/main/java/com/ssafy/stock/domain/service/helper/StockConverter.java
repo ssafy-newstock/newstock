@@ -16,7 +16,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,6 +30,8 @@ public class StockConverter {
 
     @Value("${KIS_STOCK_PRICE_TR_ID}")
     private String KIS_STOCK_PRICE_TR_ID;
+
+    private static final String webSocketKey = "75aee991-23d8-4c04-8153-0674b802d0de";
 
     private final RestTemplate restTemplate;
 
@@ -43,13 +47,21 @@ public class StockConverter {
                 .collect(Collectors.toList());
     }
 
-    public StockPricesResponseDto ConvertToStockPricesResponseDto(StocksRedis stockInfo,
-                                                                  StockPricesOutputKisResponseDto stockOutput) {
+    public StockPricesResponseDto convertToStockPricesResponseDtoByRedis(StocksRedis stockInfo,
+                                                                         StockPricesOutputKisResponseDto stockOutput) {
         return new StockPricesResponseDto(stockInfo.getStockCode(),
                 stockInfo.getStockName(),
                 stockOutput.getStckPrpr(),
                 stockOutput.getPrdyVrss(),
                 stockOutput.getPrdyCtrt());
+    }
+
+    public StockPricesResponseDto convertToStockPriceResponseDto(String stockCode, String stockName, String stckPrpr, String prdyVrss, String prdyCtrt) {
+        return new StockPricesResponseDto(stockCode,
+                stockName,
+                stckPrpr,
+                prdyVrss,
+                prdyCtrt);
     }
 
     /**
@@ -98,5 +110,29 @@ public class StockConverter {
         headers.set("Content-Type", "application/json; charset=utf-8");
 
         return new HttpEntity<>(headers);
+    }
+
+    /**
+     * 국내주식 실시간체결가 WebSocket 연결 요청 생성 메서드
+     * @param stockCode
+     * @return
+     */
+    public Map<String, Object> setKisWebSocketRequest(String stockCode) {
+        HashMap<String, String> header = new HashMap<>();
+        header.put("approval_key", webSocketKey);
+        header.put("custtype", "P");
+        header.put("tr_type", "1");
+        header.put("content-type", "utf-8");
+
+        Map<String, Map<String, String>> body = new HashMap<>();
+        Map<String, String> input = new HashMap<>();
+        input.put("tr_id", "H0STCNT0");
+        input.put("tr_key", stockCode); // 종목 코드 설정
+        body.put("input", input);
+
+        Map<String, Object> request = new HashMap<>();
+        request.put("header", header);
+        request.put("body", body);
+        return request;
     }
 }
