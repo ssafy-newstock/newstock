@@ -3,7 +3,9 @@ from config.settings import settings
 
 from newstock_scraper.test import *
 from newstock_scraper.stock_list import StockListScraper
+from newstock_scraper.stock_limit import StockNewsLimitScraper
 from newstock_scraper.settings import Setting
+
 
 # FastAPI 애플리케이션 인스턴스 생성
 app = FastAPI(
@@ -26,6 +28,7 @@ def read_root():
         # 예외 발생 시 500 상태 코드와 에러 메시지 반환
         raise HTTPException(status_code=500, detail="An internal server error occurred")
 
+# TODO : URI 바꾸기 => /check/table
 @app.get("/check")
 def check_table():
     setting = Setting()
@@ -51,7 +54,7 @@ def create_table():
     if create_result:
         return create_response("success", status.HTTP_200_OK, "Successfully Created")
     else:
-        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to create {table_name}")
+        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Failed to create {table_name}")
     
 # stock list를 매번 krx에서 얻어오는 함수
 @app.post("/download")
@@ -65,8 +68,29 @@ def download_stock_list():
     else:
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to Downloaded Stock List")
     
+@app.get('/limit/check')
+def check_limit_date():
+    scraper = StockNewsLimitScraper()
+    check_result = scraper.check_limit_exist()
+    print(check_result)
+
+    if check_result:
+        return create_response("success", status.HTTP_200_OK, "Start date, end date limit exist")
+    else:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Start date, end date limit not found")
 
 
+# 뉴스 검색 범위인 start_date, end_date 검색 여부 확인
+@app.post('/limit/download')
+def check_date():
+    scraper = StockNewsLimitScraper()
+
+    limit_result = scraper.get_news_limit()
+
+    if limit_result:
+        return create_response("success", status.HTTP_200_OK, "Successfully Downloaded Stock List")
+    else:
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to Downloaded Stock List")
 
 
 
