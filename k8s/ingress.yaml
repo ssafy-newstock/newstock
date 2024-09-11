@@ -12,21 +12,21 @@ spec:
   - host: withhim-jenkins.site
     http:
       paths:
-      - path: /member(/|$)(.*)
+      - path: /api/member(/|$)(.*)
         pathType: ImplementationSpecific
         backend:
           service:
             name: newstock-stock-member-service
             port:
               number: 8001
-      - path: /news(/|$)(.*)
+      - path: /api/news(/|$)(.*)
         pathType: ImplementationSpecific
         backend:
           service:
             name: newstock-stock-news-service
             port:
               number: 8002
-      - path: /stock(/|$)(.*)
+      - path: /api/stock(/|$)(.*)
         pathType: ImplementationSpecific
         backend:
           service:
