@@ -1,17 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Center } from '@components/Center';
+import { Right } from '@components/Right';
+import LeftNews from '@components/LeftNews';
 import { Outlet, useLocation, Link } from 'react-router-dom';
 
 const SubNewsMainCenter = styled.div`
   display: flex;
-  width: 1024px;
+  width: 100%;
   padding: 20px;
   flex-direction: column;
   align-items: flex-start;
-  gap: 25px;
   align-self: stretch;
-  background: #f6f8ff;
 `;
 
 const SubNewsHeaderWrapper = styled.div`
@@ -31,7 +31,7 @@ const SubNewsHeader = styled.div`
 `;
 
 const SubNewsHeaderText = styled.div`
-  color: #000;
+  color: ${({ theme }) => theme.highlightColor};
   font-family: Inter;
   font-size: 32px;
   font-style: normal;
@@ -49,9 +49,9 @@ const SubNewsBorderWrapper = styled.div`
 `;
 
 const SubNewsBoarder = styled.div`
-  width: 984px;
+  width: 100%;
   height: 3px;
-  background: #000;
+  background: ${({ theme }) => theme.highlightColor};
 `;
 
 const CategoryWrapper = styled.div`
@@ -63,27 +63,38 @@ const CategoryWrapper = styled.div`
 
 const Category = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  gap: 10px;
+  /* gap: 20px; */
+  width: 100%;
 `;
 
-const AllCategoryText = styled.div`
-  color: #000;
+const BaseCategoryText = styled.div`
   font-family: Inter;
   font-size: 16px;
   font-style: normal;
   font-weight: 400;
   line-height: 30px; /* 187.5% */
+`;
+const AllCategoryText = styled(BaseCategoryText)`
+  color: #000;
+  font-weight: 600;
 `;
 
 const CategoryText = styled(Link)`
   color: #828282;
-  font-family: Inter;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 30px; /* 187.5% */
+  ${BaseCategoryText}
+`;
+
+const SubNewsMainRight = styled.div`
+  display: flex;
+  width: 100%;
+  padding: 20px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  align-self: stretch;
+  background: #bbb;
 `;
 
 const categories = [
@@ -109,20 +120,42 @@ const SubNewsMainPage = () => {
 
   return (
     <>
-      <SubNewsMainCenter>
-        <SubNewsHeaderWrapper>
-          <SubNewsHeader>
-            <SubNewsHeaderText>
-              {isEconomicNews ? '시황 뉴스' : '종목 뉴스'}
-            </SubNewsHeaderText>
-          </SubNewsHeader>
+      <LeftNews />
 
-          <SubNewsBorderWrapper>
-            <SubNewsBoarder />
-          </SubNewsBorderWrapper>
-        </SubNewsHeaderWrapper>
-      </SubNewsMainCenter>
-      {/* <Outlet /> */}
+      <Center>
+        <SubNewsMainCenter>
+          <SubNewsHeaderWrapper>
+            <SubNewsHeader>
+              <SubNewsHeaderText>
+                {isEconomicNews ? '시황 뉴스' : '종목 뉴스'}
+              </SubNewsHeaderText>
+            </SubNewsHeader>
+            <SubNewsBorderWrapper>
+              <SubNewsBoarder />
+            </SubNewsBorderWrapper>
+            <CategoryWrapper>
+              <Category>
+                {categories.map((category, index) =>
+                  category.label === '전체 기사' ? (
+                    <AllCategoryText key={index}>
+                      {category.label}
+                    </AllCategoryText>
+                  ) : (
+                    <CategoryText key={index} to={category.path}>
+                      {category.label}
+                    </CategoryText>
+                  )
+                )}
+              </Category>
+            </CategoryWrapper>
+          </SubNewsHeaderWrapper>
+        </SubNewsMainCenter>
+        <Outlet />
+      </Center>
+
+      <Right>
+        <SubNewsMainRight></SubNewsMainRight>
+      </Right>
     </>
   );
 };

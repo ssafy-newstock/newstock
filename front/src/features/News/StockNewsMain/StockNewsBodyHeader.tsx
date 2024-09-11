@@ -24,7 +24,7 @@ const NewsBodyStockPriceWrapper = styled.div`
 `;
 
 const StockPrice = styled.span`
-  color: #000; /* 검은색으로 지정 */
+  color: ${({ theme }) => theme.highlightColor};
   font-family: Inter;
   font-size: 12px;
   font-style: normal;
