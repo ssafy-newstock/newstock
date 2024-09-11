@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -33,6 +34,10 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         String requestURI = request.getRequestURI();
 
+        if ("/login".equals(requestURI)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         String accessToken = resolveToken(request);
         log.info("accesstoken: {}", accessToken);
         // 1. 우선 filter을 통해 accessToken에 이상이 없을 경우
