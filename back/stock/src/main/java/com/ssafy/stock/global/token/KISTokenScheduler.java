@@ -75,15 +75,15 @@ public class KISTokenScheduler {
                 KISTokenResponse tokenResponse = response.getBody();
                 if (tokenResponse != null) {
                     String accessToken = tokenResponse.getAccessToken();
-                    System.out.println("Access Token 발급 성공 (Key: " + appKey + "): " + accessToken);
+                    log.info("08:30 스케줄러 : 한국투자증권 AccessToken 갱신 성공 : {}", accessToken);
                 } else {
-                    System.err.println("응답 본문이 null입니다.");
+                    log.info("response가 null입니다.");
                 }
             } else {
-                System.err.println("Access Token 발급 실패 (Key: " + appKey + "): " + response.getStatusCode());
+                log.info("AccessToken 갱신 실패");
             }
         } catch (Exception e) {
-            System.err.println("API 요청 중 오류 발생 (Key: " + appKey + "): " + e.getMessage());
+            log.info("AccessToken API 요청 오류");
         }
     }
 }
