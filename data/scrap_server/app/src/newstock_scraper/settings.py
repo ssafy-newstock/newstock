@@ -1,7 +1,10 @@
+# TODO : 클래스명 등 리팩토링 진행하기
+
 import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
-import pymysql
+import boto3
+import logging
 
 # .env 파일을 로드합니다.
 load_dotenv()
@@ -75,9 +78,62 @@ class Setting:
             print(f"Error creating table {table_name}: {e}")
             return False  # 실패하면 False 반환
 
+class S3Connection:
+    def __init__(self):
+        self.connection = self.connect_to_s3()
+        
+    def connect_to_s3(self):
+        try:
+            # s3 클라이언트 생성
+            s3 = boto3.client(
+                service_name="s3",
+                region_name= os.getenv('REGION_NAME'),
+                aws_access_key_id= os.getenv('AWS_ACCESS_KEY_ID'),
+                aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
+            )
+        except Exception as e:
+            logging.error("Failed to connect to s3")
+            raise
+        else:
+            logging.info("s3 bucket connected!") 
+            return s3
+    
+    def upload_to_s3(self, file_content, bucket_name, s3_file_name):
+        try:
+            # 파일을 S3에 업로드
+            self.connection.put_object(
+                Bucket=bucket_name,
+                Key=s3_file_name,
+                Body=file_content,
+                ContentType='application/json'
+            )
+            logging.info(f"File {s3_file_name} successfully uploaded to S3 bucket {bucket_name}.")
+        except Exception as e:
+            logging.error(f"Failed to upload {s3_file_name} to S3: {e}")
+            raise
+        
+    def download_from_s3(self, bucket_name, s3_file_name):
+        try:
+            # S3에서 파일 다운로드
+            response = self.connection.get_object(
+                Bucket=bucket_name,
+                Key=s3_file_name
+            )
+            file_content = response['Body'].read().decode('utf-8')
+            logging.info(f"File {s3_file_name} successfully downloaded from S3 bucket {bucket_name}.")
+            return file_content
+        except Exception as e:
+            logging.error(f"Failed to download {s3_file_name} from S3: {e}")
+            raise
+
 # 사용 예시
 if __name__ == "__main__":
+    # MySQL
     setting = Setting()
     table_name = "stock_metadata"
     table_exists = setting.is_table_exist(table_name)
     print(f"Table '{table_name}' exists: {table_exists}")
+
+    # S3 예시
+    s3 = S3Connection()
+    s3.connect_to_s3()
