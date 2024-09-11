@@ -7,6 +7,7 @@ pipeline {
         OKE_MASTER = 'https://140.245.55.18:6443'
         OKE_TOKEN = credentials('OKE_TOKEN')
         OCI_AUTH_TOKEN = credentials('OCI_AUTH_TOKEN')
+        LANG = 'en_US.UTF-8';
     }
     stages {
 //         stage('Check for Changes') {
