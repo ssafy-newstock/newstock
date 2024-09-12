@@ -2,21 +2,12 @@ import { Center } from '@components/Center';
 import LeftStock from '@components/LeftStock';
 import { Heart } from '@features/StockMain/Heart';
 import { HeartFill } from '@features/StockMain/HeartFill';
-import {
-  categoryImage,
-  categoryStock,
-  ICategoryStock,
-} from '@features/StockMain/category';
+import { categoryImage, categoryStock } from '@features/StockMain/category';
 import styled from 'styled-components';
+import StockHeader from '@features/StockMain/StockHeader';
+import FavoriteStock from '@features/StockMain/FavoriteStock';
+import { IStock } from '@features/StockMain/type';
 
-interface IStock {
-  stockCode: string;
-  stockName: string;
-  stockIndustry: string;
-  stckPrpr: string;
-  prdyVrss: string;
-  prdyCtrt: string;
-}
 
 const stockData = [
   {
@@ -45,21 +36,13 @@ const stockData = [
   },
 ];
 
-const StockHeader = styled.div`
-  font-size: 2rem;
-  /* font-size: 24px; */
-  font-weight: bold;
-  margin: 20px;
-  padding: 0px 10px;
-`;
-
 const HrTag = styled.hr`
   width: 95%;
 `;
 
-const StockGrid = styled.div`
+const StockGridColumn = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 20px;
   margin: 20px;
   padding: 0px 10px;
@@ -67,28 +50,16 @@ const StockGrid = styled.div`
 
 const StockGridRow = styled.div`
   display: grid;
-  grid-template-rows: repeat(3, 1fr);
+  grid-template-rows: repeat(auto-fill, minmax(50px, 1fr));
   gap: 5px;
   margin: 20px;
   padding: 0px 10px;
 `;
 
-const StockCard = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: start;
-  width: 100%;
-  gap: 1rem;
-  padding: 10px;
-  border-radius: 20px;
-  background-color: ${({ theme }) => theme.stockBackgroundColor};
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-`;
-
 const StockCardRow = styled.div`
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 0.5fr; /* 각 열의 너비를 설정 */
+  text-align: center;
   align-items: center;
   width: 100%;
   padding: 10px 20px;
@@ -154,32 +125,14 @@ const StockMainPage = () => {
     <>
       <LeftStock />
       <Center>
+        
         <StockHeader>관심 종목</StockHeader>
         <HrTag />
-        <StockGrid>
+        <StockGridColumn>
           {stockData.map((stock: IStock, index: number) => (
-            <StockCard key={index}>
-              <StockCardTitle>
-                <StockTitle>
-                  <StockImage
-                    src={`https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stock.stockCode}.png`}
-                    alt={stock.stockName}
-                  />
-                  {stock.stockName}
-                </StockTitle>
-                <HeartFill />
-              </StockCardTitle>
-              <StckPrice>
-                {formatChange(formatNumber(stock.stckPrpr))}원
-              </StckPrice>
-              <StockPrev isPositive={stock.prdyVrss.startsWith('-')}>
-                <SpanTag>어제보다</SpanTag>{' '}
-                {formatChange(formatNumber(stock.prdyVrss))}원 ({stock.prdyCtrt}
-                %)
-              </StockPrev>
-            </StockCard>
+            <FavoriteStock key={index} stock={stock}/>
           ))}
-        </StockGrid>
+        </StockGridColumn>
 
         <StockHeader>실시간 차트</StockHeader>
         <HrTag />
@@ -192,6 +145,7 @@ const StockMainPage = () => {
           </StockCardRow>
           {stockData.map((stock: IStock, index: number) => (
             <StockCardRow key={index}>
+            <StockCardTitle>
               <StockTitle>
                 <StockImage
                   src={`https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stock.stockCode}.png`}
@@ -199,18 +153,24 @@ const StockMainPage = () => {
                 />
                 {stock.stockName}
               </StockTitle>
-              <StckPrice>
-                {formatChange(formatNumber(stock.stckPrpr))}원
-              </StckPrice>
-              <StockPrev isPositive={stock.prdyVrss.startsWith('-')}>
-                <SpanTag>어제보다</SpanTag>{' '}
-                {formatChange(formatNumber(stock.prdyVrss))}원 ({stock.prdyCtrt}
-                %)
-              </StockPrev>
-              <Heart />
-            </StockCardRow>
-          ))}
+              <HeartFill />
+            </StockCardTitle>
+            <StckPrice>
+              {formatChange(formatNumber(stock.stckPrpr))}원
+            </StckPrice>
+            <StockPrev isPositive={stock.prdyVrss.startsWith('-')}>
+              <SpanTag>어제보다</SpanTag>{' '}
+              {formatChange(formatNumber(stock.prdyVrss))}원 ({stock.prdyCtrt}
+              %)
+            </StockPrev>
+          </StockCardRow>
+        ))}
         </StockGridRow>
+
+
+
+
+
         <StockHeader>카테고리</StockHeader>
         <HrTag />
         <StockGridRow>
@@ -222,28 +182,24 @@ const StockMainPage = () => {
             <div>등락률</div>
             <div>거래량</div>
           </StockCardRow>
-        {categoryStock.map((category, index: number) => {
-          const imageUrl =
-            category.industryName in categoryImage
-              ? categoryImage[
-                  category.industryName as keyof typeof categoryImage
-                ]
-              : 'default-image-url.png'; // 기본 이미지 처리
-          return (
-            <StockCardRow key={index}>
-              <img
-                src={imageUrl}
-                alt={category.industryName}
-                width={50}
-              />
-              <div>{category.industryName}</div>
-              <div>{category.bstpNmixPrpr}</div>
-              <div>{category.bstpNmixPrdyVrss}</div>
-              <div>{category.bstpNmixPrdyCtrt}%</div>
-              <div>{category.acmlTrPbmn}</div>
-            </StockCardRow>
-          );
-        })}
+          {categoryStock.map((category, index: number) => {
+            const imageUrl =
+              category.industryName in categoryImage
+                ? categoryImage[
+                    category.industryName as keyof typeof categoryImage
+                  ]
+                : 'default-image-url.png'; // 기본 이미지 처리
+            return (
+              <StockCardRow key={index}>
+                <img src={imageUrl} alt={category.industryName} width={50} />
+                <div>{category.industryName}</div>
+                <div>{category.bstpNmixPrpr}</div>
+                <div>{category.bstpNmixPrdyVrss}</div>
+                <div>{category.bstpNmixPrdyCtrt}%</div>
+                <div>{category.acmlTrPbmn}</div>
+              </StockCardRow>
+            );
+          })}
         </StockGridRow>
       </Center>
     </>

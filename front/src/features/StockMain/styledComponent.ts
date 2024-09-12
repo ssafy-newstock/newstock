@@ -1,0 +1,56 @@
+import styled from 'styled-components';
+
+export const StockCardColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+  width: 100%;
+  gap: 1rem;
+  padding: 10px;
+  border-radius: 20px;
+  background-color: ${({ theme }) => theme.stockBackgroundColor};
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+`;
+
+export const StockCardTitle = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+export const StockTitle = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+
+  // 한줄로 넘칠 경우 ...으로 표시
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+export const StockImage = styled.img`
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+`;
+
+export const StckPrice = styled.div`
+  font-size: 1rem;
+`;
+
+export const StockPrev = styled.div<{ isPositive: boolean }>`
+  font-size: 0.8rem;
+  color: ${({ isPositive, theme }) =>
+    isPositive ? theme.stockBlue : theme.stockRed};
+`;
+
+export const SpanTag = styled.span`
+  font-size: 0.8rem;
+  color: ${({ theme }) => theme.textColor};
+`;
