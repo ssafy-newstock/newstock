@@ -41,6 +41,7 @@ const User = styled.div`
 const Icon = styled.svg`
   color: ${({ theme }) => theme.profileColor}; // 테마 색상으로 설정
   fill: currentColor; // fill 속성에 currentColor 사용
+  cursor: pointer;
 `;
 
 const UserName = styled.h1`
@@ -53,6 +54,7 @@ const LoginAlert = styled.h1`
   color: ${({ theme }) => theme.profileColor};
   font-size: 1em;
   font-weight: 600;
+  cursor: pointer;
 `;
 
 const Slider = styled(motion.div)`
