@@ -1,6 +1,8 @@
 package com.ssafy.stock.global.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.stock.domain.entity.StocksPriceLiveRedis;
+import com.ssafy.stock.domain.repository.StocksPriceLiveRedisRepository;
 import com.ssafy.stock.domain.service.helper.StockConverter;
 import com.ssafy.stock.domain.service.response.StockPricesResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Slf4j
@@ -22,18 +25,21 @@ public class KISSocketHandler extends TextWebSocketHandler {
 
     private final SimpMessageSendingOperations simpMessageSendingOperations;
     private final StockConverter stockConverter;
+    private final StocksPriceLiveRedisRepository stocksPriceLiveRedisRepository;
+
+
     private final List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
-    private final Map<String, String> stockNameMap = Map.of(
-            "005930", "삼성전자",
-            "000660", "SK하이닉스",
-            "373220", "LG에너지솔루션",
-            "005380", "현대차",
-            "000270", "기아",
-            "105560", "KB금융",
-            "055550", "신한지주",
-            "035420", "NAVER",
-            "035720", "카카오",
-            "068270", "셀트리온"
+    public static Map<String, List<String>> stockNameMap = Map.of(
+            "005930", List.of("삼성전자", "전기전자"),
+            "000660", List.of("SK하이닉스", "전기전자"),
+            "373220", List.of("LG에너지솔루션", "전기전자"),
+            "005380", List.of("현대차", "운수장비"),
+            "000270", List.of("기아", "운수장비"),
+            "105560", List.of("KB금융", "기타금융"),
+            "055550", List.of("신한지주", "기타금융"),
+            "035420", List.of("NAVER", "서비스업"),
+            "035720", List.of("카카오", "서비스업"),
+            "068270", List.of("셀트리온", "의약품")
     );
 
     /**
@@ -75,13 +81,22 @@ public class KISSocketHandler extends TextWebSocketHandler {
             String[] subValues = dataSection.split("\\^");
 
             String stockCode = subValues[0];// 종목 코드
-            String stockName = stockNameMap.get(stockCode); // 종목 이름
+            List<String> stockInfo = stockNameMap.get(stockCode);// 종목 이름
+            String stockName = stockInfo.get(0);    // 종목 이름
+            String stockIndustry = stockInfo.get(1);    // 종목 카테고리
             String stckPrpr = subValues[2]; // 주식 현재가
             String prdyVrss = subValues[4]; // 전일 대비
             String prdyCtrt = subValues[5]; // 전일 대비율
 
-            StockPricesResponseDto stockPricesResponseDto = stockConverter.convertToStockPriceResponseDto(stockCode, stockName, stckPrpr, prdyVrss, prdyCtrt);
+            Optional<StocksPriceLiveRedis> stocksPriceLiveRedis = stocksPriceLiveRedisRepository.findById(stockCode);
+            if (stocksPriceLiveRedis.isPresent()) {
+                stocksPriceLiveRedis.get().update(stockCode, stockName, stockIndustry, stckPrpr, prdyVrss, prdyCtrt);
+            } else {
+                stocksPriceLiveRedisRepository.save(new StocksPriceLiveRedis(stockCode, stockName, stockIndustry, stckPrpr, prdyVrss, prdyCtrt));
+            }
 
+            StockPricesResponseDto stockPricesResponseDto = stockConverter.convertToStockPriceResponseDto(stockCode, stockName, stockIndustry, stckPrpr, prdyVrss, prdyCtrt);
+            // log.info("{}", stockPricesResponseDto);
             simpMessageSendingOperations.convertAndSend("/api/sub/stock/info/live", stockPricesResponseDto);
         } else {
             log.info("{}", payload);
