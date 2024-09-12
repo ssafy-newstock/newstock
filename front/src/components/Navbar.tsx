@@ -1,5 +1,4 @@
 // Navbar.tsx
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -7,7 +6,7 @@ import styled from 'styled-components';
 const NavbarContainer = styled.nav`
   position: fixed;
   display: flex;
-  width: 100px;
+  width: 60px;
   height: 100%;
   padding: 10px;
   flex-direction: column;
@@ -22,9 +21,9 @@ const StockFrame = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 40px;
-  height: 40px;
-  border: 3px solid #fff;
+  width: 30px;
+  height: 30px;
+  border: 2px solid #fff;
   flex-shrink: 0;
 `;
 
@@ -35,8 +34,8 @@ const Navbar: React.FC = () => {
     <NavbarContainer>
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="40"
-        height="40"
+        width="30"
+        height="30"
         viewBox="0 0 40 40"
         fill="none"
         onClick={() => navigate('/')}
@@ -49,8 +48,8 @@ const Navbar: React.FC = () => {
       </svg>
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="40"
-        height="40"
+        width="30"
+        height="30"
         viewBox="0 0 40 40"
         fill="none"
         onClick={() => navigate('/newsMain')}
@@ -64,8 +63,8 @@ const Navbar: React.FC = () => {
       <StockFrame>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="37"
-          height="18"
+          width="30"
+          height="11"
           viewBox="0 0 37 18"
           fill="none"
           onClick={() => navigate('/stockMain')}
@@ -82,8 +81,8 @@ const Navbar: React.FC = () => {
       </StockFrame>
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="44"
-        height="44"
+        width="30"
+        height="30"
         viewBox="0 0 44 44"
         fill="none"
         onClick={() => navigate('/aiChatBot')}
@@ -106,8 +105,8 @@ const Navbar: React.FC = () => {
       </svg>
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="42"
-        height="44"
+        width="30"
+        height="30"
         viewBox="0 0 42 44"
         fill="none"
         onClick={() => navigate('/dailyReport')}

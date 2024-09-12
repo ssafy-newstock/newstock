@@ -13,7 +13,7 @@ const Container = styled.div`
 `;
 
 const Main = styled.div`
-  padding-left: 100px;
+  padding-left: 60px;
   display: flex;
   flex-direction: column;
   width: 100%;
