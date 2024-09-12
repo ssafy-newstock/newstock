@@ -19,6 +19,10 @@ export const lightTheme: DefaultTheme = {
   switchHandleColor: '#fff',
   // 뉴스 백그라운드
   newsBackgroundColor: '#FFF',
+  // 주식 카드 백그라운드
+  stockBackgroundColor: '#FFF',
+  stockRed: "#FF0000",
+  stockBlue:"#0000FF",
 };
 
 export const darkTheme: DefaultTheme = {
@@ -40,4 +44,8 @@ export const darkTheme: DefaultTheme = {
   switchHandleColor: '#192340',
   // 뉴스 백그라운드
   newsBackgroundColor: '#17223B',
+  // 주식 카드 백그라운드
+  stockBackgroundColor: '#17223B',
+  stockRed: "#FF4500",
+  stockBlue:"#87CEFA",
 };
