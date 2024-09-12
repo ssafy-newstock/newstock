@@ -13,6 +13,9 @@ RUN npm install
 # Copy the rest of the application code
 COPY . .
 
+# TypeScript 빌드를 위해 TypeScript 컴파일러 설치
+RUN npm install typescript -g
+
 # Build the React app
 RUN npm run build
 
