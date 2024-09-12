@@ -1,5 +1,4 @@
 // CalendarIcon.tsx
-import React from 'react';
 
 const AshbhIcon: React.FC = () => (
   <svg

@@ -27,7 +27,7 @@ const TextDiv = styled.div`
 `;
 
 const TextTitle = styled.p`
-  color: #000;
+  color: ${({ theme }) => theme.textColor};
   font-family: Inter;
   font-size: 24px;
   font-style: normal;
@@ -56,7 +56,7 @@ const LeftStock: React.FC = () => {
     <LeftDiv>
       <SubNav>
         <TextDiv>
-          <TextTitle>뉴스</TextTitle>
+          <TextTitle>주식</TextTitle>
         </TextDiv>
         <TextDiv
           onClick={() => navigate('/allStock')}
