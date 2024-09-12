@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 
 const NewsBodyContentWrapper = styled.div`
@@ -18,6 +17,12 @@ const NewsBodyContentText = styled.div`
   font-style: normal;
   /* font-weight: 400; */
   line-height: 25px;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* 최대 3줄까지만 표시 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis; /* 말줄임표 적용 */
 `;
 
 interface NewsBodyContentProps {
@@ -25,12 +30,12 @@ interface NewsBodyContentProps {
 }
 
 const NewsBodyContent: React.FC<NewsBodyContentProps> = ({ content }) => {
-  const trimmedContent =
-    content.length > 70 ? `${content.slice(0, 71)}...` : content;
+  // const trimmedContent =
+  //   content.length > 70 ? `${content.slice(0, 71)}...` : content;
 
   return (
     <NewsBodyContentWrapper>
-      <NewsBodyContentText>{trimmedContent}</NewsBodyContentText>
+      <NewsBodyContentText>{content}</NewsBodyContentText>
     </NewsBodyContentWrapper>
   );
 };

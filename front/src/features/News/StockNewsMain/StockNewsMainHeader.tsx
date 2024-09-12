@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
@@ -72,11 +71,11 @@ const NewsMainHeader: React.FC = () => {
       <NewsHeaderTextWrapper>
         <NewsHeaderText>종목 뉴스</NewsHeaderText>
       </NewsHeaderTextWrapper>
-      <MoreInfoTextWrapper1>
-        <MoreInfoTextWrapper2
-          onClick={handleMoreInfoClick}
-          style={{ cursor: 'pointer' }}
-        >
+      <MoreInfoTextWrapper1
+        onClick={handleMoreInfoClick}
+        style={{ cursor: 'pointer' }}
+      >
+        <MoreInfoTextWrapper2>
           <MoreInfoText>더보기</MoreInfoText>
         </MoreInfoTextWrapper2>
         <MoreInfoSVGWrapper>

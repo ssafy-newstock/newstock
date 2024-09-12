@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { Center } from '@components/Center';
 import LeftNews from '@components/LeftNews';

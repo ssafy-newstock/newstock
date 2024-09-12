@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import {
   // PositiveIcon,
@@ -17,7 +16,7 @@ const NewsBodyTitleWrapper = styled.div`
   position: relative;
 `;
 
-const NewsBodyTitleText = styled.div`
+const NewsBodyTitleText = styled.p`
   width: 299px;
   height: 64px;
   flex-shrink: 0;
@@ -28,6 +27,12 @@ const NewsBodyTitleText = styled.div`
   font-weight: 400;
   line-height: 32px; /* 아이콘 크기에 맞춰 수정 */
   text-indent: 55px;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* 최대 2줄까지만 표시 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis; /* 말줄임표 적용 */
 `;
 
 interface NewsBodyTitleProps {
@@ -35,11 +40,11 @@ interface NewsBodyTitleProps {
 }
 
 const NewsBodyTitle: React.FC<NewsBodyTitleProps> = ({ title }) => {
-  const trimmedTitle = title.length > 27 ? `${title.slice(0, 27)}...` : title;
+  // const trimmedTitle = title.length > 27 ? `${title.slice(0, 27)}...` : title;
 
   return (
     <NewsBodyTitleWrapper>
-      <NewsBodyTitleText>{trimmedTitle}</NewsBodyTitleText>
+      <NewsBodyTitleText>{title}</NewsBodyTitleText>
       <NegativeIcon>
         <NegativeIconText>부정</NegativeIconText>
       </NegativeIcon>

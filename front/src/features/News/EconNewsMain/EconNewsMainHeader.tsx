@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,6 +8,8 @@ const HeaderWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   align-self: stretch;
+  max-width: 1400px;
+  overflow: hidden;
 `;
 const NewsHeaderTextWrapper = styled.div`
   display: flex;
@@ -73,11 +74,11 @@ const NewsMainHeader: React.FC = () => {
       <NewsHeaderTextWrapper>
         <NewsHeaderText>시황 뉴스</NewsHeaderText>
       </NewsHeaderTextWrapper>
-      <MoreInfoTextWrapper1>
-        <MoreInfoTextWrapper2
-          onClick={handleMoreInfoClick}
-          style={{ cursor: 'pointer' }}
-        >
+      <MoreInfoTextWrapper1
+        onClick={handleMoreInfoClick}
+        style={{ cursor: 'pointer' }}
+      >
+        <MoreInfoTextWrapper2>
           <MoreInfoText>더보기</MoreInfoText>
         </MoreInfoTextWrapper2>
         <MoreInfoSVGWrapper>

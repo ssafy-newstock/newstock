@@ -1,14 +1,8 @@
-import React from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import {
-  PositiveIcon,
-  PositiveIconText,
-  NegativeIcon,
-  NegativeIconText,
-  NeutralIcon,
-  NeutralIconText,
-} from '@features/News/PNSubicon';
 import newsData from '@api/dummyData/20240907.json';
+import EconNewsBody from '@features/News/EconNews/EconNewsBody';
+import EconSubNewsBody from '@features/News/EconNews/EconSubNewsBody';
 
 const SubCenter = styled.div`
   display: flex;
@@ -21,9 +15,10 @@ const SubCenter = styled.div`
 
 const EconomicNewsWrapper = styled.div`
   display: flex;
-  padding: 15px 10px;
+  padding: 25px 20px 25px 20px;
   margin: 20px 0px;
   align-items: flex-start;
+  justify-content: space-between;
   gap: 10px;
   align-self: stretch;
   border-radius: 33px;
@@ -31,90 +26,54 @@ const EconomicNewsWrapper = styled.div`
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 `;
 
-const EconomicNewsContainer = styled.div`
-  display: flex;
-  padding: 10px 10px 20px 10px;
-  /* flex-direction: column; */
-  justify-content: space-between;
-  align-items: center;
-  gap: 5px;
-  /* flex: 1 0 0; */
-  align-self: stretch;
-`;
+const EconomicNewsPage: React.FC = () => {
+  const [newsList, setNewsList] = useState(newsData.data.slice(0, 10));
+  const [displayedItems, setDisplayedItems] = useState<number>(10); // 처음에 표시할 데이터 개수
+  const observerRef = useRef<HTMLDivElement | null>(null);
 
-const EconomicNewsBody = styled.div`
-  display: flex;
-  width: 761px;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
-`;
+  // Intersection Observer가 작동할 때 추가로 10개의 데이터를 보여줌
+  const loadMoreNews = useCallback(() => {
+    if (displayedItems < newsData.data.length) {
+      const moreNews = newsData.data.slice(displayedItems, displayedItems + 10);
+      setNewsList((prevNewsList) => [...prevNewsList, ...moreNews]);
+      setDisplayedItems(displayedItems + 10);
+    }
+  }, [displayedItems]);
 
-const EconomicNewsHeader = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  align-self: stretch;
-  width: 100%;
-`;
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        loadMoreNews(); // 스크롤 감지 시 더 많은 데이터를 로드
+      }
+    });
 
-const EconomicNewsTitle = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex: 1 0 0;
-`;
+    if (observerRef.current) {
+      observer.observe(observerRef.current);
+    }
 
-const EconomicNewsTitleText = styled.p`
-  color: #0448a5;
-  font-family: Inter;
-  font-size: 32px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 30px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-`;
-
-const EconomicNewsContent = styled.p`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  align-self: stretch;
-  color: #828282;
-  font-family: Inter;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 30px; /* 150% */
-`;
-
-const EconomicNewsPage = () => {
-  const top6News = newsData.data.slice(0, 2);
+    return () => {
+      if (observerRef.current) {
+        observer.unobserve(observerRef.current);
+      }
+    };
+  }, [loadMoreNews]);
 
   return (
     <>
       <SubCenter>
-        {top6News.map((news, index) => (
-          <EconomicNewsWrapper>
-            <EconomicNewsContainer>
-              <EconomicNewsBody>
-                <EconomicNewsHeader>
-                  <PositiveIcon>
-                    <PositiveIconText>긍정</PositiveIconText>
-                  </PositiveIcon>
-                  <EconomicNewsTitle>
-                    <EconomicNewsTitleText>{news.title}</EconomicNewsTitleText>
-                  </EconomicNewsTitle>
-                </EconomicNewsHeader>
-                <EconomicNewsContent>{news.description}</EconomicNewsContent>
-              </EconomicNewsBody>
-            </EconomicNewsContainer>
+        {newsList.map((news, index) => (
+          <EconomicNewsWrapper key={index}>
+            <EconNewsBody
+              title={news.title}
+              description={news.description}
+              media={news.media}
+              date={news.uploadDatetime}
+            />
+            <EconSubNewsBody thumbnail={news.thumbnail} />
           </EconomicNewsWrapper>
         ))}
+        {/* 감시하는 요소로 Intersection Observer가 작동하는 기준점 */}
+        <div ref={observerRef} style={{ height: '1px' }}></div>
       </SubCenter>
     </>
   );
