@@ -117,6 +117,35 @@ pipeline {
                 }
             }
         }
+
+        stage('Build and Push Docker Image for Frontend') {
+//             when {
+//                 expression { env.MEMBER_CHANGED == 'true' }
+//             }
+            steps {
+                script {
+                    sh """
+                        docker build -t ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstockfrontend:${IMAGE_TAG} front/
+                        docker push ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstockfrontend:${IMAGE_TAG}
+                    """
+                }
+            }
+        }
+
+        stage('Update Kubernetes Deployment for Frontend') {
+//             when {
+//                 expression { env.MEMBER_CHANGED == 'true' }
+//             }
+            steps {
+                script {
+                    def deploymentPath = 'k8s/frontend/deployment-frontend.yaml'  // deploymentPath 정의
+                    sh """
+                        sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
+                        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f ${deploymentPath}
+                    """
+                }
+            }
+        }
     }
 
     post {
