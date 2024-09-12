@@ -1,5 +1,12 @@
 import { Center } from '@components/Center';
 import LeftStock from '@components/LeftStock';
+import { Heart } from '@features/StockMain/Heart';
+import { HeartFill } from '@features/StockMain/HeartFill';
+import {
+  categoryImage,
+  categoryStock,
+  ICategoryStock,
+} from '@features/StockMain/category';
 import styled from 'styled-components';
 
 interface IStock {
@@ -60,8 +67,8 @@ const StockGrid = styled.div`
 
 const StockGridRow = styled.div`
   display: grid;
-  grid-template-rows: repeat(4, 1fr);
-  gap: 20px;
+  grid-template-rows: repeat(3, 1fr);
+  gap: 5px;
   margin: 20px;
   padding: 0px 10px;
 `;
@@ -81,11 +88,10 @@ const StockCard = styled.div`
 
 const StockCardRow = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   width: 100%;
-  gap: 1rem;
-  padding: 10px;
+  padding: 10px 20px;
   border-radius: 20px;
   background-color: ${({ theme }) => theme.stockBackgroundColor};
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -97,7 +103,6 @@ const StockCardTitle = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: 0.5rem;
-
 `;
 
 const StockTitle = styled.div`
@@ -162,18 +167,7 @@ const StockMainPage = () => {
                   />
                   {stock.stockName}
                 </StockTitle>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="1.5rem"
-                  height="1.5rem"
-                  viewBox="0 0 30 30"
-                  fill="none"
-                >
-                  <path
-                    d="M15 26.6875L13.1875 25.0375C6.75 19.2 2.5 15.3375 2.5 10.625C2.5 6.7625 5.525 3.75 9.375 3.75C11.55 3.75 13.6375 4.7625 15 6.35C16.3625 4.7625 18.45 3.75 20.625 3.75C24.475 3.75 27.5 6.7625 27.5 10.625C27.5 15.3375 23.25 19.2 16.8125 25.0375L15 26.6875Z"
-                    fill="#F63C3C"
-                  />
-                </svg>
+                <HeartFill />
               </StockCardTitle>
               <StckPrice>
                 {formatChange(formatNumber(stock.stckPrpr))}원
@@ -190,6 +184,12 @@ const StockMainPage = () => {
         <StockHeader>실시간 차트</StockHeader>
         <HrTag />
         <StockGridRow>
+          <StockCardRow>
+            <div>종목명</div>
+            <div>현재가</div>
+            <div>등락률</div>
+            <div></div>
+          </StockCardRow>
           {stockData.map((stock: IStock, index: number) => (
             <StockCardRow key={index}>
               <StockTitle>
@@ -207,21 +207,43 @@ const StockMainPage = () => {
                 {formatChange(formatNumber(stock.prdyVrss))}원 ({stock.prdyCtrt}
                 %)
               </StockPrev>
-
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="1.5rem"
-                height="1.5rem"
-                viewBox="0 0 30 30"
-                fill="none"
-              >
-                <path
-                  d="M15.125 23.1875L15 23.3125L14.8625 23.1875C8.925 17.8 5 14.2375 5 10.625C5 8.125 6.875 6.25 9.375 6.25C11.3 6.25 13.175 7.5 13.8375 9.2H16.1625C16.825 7.5 18.7 6.25 20.625 6.25C23.125 6.25 25 8.125 25 10.625C25 14.2375 21.075 17.8 15.125 23.1875ZM20.625 3.75C18.45 3.75 16.3625 4.7625 15 6.35C13.6375 4.7625 11.55 3.75 9.375 3.75C5.525 3.75 2.5 6.7625 2.5 10.625C2.5 15.3375 6.75 19.2 13.1875 25.0375L15 26.6875L16.8125 25.0375C23.25 19.2 27.5 15.3375 27.5 10.625C27.5 6.7625 24.475 3.75 20.625 3.75Z"
-                  fill="#F63C3C"
-                />
-              </svg>
+              <Heart />
             </StockCardRow>
           ))}
+        </StockGridRow>
+        <StockHeader>카테고리</StockHeader>
+        <HrTag />
+        <StockGridRow>
+          <StockCardRow>
+            <div>이미지</div>
+            <div>카테고리</div>
+            <div>현재가</div>
+            <div>전일비</div>
+            <div>등락률</div>
+            <div>거래량</div>
+          </StockCardRow>
+        {categoryStock.map((category, index: number) => {
+          const imageUrl =
+            category.industryName in categoryImage
+              ? categoryImage[
+                  category.industryName as keyof typeof categoryImage
+                ]
+              : 'default-image-url.png'; // 기본 이미지 처리
+          return (
+            <StockCardRow key={index}>
+              <img
+                src={imageUrl}
+                alt={category.industryName}
+                width={50}
+              />
+              <div>{category.industryName}</div>
+              <div>{category.bstpNmixPrpr}</div>
+              <div>{category.bstpNmixPrdyVrss}</div>
+              <div>{category.bstpNmixPrdyCtrt}%</div>
+              <div>{category.acmlTrPbmn}</div>
+            </StockCardRow>
+          );
+        })}
         </StockGridRow>
       </Center>
     </>
