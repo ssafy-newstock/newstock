@@ -1,15 +1,14 @@
 import { Center } from '@components/Center';
 import LeftStock from '@components/LeftStock';
-import { Heart } from '@features/StockMain/Heart';
 import { categoryImage, categoryStock } from '@features/StockMain/category';
 import styled from 'styled-components';
 import StockHeader from '@features/StockMain/StockHeader';
 import FavoriteStock from '@features/StockMain/FavoriteStock';
 import { IStock } from '@features/StockMain/type';
-import { formatChange } from '@utils/formatChange';
-import { formatNumber } from '@utils/formatNumber';
 import { RealTimeStockFirstRow } from '@features/StockMain/RealTimeStock';
 import RealTimeStock from '@features/StockMain/RealTimeStock';
+import { CategoryFirstRow } from '@features/StockMain/categories';
+import Categories from '@features/StockMain/categories';
 
 const stockData = [
   {
@@ -58,55 +57,6 @@ const StockGridRow = styled.div`
   padding: 0px 10px;
 `;
 
-const StockCardRow = styled.div`
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 0.5fr; /* 각 열의 너비를 설정 */
-  text-align: center;
-  align-items: center;
-  width: 100%;
-  padding: 10px 20px;
-  border-radius: 20px;
-  background-color: ${({ theme }) => theme.stockBackgroundColor};
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-`;
-
-const CategoryCardRow = styled(StockCardRow)`
-  grid-template-columns: repeat(6, 1fr); /* 각 열의 너비를 설정 */
-`;
-
-const StockTitle = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  font-size: 1.5rem;
-  font-weight: bold;
-
-  // 한줄로 넘칠 경우 ...으로 표시
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
-
-const StockImage = styled.img`
-  width: 1.5rem;
-  height: 1.5rem;
-  border-radius: 50%;
-`;
-
-const StckPrice = styled.div`
-  font-size: 1rem;
-`;
-
-const StockPrev = styled.div<{ isPositive: boolean }>`
-  font-size: 0.8rem;
-  color: ${({ isPositive, theme }) =>
-    isPositive ? theme.stockBlue : theme.stockRed};
-`;
-
-const SpanTag = styled.span`
-  font-size: 0.8rem;
-  color: ${({ theme }) => theme.textColor};
-`;
 const StockMainPage = () => {
   return (
     <>
@@ -132,14 +82,7 @@ const StockMainPage = () => {
         <StockHeader>카테고리</StockHeader>
         <HrTag />
         <StockGridRow>
-          <CategoryCardRow>
-            <div>이미지</div>
-            <div>카테고리</div>
-            <div>지수 현재가</div>
-            <div>지수 전일 대비</div>
-            <div>지수 등락률</div>
-            <div>누적 거래 대금</div>
-          </CategoryCardRow>
+          <CategoryFirstRow />
           {categoryStock.map((category, index: number) => {
             const imageUrl =
               category.industryName in categoryImage
@@ -148,16 +91,7 @@ const StockMainPage = () => {
                   ]
                 : 'default-image-url.png'; // 기본 이미지 처리
             return (
-              <CategoryCardRow key={index}>
-                <div style={{display:"flex", justifyContent:"center"}}>
-                  <img src={imageUrl} alt={category.industryName} width={50} />
-                </div>
-                <div>{category.industryName}</div>
-                <div>{category.bstpNmixPrpr}</div>
-                <div>{category.bstpNmixPrdyVrss}</div>
-                <div>{category.bstpNmixPrdyCtrt}%</div>
-                <div>{category.acmlTrPbmn}</div>
-              </CategoryCardRow>
+              <Categories key={index} category={category} imageUrl={imageUrl} />
             );
           })}
         </StockGridRow>

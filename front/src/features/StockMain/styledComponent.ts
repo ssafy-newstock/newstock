@@ -72,3 +72,7 @@ export const StockCardRow = styled.div`
   background-color: ${({ theme }) => theme.stockBackgroundColor};
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 `;
+
+export const CategoryCardRow = styled(StockCardRow)`
+  grid-template-columns: repeat(6, 1fr); /* 각 열의 너비를 설정 */
+`;
