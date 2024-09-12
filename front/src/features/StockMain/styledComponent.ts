@@ -54,3 +54,21 @@ export const SpanTag = styled.span`
   font-size: 0.8rem;
   color: ${({ theme }) => theme.textColor};
 `;
+
+export const HeartWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const StockCardRow = styled.div`
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 0.5fr; /* 각 열의 너비를 설정 */
+  text-align: center;
+  align-items: center;
+  width: 100%;
+  padding: 10px 20px;
+  border-radius: 20px;
+  background-color: ${({ theme }) => theme.stockBackgroundColor};
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+`;

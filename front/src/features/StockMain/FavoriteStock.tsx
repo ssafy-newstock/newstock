@@ -9,18 +9,10 @@ import {
   StockPrev,
   SpanTag,
 } from '@features/StockMain/styledComponent';
+import { formatChange } from '@utils/formatChange';
+import { formatNumber } from '@utils/formatNumber';
 
 const FavoriteStock = ({ stock }: { stock: IStock }) => {
-  const formatNumber = (number: string): string => {
-    // 쉼표가 포함된 숫자를 포맷팅
-    return new Intl.NumberFormat().format(Number(number.replace(/,/g, '')));
-  };
-
-  const formatChange = (change: string) => {
-    // 변경값이 '-'로 시작하지 않으면 '+'를 붙여줍니다.
-    return change.startsWith('-') ? change : `+${change}`;
-  };
-
   return (
     <StockCardColumn>
       <StockCardTitle>
