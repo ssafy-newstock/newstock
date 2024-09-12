@@ -1,7 +1,7 @@
 package com.ssafy.stock.global.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ssafy.stock.domain.entity.StocksPriceLiveRedis;
+import com.ssafy.stock.domain.entity.Redis.StocksPriceLiveRedis;
 import com.ssafy.stock.domain.repository.StocksPriceLiveRedisRepository;
 import com.ssafy.stock.domain.service.helper.StockConverter;
 import com.ssafy.stock.domain.service.response.StockPricesResponseDto;
@@ -87,15 +87,17 @@ public class KISSocketHandler extends TextWebSocketHandler {
             String stckPrpr = subValues[2]; // 주식 현재가
             String prdyVrss = subValues[4]; // 전일 대비
             String prdyCtrt = subValues[5]; // 전일 대비율
+            String acmlVol = subValues[13]; // 누적 거래량
+            String acmlTrPbmn = subValues[14]; // 누적 거래 대금
 
             Optional<StocksPriceLiveRedis> stocksPriceLiveRedis = stocksPriceLiveRedisRepository.findById(stockCode);
             if (stocksPriceLiveRedis.isPresent()) {
-                stocksPriceLiveRedis.get().update(stockCode, stockName, stockIndustry, stckPrpr, prdyVrss, prdyCtrt);
+                stocksPriceLiveRedis.get().update(stockCode, stockName, stockIndustry, stckPrpr, prdyVrss, prdyCtrt, acmlTrPbmn, acmlVol);
             } else {
-                stocksPriceLiveRedisRepository.save(new StocksPriceLiveRedis(stockCode, stockName, stockIndustry, stckPrpr, prdyVrss, prdyCtrt));
+                stocksPriceLiveRedisRepository.save(new StocksPriceLiveRedis(stockCode, stockName, stockIndustry, stckPrpr, prdyVrss, prdyCtrt, acmlTrPbmn, acmlVol));
             }
 
-            StockPricesResponseDto stockPricesResponseDto = stockConverter.convertToStockPriceResponseDto(stockCode, stockName, stockIndustry, stckPrpr, prdyVrss, prdyCtrt);
+            StockPricesResponseDto stockPricesResponseDto = stockConverter.convertToStockPriceResponseDto(stockCode, stockName, stockIndustry, stckPrpr, prdyVrss, prdyCtrt, acmlTrPbmn, acmlVol);
             // log.info("{}", stockPricesResponseDto);
             simpMessageSendingOperations.convertAndSend("/api/sub/stock/info/live", stockPricesResponseDto);
         } else {

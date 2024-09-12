@@ -1,9 +1,9 @@
 package com.ssafy.stock.domain.service;
 
 import com.ssafy.stock.domain.entity.Stocks;
-import com.ssafy.stock.domain.entity.StocksPriceLiveRedis;
-import com.ssafy.stock.domain.entity.StocksPriceRedis;
-import com.ssafy.stock.domain.entity.StocksRedis;
+import com.ssafy.stock.domain.entity.Redis.StocksPriceLiveRedis;
+import com.ssafy.stock.domain.entity.Redis.StocksPriceRedis;
+import com.ssafy.stock.domain.entity.Redis.StocksRedis;
 import com.ssafy.stock.domain.repository.StocksPriceLiveRedisRepository;
 import com.ssafy.stock.domain.repository.StocksPriceRedisRepository;
 import com.ssafy.stock.domain.repository.StocksRedisRepository;
@@ -84,7 +84,7 @@ public class StockService {
 
     /**
      * 30초 단위 코스피 958개 정보 갱신
-     * 갱신 목록 : 주식 현재가, 전일 대비, 전일 대비율
+     * 갱신 목록 : 주식 현재가, 전일 대비, 전일 대비율, 누적 거래량, 누적 거래 대금
      */
     @Scheduled(fixedDelay = 10000)
     public void fetchStockPrices() {

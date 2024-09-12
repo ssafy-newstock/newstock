@@ -1,4 +1,4 @@
-package com.ssafy.stock.domain.entity;
+package com.ssafy.stock.domain.entity.Redis;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,8 +9,8 @@ import org.springframework.data.redis.core.RedisHash;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@RedisHash(value = "StocksPriceLiveRedis")
-public class StocksPriceLiveRedis {
+@RedisHash(value = "StocksPriceRedis")
+public class StocksPriceRedis {
     @Id
     private String stockCode;
     private String stockName;
@@ -18,13 +18,6 @@ public class StocksPriceLiveRedis {
     private String stckPrpr;  // 주식 현재가
     private String prdyVrss;  // 전일 대비
     private String prdyCtrt;  // 전일 대비율
-
-    public void update(String stockCode, String stockName, String stockIndustry, String stckPrpr, String prdyVrss, String prdyCtrt) {
-        this.stockCode = stockCode;
-        this.stockName = stockName;
-        this.stockIndustry = stockIndustry;
-        this.stckPrpr = stckPrpr;
-        this.prdyVrss = prdyVrss;
-        this.prdyCtrt = prdyCtrt;
-    }
+    private String acmlTrPbmn;    // 누적 거래 대금
+    private String acmlVol;       // 누적 거래량
 }

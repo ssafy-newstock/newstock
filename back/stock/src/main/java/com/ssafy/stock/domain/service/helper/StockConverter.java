@@ -1,7 +1,7 @@
 package com.ssafy.stock.domain.service.helper;
 
-import com.ssafy.stock.domain.entity.StocksPriceRedis;
-import com.ssafy.stock.domain.entity.StocksRedis;
+import com.ssafy.stock.domain.entity.Redis.StocksPriceRedis;
+import com.ssafy.stock.domain.entity.Redis.StocksRedis;
 import com.ssafy.stock.domain.service.response.StockPricesKisResponseDto;
 import com.ssafy.stock.domain.service.response.StockPricesOutputKisResponseDto;
 import com.ssafy.stock.domain.service.response.StockPricesResponseDto;
@@ -43,7 +43,9 @@ public class StockConverter {
                         dto.getStockIndustry(),
                         dto.getStckPrpr(),
                         dto.getPrdyVrss(),
-                        dto.getPrdyCtrt()
+                        dto.getPrdyCtrt(),
+                        dto.getAcmlTrPbmn(),
+                        dto.getAcmlVol()
                 ))
                 .collect(Collectors.toList());
     }
@@ -55,16 +57,20 @@ public class StockConverter {
                 stockInfo.getStockIndustry(),
                 stockOutput.getStckPrpr(),
                 stockOutput.getPrdyVrss(),
-                stockOutput.getPrdyCtrt());
+                stockOutput.getPrdyCtrt(),
+                stockOutput.getAcmlTrPbmn(),
+                stockOutput.getAcmlVol());
     }
 
-    public StockPricesResponseDto convertToStockPriceResponseDto(String stockCode, String stockName, String stockIndustry, String stckPrpr, String prdyVrss, String prdyCtrt) {
+    public StockPricesResponseDto convertToStockPriceResponseDto(String stockCode, String stockName, String stockIndustry, String stckPrpr, String prdyVrss, String prdyCtrt, String acmlTrPbmn, String acmlVol) {
         return new StockPricesResponseDto(stockCode,
                 stockName,
                 stockIndustry,
                 stckPrpr,
                 prdyVrss,
-                prdyCtrt);
+                prdyCtrt,
+                acmlTrPbmn,
+                acmlVol);
     }
 
     /**

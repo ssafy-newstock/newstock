@@ -1,8 +1,8 @@
 package com.ssafy.stock.domain.controller;
 
-import com.ssafy.stock.domain.entity.StockIndustryRedis;
-import com.ssafy.stock.domain.entity.StocksPriceLiveRedis;
-import com.ssafy.stock.domain.entity.StocksPriceRedis;
+import com.ssafy.stock.domain.entity.Redis.StockIndustryRedis;
+import com.ssafy.stock.domain.entity.Redis.StocksPriceLiveRedis;
+import com.ssafy.stock.domain.entity.Redis.StocksPriceRedis;
 import com.ssafy.stock.domain.service.StockIndustryService;
 import com.ssafy.stock.domain.service.StockService;
 import lombok.RequiredArgsConstructor;

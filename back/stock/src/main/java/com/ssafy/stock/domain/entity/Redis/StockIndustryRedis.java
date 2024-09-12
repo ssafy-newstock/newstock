@@ -1,4 +1,4 @@
-package com.ssafy.stock.domain.entity;
+package com.ssafy.stock.domain.entity.Redis;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
