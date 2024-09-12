@@ -25,17 +25,21 @@ logging.basicConfig(
     ]
 )
 
-class StockNewsScraper:
+class NewsScraper:
     def __init__(self):
+        self.get_stock = False
         self.current_datetime = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
         self.stock_news_bucket_name = "newstock-stock-news"
+        self.industry_news_bucket_name = "newstock-industry-news"
         self.stock_metadata_bucket_name = 'newstock-stock-metadata'
+        self.industry_metadata_bucket_name = 'newstock-industry-metadata'
         self.stock_news_id_dict = dict()
         self.stock_news_all = list() # 실제 저장될 데이터
+        self.industry_news_id_dict = dict()
         self.start_date = ""
         self.end_date = ""
     
-    # s3에서 주식 관련 뉴스 수집함
+    # s3에서 시황 뉴스 메타데이터 가져옴
     def load_stock_news_id(self, date):
         s3 = S3Connection()
         s3.connect_to_s3()
@@ -43,7 +47,29 @@ class StockNewsScraper:
         s3_file_name = f"{date}.json"
         content = s3.download_from_s3(self.stock_metadata_bucket_name, s3_file_name)
         self.stock_news_id_dict = json.loads(content)['data']
-    
+
+    # s3에서 시황 뉴스 메타데이터 가져옴
+    def load_industry_news_id(self, date):
+        s3 = S3Connection()
+        s3.connect_to_s3()
+
+        s3_file_name = f"{date}.json"
+        content = s3.download_from_s3(self.industry_metadata_bucket_name, s3_file_name)
+        temp = json.loads(content)['data']
+
+        stock_news_all = []
+        # 각 카테고리에 대해 'industry'와 'newsId'로 구성된 딕셔너리 생성
+        for category, ids in temp.items():
+            for item in temp[category]:
+                news_dict = {}
+                news_dict["newsId"]= item
+                news_dict["industry"] = category
+                stock_news_all.append(news_dict)
+
+        # TODO : 변수 이름 => dict에서 list로
+        self.stock_news_id_dict = stock_news_all
+        print(self.stock_news_id_dict)
+
     def _set_ranges(self, start_date, end_date):
         date_format = "%Y-%m-%d"  # Adjust format as needed
 
@@ -51,6 +77,7 @@ class StockNewsScraper:
         self.start_date = datetime.strptime(start_date, date_format).date()
         self.end_date = datetime.strptime(end_date, date_format).date()
     # 다음 url로 바꿔주기
+
     def convet_to_url(self, news_id):
         return f"https://v.daum.net/v/{news_id}"
     
@@ -144,11 +171,14 @@ class StockNewsScraper:
     # 멀티스레딩으로 뉴스 수집
     def scrape_news_multithread(self):
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+            
             # stock_news_id_dict에서 뉴스 ID들을 가져와 멀티스레딩으로 처리
             future_to_news_id = {
                 executor.submit(self.scrap_article, self.convet_to_url(news_info['newsId'])): news_info['newsId'] 
                 for news_info in self.stock_news_id_dict
             }
+
+            logging.info(f"수집데이터 : {len(future_to_news_id)}")
             
             for future in tqdm(concurrent.futures.as_completed(future_to_news_id), total=len(self.stock_news_id_dict)):
                 news_id = future_to_news_id[future]
@@ -158,9 +188,14 @@ class StockNewsScraper:
                         # stock_news_id_dict에서 해당 뉴스 ID에 대한 추가 정보를 가져옴
                         news_info = next((item for item in self.stock_news_id_dict if item['newsId'] == news_id), None)
                         if news_info:
-                            article_info_dict['stockId'] = news_id
-                            article_info_dict['stockCodes'] = news_info['stockCodes']
-                            article_info_dict['keywords'] = news_info['keywords']
+                            article_info_dict['newsId'] = news_id
+                            # 만약 주식 뉴스를 수집한다면
+                            if self.get_stock:
+                                article_info_dict['stockCodes'] = news_info['stockCodes']
+                                article_info_dict['keywords'] = news_info['keywords']
+                            else:
+                                article_info_dict['industry'] = news_info['industry']
+                                
                         
                         # 수집된 기사 정보를 저장
                         self.stock_news_all.append(article_info_dict)
@@ -171,7 +206,7 @@ class StockNewsScraper:
 
     
     # 저장하기
-    def save_stocknews(self, news_date: str):
+    def save_news(self, news_date: str):
         # 우선 총 개수 계산하기
         total_count = len(self.stock_news_all)
         
@@ -193,32 +228,53 @@ class StockNewsScraper:
         s3_file_name = f'{news_date}.json'
         
         # S3에 업로드
-        s3.upload_to_s3(json_data, self.stock_news_bucket_name, s3_file_name)
-    
-    def get_news_article(self, **kwargs):
+        if self.get_stock:
+            bucket_name = self.stock_news_bucket_name
+        else:
+            bucket_name = self.industry_news_bucket_name
+        
+        print(bucket_name)
+        s3.upload_to_s3(json_data, bucket_name, s3_file_name)
+
+    def get_news_article(self, get_stock, **kwargs):
+        
+        # 우선 종목 뉴스를 수집하는지 시황 뉴스를 수집하는지 확인
+        self.get_stock = get_stock
+
         params = kwargs.get('params', {})
         start_date = params.get('start_date')
         end_date = params.get('end_date')
         
-        scraper = StockNewsScraper()
 
-        scraper.start_date, scraper.end_date = set_ranges(start_date, end_date)
+        self.start_date, self.end_date = set_ranges(start_date, end_date)
             
-        pivot_date = scraper.start_date
+        pivot_date = self.start_date
+        logging.info('start')
+
         
-        while pivot_date >= scraper.end_date:
+
+        while pivot_date >= self.end_date:
             date = convert_date_to_str(pivot_date)
-            scraper.load_stock_news_id(date)  # s3에서 뉴스 ID 수집
+            # 만약 종목 뉴스를 수집한다면
+            if self.get_stock:    
+                self.load_stock_news_id(date)  # s3에서 뉴스 ID 수집
             
-            scraper.stock_news_all = list()  # 매번 초기화
-            
+             # 시황 뉴스를 수집한다면
+            else:
+                self.load_industry_news_id(date)  # s3에서 뉴스 ID 수집
+                
+            self.stock_news_all = list()  # 매번 초기화
+            # TODO : 여기 시황 뉴스 네이밍 바꾸기
             # 멀티스레딩으로 뉴스 데이터 수집
-            scraper.scrape_news_multithread()
-            # 데이터 저장
-            scraper.save_stocknews(date)
+            self.scrape_news_multithread()
+            
+            # S3에 뉴스 저장
+            self.save_news(date)
             
             pivot_date -= timedelta(days=1)
-            
-        logging.info(f"News articles saved from {start_date} to {end_date}!")
+
+        if self.get_stock:
+            logging.info(f"Stock news articles saved from {start_date} to {end_date}!")
         
-        
+        else:
+            logging.info(f"Industry news articles saved from {start_date} to {end_date}!")
