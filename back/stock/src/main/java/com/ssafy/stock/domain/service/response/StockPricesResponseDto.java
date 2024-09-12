@@ -10,14 +10,15 @@ import lombok.NoArgsConstructor;
 public class StockPricesResponseDto {
     private String stockCode;
     private String stockName;
+    private String stockIndustry;
     private String stckPrpr;  // 주식 현재가
     private String prdyVrss;  // 전일 대비
     private String prdyCtrt;  // 전일 대비율
 
     @Override
     public String toString() {
-        return String.format("StockPricesResponseDto [stockCode=%s, stockName=%s, stckPrpr=%s, prdyVrss=%s, prdyCtrt=%s]",
-                stockCode, stockName, stckPrpr, prdyVrss, prdyCtrt);
+        return String.format("StockPricesResponseDto [stockCode=%s, stockName=%s, stockIndustry=%s, stckPrpr=%s, prdyVrss=%s, prdyCtrt=%s]",
+                stockCode, stockName, stockIndustry, stckPrpr, prdyVrss, prdyCtrt);
     }
 }
 
