@@ -52,7 +52,7 @@ const Navbar: React.FC = () => {
         height="30"
         viewBox="0 0 40 40"
         fill="none"
-        onClick={() => navigate('/newsMain')}
+        onClick={() => navigate('/news-main')}
         style={{ cursor: 'pointer' }}
       >
         <path
@@ -67,7 +67,7 @@ const Navbar: React.FC = () => {
           height="11"
           viewBox="0 0 37 18"
           fill="none"
-          onClick={() => navigate('/stockMain')}
+          onClick={() => navigate('/stock-main')}
           style={{ cursor: 'pointer' }}
         >
           <path
@@ -85,7 +85,7 @@ const Navbar: React.FC = () => {
         height="30"
         viewBox="0 0 44 44"
         fill="none"
-        onClick={() => navigate('/aiChatBot')}
+        onClick={() => navigate('/ai-chat-bot')}
         style={{ cursor: 'pointer' }}
       >
         <path
@@ -109,7 +109,7 @@ const Navbar: React.FC = () => {
         height="30"
         viewBox="0 0 42 44"
         fill="none"
-        onClick={() => navigate('/dailyReport')}
+        onClick={() => navigate('/daily-report')}
         style={{ cursor: 'pointer' }}
       >
         <path
