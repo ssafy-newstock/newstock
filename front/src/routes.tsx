@@ -3,26 +3,26 @@ import App from './App';
 import About from '@pages/About';
 import NotFound from '@pages/NotFound';
 import OnBoardingPage from '@pages/OnBoarding';
-import NewsMainPage from '@pages/NewsMain';
-import EconomicNewsPage from '@pages/EconomicNews';
-import EconomicNewsDetailPage from '@pages/EconomicNewsDetail';
-import StockNewsPage from '@pages/StockNews';
-import StockNewsDetailPage from '@pages/StockNewsDetail';
-import SubNewsMainPage from '@pages/SubNewsMain';
-import DailyReportPage from '@pages/DailyReport';
-import AIChatBotPage from '@pages/AIChatBot';
-import MyNewsPage from '@pages/MyNews';
-import ScrapCreatePage from '@pages/ScrapCreate';
-import ScrapDetailPage from '@pages/ScrapDetail';
-import ScrapEditPage from '@pages/ScrapEdit';
-import StockMainPage from '@pages/StockMain';
-import StockDetailPage from '@pages/StockDetail';
-import StockDetailGraphPage from '@pages/StockDetailGraph';
-import StockDetailSimilarityPage from '@pages/StockDetailSimilarity';
-import MyStockPage from '@pages/MyStock';
-import AllStockPage from '@pages/AllStock';
-import FavoriteStockPage from '@pages/FavoriteStock';
-import SectionStockPage from '@pages/SectionStock';
+import NewsMainPage from '@pages/News/NewsMain';
+import EconomicNewsPage from '@pages/News/EconomicNews';
+import EconomicNewsDetailPage from '@pages/News/EconomicNewsDetail';
+import StockNewsPage from '@pages/News/StockNews';
+import StockNewsDetailPage from '@pages/News/StockNewsDetail';
+import SubNewsMainPage from '@pages/News/SubNewsMain';
+import DailyReportPage from '@pages/Etc/DailyReport';
+import AIChatBotPage from '@pages/Etc/AIChatBot';
+import MyNewsPage from '@pages/News/MyNews';
+import ScrapCreatePage from '@pages/Etc/ScrapCreate';
+import ScrapDetailPage from '@pages/Etc/ScrapDetail';
+import ScrapEditPage from '@pages/Etc/ScrapEdit';
+import StockMainPage from '@pages/Stock/StockMain';
+import StockDetailPage from '@pages/Stock/StockDetail';
+import StockDetailGraphPage from '@pages/Stock/StockDetailGraph';
+import StockDetailSimilarityPage from '@pages/Stock/StockDetailSimilarity';
+import MyStockPage from '@pages/Stock/MyStock';
+import AllStockPage from '@pages/Stock/AllStock';
+import FavoriteStockPage from '@pages/Stock/FavoriteStock';
+import SectionStockPage from '@pages/Stock/SectionStock';
 import Auth from '@pages/Auth';
 
 const router = createBrowserRouter([
@@ -32,41 +32,41 @@ const router = createBrowserRouter([
     errorElement: <NotFound />,
     children: [
       // { index: true, element: <Navigate to="/newsMain" replace /> },
-      { path: 'onBoarding', element: <OnBoardingPage /> },
+      { path: 'onboarding', element: <OnBoardingPage /> },
       { path: 'login/oauth2/code/*', element: <Auth /> },
-      { path: 'newsMain', element: <NewsMainPage /> },
+      { path: 'news-main', element: <NewsMainPage /> },
       {
-        path: 'subNewsMain',
+        path: 'subnews-main',
         element: <SubNewsMainPage />,
         children: [
-          { path: 'economicNews', element: <EconomicNewsPage /> },
-          { path: 'economicNewsDetail', element: <EconomicNewsDetailPage /> },
-          { path: 'stockNews', element: <StockNewsPage /> },
-          { path: 'stockNewsDetail', element: <StockNewsDetailPage /> },
+          { path: 'economic-news', element: <EconomicNewsPage /> },
+          { path: 'economic-news-detail', element: <EconomicNewsDetailPage /> },
+          { path: 'stock-news', element: <StockNewsPage /> },
+          { path: 'stock-news-detail', element: <StockNewsDetailPage /> },
         ],
       },
-      { path: 'dailyReport', element: <DailyReportPage /> },
-      { path: 'aiChatBot', element: <AIChatBotPage /> },
-      { path: 'myNews', element: <MyNewsPage /> },
-      { path: 'scrapDetail', element: <ScrapDetailPage /> },
-      { path: 'scrapCreate', element: <ScrapCreatePage /> },
-      { path: 'scrapEdit', element: <ScrapEditPage /> },
-      { path: 'stockMain', element: <StockMainPage /> },
-      { path: 'allStock', element: <AllStockPage /> },
-      { path: 'favoriteStock', element: <FavoriteStockPage /> },
-      { path: 'sectionStock', element: <SectionStockPage /> },
+      { path: 'daily-report', element: <DailyReportPage /> },
+      { path: 'ai-chat-bot', element: <AIChatBotPage /> },
+      { path: 'my-news', element: <MyNewsPage /> },
+      { path: 'scrap-detail', element: <ScrapDetailPage /> },
+      { path: 'scrap-create', element: <ScrapCreatePage /> },
+      { path: 'scrap-edit', element: <ScrapEditPage /> },
+      { path: 'stock-main', element: <StockMainPage /> },
+      { path: 'all-stock', element: <AllStockPage /> },
+      { path: 'favorite-stock', element: <FavoriteStockPage /> },
+      { path: 'section-stock', element: <SectionStockPage /> },
       {
-        path: 'stockDetail',
+        path: 'stock-detail',
         element: <StockDetailPage />,
         children: [
-          { path: 'stockDetailGraph', element: <StockDetailGraphPage /> },
+          { path: 'stock-detail-graph', element: <StockDetailGraphPage /> },
           {
-            path: 'stockDetailSimilarity',
+            path: 'stock-detail-similarity',
             element: <StockDetailSimilarityPage />,
           },
         ],
       },
-      { path: 'myStock', element: <MyStockPage /> },
+      { path: 'my-stock', element: <MyStockPage /> },
       { path: 'about', element: <About /> },
     ],
   },
