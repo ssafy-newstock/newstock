@@ -23,8 +23,8 @@ log_failed_http_response 함수:
 """
 default_args = {
     'owner': 'airflow',
-    'retries': 0,
-    'retry_delay': timedelta(minutes=5),
+    'retries': 3,
+    'retry_delay': timedelta(minutes=1),
 }
 
 # 테이블 체크 함수
@@ -172,7 +172,18 @@ with DAG(
         method='POST',
         headers={"Content-Type": "application/json"},  # JSON 데이터로 전송할 것을 명시
         data=json.dumps({"start_date": "{{ params.start_date }}", "end_date": "{{ params.end_date }}"}),  # JSON 문자열로 변환
-        trigger_rule = 'all_done'
+        # trigger_rule = 'all_done'
+    )
+
+    # 시황뉴스 스크레이핑
+    scrap_industry_news_task = SimpleHttpOperator(
+        task_id='scrap_industry_news_task',
+        http_conn_id='http_bulk',
+        endpoint='industry/news',
+        method='POST',
+        headers={"Content-Type": "application/json"},  # JSON 데이터로 전송할 것을 명시
+        data=json.dumps({"start_date": "{{ params.start_date }}", "end_date": "{{ params.end_date }}"}),  # JSON 문자열로 변환
+        # trigger_rule = 'all_done'
     )
 
     # 성공 시 출력 태스크
@@ -195,4 +206,4 @@ with DAG(
     branch_limit_task >> scrap_stock_metadata_task
     branch_limit_task >> download_stock_limit_task >> scrap_stock_metadata_task
 
-    scrap_stock_metadata_task >> scrap_industry_metadata_task >> scrap_stock_news_task >> print_success_task
+    scrap_stock_metadata_task >> scrap_industry_metadata_task >> scrap_stock_news_task >> scrap_industry_news_task >> print_success_task
