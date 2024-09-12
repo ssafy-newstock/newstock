@@ -8,7 +8,7 @@ import FavoriteStock from '@features/StockMain/FavoriteStock';
 import { IStock } from '@features/StockMain/type';
 import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
-import { RealTimeStockFirstRow }  from '@features/StockMain/RealTimeStock';
+import { RealTimeStockFirstRow } from '@features/StockMain/RealTimeStock';
 import RealTimeStock from '@features/StockMain/RealTimeStock';
 
 const stockData = [
@@ -72,8 +72,7 @@ const StockCardRow = styled.div`
 
 const CategoryCardRow = styled(StockCardRow)`
   grid-template-columns: repeat(6, 1fr); /* 각 열의 너비를 설정 */
-  
-`
+`;
 
 const StockTitle = styled.div`
   display: flex;
@@ -109,12 +108,10 @@ const SpanTag = styled.span`
   color: ${({ theme }) => theme.textColor};
 `;
 const StockMainPage = () => {
-
   return (
     <>
       <LeftStock />
       <Center>
-        
         <StockHeader>관심 종목</StockHeader>
         <HrTag />
         <StockGridColumn>
@@ -128,7 +125,7 @@ const StockMainPage = () => {
         <StockGridRow>
           <RealTimeStockFirstRow />
           {stockData.map((stock: IStock, index: number) => (
-            <RealTimeStock key={index} stock={stock}/>
+            <RealTimeStock key={index} stock={stock} />
           ))}
         </StockGridRow>
 
@@ -152,7 +149,9 @@ const StockMainPage = () => {
                 : 'default-image-url.png'; // 기본 이미지 처리
             return (
               <CategoryCardRow key={index}>
-                <img src={imageUrl} alt={category.industryName} width={50} />
+                <div style={{display:"flex", justifyContent:"center"}}>
+                  <img src={imageUrl} alt={category.industryName} width={50} />
+                </div>
                 <div>{category.industryName}</div>
                 <div>{category.bstpNmixPrpr}</div>
                 <div>{category.bstpNmixPrdyVrss}</div>
