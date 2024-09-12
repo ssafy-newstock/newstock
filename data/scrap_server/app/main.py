@@ -5,6 +5,7 @@ from newstock_scraper.test import *
 from newstock_scraper.stock_list import StockListScraper
 from newstock_scraper.stock_limit import StockNewsLimitScraper
 from newstock_scraper.news_metadata import StockNewsMetadataScraper, IndustryNewsMetadataScraper
+from newstock_scraper.news_scraper import StockNewsScraper
 from newstock_scraper.settings import Setting
 from pydantic import BaseModel, validator
 from datetime import datetime
@@ -126,6 +127,18 @@ def scrap_stock_metadata(request: StockMetadataRequest):
     else:
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to scrap Industry Metadata")
 
+# 종목뉴스 본문 스크레이핑
+@app.post('/stock/news')
+def scrap_stock_metadata(request: StockMetadataRequest):
+    scraper = StockNewsScraper()
+
+    try:
+    # start_date와 end_date를 파라미터로 전달
+        scraper.get_news_article(params={"start_date": request.start_date, "end_date": request.end_date})
+        return create_response("success", status.HTTP_200_OK, "Successfully scrapped Stock Metadata")
+    
+    except Exception as e:
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to scrap Stock Metadata with error {e}")
 
 def create_response(status: str, code: int, message: str, data=None):
     return {

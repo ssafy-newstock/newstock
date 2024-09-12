@@ -162,6 +162,16 @@ with DAG(
         method='POST',
         headers={"Content-Type": "application/json"},  # JSON 데이터로 전송할 것을 명시
         data=json.dumps({"start_date": "{{ params.start_date }}", "end_date": "{{ params.end_date }}"}),  # JSON 문자열로 변환
+    )
+
+    # 종목뉴스 스크레이핑
+    scrap_stock_news_task = SimpleHttpOperator(
+        task_id='scrap_stock_news_task',
+        http_conn_id='http_bulk',
+        endpoint='stock/news',
+        method='POST',
+        headers={"Content-Type": "application/json"},  # JSON 데이터로 전송할 것을 명시
+        data=json.dumps({"start_date": "{{ params.start_date }}", "end_date": "{{ params.end_date }}"}),  # JSON 문자열로 변환
         trigger_rule = 'all_done'
     )
 
@@ -185,4 +195,4 @@ with DAG(
     branch_limit_task >> scrap_stock_metadata_task
     branch_limit_task >> download_stock_limit_task >> scrap_stock_metadata_task
 
-    scrap_stock_metadata_task >> scrap_industry_metadata_task >> print_success_task
+    scrap_stock_metadata_task >> scrap_industry_metadata_task >> scrap_stock_news_task >> print_success_task
