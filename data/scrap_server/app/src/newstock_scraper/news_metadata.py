@@ -147,7 +147,7 @@ class StockNewsMetadataScraper:
                         current_page += 1
                 else:
                     logging.error(f"API request failed for {stock_code} with status code {response.status_code}.")
-                    break
+                    raise
 
             self.stock_info_df.loc[self.stock_info_df['stock_code'] == stock_code, 'recent_news_id'] = recent_news_id
             self.stock_info_df.loc[self.stock_info_df['stock_code'] == stock_code, 'old_news_id'] = old_news_id
@@ -161,7 +161,7 @@ class StockNewsMetadataScraper:
         stock_start_date = df_row['start_date']
         stock_end_date = df_row['end_date']
         
-        return self.start_date >= stock_start_date and stock_end_date <= self.end_date
+        return stock_end_date <= self.end_date
     
     def request_daum_stock(self, stock_code: str, current_page: int) -> requests.Response:
         headers = {
