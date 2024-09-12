@@ -13,4 +13,6 @@ public class StocksRedis {
     private final String stockCode;
 
     private final String stockName;
+
+    private final String stockIndustry;
 }
