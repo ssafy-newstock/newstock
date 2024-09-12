@@ -161,7 +161,7 @@ class StockNewsMetadataScraper:
         stock_start_date = df_row['start_date']
         stock_end_date = df_row['end_date']
         
-        return stock_start_date >= self.start_date and stock_end_date <= self.end_date
+        return self.start_date >= stock_start_date and stock_end_date <= self.end_date
     
     def request_daum_stock(self, stock_code: str, current_page: int) -> requests.Response:
         headers = {
