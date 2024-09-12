@@ -31,7 +31,7 @@ public class StockConverter {
     @Value("${KIS_STOCK_PRICE_TR_ID}")
     private String KIS_STOCK_PRICE_TR_ID;
 
-    private static final String webSocketKey = "75aee991-23d8-4c04-8153-0674b802d0de";
+    private static final String webSocketKey = "0a676997-8738-4a8a-9d9f-55162614d45c";
 
     private final RestTemplate restTemplate;
 
@@ -40,6 +40,7 @@ public class StockConverter {
                 .map(dto -> new StocksPriceRedis(
                         dto.getStockCode(),
                         dto.getStockName(),
+                        dto.getStockIndustry(),
                         dto.getStckPrpr(),
                         dto.getPrdyVrss(),
                         dto.getPrdyCtrt()
@@ -51,14 +52,16 @@ public class StockConverter {
                                                                          StockPricesOutputKisResponseDto stockOutput) {
         return new StockPricesResponseDto(stockInfo.getStockCode(),
                 stockInfo.getStockName(),
+                stockInfo.getStockIndustry(),
                 stockOutput.getStckPrpr(),
                 stockOutput.getPrdyVrss(),
                 stockOutput.getPrdyCtrt());
     }
 
-    public StockPricesResponseDto convertToStockPriceResponseDto(String stockCode, String stockName, String stckPrpr, String prdyVrss, String prdyCtrt) {
+    public StockPricesResponseDto convertToStockPriceResponseDto(String stockCode, String stockName, String stockIndustry, String stckPrpr, String prdyVrss, String prdyCtrt) {
         return new StockPricesResponseDto(stockCode,
                 stockName,
+                stockIndustry,
                 stckPrpr,
                 prdyVrss,
                 prdyCtrt);
