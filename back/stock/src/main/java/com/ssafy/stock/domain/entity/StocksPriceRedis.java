@@ -1,20 +1,22 @@
 package com.ssafy.stock.domain.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
 @Getter
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 @RedisHash(value = "StocksPriceRedis")
 public class StocksPriceRedis {
     @Id
-    private final String stockCode;
+    private String stockCode;
+    private String stockName;
+    private String stockIndustry; // 종목 카테고리
+    private String stckPrpr;  // 주식 현재가
+    private String prdyVrss;  // 전일 대비
+    private String prdyCtrt;  // 전일 대비율
 
-    private final String stockName;
-
-    private final String stckPrpr;  // 주식 현재가
-    private final String prdyVrss;  // 전일 대비
-    private final String prdyCtrt;  // 전일 대비율
 }
