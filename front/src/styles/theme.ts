@@ -23,6 +23,8 @@ export const lightTheme: DefaultTheme = {
   stockBackgroundColor: '#FFF',
   stockRed: "#FF0000",
   stockBlue:"#0000FF",
+  // 주호꺼(저장한 뉴스 센터컨텐츠요소 중 중간 박스)
+  centerContentSectionBackgroundColor: '#F7F7F7',
 };
 
 export const darkTheme: DefaultTheme = {
@@ -48,4 +50,6 @@ export const darkTheme: DefaultTheme = {
   stockBackgroundColor: '#17223B',
   stockRed: "#FF4500",
   stockBlue:"#87CEFA",
+  // 주호꺼(저장한 뉴스 센터컨텐츠요소 중 중간 박스)
+  centerContentSectionBackgroundColor: '#4C506B',
 };

@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import {
   PositiveIcon,
@@ -25,9 +24,15 @@ const NewsBodyTitleText = styled.p`
   font-family: Inter;
   font-size: 25px;
   font-style: normal;
-  /* font-weight: 400; */
+  font-weight: 400;
   line-height: 32px;
   text-indent: 55px;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* 최대 2줄까지만 표시 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis; /* 말줄임표 적용 */
 `;
 
 interface NewsBodyTitleProps {
@@ -35,11 +40,11 @@ interface NewsBodyTitleProps {
 }
 
 const NewsBodyTitle: React.FC<NewsBodyTitleProps> = ({ title }) => {
-  const trimmedTitle = title.length > 27 ? `${title.slice(0, 27)}...` : title;
+  // const trimmedTitle = title.length > 27 ? `${title.slice(0, 27)}...` : title;
 
   return (
     <NewsBodyTitleWrapper>
-      <NewsBodyTitleText>{trimmedTitle}</NewsBodyTitleText>
+      <NewsBodyTitleText>{title}</NewsBodyTitleText>
       <PositiveIcon>
         <PositiveIconText>긍정</PositiveIconText>
       </PositiveIcon>
