@@ -4,7 +4,7 @@ spring:
     include: oauth
   datasource:
     url: jdbc:mysql://svc.sel4.cloudtype.app:30947/newstockmember
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: ssafy
   h2:
@@ -15,11 +15,11 @@ spring:
       ddl-auto: create-drop
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL5Dialect
+        dialect: org.hibernate.dialect.MySQLDialect
   data:
     redis:
       host: redis-service
       port: 6379
-  
+
 server:
   port: 8001
