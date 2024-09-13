@@ -1,15 +1,22 @@
 import { CategoryCardRow } from '@features/StockMain/styledComponent';
 import { ICategory } from '@features/StockMain/type';
+import {
+  Text,
+  CategoryImgWrapper,
+  CategoryImg,
+  CategoryData,
+} from '@features/StockMain/styledComponent';
+import { formatChange } from '@utils/formatChange';
+import { formatNumber } from '@utils/formatNumber';
 
 export const CategoryFirstRow = () => {
   return (
     <CategoryCardRow>
-      <div>이미지</div>
-      <div>카테고리</div>
-      <div>지수 현재가</div>
-      <div>지수 전일 대비</div>
-      <div>지수 등락률</div>
-      <div>누적 거래 대금</div>
+      <Text>카테고리</Text>
+      <Text>지수 현재가</Text>
+      <Text>지수 전일 대비</Text>
+      <Text>지수 등락률</Text>
+      <Text>누적 거래 대금(백만)</Text>
     </CategoryCardRow>
   );
 };
@@ -17,14 +24,18 @@ export const CategoryFirstRow = () => {
 const Categories: React.FC<ICategory> = ({ category, imageUrl }) => {
   return (
     <CategoryCardRow>
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <img src={imageUrl} alt={category.industryName} width={50} />
-      </div>
-      <div>{category.industryName}</div>
-      <div>{category.bstpNmixPrpr}</div>
-      <div>{category.bstpNmixPrdyVrss}</div>
-      <div>{category.bstpNmixPrdyCtrt}%</div>
-      <div>{category.acmlTrPbmn}</div>
+      <CategoryImgWrapper>
+        <CategoryImg src={imageUrl} alt={category.industryName} />
+        {category.industryName}
+      </CategoryImgWrapper>
+      <Text>{category.bstpNmixPrpr}</Text>
+      <CategoryData isPositive={category.bstpNmixPrdyVrss.startsWith('-')}>
+        {formatChange(category.bstpNmixPrdyVrss)}
+      </CategoryData>
+      <CategoryData isPositive={category.bstpNmixPrdyCtrt.startsWith('-')}>
+        {formatChange(category.bstpNmixPrdyCtrt)}%
+      </CategoryData>
+      <Text>{formatNumber(category.acmlTrPbmn)}</Text>
     </CategoryCardRow>
   );
 };
