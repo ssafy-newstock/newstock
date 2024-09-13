@@ -95,7 +95,7 @@ const StockMainPage = () => {
                 ? categoryImage[
                     category.industryName as keyof typeof categoryImage
                   ]
-                : 'default-image-url.png'; // 기본 이미지 처리
+                : 'default-image'; // 기본 이미지 처리
             return (
               <Categories key={index} category={category} imageUrl={imageUrl} />
             );

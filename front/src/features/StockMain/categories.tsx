@@ -8,6 +8,7 @@ import {
 } from '@features/StockMain/styledComponent';
 import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
+import blueLogo from '@assets/Stock/blueLogo.png';
 
 export const CategoryFirstRow = () => {
   return (
@@ -25,7 +26,7 @@ const Categories: React.FC<ICategory> = ({ category, imageUrl }) => {
   return (
     <CategoryCardRow>
       <CategoryImgWrapper>
-        <CategoryImg src={imageUrl} alt={category.industryName} />
+        <CategoryImg src={imageUrl} alt={blueLogo} />
         {category.industryName}
       </CategoryImgWrapper>
       <Text>{category.bstpNmixPrpr}</Text>

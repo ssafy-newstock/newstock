@@ -11,6 +11,8 @@ import {
 } from '@features/StockMain/styledComponent';
 import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
+import blueLogo from '@assets/Stock/blueLogo.png';
+
 
 const FavoriteStock = ({ stock }: { stock: IStock }) => {
   return (
@@ -19,7 +21,7 @@ const FavoriteStock = ({ stock }: { stock: IStock }) => {
         <StockTitle>
           <StockImage
             src={`https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stock.stockCode}.png`}
-            alt={stock.stockName}
+            alt={blueLogo}
           />
           {stock.stockName}
         </StockTitle>
