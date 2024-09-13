@@ -35,13 +35,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(final MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/api/sub");
-        registry.setApplicationDestinationPrefixes("/api/pub");
+        registry.enableSimpleBroker("/sub");
+        registry.setApplicationDestinationPrefixes("/pub");
     }
 
     @Override
     public void registerStompEndpoints(final StompEndpointRegistry registry) {
-        registry.addEndpoint("/api/websocket")
+        registry.addEndpoint("/websocket")
                 .setAllowedOrigins("http://localhost:3000",
                         "http://localhost:5173")
                 .withSockJS();

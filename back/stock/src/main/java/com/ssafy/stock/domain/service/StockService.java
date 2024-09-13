@@ -107,7 +107,7 @@ public class StockService {
             stocksPriceRedisRepository.saveAll(stocksPriceRedisList);
 
             log.info("스케줄러 : 주식 데이터 갱신 성공");
-            simpMessageSendingOperations.convertAndSend("/api/sub/stock/info", allStockPrices);
+            simpMessageSendingOperations.convertAndSend("/api/stock/sub/stock/info", allStockPrices);
         } catch (CompletionException e){
             e.printStackTrace();
         }

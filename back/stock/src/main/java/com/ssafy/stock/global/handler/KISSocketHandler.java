@@ -67,7 +67,7 @@ public class KISSocketHandler extends TextWebSocketHandler {
      * @param session
      * @param message
      * @throws Exception
-     * @pub("/api/sub/stock/info/live") 종목 코드, 종목 이름, 주식 현재가, 전일 대비, 전일 대비율 전송
+     * @pub("/sub/stock/info/live") 종목 코드, 종목 이름, 주식 현재가, 전일 대비, 전일 대비율 전송
      */
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
@@ -98,8 +98,8 @@ public class KISSocketHandler extends TextWebSocketHandler {
             }
 
             StockPricesResponseDto stockPricesResponseDto = stockConverter.convertToStockPriceResponseDto(stockCode, stockName, stockIndustry, stckPrpr, prdyVrss, prdyCtrt, acmlTrPbmn, acmlVol);
-            // log.info("{}", stockPricesResponseDto);
-            simpMessageSendingOperations.convertAndSend("/api/sub/stock/info/live", stockPricesResponseDto);
+            log.info("{}", stockPricesResponseDto);
+            simpMessageSendingOperations.convertAndSend("/api/stock/sub/stock/info/live", stockPricesResponseDto);
         } else {
             log.info("{}", payload);
         }
