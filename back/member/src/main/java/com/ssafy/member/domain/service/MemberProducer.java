@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MemberProducer {
 
-    private static final String TOPIC = "news_topic";
+    private static final String TOPIC = "test_topic";
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
 

@@ -9,15 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequiredArgsConstructor
-@RequestMapping("/test")
 public class MemberController {
-    private final MemberProducer memberProducer;
 
-    @GetMapping("/send")
-    public String sendMessage(@RequestParam("message") String message) {
-        memberProducer.sendMessage(message);
-        return "Message sent to Kafka: " + message;
-    }
+
 }
 
