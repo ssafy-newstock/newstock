@@ -99,7 +99,7 @@ public class KISSocketHandler extends TextWebSocketHandler {
 
             StockPricesResponseDto stockPricesResponseDto = stockConverter.convertToStockPriceResponseDto(stockCode, stockName, stockIndustry, stckPrpr, prdyVrss, prdyCtrt, acmlTrPbmn, acmlVol);
             log.info("{}", stockPricesResponseDto);
-            simpMessageSendingOperations.convertAndSend("/api/stock/sub/stock/info/live", stockPricesResponseDto);
+            simpMessageSendingOperations.convertAndSend("/sub/stock/info/live", stockPricesResponseDto);
         } else {
             log.info("{}", payload);
         }
