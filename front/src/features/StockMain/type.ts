@@ -5,6 +5,8 @@ export interface IStock {
   stckPrpr: string;
   prdyVrss: string;
   prdyCtrt: string;
+  acmlTrPbmn: string;
+  acmlVol: string;
 }
 
 

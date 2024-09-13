@@ -63,7 +63,7 @@ export const HeartWrapper = styled.div`
 
 export const StockCardRow = styled.div`
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 0.5fr; /* 각 열의 너비를 설정 */
+  grid-template-columns: 2fr 1fr 1.5fr 1fr 1fr 0.5fr; /* 각 열의 너비를 설정 */
   text-align: center;
   align-items: center;
   width: 100%;
@@ -74,5 +74,29 @@ export const StockCardRow = styled.div`
 `;
 
 export const CategoryCardRow = styled(StockCardRow)`
-  grid-template-columns: repeat(6, 1fr); /* 각 열의 너비를 설정 */
+  grid-template-columns: repeat(5, 1fr); /* 각 열의 너비를 설정 */
+`;
+
+export const Text = styled.h1`
+  color: ${({ theme }) => theme.textColor};
+`;
+
+export const TextLeft = styled(Text)`
+  text-align: left;
+`;
+
+export const CategoryImgWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const CategoryImg = styled.img`
+  width: 3rem;
+`;
+
+export const CategoryData = styled(StockPrev)`
+  font-size: 1rem;
+  color: ${({ isPositive, theme }) =>
+    isPositive ? theme.stockBlue : theme.stockRed};
 `;

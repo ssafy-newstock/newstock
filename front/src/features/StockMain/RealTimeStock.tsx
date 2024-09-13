@@ -5,19 +5,24 @@ import {
   StockImage,
   StockPrev,
   StockTitle,
+  Text,
+  TextLeft,
 } from '@features/StockMain/styledComponent';
-import { Heart } from './Heart';
+import { Heart } from '@features/StockMain/Heart';
 import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
-import { IStock } from './type';
+import { formatUnit } from '@utils/formatUnit';
+import { IStock } from '@features/StockMain/type';
 
 export const RealTimeStockFirstRow = () => {
   return (
     <StockCardRow>
-      <div style={{ textAlign: 'start' }}>종목명</div>
-      <div>현재가</div>
-      <div>등락률</div>
-      <div>관심</div>
+      <TextLeft>종목명</TextLeft>
+      <Text>현재가</Text>
+      <Text>등락률</Text>
+      <Text>거래대금</Text>
+      <Text>거래량</Text>
+      <Text>관심</Text>
     </StockCardRow>
   );
 };
@@ -38,6 +43,8 @@ const RealTimeStock = ({stock}:{stock:IStock}) => {
           {formatChange(formatNumber(stock.prdyVrss))}원 ({stock.prdyCtrt}
           %)
         </StockPrev>
+        <Text>{formatUnit(stock.acmlTrPbmn)}</Text>
+        <Text>{formatNumber(stock.acmlVol)}주</Text>
         <Heart />
       </StockCardRow>
   );
