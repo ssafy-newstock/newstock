@@ -26,18 +26,71 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "500m"
-        volumeMounts:
-          - name: secret-volume
-            mountPath: "/etc/my-secrets"  # Secret 데이터가 이 경로에 마운트됩니다
-            readOnly: true
 
         env:
         - name: JAVA_OPTS
           value: "-Xms512m -Xmx1024m"  # 메모리 설정 등 스프링 부트 설정
-      volumes:
-        - name: secret-volume
-          secret:
-            secretName: secret-stock  # 참조할 Secret 이름
+        - name: KIS_TOKEN_URL
+          valueFrom:
+            secretKeyRef:
+              name: secret-stock
+              key: KIS_TOKEN_URL
+        - name: KIS_WEBSOCKET_TOKEN_URL
+          valueFrom:
+            secretKeyRef:
+              name: secret-stock
+              key: KIS_WEBSOCKET_TOKEN_URL
+        - name: KIS_STOCK_PRICE_URL
+          valueFrom:
+            secretKeyRef:
+              name: secret-stock
+              key: KIS_STOCK_PRICE_URL
+        - name: KIS_STOCK_INDUSTRY_URL
+          valueFrom:
+            secretKeyRef:
+              name: secret-stock
+              key: KIS_STOCK_INDUSTRY_URL
+        - name: APP_KEY1
+          valueFrom:
+            secretKeyRef:
+              name: secret-stock
+              key: APP_KEY1
+        - name: APP_SECRET1
+          valueFrom:
+            secretKeyRef:
+              name: secret-stock
+              key: APP_SECRET1
+        - name: APP_KEY2
+          valueFrom:
+            secretKeyRef:
+              name: secret-stock
+              key: APP_KEY2
+        - name: APP_SECRET2
+          valueFrom:
+            secretKeyRef:
+              name: secret-stock
+              key: APP_SECRET2
+        - name: APP_KEY3
+          valueFrom:
+            secretKeyRef:
+              name: secret-stock
+              key: APP_KEY3
+        - name: APP_SECRET3
+          valueFrom:
+            secretKeyRef:
+              name: secret-stock
+              key: APP_SECRET3
+        - name: KIS_STOCK_PRICE_TR_ID
+          valueFrom:
+            secretKeyRef:
+              name: secret-stock
+              key: KIS_STOCK_PRICE_TR_ID
+        - name: KIS_ENCRYPTION_KEY
+          valueFrom:
+            secretKeyRef:
+              name: secret-stock
+              key: KIS_ENCRYPTION_KEY
+
       imagePullSecrets:
         - name: ocirsecret
 ---
