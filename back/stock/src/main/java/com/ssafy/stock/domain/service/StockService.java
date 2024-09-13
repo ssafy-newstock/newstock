@@ -72,9 +72,8 @@ public class StockService {
                     .map(dto -> new StocksRedis(dto.getStockCode(), dto.getStockName(), dto.getStockIndustry()))
                     .collect(Collectors.toList());
 
-            List<String> excludedStockCodes = new ArrayList<>(stockNameMap.keySet());
             List<StocksRedis> filteredStocks = stocksRedis.stream()
-                    .filter(stock -> !excludedStockCodes.contains(stock.getStockCode())) // 상위 10개 종목 코드 제외
+                    .filter(stock -> !stockNameMap.containsKey(stock.getStockCode())) // 상위 10개 종목 코드 제외
                     .collect(Collectors.toList());
 
             stocksRedisRepository.saveAll(filteredStocks);
