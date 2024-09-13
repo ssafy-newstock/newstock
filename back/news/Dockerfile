@@ -5,7 +5,7 @@ FROM gradle:7.5.1-jdk17 AS build
 WORKDIR /app
 
 # Gradle 캐시를 활용하기 위해 필요한 파일만 먼저 복사합니다.
-COPY build.gradle settings.gradle /app/
+COPY build.gradle /app/
 
 # 종속성을 다운로드합니다.
 RUN gradle dependencies --no-daemon || true
