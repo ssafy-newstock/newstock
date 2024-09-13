@@ -12,10 +12,10 @@ interface AuthState {
 }
 
 // 로그인 함수의 파라미터 타입 정의
-interface LoginParams {
-  memberId: string;
-  memberName: string;
-}
+// interface LoginParams {
+//   memberId: string;
+//   memberName: string;
+// }
 
 const useAuthStore = create<AuthState>()(
   persist(
