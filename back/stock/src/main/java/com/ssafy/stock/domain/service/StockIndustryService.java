@@ -70,7 +70,7 @@ public class StockIndustryService {
     private final StockIndustryRedisRepository stockIndustryRedisRepository;
     private final KISTokenService kisTokenService;
 
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 600000)   // 10분 단위 갱신
     public void fetchDailyIndexPrice() {
         RestTemplate restTemplate = new RestTemplate();
         List<String> industryCodes1 = industryCodes.subList(0, industryCodes.size() / 2);
