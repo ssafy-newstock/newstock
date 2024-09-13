@@ -3,6 +3,7 @@ package com.ssafy.stock.global.token;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.stock.global.token.response.KISTokenResponse;
+import com.ssafy.stock.global.token.response.KISWebSocketTokenResponse;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,9 @@ public class KISTokenScheduler {
 
     @Value("${KIS_TOKEN_URL}")
     private String KIS_TOKEN_URL;
+
+    @Value("${KIS_WEBSOCKET_TOKEN_URL}")
+    private String KIS_WEBSOCKET_TOKEN_URL;
 
     @Value("${APP_KEY1}")
     private String APP_KEY1;
@@ -54,6 +58,7 @@ public class KISTokenScheduler {
         refreshToken("token1", APP_KEY1, APP_SECRET1);
         refreshToken("token2", APP_KEY2, APP_SECRET2);
         refreshToken("token3", APP_KEY3, APP_SECRET3);
+        refreshWebSocketToken("websocket", APP_KEY1, APP_SECRET1);
     }
 
     /**
@@ -62,10 +67,11 @@ public class KISTokenScheduler {
      */
     @Scheduled(cron = "0 30 8 * * ?")
     public void getToken() throws JsonProcessingException {
-        // 갱신할 세 개의 토큰을 각각 요청
+        // 갱신할 토큰을 각각 요청
         refreshToken("token1", APP_KEY1, APP_SECRET1);
         refreshToken("token2", APP_KEY2, APP_SECRET2);
         refreshToken("token3", APP_KEY3, APP_SECRET3);
+        refreshWebSocketToken("websocket", APP_KEY1, APP_SECRET1);
     }
 
     /**
@@ -108,6 +114,43 @@ public class KISTokenScheduler {
         } catch (Exception e) {
             e.printStackTrace();
             log.info("AccessToken API 요청 오류");
+        }
+    }
+
+    private void refreshWebSocketToken(String tokenName, String appKey, String appSecret) throws JsonProcessingException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set(HttpHeaders.CONTENT_TYPE, "application/json; charset=utf-8");
+
+        Map<String, String> body = new HashMap<>();
+        body.put("grant_type", "client_credentials");
+        body.put("appkey", appKey);
+        body.put("secretkey", appSecret);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonBody = objectMapper.writeValueAsString(body);
+
+        HttpEntity<String> request = new HttpEntity<>(jsonBody, headers);
+
+        try {
+            ResponseEntity<KISWebSocketTokenResponse> response = restTemplate.exchange(
+                    KIS_WEBSOCKET_TOKEN_URL, HttpMethod.POST, request, KISWebSocketTokenResponse.class);
+
+            if (response.getStatusCode() == HttpStatus.OK) {
+                KISWebSocketTokenResponse kisWebSocketTokenResponse = response.getBody();
+                if (kisWebSocketTokenResponse != null) {
+                    String webSocketAccessToken = kisWebSocketTokenResponse.getApprovalKey();
+                    tokenService.setAccessToken(tokenName, webSocketAccessToken); // 암호화하여 저장
+                    log.info("08:30 스케줄러 : {} 갱신 성공", tokenName);
+                } else {
+                    log.info("response가 null입니다.");
+                }
+            } else {
+                log.info("AccessToken 갱신 실패");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.info("Websocket AccessToken API 요청 오류");
         }
     }
 }
