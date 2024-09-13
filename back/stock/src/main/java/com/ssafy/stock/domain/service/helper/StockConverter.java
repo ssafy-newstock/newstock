@@ -1,7 +1,7 @@
 package com.ssafy.stock.domain.service.helper;
 
-import com.ssafy.stock.domain.entity.StocksPriceRedis;
-import com.ssafy.stock.domain.entity.StocksRedis;
+import com.ssafy.stock.domain.entity.Redis.StocksPriceRedis;
+import com.ssafy.stock.domain.entity.Redis.StocksRedis;
 import com.ssafy.stock.domain.service.response.StockPricesKisResponseDto;
 import com.ssafy.stock.domain.service.response.StockPricesOutputKisResponseDto;
 import com.ssafy.stock.domain.service.response.StockPricesResponseDto;
@@ -31,7 +31,7 @@ public class StockConverter {
     @Value("${KIS_STOCK_PRICE_TR_ID}")
     private String KIS_STOCK_PRICE_TR_ID;
 
-    private static final String webSocketKey = "75aee991-23d8-4c04-8153-0674b802d0de";
+    private static final String webSocketKey = "0a676997-8738-4a8a-9d9f-55162614d45c";
 
     private final RestTemplate restTemplate;
 
@@ -40,9 +40,12 @@ public class StockConverter {
                 .map(dto -> new StocksPriceRedis(
                         dto.getStockCode(),
                         dto.getStockName(),
+                        dto.getStockIndustry(),
                         dto.getStckPrpr(),
                         dto.getPrdyVrss(),
-                        dto.getPrdyCtrt()
+                        dto.getPrdyCtrt(),
+                        dto.getAcmlTrPbmn(),
+                        dto.getAcmlVol()
                 ))
                 .collect(Collectors.toList());
     }
@@ -51,17 +54,23 @@ public class StockConverter {
                                                                          StockPricesOutputKisResponseDto stockOutput) {
         return new StockPricesResponseDto(stockInfo.getStockCode(),
                 stockInfo.getStockName(),
+                stockInfo.getStockIndustry(),
                 stockOutput.getStckPrpr(),
                 stockOutput.getPrdyVrss(),
-                stockOutput.getPrdyCtrt());
+                stockOutput.getPrdyCtrt(),
+                stockOutput.getAcmlTrPbmn(),
+                stockOutput.getAcmlVol());
     }
 
-    public StockPricesResponseDto convertToStockPriceResponseDto(String stockCode, String stockName, String stckPrpr, String prdyVrss, String prdyCtrt) {
+    public StockPricesResponseDto convertToStockPriceResponseDto(String stockCode, String stockName, String stockIndustry, String stckPrpr, String prdyVrss, String prdyCtrt, String acmlTrPbmn, String acmlVol) {
         return new StockPricesResponseDto(stockCode,
                 stockName,
+                stockIndustry,
                 stckPrpr,
                 prdyVrss,
-                prdyCtrt);
+                prdyCtrt,
+                acmlTrPbmn,
+                acmlVol);
     }
 
     /**

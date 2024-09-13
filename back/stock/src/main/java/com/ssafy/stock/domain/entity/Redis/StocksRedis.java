@@ -1,4 +1,4 @@
-package com.ssafy.stock.domain.entity;
+package com.ssafy.stock.domain.entity.Redis;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -13,4 +13,6 @@ public class StocksRedis {
     private final String stockCode;
 
     private final String stockName;
+
+    private final String stockIndustry;
 }
