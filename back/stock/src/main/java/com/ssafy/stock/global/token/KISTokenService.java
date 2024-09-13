@@ -17,6 +17,7 @@ public class KISTokenService {
     private String encryptedAccessToken1;  // 암호화된 accessToken1
     private String encryptedAccessToken2;  // 암호화된 accessToken2
     private String encryptedAccessToken3;  // 암호화된 accessToken3
+    private String encryptedWebsocketAccessToken;  // 암호화된 accessToken3
 
     /**
      * 주어진 토큰을 암호화하여 저장합니다.
@@ -38,6 +39,10 @@ public class KISTokenService {
                 case "token3":
                     encryptedAccessToken3 = encryptedToken;
                     log.info("token3 암호화 및 저장 완료");
+                    break;
+                case "websocket":
+                    encryptedWebsocketAccessToken = encryptedToken;
+                    log.info("websocketToken 암호화 및 저장 완료");
                     break;
                 default:
                     log.error("알 수 없는 토큰 이름: {}", tokenName);
@@ -64,6 +69,9 @@ public class KISTokenService {
                     break;
                 case "token3":
                     encryptedToken = encryptedAccessToken3;
+                    break;
+                case "websocket":
+                    encryptedToken = encryptedWebsocketAccessToken;
                     break;
                 default:
                     log.error("알 수 없는 토큰 이름: {}", tokenName);

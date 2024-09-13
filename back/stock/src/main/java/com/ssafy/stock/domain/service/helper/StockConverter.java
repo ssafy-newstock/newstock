@@ -5,6 +5,7 @@ import com.ssafy.stock.domain.entity.Redis.StocksRedis;
 import com.ssafy.stock.domain.service.response.StockPricesKisResponseDto;
 import com.ssafy.stock.domain.service.response.StockPricesOutputKisResponseDto;
 import com.ssafy.stock.domain.service.response.StockPricesResponseDto;
+import com.ssafy.stock.global.token.KISTokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +35,7 @@ public class StockConverter {
     private static final String webSocketKey = "0a676997-8738-4a8a-9d9f-55162614d45c";
 
     private final RestTemplate restTemplate;
+    private final KISTokenService kisTokenService;
 
     public List<StocksPriceRedis> convertToStocksPriceRedisList(List<StockPricesResponseDto> allStockPrices) {
         return allStockPrices.stream()
@@ -128,7 +130,7 @@ public class StockConverter {
      */
     public Map<String, Object> setKisWebSocketRequest(String stockCode) {
         HashMap<String, String> header = new HashMap<>();
-        header.put("approval_key", webSocketKey);
+        header.put("approval_key", kisTokenService.getAccessToken("websocket"));
         header.put("custtype", "P");
         header.put("tr_type", "1");
         header.put("content-type", "utf-8");
