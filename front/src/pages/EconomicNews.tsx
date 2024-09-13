@@ -22,7 +22,7 @@ const EconomicNewsWrapper = styled.div`
   gap: 10px;
   align-self: stretch;
   border-radius: 33px;
-  background: #fff;
+  background: white;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 `;
 
