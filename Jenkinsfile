@@ -138,7 +138,7 @@ pipeline {
 //             }
             steps {
                 script {
-                    def deploymentPath = 'k8s/frontend/deployment-frontend.yaml'  // deploymentPath 정의
+                    def deploymentPath = 'k8s/frontend/deployment-front.yaml'  // deploymentPath 정의
                     sh """
                         sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
                         kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f ${deploymentPath}
