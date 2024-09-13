@@ -24,6 +24,8 @@ const EconomicNewsWrapper = styled.div`
   border-radius: 33px;
   background: white;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  width: 100%;
+  height: 100%;
 `;
 
 const EconomicNewsPage: React.FC = () => {
