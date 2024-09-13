@@ -1,8 +1,10 @@
 package com.ssafy.stock.domain.service;
 
 import com.ssafy.stock.domain.entity.Stocks;
-import com.ssafy.stock.domain.entity.StocksPriceRedis;
-import com.ssafy.stock.domain.entity.StocksRedis;
+import com.ssafy.stock.domain.entity.Redis.StocksPriceLiveRedis;
+import com.ssafy.stock.domain.entity.Redis.StocksPriceRedis;
+import com.ssafy.stock.domain.entity.Redis.StocksRedis;
+import com.ssafy.stock.domain.repository.StocksPriceLiveRedisRepository;
 import com.ssafy.stock.domain.repository.StocksPriceRedisRepository;
 import com.ssafy.stock.domain.repository.StocksRedisRepository;
 import com.ssafy.stock.domain.repository.StocksRepository;
@@ -10,6 +12,7 @@ import com.ssafy.stock.domain.service.helper.StockConverter;
 import com.ssafy.stock.domain.service.response.StockPricesKisResponseDto;
 import com.ssafy.stock.domain.service.response.StockPricesOutputKisResponseDto;
 import com.ssafy.stock.domain.service.response.StockPricesResponseDto;
+import com.ssafy.stock.global.token.KISTokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,16 +31,12 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.ssafy.stock.global.handler.KISSocketHandler.stockNameMap;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class StockService {
-
-    @Value("${ACCESS_TOKEN1}")
-    private String ACCESS_TOKEN1;
-
-    @Value("${ACCESS_TOKEN2}")
-    private String ACCESS_TOKEN2;
 
     @Value("${APP_KEY1}")
     private String APP_KEY1;
@@ -55,9 +54,11 @@ public class StockService {
 
     private final StocksRepository stocksRepository;
     private final StocksRedisRepository stocksRedisRepository;
+    private final StocksPriceLiveRedisRepository stocksPriceLiveRedisRepository;
     private final StocksPriceRedisRepository stocksPriceRedisRepository;
     private final SimpMessageSendingOperations simpMessageSendingOperations;
     private final StockConverter stockConverter;
+    private final KISTokenService kisTokenService;
 
     // 종목 정보 조회 전략 : Redis 캐시메모리 사용
     @Cacheable(cacheNames = "stocksInfo", cacheManager = "cacheManager")
@@ -68,17 +69,21 @@ public class StockService {
             List<Stocks> stocks = stocksRepository.findAll();
 
             stocksRedis = stocks.stream()
-                    .map(dto -> new StocksRedis(dto.getStockCode(), dto.getStockName()))
+                    .map(dto -> new StocksRedis(dto.getStockCode(), dto.getStockName(), dto.getStockIndustry()))
                     .collect(Collectors.toList());
 
-            stocksRedisRepository.saveAll(stocksRedis);
+            List<StocksRedis> filteredStocks = stocksRedis.stream()
+                    .filter(stock -> !stockNameMap.containsKey(stock.getStockCode())) // 상위 10개 종목 코드 제외
+                    .collect(Collectors.toList());
+
+            stocksRedisRepository.saveAll(filteredStocks);
         }
         return stocksRedis;
     }
 
     /**
      * 30초 단위 코스피 958개 정보 갱신
-     * 갱신 목록 : 주식 현재가, 전일 대비, 전일 대비율
+     * 갱신 목록 : 주식 현재가, 전일 대비, 전일 대비율, 누적 거래량, 누적 거래 대금
      */
     @Scheduled(fixedDelay = 10000)
     public void fetchStockPrices() {
@@ -87,8 +92,8 @@ public class StockService {
         List<StocksRedis> stockCodes2 = stocksInfo.subList(stocksInfo.size() / 2, stocksInfo.size());
 
         ExecutorService executor = Executors.newFixedThreadPool(2);
-        CompletableFuture<List<StockPricesResponseDto>> future1 = CompletableFuture.supplyAsync(() -> getStockPrices(stockCodes1, ACCESS_TOKEN1, APP_KEY1, APP_SECRET1), executor);
-        CompletableFuture<List<StockPricesResponseDto>> future2 = CompletableFuture.supplyAsync(() -> getStockPrices(stockCodes2, ACCESS_TOKEN2, APP_KEY2, APP_SECRET2), executor);
+        CompletableFuture<List<StockPricesResponseDto>> future1 = CompletableFuture.supplyAsync(() -> getStockPrices(stockCodes1, "Bearer " + kisTokenService.getAccessToken("token1"), APP_KEY1, APP_SECRET1), executor);
+        CompletableFuture<List<StockPricesResponseDto>> future2 = CompletableFuture.supplyAsync(() -> getStockPrices(stockCodes2, "Bearer " + kisTokenService.getAccessToken("token2"), APP_KEY2, APP_SECRET2), executor);
 
         try{
             List<StockPricesResponseDto> allStockPrices = Stream.of(future1, future2)
@@ -165,5 +170,9 @@ public class StockService {
 
     public Iterable<StocksPriceRedis> getStocksPriceRedis(){
         return stocksPriceRedisRepository.findAll();
+    }
+
+    public Iterable<StocksPriceLiveRedis> getStocksPriceLiveRedis() {
+        return stocksPriceLiveRedisRepository.findAll();
     }
 }

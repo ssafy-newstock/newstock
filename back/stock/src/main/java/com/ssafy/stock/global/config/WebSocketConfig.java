@@ -1,5 +1,7 @@
 package com.ssafy.stock.global.config;
 
+import com.ssafy.stock.domain.repository.StocksPriceLiveRedisRepository;
+import com.ssafy.stock.domain.repository.StocksPriceRedisRepository;
 import com.ssafy.stock.domain.service.helper.StockConverter;
 import com.ssafy.stock.global.handler.KISSocketHandler;
 import org.springframework.context.annotation.Bean;
@@ -23,10 +25,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final SimpMessageSendingOperations simpMessageSendingOperations;
     private final StockConverter stockConverter;
+    private final StocksPriceLiveRedisRepository stocksPriceLiveRedisRepository;
 
-    public WebSocketConfig(@Lazy SimpMessageSendingOperations simpMessageSendingOperations, @Lazy StockConverter stockConverter) {
+    public WebSocketConfig(@Lazy SimpMessageSendingOperations simpMessageSendingOperations, @Lazy StockConverter stockConverter, StocksPriceLiveRedisRepository stocksPriceLiveRedisRepository, StocksPriceRedisRepository stocksPriceRedisRepository) {
         this.simpMessageSendingOperations = simpMessageSendingOperations;
         this.stockConverter = stockConverter;
+        this.stocksPriceLiveRedisRepository = stocksPriceLiveRedisRepository;
     }
 
     @Override
@@ -46,7 +50,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Bean
     public WebSocketConnectionManager webSocketConnectionManager() {
         WebSocketClient webSocketClient = new StandardWebSocketClient();
-        WebSocketHandler handler = new KISSocketHandler(simpMessageSendingOperations, stockConverter);
+        WebSocketHandler handler = new KISSocketHandler(simpMessageSendingOperations, stockConverter, stocksPriceLiveRedisRepository);
 
         WebSocketConnectionManager manager = new WebSocketConnectionManager(webSocketClient,
                 handler,
