@@ -26,10 +26,18 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "500m"
+        volumeMounts:
+          - name: secret-volume
+            mountPath: "/etc/my-secrets"  # Secret 데이터가 이 경로에 마운트됩니다
+            readOnly: true
 
         env:
         - name: JAVA_OPTS
           value: "-Xms512m -Xmx1024m"  # 메모리 설정 등 스프링 부트 설정
+      volumes:
+        - name: secret-volume
+          secret:
+            secretName: secret-stock  # 참조할 Secret 이름
       imagePullSecrets:
         - name: ocirsecret
 ---
