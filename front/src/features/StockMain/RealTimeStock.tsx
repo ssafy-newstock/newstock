@@ -39,7 +39,6 @@ const RealTimeStock = ({stock}:{stock:IStock}) => {
         </StockTitle>
         <StckPrice>{formatChange(formatNumber(stock.stckPrpr))}원</StckPrice>
         <StockPrev isPositive={stock.prdyVrss.startsWith('-')}>
-          <SpanTag>어제보다</SpanTag>{' '}
           {formatChange(formatNumber(stock.prdyVrss))}원 ({stock.prdyCtrt}
           %)
         </StockPrev>
