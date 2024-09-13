@@ -70,7 +70,7 @@ public class StockIndustryService {
     private final StockIndustryRedisRepository stockIndustryRedisRepository;
     private final KISTokenService kisTokenService;
 
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 600000)   // 10분 단위 갱신
     public void fetchDailyIndexPrice() {
         RestTemplate restTemplate = new RestTemplate();
         List<String> industryCodes1 = industryCodes.subList(0, industryCodes.size() / 2);
@@ -103,7 +103,7 @@ public class StockIndustryService {
         stockIndustryRedisRepository.saveAll(stockIndustryRedisList);
 
         log.info("스케줄러 : 종목 카테고리 정보 갱신 성공");
-        simpMessageSendingOperations.convertAndSend("/api/stock/sub/stock/industry/info", stockIndustryResponses);
+        simpMessageSendingOperations.convertAndSend("/sub/stock/industry/info", stockIndustryResponses);
     }
 
     private void fetchIndustryData(RestTemplate restTemplate, HttpHeaders headers, List<String> industryCodes, ArrayList<StockIndustryResponse> stockIndustryResponses) {

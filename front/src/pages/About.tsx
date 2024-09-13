@@ -1,5 +1,15 @@
+import { Center } from '@components/Center';
+import { Right } from '@components/Right';
+import LeftNews from '@components/LeftNews';
+
 const About = () => {
-  return <div>About</div>;
+  return (
+    <>
+      <LeftNews />
+      <Center />
+      <Right />
+    </>
+  );
 };
 
 export default About;
