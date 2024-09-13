@@ -1,4 +1,3 @@
-import React from 'react';
 import CalendarIcon from './CalendarIcon';
 import {
   CenterMenu,

@@ -1,4 +1,3 @@
-import CenterCard from './CenterNewsCard';
 import CenterScrapCard from './CenterScrapCard';
 import {
   CenterContentSection,

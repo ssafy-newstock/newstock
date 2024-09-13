@@ -56,7 +56,7 @@ const LeftStock: React.FC = () => {
     <LeftDiv>
       <SubNav>
         <TextDiv>
-          <TextTitle>뉴스</TextTitle>
+          <TextTitle>주식</TextTitle>
         </TextDiv>
         <TextDiv
           onClick={() => navigate('/allStock')}

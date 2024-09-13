@@ -1,4 +1,3 @@
-import React from 'react';
 import NewsSection from './NewsSection';
 import ScrapSection from './ScrapSection';
 import { CenterContentDiv } from './StyledComponent';

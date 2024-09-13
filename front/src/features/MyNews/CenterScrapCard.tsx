@@ -1,4 +1,3 @@
-import React from 'react';
 import AshbhIcon from './AshbhIcon';
 import {
   CardBottomContainer,
