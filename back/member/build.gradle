@@ -6,7 +6,6 @@ plugins {
 
 group = 'com.ssafy'
 version = '0.0.1-SNAPSHOT'
-
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
@@ -51,4 +50,8 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+bootJar {
+    archiveBaseName = 'member'
 }
