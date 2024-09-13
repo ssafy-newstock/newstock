@@ -1,5 +1,4 @@
 import {
-  SpanTag,
   StckPrice,
   StockCardRow,
   StockImage,
