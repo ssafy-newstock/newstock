@@ -1,7 +1,6 @@
 from fastapi import FastAPI, HTTPException, status
 from config.settings import settings
 
-from newstock_scraper.test import *
 from newstock_scraper.stock_list import StockListScraper
 from newstock_scraper.stock_limit import StockNewsLimitScraper
 from newstock_scraper.news_metadata import StockNewsMetadataScraper, IndustryNewsMetadataScraper
@@ -20,7 +19,7 @@ app = FastAPI(
 # 기본 엔드포인트 정의
 @app.get("/")
 def read_root():
-    return {"message": f"{check()}"}
+    return {"message": "hello"}
 
 
 # TODO : URI 바꾸기 => /check/table

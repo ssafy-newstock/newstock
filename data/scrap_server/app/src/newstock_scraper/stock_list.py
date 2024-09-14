@@ -6,8 +6,11 @@ import pandas as pd
 from datetime import datetime, timedelta
 from io import StringIO
 import base64
-from newstock_scraper.settings import Setting
+from newstock_scraper.settings import Setting, LoggingConfig
 
+# 로그 세팅
+logger = LoggingConfig()
+logger.setup_logging()
 
 class StockListScraper:
     def __init__(self) -> None:
