@@ -81,7 +81,7 @@ class StockNewsMetadataScraper:
     
     # 2.
     def fetch_news_for_all(self) -> None:
-        stock_codes = self.stock_info_df['stock_code'].tolist()[:4]
+        stock_codes = self.stock_info_df['stock_code'].tolist()
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
             futures = {executor.submit(self.process_stock_code, stock_code): stock_code for stock_code in stock_codes}
             
