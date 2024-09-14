@@ -8,7 +8,12 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 from tqdm import tqdm
-from newstock_scraper.settings import Setting
+from newstock_scraper.settings import Setting, LoggingConfig
+
+# 로그 세팅
+
+logger = LoggingConfig()
+logger.setup_logging()
 
 URL = f"https://finance.daum.net/content/news"
 DEFAULT_PER_PAGE = 100
@@ -84,8 +89,19 @@ class StockNewsLimitScraper:
         # 추출한 total page 가지고 끝 페이지 탐색
         response_end = self.request_daum_stock(stock_code, end_page).json()
         
-        start_date_str = response_start['data'][0]['createdAt']
-        end_date_str = response_end['data'][0]['createdAt']
+        start_date_str = ""
+        end_date_str = ""
+
+        # 데이터가 100개가 초과되면 다른페이지로 넘어가므로
+        if start_page != end_page:
+            start_date_str = response_start['data'][0]['createdAt']
+            end_date_str = response_end['data'][0]['createdAt']
+        
+        # 응답 데이터가 100개 이하여서 1페이지만 응답받을 수 있음
+        else:
+            start_date_str = response_start['data'][0]['createdAt']
+            end_date_str = response_end['data'][-1]['createdAt']
+
         
         start_date = datetime.strptime(start_date_str, "%Y-%m-%d %H:%M:%S").date()
         end_date = datetime.strptime(end_date_str, "%Y-%m-%d %H:%M:%S").date()
@@ -117,7 +133,6 @@ class StockNewsLimitScraper:
         return index, start_date, end_date
     
     def get_stocknews_limit(self):
-
         # ThreadPoolExecutor를 사용하여 병렬 처리
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
             # 작업을 제출하고 진행 상황을 tqdm으로 모니터링
@@ -128,12 +143,7 @@ class StockNewsLimitScraper:
                 self.stock_info_df.at[index, 'end_date'] = end_date
                 
                 # 혹시 모를 과열을 위해서 이렇게 해놓자
-                time.sleep(0.1)
-        
-        # 데이터 저장
-        # self.save_stocknews_limit()
-        print("데이터 저장 완료!")
-        
+                time.sleep(0.1)    
     
     def save_data(self):
         try:
@@ -169,20 +179,15 @@ class StockNewsLimitScraper:
             self.session.close()
 
     def get_news_limit(self):
-        try:
-            # stock code 데이터 불러오기
-            rows = self.load_stock_code()
-            # stock info df 설정
-            self.set_stock_info_df(rows)
-            # 데이터 수집
-            self.get_stocknews_limit()
-            # db에 저장
-            self.save_data()
 
-            logging.info("Getting Stock Limit date completed successfully.")
-            return True
-        
-        except Exception as e:
-            logging.error(f"An error occurred during get news limit: {e}")
-            return False
+        # stock code 데이터 불러오기
+        rows = self.load_stock_code()
+        # stock info df 설정
+        self.set_stock_info_df(rows)
+        # 데이터 수집
+        self.get_stocknews_limit()
+        # db에 저장
+        self.save_data()
+
+        logging.info("Getting Stock Limit date completed successfully.")
             

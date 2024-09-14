@@ -1,11 +1,18 @@
 from fastapi import FastAPI, HTTPException, status
 from config.settings import settings
-
-from newstock_scraper.test import *
+import traceback
+import logging
 from newstock_scraper.stock_list import StockListScraper
 from newstock_scraper.stock_limit import StockNewsLimitScraper
-from newstock_scraper.settings import Setting
+from newstock_scraper.news_metadata import StockNewsMetadataScraper, IndustryNewsMetadataScraper
+from newstock_scraper.news_scraper import NewsScraper
+from newstock_scraper.settings import Setting, LoggingConfig
+from pydantic import BaseModel, validator
+from datetime import datetime
 
+# 로그 세팅
+logger = LoggingConfig()
+logger.setup_logging()
 
 # FastAPI 애플리케이션 인스턴스 생성
 app = FastAPI(
@@ -13,10 +20,11 @@ app = FastAPI(
     description=settings.DESCRIPTION,
 )
 
+
 # 기본 엔드포인트 정의
 @app.get("/")
 def read_root():
-    return {"message": f"{check()}"}
+    return {"message": "hello"}
 
 
 # TODO : URI 바꾸기 => /check/table
@@ -52,39 +60,117 @@ def create_table():
 def download_stock_list():
     scraper = StockListScraper()
     
-    download_result = scraper.get_stock_list()
+    try:
+        scraper.get_stock_list()
+        create_response("success", status.HTTP_200_OK, "Successfully Downloaded Stock List")
 
-    if download_result:
-        return create_response("success", status.HTTP_200_OK, "Successfully Downloaded Stock List")
-    else:
-        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to Downloaded Stock List")
-    
+    except Exception as e:
+        logging.error(e)
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to Downloaded Stock List with error {e}")
+
+
 @app.get('/limit/check')
 def check_limit_date():
     scraper = StockNewsLimitScraper()
-    check_result = scraper.check_limit_exist()
-    print(check_result)
 
-    if check_result:
-        return create_response("success", status.HTTP_200_OK, "Start date, end date limit exist")
-    else:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Start date, end date limit not found")
-
+    try:
+        check_result = scraper.check_limit_exist()
+        if check_result:
+            return create_response("success", status.HTTP_200_OK, "Start date, end date limit exist")
+        else:
+            raise HTTPException(status.HTTP_404_NOT_FOUND, f"Start date, end date limit not found")
+        
+    except Exception as e:
+        logging.error(e)
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to Check Stock limit with error {e}")
 
 # 뉴스 검색 범위인 start_date, end_date 검색 여부 확인
 @app.post('/limit/download')
 def check_date():
     scraper = StockNewsLimitScraper()
 
-    limit_result = scraper.get_news_limit()
-
-    if limit_result:
+    try:
+        scraper.get_news_limit()
         return create_response("success", status.HTTP_200_OK, "Successfully Downloaded Stock List")
-    else:
-        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to Downloaded Stock List")
+    
+    except Exception as e:
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to Downloaded Stock List with error {e}")
 
 
+# 요청 본문을 정의하는 Pydantic 모델
+class StockMetadataRequest(BaseModel):
+    start_date: str
+    end_date: str
 
+    @validator('start_date', 'end_date')
+    def check_date_format(cls, value):
+        try:
+            print(value)
+            datetime.strptime(value, '%Y-%m-%d')
+        except ValueError:
+            raise ValueError('Incorrect date format, should be YYYY-MM-DD')
+        return value
+
+# 종목뉴스 메타데이터 스크래핑
+@app.post('/stock/metadata')
+def scrap_stock_metadata(request: StockMetadataRequest):
+    scraper = StockNewsMetadataScraper()
+
+    # start_date와 end_date를 파라미터로 전달
+    try:
+        scraper.get_news_metadata(params={"start_date": request.start_date, "end_date": request.end_date})
+        return create_response("success", status.HTTP_200_OK, "Successfully scrapped Stock Metadata")
+    
+    except Exception as e:
+        # logging.error(e)
+        logging.error("An error occurred: %s", traceback.format_exc())
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to scrap Stock Metadata with error {e}")
+
+# 시황뉴스 메타데이터 스크래핑
+@app.post('/industry/metadata')
+def scrap_stock_metadata(request: StockMetadataRequest):
+    scraper = IndustryNewsMetadataScraper()
+
+    # start_date와 end_date를 파라미터로 전달
+    try:
+        scraper.get_industry_news_metadata(params={"start_date": request.start_date, "end_date": request.end_date})
+        return create_response("success", status.HTTP_200_OK, "Successfully scrapped Industry Metadata")
+    
+    except Exception as e:
+        logging.error(e)
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to scrap Industry Metadata with error {e}")
+
+# 종목뉴스 본문 스크레이핑
+@app.post('/stock/news')
+def scrap_stock_metadata(request: StockMetadataRequest):
+    scraper = NewsScraper()
+
+    try:
+    # start_date와 end_date를 파라미터로 전달
+        scraper.get_news_article(get_stock=True,
+                                 params={"start_date": request.start_date, "end_date": request.end_date})
+        
+        return create_response("success", status.HTTP_200_OK, "Successfully scrapped Stock Metadata")
+    
+    except Exception as e:
+        logging.error(e)
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to scrap Stock Metadata with error {e}")
+
+# 시황뉴스 본문 스크레이핑
+@app.post('/industry/news')
+def scrap_stock_metadata(request: StockMetadataRequest):
+    scraper = NewsScraper()
+
+    try:
+    # start_date와 end_date를 파라미터로 전달
+        scraper.get_news_article(get_stock=False,
+                                 params={"start_date": request.start_date, "end_date": request.end_date})
+        
+        return create_response("success", status.HTTP_200_OK, "Successfully scrapped Stock Metadata")
+    
+    except Exception as e:
+        logging.error(e)
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to scrap Stock Metadata with error {e}")
 
 def create_response(status: str, code: int, message: str, data=None):
     return {
