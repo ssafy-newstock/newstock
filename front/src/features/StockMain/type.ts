@@ -9,7 +9,6 @@ export interface IStock {
   acmlVol: string;
 }
 
-
 export interface ICategory {
   category: {
     industryName: string;
@@ -19,4 +18,8 @@ export interface ICategory {
     acmlTrPbmn: string;
   };
   imageUrl: string;
+}
+
+export interface IMore {
+  path: string;
 }

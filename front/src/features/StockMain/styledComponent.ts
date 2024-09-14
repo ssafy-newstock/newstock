@@ -1,5 +1,16 @@
 import styled from 'styled-components';
 
+export const StockHeader = styled.div`
+font-size: 1.5rem;
+font-weight: bold;
+margin: 1.25rem;
+padding: 0rem 0.625rem;
+`;
+
+export const StockHeaderMore = styled(StockHeader)`
+  margin: 1.25rem 1.25rem 0rem;
+`;
+
 export const StockCardColumn = styled.div`
   display: flex;
   flex-direction: column;
@@ -7,10 +18,10 @@ export const StockCardColumn = styled.div`
   align-items: start;
   width: 100%;
   gap: 1rem;
-  padding: 10px;
-  border-radius: 20px;
+  padding: 0.6rem;
+  border-radius: 1.25rem;
   background-color: ${({ theme }) => theme.stockBackgroundColor};
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
 `;
 
 export const StockCardTitle = styled.div`
@@ -25,7 +36,7 @@ export const StockTitle = styled.div`
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: bold;
 
   // 한줄로 넘칠 경우 ...으로 표시
@@ -67,17 +78,18 @@ export const StockCardRow = styled.div`
   text-align: center;
   align-items: center;
   width: 100%;
-  padding: 10px 20px;
-  border-radius: 20px;
+  padding: 0.5rem 1.25rem;
+  border-radius: 1.25rem;
   background-color: ${({ theme }) => theme.stockBackgroundColor};
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
 `;
 
 export const CategoryCardRow = styled(StockCardRow)`
   grid-template-columns: repeat(5, 1fr); /* 각 열의 너비를 설정 */
 `;
 
-export const Text = styled.h1`
+export const Text = styled.div`
+  font-size: 1rem;
   color: ${({ theme }) => theme.textColor};
 `;
 

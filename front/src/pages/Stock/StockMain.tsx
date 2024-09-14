@@ -2,13 +2,14 @@ import { Center } from '@components/Center';
 import LeftStock from '@components/LeftStock';
 import { categoryImage, categoryStock } from '@features/StockMain/category';
 import styled from 'styled-components';
-import StockHeader from '@features/StockMain/StockHeader';
+import {StockHeader, StockHeaderMore} from '@features/StockMain/styledComponent';
 import FavoriteStock from '@features/StockMain/FavoriteStock';
 import { IStock } from '@features/StockMain/type';
 import { RealTimeStockFirstRow } from '@features/StockMain/RealTimeStock';
 import RealTimeStock from '@features/StockMain/RealTimeStock';
 import { CategoryFirstRow } from '@features/StockMain/categories';
 import Categories from '@features/StockMain/categories';
+import More from '@features/StockMain/More';
 
 const stockData = [
   {
@@ -50,20 +51,21 @@ const HrTag = styled.hr`
 const StockGridColumn = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 20px;
-  margin: 20px;
-  padding: 0px 10px;
+  gap: 1.25rem;
+  margin: 1.25rem;
+  padding: 0rem 1.125rem;
 `;
 
 const StockGridRow = styled.div`
   display: grid;
   grid-template-rows: repeat(auto-fill, minmax(50px, 1fr));
-  gap: 5px;
-  margin: 20px;
-  padding: 0px 10px;
+  gap: 0.25rem;
+  margin: 1.25rem;
+  padding: 0rem 1.125rem;
 `;
 
 const StockMainPage = () => {
+
   return (
     <>
       <LeftStock />
@@ -76,7 +78,8 @@ const StockMainPage = () => {
           ))}
         </StockGridColumn>
 
-        <StockHeader>실시간 차트</StockHeader>
+        <StockHeaderMore>실시간 차트</StockHeaderMore>
+        <More path='/all-stock'/>
         <HrTag />
         <StockGridRow>
           <RealTimeStockFirstRow />
@@ -85,7 +88,8 @@ const StockMainPage = () => {
           ))}
         </StockGridRow>
 
-        <StockHeader>카테고리</StockHeader>
+        <StockHeaderMore>카테고리</StockHeaderMore>
+        <More path='/section-stock'/>
         <HrTag />
         <StockGridRow>
           <CategoryFirstRow />
