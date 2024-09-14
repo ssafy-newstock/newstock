@@ -11,6 +11,26 @@ export const StockHeaderMore = styled(StockHeader)`
   margin: 1.25rem 1.25rem 0rem;
 `;
 
+export const HrTag = styled.hr`
+  width: 95%;
+`;
+
+export const StockGridColumn = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.25rem;
+  margin: 1.25rem;
+  padding: 0rem 1.125rem;
+`;
+
+export const StockGridRow = styled.div`
+  display: grid;
+  grid-template-rows: repeat(auto-fill, minmax(50px, 1fr));
+  gap: 0.25rem;
+  margin: 1.25rem;
+  padding: 0rem 1.125rem;
+`;
+
 export const StockCardColumn = styled.div`
   display: flex;
   flex-direction: column;

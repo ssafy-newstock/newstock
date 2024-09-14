@@ -7,7 +7,6 @@ const AllStockPage = () => {
     <>
       <LeftStock />
       <Center>
-
       </Center>
       <Right />
     </>

@@ -1,8 +1,13 @@
 import { Center } from '@components/Center';
 import LeftStock from '@components/LeftStock';
 import { categoryImage, categoryStock } from '@features/Stock/category';
-import styled from 'styled-components';
-import { StockHeader, StockHeaderMore } from '@features/Stock/styledComponent';
+import {
+  HrTag,
+  StockGridColumn,
+  StockGridRow,
+  StockHeader,
+  StockHeaderMore,
+} from '@features/Stock/styledComponent';
 import FavoriteStock from '@features/Stock/StockMain/FavoriteStock';
 import { IStock } from '@features/Stock/types';
 import { RealTimeStockFirstRow } from '@features/Stock/StockMain/RealTimeStock';
@@ -43,26 +48,6 @@ const stockData = [
     acmlVol: '111',
   },
 ];
-
-const HrTag = styled.hr`
-  width: 95%;
-`;
-
-const StockGridColumn = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1.25rem;
-  margin: 1.25rem;
-  padding: 0rem 1.125rem;
-`;
-
-const StockGridRow = styled.div`
-  display: grid;
-  grid-template-rows: repeat(auto-fill, minmax(50px, 1fr));
-  gap: 0.25rem;
-  margin: 1.25rem;
-  padding: 0rem 1.125rem;
-`;
 
 const StockMainPage = () => {
   return (
