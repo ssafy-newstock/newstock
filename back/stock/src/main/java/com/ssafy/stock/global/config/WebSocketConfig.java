@@ -30,18 +30,18 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public WebSocketConfig(@Lazy SimpMessageSendingOperations simpMessageSendingOperations, @Lazy StockConverter stockConverter, StocksPriceLiveRedisRepository stocksPriceLiveRedisRepository, StocksPriceRedisRepository stocksPriceRedisRepository) {
         this.simpMessageSendingOperations = simpMessageSendingOperations;
         this.stockConverter = stockConverter;
-        this.stocksPriceLiveRedisRepository = stocksPriceLiveRedisRepository;
+            this.stocksPriceLiveRedisRepository = stocksPriceLiveRedisRepository;
     }
 
     @Override
     public void configureMessageBroker(final MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/sub");
-        registry.setApplicationDestinationPrefixes("/pub");
+        registry.enableSimpleBroker("/api/stock/sub");
+        registry.setApplicationDestinationPrefixes("/api/stock/pub");
     }
 
     @Override
     public void registerStompEndpoints(final StompEndpointRegistry registry) {
-        registry.addEndpoint("/websocket")
+        registry.addEndpoint("/api/stock/websocket")
                 .setAllowedOrigins("http://localhost:3000",
                         "http://localhost:5173")
                 .withSockJS();

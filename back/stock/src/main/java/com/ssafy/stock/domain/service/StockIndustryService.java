@@ -103,7 +103,7 @@ public class StockIndustryService {
         stockIndustryRedisRepository.saveAll(stockIndustryRedisList);
 
         log.info("스케줄러 : 종목 카테고리 정보 갱신 성공");
-        simpMessageSendingOperations.convertAndSend("/sub/stock/industry/info", stockIndustryResponses);
+        simpMessageSendingOperations.convertAndSend("/api/sub/stock/industry/info", stockIndustryResponses);
     }
 
     private void fetchIndustryData(RestTemplate restTemplate, HttpHeaders headers, List<String> industryCodes, ArrayList<StockIndustryResponse> stockIndustryResponses) {
