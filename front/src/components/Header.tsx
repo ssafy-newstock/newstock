@@ -34,7 +34,7 @@ const User = styled.div`
   gap: 1rem;
   background-color: ${({ theme }) => theme.profileBackgroundColor};
   border-radius: 1.25rem;
-  box-shadow: 0rem 0.25rem 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
+  box-shadow: 0rem 0.1rem 0.1rem 0.1rem rgba(0, 0, 0, 0.25);
   min-height: 2.5rem;
 `;
 
