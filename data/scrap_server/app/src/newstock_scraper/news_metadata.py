@@ -305,8 +305,8 @@ class StockNewsMetadataScraper:
             total_dict = {
                 'newsDate': date_str,
                 'collectDate': self.current_datetime,
-                'totalCnt': len(news_by_date[date_str]),
-                'data': news_by_date[date_str] 
+                'totalCnt': len(news_by_date[date_str]) if date_str in news_by_date else 0, # 없는 경우도 존재하므로
+                'data': news_by_date.get(date_str, [])
             }
 
             
