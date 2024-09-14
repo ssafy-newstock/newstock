@@ -25,6 +25,7 @@ const StockFrame = styled.div`
   height: 30px;
   border: 2px solid #fff;
   flex-shrink: 0;
+  cursor: pointer;
 `;
 
 // Navbar 컴포넌트
@@ -60,14 +61,13 @@ const Navbar: React.FC = () => {
           fill="white"
         />
       </svg>
-      <StockFrame>
+      <StockFrame onClick={() => navigate('/stock-main')}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="30"
           height="11"
           viewBox="0 0 37 18"
           fill="none"
-          onClick={() => navigate('/stock-main')}
           style={{ cursor: 'pointer' }}
         >
           <path
