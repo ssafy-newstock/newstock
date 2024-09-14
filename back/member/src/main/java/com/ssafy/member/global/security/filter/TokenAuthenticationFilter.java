@@ -31,11 +31,11 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         String requestURI = request.getRequestURI();
 
-        if ("/login".equals(requestURI)) {
+        if ("/api/member/login".equals(requestURI)) {
             filterChain.doFilter(request, response);
             return;
         }
-        if (requestURI.startsWith("/test/")) {
+        if (requestURI.startsWith("/api/member/test/")) {
             filterChain.doFilter(request, response);
             return;
         }
