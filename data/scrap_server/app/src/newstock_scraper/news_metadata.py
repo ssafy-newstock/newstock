@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup, Comment
 from tqdm import tqdm
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
-from newstock_scraper.settings import Setting, S3Connection
+from newstock_scraper.settings import Setting, S3Connection, LoggingConfig
 
 
 URL = f"https://finance.daum.net/content/news"
@@ -20,14 +20,10 @@ DEFAULT_PER_PAGE = 100
 DEFAULT_CATEGORY = "economy"
 CURRENT_DATE= datetime.now().strftime("%Y%m%d")
 
-# 로그 설정
-logging.basicConfig(
-    level=logging.INFO,  # 로그 레벨을 INFO로 설정
-    format="%(asctime)s - %(levelname)s - %(message)s",  # 로그 출력 포맷
-    handlers=[
-        logging.StreamHandler()  # 콘솔에 로그를 출력하기 위한 핸들러
-    ]
-)
+# 로그 세팅
+logger = LoggingConfig()
+logger.setup_logging()
+
 
 class StockNewsMetadataScraper:
     """
@@ -85,7 +81,7 @@ class StockNewsMetadataScraper:
     
     # 2.
     def fetch_news_for_all(self) -> None:
-        stock_codes = self.stock_info_df['stock_code'].tolist()
+        stock_codes = self.stock_info_df['stock_code'].tolist()[:4]
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
             futures = {executor.submit(self.process_stock_code, stock_code): stock_code for stock_code in stock_codes}
             
@@ -100,58 +96,124 @@ class StockNewsMetadataScraper:
     def get_news_list(self, stock_code: str) -> None:
         # Extract row for the given stock_code
         df_row = self.stock_info_df[self.stock_info_df['stock_code'] == stock_code].squeeze()
-        
+        logging.info(f"{stock_code} 체크")
         if self.can_scrap(df_row):
+            logging.info(f"{stock_code} 수집 대상자이므로 수집 시작")
             current_page = df_row['last_searched_page']
             recent_news_id = df_row['recent_news_id']
             old_news_id = df_row['old_news_id']
+
+            # 만약 지금 찾으려는 날짜가 db에 저장된 최신 데이터보다 크면
+            date_format = "%Y%m%d"
+            # 지금까지 수집한 것들 중 가장 최신 데이터의 날짜
+            recent_news_date = datetime.strptime(recent_news_id[:8], date_format).date()
             
             is_continued = True
-            while is_continued:
-                response = self.request_daum_stock(stock_code, current_page)
-                if response.status_code == 200:
-                    response_json = response.json()
-                    news_data = response_json.get('data', [])
-                    
-                    if not news_data:
-                        logging.info(f"No more news data available for {stock_code} on page {current_page}.")
-                        break
-                    
-                    for news_item in news_data:
-                        news_id = news_item['newsId']
-                        news_date = datetime.strptime(news_item['createdAt'], "%Y-%m-%d %H:%M:%S").date()
-                        
-                        if news_date < self.end_date:
-                            logging.info(f"Ending news search for {stock_code} as end_date exceeded.")
-                            is_continued = False
-                            break
-                        elif news_date > self.start_date:
-                            continue
-                        else:
-                            first_news_id = news_item['newsId']
-                            if pd.isna(recent_news_id):
-                                recent_news_id = first_news_id
-                            
-                            if not pd.isna(old_news_id) and old_news_id <= news_id:
-                                continue
-                            elif news_id in self.news_id_dict:
-                                self.news_id_dict[news_id]['stock_codes'].append(stock_code)
-                            else:
-                                self.news_id_dict[news_id] = {
-                                    'stock_codes': [stock_code],
-                                    'keywords': news_item['keywords']
-                                }
-                            old_news_id = news_id
-                    
-                    if is_continued:
-                        current_page += 1
-                else:
-                    logging.error(f"API request failed for {stock_code} with status code {response.status_code}.")
-                    raise
 
-            self.stock_info_df.loc[self.stock_info_df['stock_code'] == stock_code, 'recent_news_id'] = recent_news_id
-            self.stock_info_df.loc[self.stock_info_df['stock_code'] == stock_code, 'old_news_id'] = old_news_id
-            self.stock_info_df.loc[self.stock_info_df['stock_code'] == stock_code, 'last_searched_page'] = current_page
+            # db에 저장된 recent_id보다 더 최신의 데이터를 스크레이핑 하려 할 때
+            if not pd.isna(recent_news_id) and self.end_date > recent_news_date :
+                change_recent_id = False
+                current_page = 1
+                while is_continued:
+                    
+                    response = self.request_daum_stock(stock_code, current_page)
+
+                    if response.status_code == 200:
+                        response_json = response.json()
+                        news_data = response_json.get('data', []) # 데이터 수집 결과
+                        
+                        if not news_data:
+                            logging.info(f"No more news data available for {stock_code} on page {current_page}.")
+                            break
+                        
+                        for news_item in news_data:
+                            news_id = news_item['newsId'] # 수집된 뉴스 id
+                            news_date = datetime.strptime(news_item['createdAt'], "%Y-%m-%d %H:%M:%S").date() # 수집된 뉴스 날짜
+                            
+                            # 수집한 날짜가 찾으려는 범위보다 오래 된 경우 => 종료
+                            if news_date < self.end_date:
+                                logging.info(f"Ending news search for {stock_code} as end_date exceeded.")
+                                logging.info(f"my end_date : {self.end_date} / news_date : {news_date}.")
+                                is_continued = False  # while문 종료
+                                break # for문 종료
+
+                            # 지금 데이터가 현재 수집하려고 시작하는 데이터보다 앞에 있는 데이터 => 무시
+                            elif news_date > self.start_date:
+                                continue
+
+                            else:
+                                # 만약 id를 바꾸지 않았다면 => 그걸로 갱신해준다.
+                                if not change_recent_id and news_id > recent_news_id:
+                                    change_recent_id = True
+                                    recent_news_id = news_id
+                                
+                                # # 현재 수집하고 있는 news_id가 최근 뉴
+                                # if recent_news_id <= news_id:
+                                #     continue
+                                if news_id in self.news_id_dict:
+                                    self.news_id_dict[news_id]['stock_codes'].append(stock_code)
+                                else:
+                                    self.news_id_dict[news_id] = {
+                                        'stock_codes': [stock_code],
+                                        'keywords': news_item['keywords']
+                                    }
+                        
+                        if is_continued:
+                            current_page += 1
+                    else:
+                        logging.error(f"API request failed for {stock_code} with status code {response.status_code}.")
+                        raise
+                # recent만 갱신해준다.
+                self.stock_info_df.loc[self.stock_info_df['stock_code'] == stock_code, 'recent_news_id'] = recent_news_id
+
+            else:
+                while is_continued:
+                    response = self.request_daum_stock(stock_code, current_page)
+                    if response.status_code == 200:
+                        response_json = response.json()
+                        news_data = response_json.get('data', [])
+                        
+                        if not news_data:
+                            logging.info(f"No more news data available for {stock_code} on page {current_page}.")
+                            break
+                        
+                        for news_item in news_data:
+                            news_id = news_item['newsId']
+                            news_date = datetime.strptime(news_item['createdAt'], "%Y-%m-%d %H:%M:%S").date()
+                            
+                            if news_date < self.end_date:
+                                logging.info(f"Ending news search for {stock_code} as end_date exceeded.")
+                                logging.info(f"my end_date : {self.end_date} / news_date : {news_date}.")
+
+                                is_continued = False
+                                break
+                            elif news_date > self.start_date:
+                                continue
+                            else:
+                                first_news_id = news_item['newsId']
+                                if pd.isna(recent_news_id):
+                                    recent_news_id = first_news_id
+                                
+                                if not pd.isna(old_news_id) and old_news_id <= news_id:
+                                    continue
+                                elif news_id in self.news_id_dict:
+                                    self.news_id_dict[news_id]['stock_codes'].append(stock_code)
+                                else:
+                                    self.news_id_dict[news_id] = {
+                                        'stock_codes': [stock_code],
+                                        'keywords': news_item['keywords']
+                                    }
+                                old_news_id = news_id
+                        
+                        if is_continued:
+                            current_page += 1
+                    else:
+                        logging.error(f"API request failed for {stock_code} with status code {response.status_code}.")
+                        raise
+
+                self.stock_info_df.loc[self.stock_info_df['stock_code'] == stock_code, 'recent_news_id'] = recent_news_id
+                self.stock_info_df.loc[self.stock_info_df['stock_code'] == stock_code, 'old_news_id'] = old_news_id
+                self.stock_info_df.loc[self.stock_info_df['stock_code'] == stock_code, 'last_searched_page'] = current_page
             logging.info(f"Completed news search for {stock_code}.")
         else:
             logging.info(f"{stock_code} cannot be scraped based on given criteria.")
@@ -161,7 +223,7 @@ class StockNewsMetadataScraper:
         stock_start_date = df_row['start_date']
         stock_end_date = df_row['end_date']
         
-        return stock_end_date <= self.end_date
+        return self.start_date >= stock_start_date or stock_end_date <= self.end_date
     
     def request_daum_stock(self, stock_code: str, current_page: int) -> requests.Response:
         headers = {
@@ -236,6 +298,7 @@ class StockNewsMetadataScraper:
         # s3 connection
         s3 = S3Connection()
         
+        logging.info(f"news by date : {news_by_date}")
         # 날짜별로 파일을 생성하여 S3에 업로드
         for news_date, news_data in news_by_date.items():
             total_dict = {
@@ -244,6 +307,8 @@ class StockNewsMetadataScraper:
                 'totalCnt': len(news_data),
                 'data': news_data   
             }
+
+            logging.info(f"data length: {len(news_data)}")
 
             # JSON 데이터로 변환
             json_data = json.dumps(total_dict, ensure_ascii=False, indent=4)
@@ -254,46 +319,37 @@ class StockNewsMetadataScraper:
             # S3에 업로드
             s3.upload_to_s3(json_data, self.bucket_name, s3_file_name)
 
+            logging.info(f"{s3_file_name} 메타데이터 저장 완료")
+
     # 한 번에 뉴스 메타데이터 다운로드하는 로직       
     def get_news_metadata(self, **kwargs):
-        try:
-            # Extract parameters from kwargs
-            params = kwargs.get('params', {})
-            start_date = params.get('start_date')
-            end_date = params.get('end_date')
-            
-            
-            # MySQL 메타데이터 연결 및 로드
-            self.set_session() 
-            self.load_stocknews_limit()
-            print("load stock news limit")
+        # Extract parameters from kwargs
+        params = kwargs.get('params', {})
+        start_date = params.get('start_date')
+        end_date = params.get('end_date')
+        
+        
+        # MySQL 메타데이터 연결 및 로드
+        self.set_session() 
+        self.load_stocknews_limit()
 
-            # 날짜 설정
-            self._set_ranges(start_date, end_date)
-            print("_set_ranges")
-            logging.info("set_ranges")
-            
-            # 데이터 수집
-            self.fetch_news_for_all()
-            print("fetch_news_for_all")
-            logging.info("fetch_news_for_all")
+        # 날짜 설정
+        self._set_ranges(start_date, end_date)
+        logging.info("set_ranges")
+        
+        # 데이터 수집
+        self.fetch_news_for_all()
+        logging.info("fetch_news_for_all")
+        logging.info(self.news_id_dict)
 
+        # S3 저장
+        self.save_stocknews_limit()
+        
 
-            # S3 저장
-            self.save_stocknews_limit()
-            print("메타데이터 업데이터")
-            logging.info("메타데이터 저장")
+        # MySQL에 메타데이터 저장
+        self.update_metadata()
+        logging.info("메타데이터 업데이트")
 
-            # MySQL에 메타데이터 저장
-            self.update_metadata()
-            print("메타데이터 업데이터")
-            logging.info("메타데이터 업데이트")
-
-            return True
-        except Exception as e:
-            print(e)
-            logging.info(e)
-        return False
     
 
 
@@ -336,7 +392,6 @@ class IndustryNewsMetadataScraper:
     
     def load_stock_metadata(self, date: str) -> None:
         s3 = S3Connection()
-        s3.connect_to_s3()
 
         # 기존 str데이터 : '2024.09.05' => 변환시키려고
         s3_file_name = f"{date}.json"
@@ -464,7 +519,6 @@ class IndustryNewsMetadataScraper:
             if not can_scrap:
                 break;
             
-            # print(f"[{section}] {page} 페이지 완료")
             page += 1
             
             if page % 31 == 0:
@@ -492,7 +546,6 @@ class IndustryNewsMetadataScraper:
         
         # s3 connection
         s3 = S3Connection()
-        s3.connect_to_s3()
         
         total_dict = {
             'newsDate' : news_date,
@@ -512,40 +565,35 @@ class IndustryNewsMetadataScraper:
 
     def get_industry_news_metadata(self, **kwargs):
 
-        try:
+        params = kwargs.get('params', {})
+        start_date = params.get('start_date')
+        end_date = params.get('end_date')
+        
+        scraper = IndustryNewsMetadataScraper()
+        # start_date부터 end_date까지 모두 순회하면서
+        scraper._set_ranges(start_date, end_date)
 
-            params = kwargs.get('params', {})
-            start_date = params.get('start_date')
-            end_date = params.get('end_date')
+        
+        pivot_date = scraper.start_date
+        while pivot_date >= scraper.end_date:
+            logging.info(f"{pivot_date} 수집 시작")
+            date = scraper.convert_date_to_str(pivot_date)
+            # s3에서 메타데이터 가져와서 self.news_id_set 매번 초기화
+            scraper.load_stock_metadata(date)
             
-            scraper = IndustryNewsMetadataScraper()
-            # start_date부터 end_date까지 모두 순회하면서
-            scraper._set_ranges(start_date, end_date)
-
+            # 여기서부터 다음 뉴스 스크레이핑을 section별로 진행한다.
+            # 매번 id_dict 초기화
+            scraper.news_id_dict = {section: [] for section in scraper.subsection} # Key : 산업, Value : 해당 산업에 대한 news_id
             
-            pivot_date = scraper.start_date
-            while pivot_date >= scraper.end_date:
-                date = scraper.convert_date_to_str(pivot_date)
-                # s3에서 메타데이터 가져와서 self.news_id_set 매번 초기화
-                scraper.load_stock_metadata(date)
-                
-                # 여기서부터 다음 뉴스 스크레이핑을 section별로 진행한다.
-                # 매번 id_dict 초기화
-                scraper.news_id_dict = {section: [] for section in scraper.subsection} # Key : 산업, Value : 해당 산업에 대한 news_id
-                
-                # 멀티스레딩으로 메타데이터데이터 수집
-                scraper.fetch_news_for_industry(date)
-                
-                # 수집이 끝났으면 데이터 저장
-                scraper.save_stocknews_metadata(date)
-                
-                
-                # Decrement the current_date by one day
-                pivot_date -= timedelta(days=1)
-                
-            logging.info(f"metadata save from {start_date} to {end_date} completed!")
-            return True
-        except Exception as e:
-            logging.error(e)
-            return False
+            # 멀티스레딩으로 메타데이터데이터 수집
+            scraper.fetch_news_for_industry(date)
+            
+            # 수집이 끝났으면 데이터 저장
+            scraper.save_stocknews_metadata(date)
+            
+            
+            # Decrement the current_date by one day
+            pivot_date -= timedelta(days=1)
+            
+        logging.info(f"metadata save from {start_date} to {end_date} completed!")
         

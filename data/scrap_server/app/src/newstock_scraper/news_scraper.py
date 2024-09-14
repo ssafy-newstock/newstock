@@ -14,16 +14,8 @@ from bs4 import BeautifulSoup
 from tqdm import tqdm
 
 from newstock_scraper.utils import convert_date_to_str, set_ranges
-from newstock_scraper.settings import S3Connection
+from newstock_scraper.settings import S3Connection, LoggingConfig
 
-# 로그 설정
-logging.basicConfig(
-    level=logging.INFO,  # 로그 레벨을 INFO로 설정
-    format="%(asctime)s - %(levelname)s - %(message)s",  # 로그 출력 포맷
-    handlers=[
-        logging.StreamHandler()  # 콘솔에 로그를 출력하기 위한 핸들러
-    ]
-)
 
 class NewsScraper:
     def __init__(self):
@@ -68,7 +60,6 @@ class NewsScraper:
 
         # TODO : 변수 이름 => dict에서 list로
         self.stock_news_id_dict = stock_news_all
-        print(self.stock_news_id_dict)
 
     def _set_ranges(self, start_date, end_date):
         date_format = "%Y-%m-%d"  # Adjust format as needed
@@ -233,7 +224,6 @@ class NewsScraper:
         else:
             bucket_name = self.industry_news_bucket_name
         
-        print(bucket_name)
         s3.upload_to_s3(json_data, bucket_name, s3_file_name)
 
     def get_news_article(self, get_stock, **kwargs):
@@ -249,9 +239,6 @@ class NewsScraper:
         self.start_date, self.end_date = set_ranges(start_date, end_date)
             
         pivot_date = self.start_date
-        logging.info('start')
-
-        
 
         while pivot_date >= self.end_date:
             date = convert_date_to_str(pivot_date)

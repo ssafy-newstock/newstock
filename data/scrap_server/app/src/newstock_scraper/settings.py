@@ -75,7 +75,7 @@ class Setting:
                 connection.execute(create_table_sql)
             return True  # 성공하면 True 반환
         except Exception as e:
-            print(f"Error creating table {table_name}: {e}")
+            logging.error(f"Error creating table {table_name}: {e}")
             return False  # 실패하면 False 반환
 
 class S3Connection:
@@ -125,13 +125,44 @@ class S3Connection:
             logging.error(f"Failed to download {s3_file_name} from S3: {e}")
             raise
 
+class LoggingConfig:
+    def __init__(self, level=logging.INFO, log_format="%(asctime)s - %(levelname)s - %(message)s"):
+        """
+        LoggingConfig 클래스 초기화 메서드
+
+        :param level: 로그 레벨, 기본값은 INFO
+        :param log_format: 로그 출력 포맷, 기본값은 "%(asctime)s - %(levelname)s - %(message)s"
+        """
+        self.level = level
+        self.log_format = log_format
+        self.handlers = [logging.StreamHandler()]  # 기본 핸들러는 콘솔 출력
+
+    def add_file_handler(self, file_name):
+        """
+        파일 핸들러 추가 메서드
+
+        :param file_name: 로그 파일 이름
+        """
+        file_handler = logging.FileHandler(file_name)
+        self.handlers.append(file_handler)
+
+    def setup_logging(self):
+        """
+        로그 설정을 적용하는 메서드
+        """
+        logging.basicConfig(
+            level=self.level,  # 로그 레벨 설정
+            format=self.log_format,  # 로그 포맷 설정
+            handlers=self.handlers  # 설정된 핸들러 목록
+        )
+        logging.info("Logging is configured.")  # 설정 완료 로그 출력
 # 사용 예시
 if __name__ == "__main__":
     # MySQL
-    # setting = Setting()
-    # table_name = "stock_metadata"
-    # table_exists = setting.is_table_exist(table_name)
-    # print(f"Table '{table_name}' exists: {table_exists}")
+    setting = Setting()
+    table_name = "stock_metadata"
+    table_exists = setting.is_table_exist(table_name)
+    logging.info(f"Table '{table_name}' exists: {table_exists}")
 
     # S3 예시
     s3 = S3Connection()
