@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 const NewsBodyHeaderWrapper = styled.div`
   display: flex;
-  width: 294px;
+  width: 18rem;
   justify-content: space-between;
   align-items: flex-end;
 `;
@@ -10,41 +10,41 @@ const NewsBodyHeaderWrapper = styled.div`
 const NewsBodyHeaderText = styled.div`
   color: #828282;
   font-family: Inter;
-  font-size: 16px;
+  font-size: 1rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 30px; /* 187.5% */
+  line-height: 1.9rem;
 `;
 
 const NewsBodyStockPriceWrapper = styled.div`
   display: flex;
   align-items: center;
-  gap: 5px; /* 가격과 변화량 사이에 간격 */
+  gap: 0.3rem; /* 가격과 변화량 사이에 간격 */
 `;
 
 const StockPrice = styled.span`
   color: ${({ theme }) => theme.highlightColor};
   font-family: Inter;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 12px;
+  line-height: 0.75rem;
 `;
 
 const StockChange = styled.span`
   color: #006dff; /* 파란색으로 지정 */
   font-family: Inter;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 12px;
+  line-height: 0.75rem;
 `;
 
 interface NewsBodyHeaderProps {
   header: string;
 }
 
-const NewsBodyHeader: React.FC<NewsBodyHeaderProps> = ({ header }) => {
+const StockNewsBodyHeader: React.FC<NewsBodyHeaderProps> = ({ header }) => {
   return (
     <NewsBodyHeaderWrapper>
       <NewsBodyHeaderText>{header}</NewsBodyHeaderText>
@@ -56,4 +56,4 @@ const NewsBodyHeader: React.FC<NewsBodyHeaderProps> = ({ header }) => {
   );
 };
 
-export default NewsBodyHeader;
+export default StockNewsBodyHeader;

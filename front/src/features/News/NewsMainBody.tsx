@@ -1,28 +1,28 @@
 import styled from 'styled-components';
-import NewsBodyFooter from './StockNewsBodyFooter';
-import NewsBodyContent from './StockNewsBodyContent';
-import NewsBodyTitle from './StockNewsBodyTitle';
-import NewsBodyHeader from './StockNewsBodyHeader';
+import NewsBodyFooter from './NewsBodyFooter';
+import NewsBodyContent from './NewsBodyContent';
+import NewsBodyTitle from './NewsBodyTitle';
+import EconNewsBodyHeader from './EconNewsMain/EconNewsBodyHeader';
+import StockNewsBodyHeader from './StockNewsMain/StockNewsBodyHeader';
 
 const NewsBodyInnerWrapper = styled.div`
   display: flex;
-  width: 334px;
-  padding: 13px 14px;
+  width: 21rem;
+  padding: 0.8rem 0.9rem;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 10px;
-  border-radius: 20px;
+  border-radius: 1.25rem;
   background-color: ${({ theme }) => theme.newsBackgroundColor};
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 0.25rem 0.25rem 0rem rgba(0, 0, 0, 0.25);
 `;
 
 const NewsBody = styled.div`
   display: flex;
-  padding: 1px 0px;
+  /* padding: 1px 0px; */
   flex-direction: column;
   align-items: flex-start;
-  gap: 5px;
+  gap: 0.3rem;
   align-self: stretch;
 `;
 
@@ -32,6 +32,7 @@ interface NewsMainBodyProps {
   media: string;
   date: string;
   header: string;
+  newsType: string;
 }
 
 const NewsMainBody: React.FC<NewsMainBodyProps> = ({
@@ -40,11 +41,17 @@ const NewsMainBody: React.FC<NewsMainBodyProps> = ({
   media,
   date,
   header,
+  newsType,
 }) => {
+  const isEconomicNews = newsType === '시황';
   return (
     <NewsBodyInnerWrapper>
       <NewsBody>
-        <NewsBodyHeader header={header} />
+        {isEconomicNews ? (
+          <EconNewsBodyHeader header={header} />
+        ) : (
+          <StockNewsBodyHeader header={header} />
+        )}
         <NewsBodyTitle title={title} />
         <NewsBodyContent content={description} />
         <NewsBodyFooter media={media} date={date} />
