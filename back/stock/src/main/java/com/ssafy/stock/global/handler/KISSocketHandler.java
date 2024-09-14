@@ -98,10 +98,10 @@ public class KISSocketHandler extends TextWebSocketHandler {
             }
 
             StockPricesResponseDto stockPricesResponseDto = stockConverter.convertToStockPriceResponseDto(stockCode, stockName, stockIndustry, stckPrpr, prdyVrss, prdyCtrt, acmlTrPbmn, acmlVol);
-            log.info("{}", stockPricesResponseDto);
-            simpMessageSendingOperations.convertAndSend("/sub/stock/info/live", stockPricesResponseDto);
+            // log.info("{}", stockPricesResponseDto);
+            simpMessageSendingOperations.convertAndSend("/api/sub/stock/info/live", stockPricesResponseDto);
         } else {
-            log.info("{}", payload);
+            log.info("Top10 응답 payload : {}", payload);
         }
     }
 
@@ -109,6 +109,6 @@ public class KISSocketHandler extends TextWebSocketHandler {
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         // 연결 종료 시 처리
         sessions.remove(session);
-        log.info("연결 종료 : {}", status.getReason());
+        log.info("한국투자 증권 웹소켓 연결 종료 : {}", status.getReason());
     }
 }
