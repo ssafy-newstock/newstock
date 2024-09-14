@@ -82,7 +82,7 @@ class StockNewsMetadataScraper:
     
     # 2.
     def fetch_news_for_all(self) -> None:
-        stock_codes = self.stock_info_df['stock_code'].tolist()
+        stock_codes = self.stock_info_df['stock_code'].tolist()[:8]
         logging.info(len(stock_codes))
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
             futures = {executor.submit(self.process_stock_code, stock_code): stock_code for stock_code in stock_codes}
@@ -113,7 +113,6 @@ class StockNewsMetadataScraper:
 
             # db에 저장된 recent_id보다 더 최신의 데이터를 스크레이핑 하려 할 때
             if not pd.isna(recent_news_id) and self.end_date > recent_news_date :
-                logging.info("더 최신 데이터 스크레이핑")
                 change_recent_id = False
                 current_page = 1
                 while is_continued:
@@ -169,7 +168,6 @@ class StockNewsMetadataScraper:
                 self.stock_info_df.loc[self.stock_info_df['stock_code'] == stock_code, 'recent_news_id'] = recent_news_id
 
             else:
-                logging.info("처음 하거나 이전 데이터 스크레이핑")
                 while is_continued:
                     response = self.request_daum_stock(stock_code, current_page)
                     if response.status_code == 200:
@@ -213,9 +211,7 @@ class StockNewsMetadataScraper:
                     else:
                         logging.error(f"API request failed for {stock_code} with status code {response.status_code}.")
                         raise
-                logging.info(f'recent: {recent_news_id}')
-                logging.info(f'old_news_id: {old_news_id}')
-                logging.info(f'last_searched_page: {current_page}')
+
                 self.stock_info_df.loc[self.stock_info_df['stock_code'] == stock_code, 'recent_news_id'] = recent_news_id
                 self.stock_info_df.loc[self.stock_info_df['stock_code'] == stock_code, 'old_news_id'] = old_news_id
                 self.stock_info_df.loc[self.stock_info_df['stock_code'] == stock_code, 'last_searched_page'] = current_page
@@ -283,26 +279,41 @@ class StockNewsMetadataScraper:
     def save_stock_news_metadata(self, with_s3=False):
         current_date = self.start_date
         end_date = self.end_date
-        
-        while current_date <= end_date:
+
+        # 일자별로 뉴스 분리(key = 날짜, value = 뉴스들)
+        news_by_date = {}
+
+         # 각 뉴스의 날짜(키의 앞 8자리)를 기준으로 데이터를 분리
+        for news_id, data in self.news_id_dict.items():
+            news_date = news_id[:8]  # 키의 앞 8자리를 날짜로 사용 (예: '20240907')
+            
+            # 해당 날짜에 대한 데이터가 이미 있는지 확인하고 없으면 새로 생성
+            if news_date not in news_by_date:
+                news_by_date[news_date] = []
+
+            # 날짜별로 뉴스를 추가
+            news_by_date[news_date].append({
+                'newsId': news_id,
+                'stockCodes': data['stock_codes'],
+                'keywords': data['keywords']
+            })
+
+        while current_date >= end_date:
             # Format the date as 'YYYYMMDD'
             date_str = current_date.strftime('%Y%m%d')
-            
-            # Get news data for this date
-            news_data = self.news_id_dict.get(date_str, [])
             
             total_dict = {
                 'newsDate': date_str,
                 'collectDate': self.current_datetime,
-                'totalCnt': len(news_data),
-                'data': news_data   
+                'totalCnt': len(news_by_date[date_str]),
+                'data': news_by_date[date_str] 
             }
+
             
-            logging.info(f"Date: {date_str}, data length: {len(news_data)}")
+            logging.info(f"Date: {date_str}, data length: {total_dict['totalCnt']}")
             
             # Convert to JSON
             json_data = json.dumps(total_dict, ensure_ascii=False, indent=4)
-            logging.info(json_data)
 
             if with_s3:
                 # S3 connection
@@ -334,7 +345,7 @@ class StockNewsMetadataScraper:
                 logging.info(f"{local_file_name} 메타데이터 로컬 저장 완료")
             
                 # Move to the next date
-                current_date += timedelta(days=1)
+                current_date -= timedelta(days=1)
 
     # 한 번에 뉴스 메타데이터 다운로드하는 로직       
     def get_news_metadata(self, **kwargs):
