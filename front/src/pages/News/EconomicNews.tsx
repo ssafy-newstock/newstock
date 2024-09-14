@@ -7,7 +7,7 @@ import EconSubNewsBody from '@features/News/EconNews/EconSubNewsBody';
 const SubCenter = styled.div`
   display: flex;
   width: 100%;
-  padding: 0px 20px;
+  padding: 0 1.5rem;
   flex-direction: column;
   align-items: flex-start;
   align-self: stretch;
@@ -15,17 +15,20 @@ const SubCenter = styled.div`
 
 const EconomicNewsWrapper = styled.div`
   display: flex;
-  padding: 25px 20px 25px 20px;
-  margin: 20px 0px;
+  padding: 1.6rem 1.5rem;
+  margin: 1.25rem 0;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 10px;
   align-self: stretch;
-  border-radius: 33px;
-  background: white;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  border-radius: 2rem;
+  background: ${({ theme }) => theme.newsBackgroundColor};
+  box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
   width: 100%;
-  height: 100%;
+  height: 18rem;
+`;
+
+const ObserverTrigger = styled.div`
+  height: 0.0625rem;
 `;
 
 const EconomicNewsPage: React.FC = () => {
@@ -75,7 +78,8 @@ const EconomicNewsPage: React.FC = () => {
           </EconomicNewsWrapper>
         ))}
         {/* 감시하는 요소로 Intersection Observer가 작동하는 기준점 */}
-        <div ref={observerRef} style={{ height: '1px' }}></div>
+        {/* <div ref={observerRef} style={{ height: '1px' }}></div> */}
+        <ObserverTrigger ref={observerRef} />
       </SubCenter>
     </>
   );
