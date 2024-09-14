@@ -1,4 +1,4 @@
-import { ICategoryStock, IcatergoryImage } from '@features/StockMain/types';
+import { ICategoryStock, IcatergoryImage } from '@features/Stock/types';
 
 // const baseUrl = "https://thumb.tossinvest.com/image/resized/96x0/";
 

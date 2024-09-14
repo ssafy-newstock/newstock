@@ -1,11 +1,11 @@
-import { CategoryCardRow } from '@features/StockMain/styledComponent';
-import { ICategory } from '@features/StockMain/type';
+import { CategoryCardRow } from '@features/Stock/styledComponent';
+import { ICategory } from '@features/Stock/types';
 import {
   Text,
   CategoryImgWrapper,
   CategoryImg,
   CategoryData,
-} from '@features/StockMain/styledComponent';
+} from '@features/Stock/styledComponent';
 import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
 import blueLogo from '@assets/Stock/blueLogo.png';

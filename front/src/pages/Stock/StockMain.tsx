@@ -1,18 +1,15 @@
 import { Center } from '@components/Center';
 import LeftStock from '@components/LeftStock';
-import { categoryImage, categoryStock } from '@features/StockMain/category';
+import { categoryImage, categoryStock } from '@features/Stock/category';
 import styled from 'styled-components';
-import {
-  StockHeader,
-  StockHeaderMore,
-} from '@features/StockMain/styledComponent';
-import FavoriteStock from '@features/StockMain/FavoriteStock';
-import { IStock } from '@features/StockMain/types';
-import { RealTimeStockFirstRow } from '@features/StockMain/RealTimeStock';
-import RealTimeStock from '@features/StockMain/RealTimeStock';
-import { CategoryFirstRow } from '@features/StockMain/categories';
-import Categories from '@features/StockMain/categories';
-import More from '@features/StockMain/More';
+import { StockHeader, StockHeaderMore } from '@features/Stock/styledComponent';
+import FavoriteStock from '@features/Stock/StockMain/FavoriteStock';
+import { IStock } from '@features/Stock/types';
+import { RealTimeStockFirstRow } from '@features/Stock/StockMain/RealTimeStock';
+import RealTimeStock from '@features/Stock/StockMain/RealTimeStock';
+import { CategoryFirstRow } from '@features/Stock/StockMain/categories';
+import Categories from '@features/Stock/StockMain/categories';
+import More from '@features/Stock/More';
 
 const stockData = [
   {

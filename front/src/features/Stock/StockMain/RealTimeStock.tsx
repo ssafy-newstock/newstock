@@ -6,12 +6,12 @@ import {
   StockTitle,
   Text,
   TextLeft,
-} from '@features/StockMain/styledComponent';
-import { Heart } from '@features/StockMain/Heart';
+} from '@features/Stock/styledComponent';
+import { Heart } from '@features/Stock/Heart';
 import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
 import { formatUnit } from '@utils/formatUnit';
-import { IStock } from '@features/StockMain/type';
+import { IStock } from '@features/Stock/types';
 import blueLogo from '@assets/Stock/blueLogo.png';
 
 

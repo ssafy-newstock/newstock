@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import { Text } from "@features/StockMain/styledComponent";
-import { RightArrow } from "@features/StockMain/RightArrow";
+import { Text } from "@features/Stock/styledComponent";
+import { RightArrow } from "@features/Stock/RightArrow";
 import { useNavigate } from "react-router-dom";
-import { IMore } from "@features/StockMain/type";
+import { IMore } from "@features/Stock/types";
 
 const MoreWrapper = styled.div`
   display: flex;
