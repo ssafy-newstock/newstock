@@ -10,10 +10,12 @@ import {
 } from '@features/Stock/styledComponent';
 import FavoriteStock from '@features/Stock/StockMain/FavoriteStock';
 import { IStock } from '@features/Stock/types';
-import RealTimeStock, { RealTimeStockFirstRow } from '@features/Stock/StockMain/RealTimeStock';
-// import RealTimeStock from '@features/Stock/StockMain/RealTimeStock';
-import CategoryStock, { CategoryFirstRow } from '@features/Stock/StockMain/CategoryStock';
-// import CategoryStock from '@features/Stock/StockMain/CategoryStock';
+import RealTimeStock, {
+  RealTimeStockFirstRow,
+} from '@features/Stock/StockMain/RealTimeStock';
+import CategoryStock, {
+  CategoryFirstRow,
+} from '@features/Stock/StockMain/CategoryStock';
 import More from '@features/Stock/More';
 import { stockData } from '@features/Stock/stock';
 
@@ -45,17 +47,24 @@ const StockMainPage = () => {
         <HrTag />
         <StockGridRow>
           <CategoryFirstRow />
-          {categoryStock.map((category, index: number) => {
-            const imageUrl =
-              category.industryName in categoryImage
-                ? categoryImage[
-                    category.industryName as keyof typeof categoryImage
-                  ]
-                : 'default-image'; // 기본 이미지 처리
-            return (
-              <CategoryStock key={index} category={category} imageUrl={imageUrl} />
-            );
-          })}
+          {categoryStock
+            .sort((a, b) => parseFloat(b.acmlTrPbmn) - parseFloat(a.acmlTrPbmn)) // 누적 거래 대금 순으로 내림차순 정렬
+            .slice(0, 5) // 상위 5개만 가져옴
+            .map((category, index: number) => {
+              const imageUrl =
+                category.industryName in categoryImage
+                  ? categoryImage[
+                      category.industryName as keyof typeof categoryImage
+                    ]
+                  : 'default-image'; // 기본 이미지 처리
+              return (
+                <CategoryStock
+                  key={index}
+                  category={category}
+                  imageUrl={imageUrl}
+                />
+              );
+            })}
         </StockGridRow>
       </Center>
     </>

@@ -10,7 +10,7 @@ import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
 import blueLogo from '@assets/Stock/blueLogo.png';
 
-export const CategoryFirstRow = () => {
+export const AllCategoryFirstRow = () => {
   return (
     <CategoryCardRow>
       <Text>카테고리</Text>
@@ -22,7 +22,7 @@ export const CategoryFirstRow = () => {
   );
 };
 
-const CategoryStock: React.FC<ICategory> = ({ category, imageUrl }) => {
+const AllCategoryStock: React.FC<ICategory> = ({ category, imageUrl }) => {
   return (
     <CategoryCardRow>
       <CategoryImgWrapper>
@@ -41,4 +41,4 @@ const CategoryStock: React.FC<ICategory> = ({ category, imageUrl }) => {
   );
 };
 
-export default CategoryStock;
+export default AllCategoryStock;
