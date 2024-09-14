@@ -22,13 +22,19 @@ export const AllCategoryFirstRow = () => {
   );
 };
 
-const AllCategoryStock: React.FC<ICategory> = ({ category, imageUrl }) => {
+const AllCategoryStock: React.FC<ICategory> = ({
+  category,
+  imageUrl,
+  imageBgColor,
+}) => {
   return (
     <CategoryCardRow>
-      <CategoryImgWrapper>
-        <CategoryImg src={imageUrl} alt={blueLogo} />
-        {category.industryName}
-      </CategoryImgWrapper>
+      <div style={{display:'flex', gap:'1rem', alignItems:'center'}}>
+        <CategoryImgWrapper backgroundColor={imageBgColor}>
+          <CategoryImg src={imageUrl} alt={blueLogo} />
+        </CategoryImgWrapper>
+        <Text>{category.industryName}</Text>
+      </div>
       <Text>{category.bstpNmixPrpr}</Text>
       <CategoryData isPositive={category.bstpNmixPrdyVrss.startsWith('-')}>
         {formatChange(category.bstpNmixPrdyVrss)}

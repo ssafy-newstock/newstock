@@ -7,7 +7,9 @@ import {
   StockHeader,
 } from '@features/Stock/styledComponent';
 import { categoryImage, categoryStock } from '@features/Stock/category';
-import AllCategoryStock, { AllCategoryFirstRow } from '@features/Stock/\bSectionStock/AllCategoryStock';
+import AllCategoryStock, {
+  AllCategoryFirstRow,
+} from '@features/Stock/SectionStock/AllCategoryStock';
 
 const SectionStockPage = () => {
   return (
@@ -19,17 +21,24 @@ const SectionStockPage = () => {
         <StockGridRow>
           <AllCategoryFirstRow />
           {categoryStock.map((category, index: number) => {
+            // 기본 이미지 객체
+            const defaultImage = {
+              url: 'default-image-url',
+              backgroundColor: 'default-bg-color',
+            };
+            // 카테고리 이미지 객체를 찾고, 없으면 기본 이미지 사용
             const imageUrl =
               category.industryName in categoryImage
                 ? categoryImage[
                     category.industryName as keyof typeof categoryImage
                   ]
-                : 'default-image'; // 기본 이미지 처리
+                : defaultImage; // 기본 이미지 객체로 처리
             return (
               <AllCategoryStock
                 key={index}
                 category={category}
-                imageUrl={imageUrl}
+                imageUrl={imageUrl.url}
+                imageBgColor={imageUrl.backgroundColor}
               />
             );
           })}

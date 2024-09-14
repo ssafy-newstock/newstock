@@ -1,6 +1,5 @@
 import { Center } from '@components/Center';
 import LeftStock from '@components/LeftStock';
-import { Right } from '@components/Right';
 import AllStock, { AllStockFirstRow } from '@features/Stock/AllStock/AllStock';
 import {
   HrTag,
@@ -9,6 +8,7 @@ import {
 } from '@features/Stock/styledComponent';
 import { IStock } from '@features/Stock/types';
 import { stockData } from '@features/Stock/stock';
+import { RightVacant } from '@components/RightVacant';
 
 
 const AllStockPage = () => {
@@ -25,7 +25,7 @@ const AllStockPage = () => {
           ))}
         </StockGridRow>
       </Center>
-      <Right />
+      <RightVacant />
     </>
   );
 };

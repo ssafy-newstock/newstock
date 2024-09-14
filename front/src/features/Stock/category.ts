@@ -1,46 +1,92 @@
-import { ICategoryStock, IcatergoryImage } from '@features/Stock/types';
+import { ICategoryStock, IcategoryImage } from '@features/Stock/types';
 
 // const baseUrl = "https://thumb.tossinvest.com/image/resized/96x0/";
 
-export const categoryImage: IcatergoryImage = {
-  음식료품:
-    'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fhamburger-combo-area.png', //음식료
-  '섬유·의복':
-    'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fclothing-area.png', //의류
-  '종이·목재':
-    'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fpaper-area.png', //종이
-  화학: 'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fchemical-beaker-area.png', //화학
-  의약품:
-    'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fpharmaceutic-area.png', //제약
-  비금속광물:
-    'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fconstruction-materials-area.png', //건설자재
-  '철강·금속':
-    'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fsteel-bolt-area.png', //철강
-  기계: 'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fmachine-blue-area.png', //기계
-  '전기·전자':
-    'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Felectrical-energy-area.png', // 전력에너지
-  의료정밀:
-    'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fmedical-care-area.png', // 의료서비스
-  '운수·장비':
-    'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fcar-brand-area.png', //자동차
-  유통업:
-    'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fwarehouse-circulation-area.png', //유통
-  '전기·가스업':
-    'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fpower-plant-yellow-area.png', //가스에너지
-  건설업:
-    'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fconstruction-company-area.png', //건설
-  '운수·창고':
-    'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Ftransportation-truck-box-area.png', //운송
-  통신업:
-    'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fphone-communication-area.png', //통신
-  금융업:
-    'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fcoin-financial-area.png', //금융
-  증권: 'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fsecurity-area.png', //증권
-  보험: 'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Finsurance-shield-blue-area.png', //보험
-  서비스업:
-    'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Foffice-desk-chair-area.png', //경영지원
-  제조업:
-    'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fsmartphone-parts-area.png', //스마트폰 부품
+export const categoryImage: IcategoryImage = {
+  음식료품: {
+    url: 'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fhamburger-combo-area.png',
+    backgroundColor: '#FFD4D6',
+  }, //음식료
+  '섬유·의복': {
+    url: 'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fclothing-area.png',
+    backgroundColor: '#C9E2FF',
+  }, //의류
+  '종이·목재': {
+    url: 'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fpaper-area.png',
+    backgroundColor: '#C9E2FF',
+  }, //종이
+  화학: {
+    url: 'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fchemical-beaker-area.png',
+    backgroundColor: '#F2F4F6',
+  }, //화학
+  의약품: {
+    url: 'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fpharmaceutic-area.png',
+    backgroundColor: '#C9E2FF',
+  }, //제약
+  비금속광물: {
+    url: 'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fconstruction-materials-area.png',
+    backgroundColor: '#FFD4D6',
+  }, //건설자재
+  '철강·금속': {
+    url: 'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fsteel-bolt-area.png',
+    backgroundColor: '#E5E8EB',
+  }, //철강
+  기계: {
+    url: 'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fmachine-blue-area.png',
+    backgroundColor: '#90C2FF',
+  }, //기계
+  '전기·전자': {
+    url: 'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Felectrical-energy-area.png',
+    backgroundColor: '#FFF9E7',
+  }, // 전력에너지
+  의료정밀: {
+    url: 'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fmedical-care-area.png',
+    backgroundColor: '#90C2FF',
+  }, // 의료서비스
+  '운수·장비': {
+    url: 'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fcar-brand-area.png',
+    backgroundColor: '#90C2FF',
+  }, //자동차
+  유통업: {
+    url: 'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fwarehouse-circulation-area.png',
+    backgroundColor: '#90C2FF',
+  }, //유통
+  '전기·가스업': {
+    url: 'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fpower-plant-yellow-area.png',
+    backgroundColor: '#FFEFBF',
+  }, //가스에너지
+  건설업: {
+    url: 'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fconstruction-company-area.png',
+    backgroundColor: '#E5E8EB',
+  }, //건설
+  '운수·창고': {
+    url: 'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Ftransportation-truck-box-area.png',
+    backgroundColor: '#FFE0B0',
+  }, //운송
+  통신업: {
+    url: 'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fphone-communication-area.png',
+    backgroundColor: '#BCE9E9',
+  }, //통신
+  금융업: {
+    url: 'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fcoin-financial-area.png',
+    backgroundColor: '#FFEFBF',
+  }, //금융
+  증권: {
+    url: 'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fsecurity-area.png',
+    backgroundColor: '#FEAFB4',
+  }, //증권
+  보험: {
+    url: 'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Finsurance-shield-blue-area.png',
+    backgroundColor: '#C9E2FF',
+  }, //보험
+  서비스업: {
+    url: 'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Foffice-desk-chair-area.png',
+    backgroundColor: '#E5E8EB',
+  }, //경영지원
+  제조업: {
+    url: 'https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fml-product%2Fsmartphone-parts-area.png',
+    backgroundColor: '#C9E2FF',
+  }, //스마트폰 부품
 };
 
 export const categoryStock: ICategoryStock[] = [

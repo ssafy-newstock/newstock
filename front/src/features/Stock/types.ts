@@ -18,6 +18,7 @@ export interface ICategory {
     acmlTrPbmn: string;
   };
   imageUrl: string;
+  imageBgColor: string;
 }
 
 export interface ICategoryStock {
@@ -29,30 +30,98 @@ export interface ICategoryStock {
   acmlTrPbmn: string;
 }
 
-export interface IcatergoryImage {
-  음식료품: string;
-  '섬유·의복': string;
-  '종이·목재': string;
-  화학: string;
-  의약품: string;
-  비금속광물: string;
-  '철강·금속': string;
-  기계: string;
-  '전기·전자': string;
-  의료정밀: string;
-  '운수·장비': string;
-  유통업: string;
-  '전기·가스업': string;
-  건설업: string;
-  '운수·창고': string;
-  통신업: string;
-  금융업: string;
-  증권: string;
-  보험: string;
-  서비스업: string;
-  제조업: string;
+export interface IcategoryImage {
+  음식료품: {
+    url: string;
+    backgroundColor: string;
+  };
+  '섬유·의복': {
+    url: string;
+    backgroundColor: string;
+  };
+  '종이·목재': {
+    url: string;
+    backgroundColor: string;
+  };
+  화학: {
+    url: string;
+    backgroundColor: string;
+  };
+  의약품: {
+    url: string;
+    backgroundColor: string;
+  };
+  비금속광물: {
+    url: string;
+    backgroundColor: string;
+  };
+  '철강·금속': {
+    url: string;
+    backgroundColor: string;
+  };
+  기계: {
+    url: string;
+    backgroundColor: string;
+  };
+  '전기·전자': {
+    url: string;
+    backgroundColor: string;
+  };
+  의료정밀: {
+    url: string;
+    backgroundColor: string;
+  };
+  '운수·장비': {
+    url: string;
+    backgroundColor: string;
+  };
+  유통업: {
+    url: string;
+    backgroundColor: string;
+  };
+  '전기·가스업': {
+    url: string;
+    backgroundColor: string;
+  };
+  건설업: {
+    url: string;
+    backgroundColor: string;
+  };
+  '운수·창고': {
+    url: string;
+    backgroundColor: string;
+  };
+  통신업: {
+    url: string;
+    backgroundColor: string;
+  };
+  금융업: {
+    url: string;
+    backgroundColor: string;
+  };
+  증권: {
+    url: string;
+    backgroundColor: string;
+  };
+  보험: {
+    url: string;
+    backgroundColor: string;
+  };
+  서비스업: {
+    url: string;
+    backgroundColor: string;
+  };
+  제조업: {
+    url: string;
+    backgroundColor: string;
+  };
 }
+
 
 export interface IMore {
   path: string;
+}
+
+export interface ICategoryImgWrapper {
+  backgroundColor?: string;
 }

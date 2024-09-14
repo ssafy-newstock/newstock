@@ -1,43 +1,32 @@
 import { ICategory } from '@features/Stock/types';
 import {
   Text,
+  TextLarge,
   CategoryImgWrapper,
-  CategoryImg,
+  CategoryImgMain,
+  CategoryInfo,
   CategoryData,
-  CategoryCardRow,
+  CategoryCardColumn,
 } from '@features/Stock/styledComponent';
 import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
 import blueLogo from '@assets/Stock/blueLogo.png';
 
-export const CategoryFirstRow = () => {
+const CategoryStock: React.FC<ICategory> = ({ category, imageUrl, imageBgColor }) => {
   return (
-    <CategoryCardRow>
-      <Text>카테고리</Text>
-      <Text>지수 현재가</Text>
-      <Text>지수 전일 대비</Text>
-      <Text>지수 등락률</Text>
-      <Text>누적 거래 대금(백만)</Text>
-    </CategoryCardRow>
-  );
-};
-
-const CategoryStock: React.FC<ICategory> = ({ category, imageUrl }) => {
-  return (
-    <CategoryCardRow>
-      <CategoryImgWrapper>
-        <CategoryImg src={imageUrl} alt={blueLogo} />
-        {category.industryName}
+    <CategoryCardColumn>
+      <CategoryImgWrapper backgroundColor={imageBgColor} >
+        <CategoryImgMain src={imageUrl} alt={blueLogo} />
       </CategoryImgWrapper>
-      <Text>{category.bstpNmixPrpr}</Text>
-      <CategoryData isPositive={category.bstpNmixPrdyVrss.startsWith('-')}>
-        {formatChange(category.bstpNmixPrdyVrss)}
-      </CategoryData>
-      <CategoryData isPositive={category.bstpNmixPrdyCtrt.startsWith('-')}>
-        {formatChange(category.bstpNmixPrdyCtrt)}%
-      </CategoryData>
-      <Text>{formatNumber(category.acmlTrPbmn)}</Text>
-    </CategoryCardRow>
+      <CategoryInfo>
+        {' '}
+        <TextLarge>{category.industryName}</TextLarge>
+        <CategoryData isPositive={category.bstpNmixPrdyCtrt.startsWith('-')}>
+          {formatChange(category.bstpNmixPrdyCtrt)}%
+        </CategoryData>
+        <Text>{formatNumber(category.acmlTrPbmn)}</Text>
+      </CategoryInfo>
+    </CategoryCardColumn>
   );
 };
 
