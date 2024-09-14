@@ -56,35 +56,39 @@ def create_table():
 def download_stock_list():
     scraper = StockListScraper()
     
-    download_result = scraper.get_stock_list()
+    try:
+        scraper.get_stock_list()
+        create_response("success", status.HTTP_200_OK, "Successfully Downloaded Stock List")
 
-    if download_result:
-        return create_response("success", status.HTTP_200_OK, "Successfully Downloaded Stock List")
-    else:
-        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to Downloaded Stock List")
-    
+    except Exception as e:
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to Downloaded Stock List with error {e}")
+
+
 @app.get('/limit/check')
 def check_limit_date():
     scraper = StockNewsLimitScraper()
-    check_result = scraper.check_limit_exist()
 
-    if check_result:
-        return create_response("success", status.HTTP_200_OK, "Start date, end date limit exist")
-    else:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Start date, end date limit not found")
-
+    try:
+        check_result = scraper.check_limit_exist()
+        if check_result:
+            return create_response("success", status.HTTP_200_OK, "Start date, end date limit exist")
+        else:
+            raise HTTPException(status.HTTP_404_NOT_FOUND, f"Start date, end date limit not found")
+        
+    except Exception as e:
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to Check Stock limit with error {e}")
 
 # 뉴스 검색 범위인 start_date, end_date 검색 여부 확인
 @app.post('/limit/download')
 def check_date():
     scraper = StockNewsLimitScraper()
 
-    limit_result = scraper.get_news_limit()
-
-    if limit_result:
+    try:
+        scraper.get_news_limit()
         return create_response("success", status.HTTP_200_OK, "Successfully Downloaded Stock List")
-    else:
-        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to Downloaded Stock List")
+    
+    except Exception as e:
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to Downloaded Stock List with error {e}")
 
 
 # 요청 본문을 정의하는 Pydantic 모델
@@ -107,12 +111,12 @@ def scrap_stock_metadata(request: StockMetadataRequest):
     scraper = StockNewsMetadataScraper()
 
     # start_date와 end_date를 파라미터로 전달
-    scrap_result = scraper.get_news_metadata(params={"start_date": request.start_date, "end_date": request.end_date})
-
-    if scrap_result:
+    try:
+        scraper.get_news_metadata(params={"start_date": request.start_date, "end_date": request.end_date})
         return create_response("success", status.HTTP_200_OK, "Successfully scrapped Stock Metadata")
-    else:
-        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to scrap Stock Metadata")
+    
+    except Exception as e:
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to scrap Stock Metadata with error {e}")
 
 # 시황뉴스 메타데이터 스크래핑
 @app.post('/industry/metadata')
@@ -120,12 +124,12 @@ def scrap_stock_metadata(request: StockMetadataRequest):
     scraper = IndustryNewsMetadataScraper()
 
     # start_date와 end_date를 파라미터로 전달
-    scrap_result = scraper.get_industry_news_metadata(params={"start_date": request.start_date, "end_date": request.end_date})
-
-    if scrap_result:
+    try:
+        scraper.get_industry_news_metadata(params={"start_date": request.start_date, "end_date": request.end_date})
         return create_response("success", status.HTTP_200_OK, "Successfully scrapped Industry Metadata")
-    else:
-        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to scrap Industry Metadata")
+    
+    except Exception as e:
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to scrap Industry Metadata with error {e}")
 
 # 종목뉴스 본문 스크레이핑
 @app.post('/stock/news')

@@ -179,20 +179,15 @@ class StockListScraper:
             session.close()
 
     def get_stock_list(self):
-        try:
-            # Get yesterday's date
-            trdDd = self.get_yesterday_date()
-            logging.info(f"Obtained date: {trdDd}")
 
-            # Fetch OTP
-            otp_encoded = self.fetch_otp(trdDd)
-            logging.info("OTP fetched.")
+        # Get yesterday's date
+        trdDd = self.get_yesterday_date()
+        logging.info(f"Obtained date: {trdDd}")
 
-            # Download and save data to DB
-            self.download_and_save_to_db(trdDd, otp_encoded)
-            logging.info("Data processing completed successfully.")
-            return True
+        # Fetch OTP
+        otp_encoded = self.fetch_otp(trdDd)
+        logging.info("OTP fetched.")
 
-        except Exception as e:
-            logging.error(f"An error occurred during execution: {e}")
-            return False
+        # Download and save data to DB
+        self.download_and_save_to_db(trdDd, otp_encoded)
+        logging.info("Data processing completed successfully.")
