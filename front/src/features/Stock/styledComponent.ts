@@ -150,7 +150,7 @@ export const CategoryImgWrapper = styled.div<ICategoryImgWrapper>`
 `;
 
 export const CategoryImgMain = styled.img`
-  width: 6rem;
+  width: 5.5rem;
 `;
 
 export const CategoryImg = styled.img`
