@@ -380,9 +380,7 @@ class StockNewsMetadataScraper:
 class IndustryNewsMetadataScraper:
     def __init__(self):
         self.url = "https://news.daum.net/breakingnews/economic/"
-        # self.subsection = ["finance", "industry", "employ", "autos", "stock", "estate", "consumer", "worldeconomy", "coin", "pension", "policy", "startup"]
-        self.subsection = ["coin"]
-
+        self.subsection = ["finance", "industry", "employ", "autos", "stock", "estate", "consumer", "worldeconomy", "coin", "pension", "policy", "startup"]
         self.news_id_dict = {}
         self.news_id_set = set()
         self.current_datetime = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
