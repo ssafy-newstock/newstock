@@ -1,20 +1,25 @@
 from fastapi import FastAPI, HTTPException, status
 from config.settings import settings
-
+import traceback
+import logging
 from newstock_scraper.stock_list import StockListScraper
 from newstock_scraper.stock_limit import StockNewsLimitScraper
 from newstock_scraper.news_metadata import StockNewsMetadataScraper, IndustryNewsMetadataScraper
 from newstock_scraper.news_scraper import NewsScraper
-from newstock_scraper.settings import Setting
+from newstock_scraper.settings import Setting, LoggingConfig
 from pydantic import BaseModel, validator
 from datetime import datetime
 
+# 로그 세팅
+logger = LoggingConfig()
+logger.setup_logging()
 
 # FastAPI 애플리케이션 인스턴스 생성
 app = FastAPI(
     title=settings.TITLE,
     description=settings.DESCRIPTION,
 )
+
 
 # 기본 엔드포인트 정의
 @app.get("/")
@@ -60,6 +65,7 @@ def download_stock_list():
         create_response("success", status.HTTP_200_OK, "Successfully Downloaded Stock List")
 
     except Exception as e:
+        logging.error(e)
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to Downloaded Stock List with error {e}")
 
 
@@ -75,6 +81,7 @@ def check_limit_date():
             raise HTTPException(status.HTTP_404_NOT_FOUND, f"Start date, end date limit not found")
         
     except Exception as e:
+        logging.error(e)
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to Check Stock limit with error {e}")
 
 # 뉴스 검색 범위인 start_date, end_date 검색 여부 확인
@@ -115,6 +122,8 @@ def scrap_stock_metadata(request: StockMetadataRequest):
         return create_response("success", status.HTTP_200_OK, "Successfully scrapped Stock Metadata")
     
     except Exception as e:
+        # logging.error(e)
+        logging.error("An error occurred: %s", traceback.format_exc())
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to scrap Stock Metadata with error {e}")
 
 # 시황뉴스 메타데이터 스크래핑
@@ -128,6 +137,7 @@ def scrap_stock_metadata(request: StockMetadataRequest):
         return create_response("success", status.HTTP_200_OK, "Successfully scrapped Industry Metadata")
     
     except Exception as e:
+        logging.error(e)
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to scrap Industry Metadata with error {e}")
 
 # 종목뉴스 본문 스크레이핑
@@ -143,6 +153,7 @@ def scrap_stock_metadata(request: StockMetadataRequest):
         return create_response("success", status.HTTP_200_OK, "Successfully scrapped Stock Metadata")
     
     except Exception as e:
+        logging.error(e)
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to scrap Stock Metadata with error {e}")
 
 # 시황뉴스 본문 스크레이핑
@@ -158,6 +169,7 @@ def scrap_stock_metadata(request: StockMetadataRequest):
         return create_response("success", status.HTTP_200_OK, "Successfully scrapped Stock Metadata")
     
     except Exception as e:
+        logging.error(e)
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Failed to scrap Stock Metadata with error {e}")
 
 def create_response(status: str, code: int, message: str, data=None):

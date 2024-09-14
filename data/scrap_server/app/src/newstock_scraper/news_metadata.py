@@ -1,3 +1,4 @@
+import os
 import json
 import logging
 import re
@@ -82,6 +83,7 @@ class StockNewsMetadataScraper:
     # 2.
     def fetch_news_for_all(self) -> None:
         stock_codes = self.stock_info_df['stock_code'].tolist()
+        logging.info(len(stock_codes))
         with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
             futures = {executor.submit(self.process_stock_code, stock_code): stock_code for stock_code in stock_codes}
             
@@ -96,9 +98,7 @@ class StockNewsMetadataScraper:
     def get_news_list(self, stock_code: str) -> None:
         # Extract row for the given stock_code
         df_row = self.stock_info_df[self.stock_info_df['stock_code'] == stock_code].squeeze()
-        logging.info(f"{stock_code} 체크")
         if self.can_scrap(df_row):
-            logging.info(f"{stock_code} 수집 대상자이므로 수집 시작")
             current_page = df_row['last_searched_page']
             recent_news_id = df_row['recent_news_id']
             old_news_id = df_row['old_news_id']
@@ -106,12 +106,14 @@ class StockNewsMetadataScraper:
             # 만약 지금 찾으려는 날짜가 db에 저장된 최신 데이터보다 크면
             date_format = "%Y%m%d"
             # 지금까지 수집한 것들 중 가장 최신 데이터의 날짜
-            recent_news_date = datetime.strptime(recent_news_id[:8], date_format).date()
+            if not pd.isna(recent_news_id):
+                recent_news_date = datetime.strptime(recent_news_id[:8], date_format).date()
             
             is_continued = True
 
             # db에 저장된 recent_id보다 더 최신의 데이터를 스크레이핑 하려 할 때
             if not pd.isna(recent_news_id) and self.end_date > recent_news_date :
+                logging.info("더 최신 데이터 스크레이핑")
                 change_recent_id = False
                 current_page = 1
                 while is_continued:
@@ -167,6 +169,7 @@ class StockNewsMetadataScraper:
                 self.stock_info_df.loc[self.stock_info_df['stock_code'] == stock_code, 'recent_news_id'] = recent_news_id
 
             else:
+                logging.info("처음 하거나 이전 데이터 스크레이핑")
                 while is_continued:
                     response = self.request_daum_stock(stock_code, current_page)
                     if response.status_code == 200:
@@ -210,7 +213,9 @@ class StockNewsMetadataScraper:
                     else:
                         logging.error(f"API request failed for {stock_code} with status code {response.status_code}.")
                         raise
-
+                logging.info(f'recent: {recent_news_id}')
+                logging.info(f'old_news_id: {old_news_id}')
+                logging.info(f'last_searched_page: {current_page}')
                 self.stock_info_df.loc[self.stock_info_df['stock_code'] == stock_code, 'recent_news_id'] = recent_news_id
                 self.stock_info_df.loc[self.stock_info_df['stock_code'] == stock_code, 'old_news_id'] = old_news_id
                 self.stock_info_df.loc[self.stock_info_df['stock_code'] == stock_code, 'last_searched_page'] = current_page
@@ -275,51 +280,61 @@ class StockNewsMetadataScraper:
         finally:
             self.session.close()
 
-    
-    def save_stocknews_limit(self):
-        # 날짜별로 데이터를 저장하기 위한 딕셔너리
-        news_by_date = {}
-
-        # 각 뉴스의 날짜(키의 앞 8자리)를 기준으로 데이터를 분리
-        for news_id, data in self.news_id_dict.items():
-            news_date = news_id[:8]  # 키의 앞 8자리를 날짜로 사용 (예: '20240907')
+    def save_stock_news_metadata(self, with_s3=False):
+        current_date = self.start_date
+        end_date = self.end_date
+        
+        while current_date <= end_date:
+            # Format the date as 'YYYYMMDD'
+            date_str = current_date.strftime('%Y%m%d')
             
-            # 해당 날짜에 대한 데이터가 이미 있는지 확인하고 없으면 새로 생성
-            if news_date not in news_by_date:
-                news_by_date[news_date] = []
-
-            # 날짜별로 뉴스를 추가
-            news_by_date[news_date].append({
-                'newsId': news_id,
-                'stockCodes': data['stock_codes'],
-                'keywords': data['keywords']
-            })
-        
-        # s3 connection
-        s3 = S3Connection()
-        
-        logging.info(f"news by date : {news_by_date}")
-        # 날짜별로 파일을 생성하여 S3에 업로드
-        for news_date, news_data in news_by_date.items():
+            # Get news data for this date
+            news_data = self.news_id_dict.get(date_str, [])
+            
             total_dict = {
-                'newsDate' : news_date,
+                'newsDate': date_str,
                 'collectDate': self.current_datetime,
                 'totalCnt': len(news_data),
                 'data': news_data   
             }
-
-            logging.info(f"data length: {len(news_data)}")
-
-            # JSON 데이터로 변환
-            json_data = json.dumps(total_dict, ensure_ascii=False, indent=4)
-
-            # S3 파일명 설정 (날짜별로 구분)
-            s3_file_name = f'{news_date}.json'
             
-            # S3에 업로드
-            s3.upload_to_s3(json_data, self.bucket_name, s3_file_name)
+            logging.info(f"Date: {date_str}, data length: {len(news_data)}")
+            
+            # Convert to JSON
+            json_data = json.dumps(total_dict, ensure_ascii=False, indent=4)
+            logging.info(json_data)
 
-            logging.info(f"{s3_file_name} 메타데이터 저장 완료")
+            if with_s3:
+                # S3 connection
+                s3 = S3Connection()
+                
+                # S3 파일명 설정 (날짜별로 구분)
+                s3_file_name = f'{date_str}.json'
+                
+                # S3에 업로드
+                s3.upload_to_s3(json_data, self.bucket_name, s3_file_name)
+
+                logging.info(f"{s3_file_name} 메타데이터 S3 저장 완료")
+
+            else:
+                # 로컬 저장 로직
+                local_dir = f"data/tmp/{self.bucket_name}"
+                
+                # 폴더가 존재하지 않으면 생성
+                os.makedirs(local_dir, exist_ok=True)
+
+                # 로컬 파일명 설정 (날짜별로 구분)
+                local_file_name = f'{date_str}.json'
+                local_file_path = os.path.join(local_dir, local_file_name)
+                
+                # 로컬에 파일 저장
+                with open(local_file_path, 'w', encoding='utf-8') as file:
+                    file.write(json_data)
+
+                logging.info(f"{local_file_name} 메타데이터 로컬 저장 완료")
+            
+                # Move to the next date
+                current_date += timedelta(days=1)
 
     # 한 번에 뉴스 메타데이터 다운로드하는 로직       
     def get_news_metadata(self, **kwargs):
@@ -340,10 +355,9 @@ class StockNewsMetadataScraper:
         # 데이터 수집
         self.fetch_news_for_all()
         logging.info("fetch_news_for_all")
-        logging.info(self.news_id_dict)
 
         # S3 저장
-        self.save_stocknews_limit()
+        self.save_stock_news_metadata()
         
 
         # MySQL에 메타데이터 저장
@@ -352,11 +366,12 @@ class StockNewsMetadataScraper:
 
     
 
-
 class IndustryNewsMetadataScraper:
     def __init__(self):
         self.url = "https://news.daum.net/breakingnews/economic/"
-        self.subsection = ["finance", "industry", "employ", "autos", "stock", "estate", "consumer", "worldeconomy", "coin", "pension", "policy", "startup"]
+        # self.subsection = ["finance", "industry", "employ", "autos", "stock", "estate", "consumer", "worldeconomy", "coin", "pension", "policy", "startup"]
+        self.subsection = ["coin"]
+
         self.news_id_dict = {}
         self.news_id_set = set()
         self.current_datetime = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
@@ -390,16 +405,38 @@ class IndustryNewsMetadataScraper:
         self.start_date = datetime.strptime(start_date, date_format).date()
         self.end_date = datetime.strptime(end_date, date_format).date()
     
-    def load_stock_metadata(self, date: str) -> None:
-        s3 = S3Connection()
+    def load_stock_metadata(self, date: str, with_s3=False) -> None:
+        """
+        Load stock metadata either from S3 or from local directory based on the 'from_s3' flag.
+        """
+        if with_s3:
+            # S3에서 로드하는 로직
+            s3 = S3Connection()
 
-        # 기존 str데이터 : '2024.09.05' => 변환시키려고
-        s3_file_name = f"{date}.json"
-        content = s3.download_from_s3(self.stock_bucket_name, s3_file_name)
-        content_data = json.loads(content)['data']
-        
-        # 중복체크 할 거이므로 set
+            s3_file_name = f"{date}.json"
+            content = s3.download_from_s3(self.stock_bucket_name, s3_file_name)
+            content_data = json.loads(content)['data']
+            
+            logging.info(f"Loaded {len(content_data)} records from S3 for date {date}.")
+        else:
+            # 로컬에서 로드하는 로직
+            local_dir = f"data/tmp/{self.stock_bucket_name}"
+            local_file_path = os.path.join(local_dir, f"{date}.json")
+            
+            if not os.path.exists(local_file_path):
+                logging.error(f"File {local_file_path} not found in local directory.")
+                return
+
+            # 로컬에서 JSON 파일 읽기
+            with open(local_file_path, 'r', encoding='utf-8') as file:
+                content = file.read()
+            
+            content_data = json.loads(content)['data']
+            logging.info(f"Loaded {len(content_data)} records from local storage for date {date}.")
+
+        # 중복 체크를 위해 news_id_set에 저장
         self.news_id_set = set([data['newsId'] for data in content_data])
+        logging.info(f"Total unique news IDs loaded: {len(self.news_id_set)}")
     
     def request_daum_news(self, url: str, date: str, params: dict) -> requests.Response:
         headers = {
@@ -540,28 +577,43 @@ class IndustryNewsMetadataScraper:
                         logging.error(f"{section} 크롤링 중 오류 발생: {e}")
                         raise
     # 저장하기
-    def save_stocknews_metadata(self, news_date: str):
+    def save_industry_news_metadata(self, news_date: str, with_s3 = False):
         # 우선 총 개수 계산하기
         total_count = self.get_total_metadata_size(news_date)
-        
-        # s3 connection
-        s3 = S3Connection()
-        
+
+        # JSON 데이터로 변환할 dict 생성
         total_dict = {
-            'newsDate' : news_date,
+            'newsDate': news_date,
             'collectDate': self.current_datetime,
             'totalCnt': total_count,
-            'data': self.news_id_dict 
+            'data': self.news_id_dict
         }
 
         # JSON 데이터로 변환
         json_data = json.dumps(total_dict, ensure_ascii=False, indent=4)
 
-        # S3 파일명 설정 (날짜별로 구분)
+        # 파일명을 날짜별로 구분하여 설정
         s3_file_name = f'{news_date}.json'
-        
-        # S3에 업로드
-        s3.upload_to_s3(json_data, self.industry_bucket_name, s3_file_name)
+        local_file_name = f'{news_date}.json'
+
+        if with_s3:
+            # s3 connection
+            s3 = S3Connection()
+            
+            # S3에 업로드
+            s3.upload_to_s3(json_data, self.industry_bucket_name, s3_file_name)
+            logging.info(f"{s3_file_name} uploaded to S3 bucket {self.industry_bucket_name}.")
+        else:
+            # 로컬에 저장
+            local_dir = f"data/tmp/{self.industry_bucket_name}"
+            os.makedirs(local_dir, exist_ok=True)  # 폴더가 없으면 생성
+            
+            local_file_path = os.path.join(local_dir, local_file_name)
+            
+            with open(local_file_path, 'w', encoding='utf-8') as file:
+                file.write(json_data)
+            
+            logging.info(f"{local_file_name} saved locally to {local_file_path}.")
 
     def get_industry_news_metadata(self, **kwargs):
 
@@ -589,7 +641,7 @@ class IndustryNewsMetadataScraper:
             scraper.fetch_news_for_industry(date)
             
             # 수집이 끝났으면 데이터 저장
-            scraper.save_stocknews_metadata(date)
+            scraper.save_industry_news_metadata(date)
             
             
             # Decrement the current_date by one day

@@ -1,4 +1,4 @@
-# 우선 데이터를 수집해보자
+import os
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 from datetime import datetime
@@ -30,36 +30,93 @@ class NewsScraper:
         self.industry_news_id_dict = dict()
         self.start_date = ""
         self.end_date = ""
+
+    @staticmethod
+    def clear_tmp_folder():
+        """Delete all files in the 'data/tmp' directory."""
+        tmp_dir = 'data/tmp'
+        if os.path.exists(tmp_dir):
+            for file_name in os.listdir(tmp_dir):
+                file_path = os.path.join(tmp_dir, file_name)
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
+            logging.info(f"Deleted all files in '{tmp_dir}'.")
     
-    # s3에서 시황 뉴스 메타데이터 가져옴
-    def load_stock_news_id(self, date):
-        s3 = S3Connection()
-        s3.connect_to_s3()
+    # s3 또는 로컬에서 시황 뉴스 메타데이터 가져옴
+    def load_stock_news_id(self, date, with_s3=False):
+        """
+        Load stock news IDs either from S3 or from local directory based on the 'with_s3' flag.
+        """
+        if with_s3:
+            # Load from S3
+            s3 = S3Connection()
 
-        s3_file_name = f"{date}.json"
-        content = s3.download_from_s3(self.stock_metadata_bucket_name, s3_file_name)
-        self.stock_news_id_dict = json.loads(content)['data']
+            s3_file_name = f"{date}.json"
+            content = s3.download_from_s3(self.stock_metadata_bucket_name, s3_file_name)
+            self.stock_news_id_dict = json.loads(content)['data']
 
-    # s3에서 시황 뉴스 메타데이터 가져옴
-    def load_industry_news_id(self, date):
-        s3 = S3Connection()
-        s3.connect_to_s3()
+            logging.info(f"Loaded {len(self.stock_news_id_dict)} records from S3 for date {date}.")
+        
+        else:
+            # Load from local directory
+            local_dir = f"data/tmp/{self.stock_metadata_bucket_name}"
+            local_file_path = os.path.join(local_dir, f"{date}.json")
+            
+            if not os.path.exists(local_file_path):
+                logging.error(f"File {local_file_path} not found in local directory.")
+                return
 
-        s3_file_name = f"{date}.json"
-        content = s3.download_from_s3(self.industry_metadata_bucket_name, s3_file_name)
-        temp = json.loads(content)['data']
+            with open(local_file_path, 'r', encoding='utf-8') as file:
+                content = file.read()
 
-        stock_news_all = []
-        # 각 카테고리에 대해 'industry'와 'newsId'로 구성된 딕셔너리 생성
-        for category, ids in temp.items():
-            for item in temp[category]:
-                news_dict = {}
-                news_dict["newsId"]= item
-                news_dict["industry"] = category
-                stock_news_all.append(news_dict)
+            self.stock_news_id_dict = json.loads(content)['data']
+            logging.info(f"Loaded {len(self.stock_news_id_dict)} records from local storage for date {date}.")
 
-        # TODO : 변수 이름 => dict에서 list로
-        self.stock_news_id_dict = stock_news_all
+    def load_industry_news_id(self, date, with_s3=False):
+        """
+        Load industry news IDs either from S3 or from local directory based on the 'with_s3' flag.
+        """
+        if with_s3:
+            # Load from S3
+            s3 = S3Connection()
+
+            s3_file_name = f"{date}.json"
+            content = s3.download_from_s3(self.industry_metadata_bucket_name, s3_file_name)
+            temp = json.loads(content)['data']
+
+            stock_news_all = []
+            # 각 카테고리에 대해 'industry'와 'newsId'로 구성된 딕셔너리 생성
+            for category, ids in temp.items():
+                for item in ids:
+                    news_dict = {"newsId": item, "industry": category}
+                    stock_news_all.append(news_dict)
+
+            self.stock_news_id_dict = stock_news_all
+            logging.info(f"Loaded {len(stock_news_all)} records from S3 for date {date}.")
+        
+        else:
+            # Load from local directory
+            local_dir = f"data/tmp/{self.industry_metadata_bucket_name}"
+            local_file_path = os.path.join(local_dir, f"{date}.json")
+            
+            if not os.path.exists(local_file_path):
+                logging.error(f"File {local_file_path} not found in local directory.")
+                return
+
+            with open(local_file_path, 'r', encoding='utf-8') as file:
+                content = file.read()
+
+            temp = json.loads(content)['data']
+
+            stock_news_all = []
+            # 각 카테고리에 대해 'industry'와 'newsId'로 구성된 딕셔너리 생성
+            for category, ids in temp.items():
+                for item in ids:
+                    news_dict = {"newsId": item, "industry": category}
+                    stock_news_all.append(news_dict)
+
+            self.stock_news_id_dict = stock_news_all
+            logging.info(f"Loaded {len(stock_news_all)} records from local storage for date {date}.")
 
     def _set_ranges(self, start_date, end_date):
         date_format = "%Y-%m-%d"  # Adjust format as needed
@@ -201,30 +258,41 @@ class NewsScraper:
         # 우선 총 개수 계산하기
         total_count = len(self.stock_news_all)
         
-        # s3 connection
-        s3 = S3Connection()
-        s3.connect_to_s3()
-        
         total_dict = {
-            'newsDate' : news_date,
+            'newsDate': news_date,
             'collectDate': self.current_datetime,
             'totalCnt': total_count,
-            'data': self.stock_news_all 
+            'data': self.stock_news_all
         }
 
         # JSON 데이터로 변환
         json_data = json.dumps(total_dict, ensure_ascii=False, indent=4)
 
-        # S3 파일명 설정 (날짜별로 구분)
-        s3_file_name = f'{news_date}.json'
-        
-        # S3에 업로드
+        # 버킷 이름 설정
+        bucket_name = ""
         if self.get_stock:
             bucket_name = self.stock_news_bucket_name
         else:
             bucket_name = self.industry_news_bucket_name
+
+        # 로컬에 저장 우선 먼저 한다.
+        local_dir = f"data/news/{bucket_name}"
+        os.makedirs(local_dir, exist_ok=True)
+
+        local_file_path = os.path.join(local_dir, f"{news_date}.json")
         
+        with open(local_file_path, 'w', encoding='utf-8') as file:
+            file.write(json_data)
+        logging.info(f"Saved data locally in '{local_file_path}'.")
+
+        # S3에 업로드
+        s3 = S3Connection()
+        
+        s3_file_name = f'{news_date}.json'
+
         s3.upload_to_s3(json_data, bucket_name, s3_file_name)
+        logging.info(f"Uploaded data to S3 bucket '{bucket_name}' with file name '{s3_file_name}'.")
+
 
     def get_news_article(self, get_stock, **kwargs):
         
@@ -265,3 +333,6 @@ class NewsScraper:
         
         else:
             logging.info(f"Industry news articles saved from {start_date} to {end_date}!")
+        
+        # 임시 파일 삭제
+        # NewsScraper.clear_tmp_folder()
