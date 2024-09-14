@@ -2,9 +2,12 @@ import { Center } from '@components/Center';
 import LeftStock from '@components/LeftStock';
 import { categoryImage, categoryStock } from '@features/StockMain/category';
 import styled from 'styled-components';
-import {StockHeader, StockHeaderMore} from '@features/StockMain/styledComponent';
+import {
+  StockHeader,
+  StockHeaderMore,
+} from '@features/StockMain/styledComponent';
 import FavoriteStock from '@features/StockMain/FavoriteStock';
-import { IStock } from '@features/StockMain/type';
+import { IStock } from '@features/StockMain/types';
 import { RealTimeStockFirstRow } from '@features/StockMain/RealTimeStock';
 import RealTimeStock from '@features/StockMain/RealTimeStock';
 import { CategoryFirstRow } from '@features/StockMain/categories';
@@ -65,7 +68,6 @@ const StockGridRow = styled.div`
 `;
 
 const StockMainPage = () => {
-
   return (
     <>
       <LeftStock />
@@ -79,7 +81,7 @@ const StockMainPage = () => {
         </StockGridColumn>
 
         <StockHeaderMore>실시간 차트</StockHeaderMore>
-        <More path='/all-stock'/>
+        <More path="/all-stock" />
         <HrTag />
         <StockGridRow>
           <RealTimeStockFirstRow />
@@ -89,7 +91,7 @@ const StockMainPage = () => {
         </StockGridRow>
 
         <StockHeaderMore>카테고리</StockHeaderMore>
-        <More path='/section-stock'/>
+        <More path="/section-stock" />
         <HrTag />
         <StockGridRow>
           <CategoryFirstRow />
