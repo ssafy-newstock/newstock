@@ -12,8 +12,8 @@ import FavoriteStock from '@features/Stock/StockMain/FavoriteStock';
 import { IStock } from '@features/Stock/types';
 import { RealTimeStockFirstRow } from '@features/Stock/StockMain/RealTimeStock';
 import RealTimeStock from '@features/Stock/StockMain/RealTimeStock';
-import { CategoryFirstRow } from '@features/Stock/StockMain/categories';
-import Categories from '@features/Stock/StockMain/categories';
+import { CategoryFirstRow } from '@features/Stock/StockMain/CategoryStock';
+import CategoryStock from '@features/Stock/StockMain/CategoryStock';
 import More from '@features/Stock/More';
 
 const stockData = [
@@ -85,7 +85,7 @@ const StockMainPage = () => {
                   ]
                 : 'default-image'; // 기본 이미지 처리
             return (
-              <Categories key={index} category={category} imageUrl={imageUrl} />
+              <CategoryStock key={index} category={category} imageUrl={imageUrl} />
             );
           })}
         </StockGridRow>

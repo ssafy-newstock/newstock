@@ -22,7 +22,7 @@ export const CategoryFirstRow = () => {
   );
 };
 
-const Categories: React.FC<ICategory> = ({ category, imageUrl }) => {
+const CategoryStock: React.FC<ICategory> = ({ category, imageUrl }) => {
   return (
     <CategoryCardRow>
       <CategoryImgWrapper>
@@ -41,4 +41,4 @@ const Categories: React.FC<ICategory> = ({ category, imageUrl }) => {
   );
 };
 
-export default Categories;
+export default CategoryStock;
