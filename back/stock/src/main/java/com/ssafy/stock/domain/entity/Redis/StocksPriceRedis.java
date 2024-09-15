@@ -15,9 +15,9 @@ public class StocksPriceRedis {
     private String stockCode;
     private String stockName;
     private String stockIndustry; // 종목 카테고리
-    private String stckPrpr;  // 주식 현재가
-    private String prdyVrss;  // 전일 대비
-    private String prdyCtrt;  // 전일 대비율
-    private String acmlTrPbmn;    // 누적 거래 대금
-    private String acmlVol;       // 누적 거래량
+    private Long stckPrpr;  // 주식 현재가
+    private Long prdyVrss;  // 전일 대비
+    private Long prdyCtrt;  // 전일 대비율
+    private Long acmlTrPbmn;    // 누적 거래 대금
+    private Long acmlVol;       // 누적 거래량
 }
