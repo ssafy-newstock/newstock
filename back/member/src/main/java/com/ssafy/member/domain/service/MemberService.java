@@ -1,8 +1,9 @@
 package com.ssafy.member.domain.service;
 
 
-import com.ssafy.member.domain.repository.MemberRepository;
 import com.ssafy.member.domain.entity.Member;
+import com.ssafy.member.domain.entity.dto.MemberDetailDto;
+import com.ssafy.member.domain.repository.MemberRepository;
 import com.ssafy.member.global.exception.MemberNotFoundException;
 import com.ssafy.member.global.exception.TokenException;
 import com.ssafy.member.global.security.token.TokenProvider;
@@ -38,34 +39,25 @@ public class MemberService {
     /*
         로그아웃 => token redis에서 삭제
      */
-    // TODO : OAuth2Controller과 겹친 부분 utils로 빼기
-    public void checkAuthentication(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-
-        // 쿠키가 아예 존재하지 않나 확인
-        if (cookies == null) {
-            throw new RuntimeException("쿠키가 존재하지 않습니다.");
+    public Long checkAuthentication(String accessToken) {
+        if (!StringUtils.hasText(accessToken)) {
+            throw new TokenException("Access Token이 존재하지 않습니다.");
         }
 
-        // 쿠키 조회
-        String refreshToken = getRefreshToken(cookies);
-        if (!StringUtils.hasText(refreshToken)) {
-            throw new TokenException("Refresh Token이 존재하지 않습니다.");
+        // AccessToken 유효성 검증
+        if (!tokenProvider.validateAccessToken(accessToken)) {
+            throw new TokenException("유효하지 않은 Access Token입니다.");
         }
 
-        // accessToken 조회
-        String accessToken = request.getHeader("Authorization");
+        return tokenProvider.getMemberIdFromToken(accessToken);
+    }
 
+    public MemberDetailDto getMemberDetail(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() ->
+                        new MemberNotFoundException("액세스 토큰 안의 ID를 가진 멤버를 찾을 수 없습니다."));
 
-        // 그리고 access, refresh간 id 불일치 발생하면 처리
-        if (!tokenProvider.validateSameTokens(accessToken, refreshToken)) {
-            throw new TokenException("Access Token과 Refresh Token 사용자 정보 불일치합니다.");
-        }
-
-        Long memberId = tokenProvider.getMemberIdFromToken(refreshToken);
-        // 레디스에서 정보 삭제
-        tokenService.deleteRefreshToken(memberId.toString());
-
+        return MemberDetailDto.of(member);
     }
 
     /*
