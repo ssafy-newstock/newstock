@@ -62,10 +62,10 @@ public class StockService {
 
     // 종목 정보 조회 전략 : Redis 캐시메모리 사용
     @Cacheable(cacheNames = "stocksInfo", cacheManager = "cacheManager")
-    public List<StocksRedis> getStocksInfo(){
+    public List<StocksRedis> getStocksInfo() {
         List<StocksRedis> stocksRedis = stocksRedisRepository.findAll();
 
-        if(stocksRedis.isEmpty()){
+        if (stocksRedis.isEmpty()) {
             List<Stocks> stocks = stocksRepository.findAll();
 
             stocksRedis = stocks.stream()
@@ -95,7 +95,7 @@ public class StockService {
         CompletableFuture<List<StockPricesResponseDto>> future1 = CompletableFuture.supplyAsync(() -> getStockPrices(stockCodes1, "Bearer " + kisTokenService.getAccessToken("token1"), APP_KEY1, APP_SECRET1), executor);
         CompletableFuture<List<StockPricesResponseDto>> future2 = CompletableFuture.supplyAsync(() -> getStockPrices(stockCodes2, "Bearer " + kisTokenService.getAccessToken("token2"), APP_KEY2, APP_SECRET2), executor);
 
-        try{
+        try {
             List<StockPricesResponseDto> allStockPrices = Stream.of(future1, future2)
                     .map(CompletableFuture::join)  // 비동기 작업을 완료하고 결과를 가져옴
                     .flatMap(List::stream)         // 두 리스트를 하나로 병합
@@ -107,24 +107,25 @@ public class StockService {
             stocksPriceRedisRepository.saveAll(stocksPriceRedisList);
 
             log.info("스케줄러 : 주식 데이터 갱신 성공");
-            simpMessageSendingOperations.convertAndSend("/sub/stock/info", allStockPrices);
-        } catch (CompletionException e){
+            simpMessageSendingOperations.convertAndSend("/api/sub/stock/info", allStockPrices);
+        } catch (CompletionException e) {
             e.printStackTrace();
         }
     }
 
     /**
      * 한국투자증권 시세 갱신 메소드
-     * @param stocksInfo 종목코드, 종목이름
+     *
+     * @param stocksInfo  종목코드, 종목이름
      * @param accessToken
      * @param appKey
      * @param appSecret
      * @return 코스피 958개의 종목코드, 종목이름, 현재가, 전일 대비, 전일 대비율
      */
     public List<StockPricesResponseDto> getStockPrices(List<StocksRedis> stocksInfo,
-                                                        String accessToken,
-                                                        String appKey,
-                                                        String appSecret) {
+                                                       String accessToken,
+                                                       String appKey,
+                                                       String appSecret) {
         List<StockPricesResponseDto> stockPricesResponseDtos = new ArrayList<>();
 
         int totalStockCodes = stocksInfo.size();
@@ -168,7 +169,7 @@ public class StockService {
         }
     }
 
-    public Iterable<StocksPriceRedis> getStocksPriceRedis(){
+    public Iterable<StocksPriceRedis> getStocksPriceRedis() {
         return stocksPriceRedisRepository.findAll();
     }
 

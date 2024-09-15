@@ -26,7 +26,7 @@ import static com.ssafy.member.global.constant.TokenKey.*;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/")
+@RequestMapping("/api/member")
 public class OAuth2Controller {
 
     private final OAuth2Service oAuth2Service;
