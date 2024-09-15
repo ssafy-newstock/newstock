@@ -60,7 +60,7 @@ const LeftNews: React.FC = () => {
           <TextTitle>뉴스</TextTitle>
         </TextDiv>
         <TextDiv
-          onClick={() => navigate('/subNewsMain/economicNews')}
+          onClick={() => navigate('/subnews-main/economic-news')}
           style={{ cursor: 'pointer' }}
         >
           <svg
@@ -84,7 +84,7 @@ const LeftNews: React.FC = () => {
           <TextP>시황 뉴스</TextP>
         </TextDiv>
         <TextDiv
-          onClick={() => navigate('/subNewsMain/stockNews')}
+          onClick={() => navigate('/subnews-main/stock-news')}
           style={{ cursor: 'pointer' }}
         >
           <svg
@@ -102,7 +102,7 @@ const LeftNews: React.FC = () => {
           <TextP>종목 뉴스</TextP>
         </TextDiv>
         <TextDiv
-          onClick={() => navigate('/myNews')}
+          onClick={() => navigate('/my-news')}
           style={{ cursor: 'pointer' }}
         >
           <svg
@@ -120,7 +120,7 @@ const LeftNews: React.FC = () => {
           <TextP>저장한 뉴스</TextP>
         </TextDiv>
         <TextDiv
-          onClick={() => navigate('/scrapDetail')}
+          onClick={() => navigate('/scrap-detail')}
           style={{ cursor: 'pointer' }}
         >
           <svg
