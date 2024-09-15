@@ -1,5 +1,5 @@
-import { HeartFill } from '@features/StockMain/HeartFill';
-import { IStock } from '@features/StockMain/type';
+import { HeartFill } from '@features/Stock/HeartFill';
+import { IStock } from '@features/Stock/types';
 import {
   StockCardColumn,
   StockCardTitle,
@@ -8,7 +8,7 @@ import {
   StckPrice,
   StockPrev,
   SpanTag,
-} from '@features/StockMain/styledComponent';
+} from '@features/Stock/styledComponent';
 import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
 import blueLogo from '@assets/Stock/blueLogo.png';

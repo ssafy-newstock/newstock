@@ -1,4 +1,4 @@
-import { HeartWrapper } from './styledComponent';
+import { HeartWrapper } from '@features/Stock/styledComponent';
 export const Heart = () => {
   return (
     <HeartWrapper>

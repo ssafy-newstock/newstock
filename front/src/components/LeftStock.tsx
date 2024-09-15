@@ -59,7 +59,7 @@ const LeftStock: React.FC = () => {
           <TextTitle>주식</TextTitle>
         </TextDiv>
         <TextDiv
-          onClick={() => navigate('/allStock')}
+          onClick={() => navigate('/all-stock')}
           style={{ cursor: 'pointer' }}
         >
           <svg
@@ -79,7 +79,7 @@ const LeftStock: React.FC = () => {
           <TextP>전체 종목 조회</TextP>
         </TextDiv>
         <TextDiv
-          onClick={() => navigate('/favoriteStock')}
+          onClick={() => navigate('/favorite-stock')}
           style={{ cursor: 'pointer' }}
         >
           <svg
@@ -97,7 +97,7 @@ const LeftStock: React.FC = () => {
           <TextP>관심 종목 조회</TextP>
         </TextDiv>
         <TextDiv
-          onClick={() => navigate('/sectionStock')}
+          onClick={() => navigate('/section-stock')}
           style={{ cursor: 'pointer' }}
         >
           <svg
@@ -115,7 +115,7 @@ const LeftStock: React.FC = () => {
           <TextP>분야별 주식 조회</TextP>
         </TextDiv>
         <TextDiv
-          onClick={() => navigate('/myStock')}
+          onClick={() => navigate('/my-stock')}
           style={{ cursor: 'pointer' }}
         >
           <svg

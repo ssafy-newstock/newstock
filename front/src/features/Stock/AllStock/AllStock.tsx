@@ -6,16 +6,16 @@ import {
   StockTitle,
   Text,
   TextLeft,
-} from '@features/StockMain/styledComponent';
-import { Heart } from '@features/StockMain/Heart';
+} from '@features/Stock/styledComponent';
+import { Heart } from '@features/Stock/Heart';
 import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
 import { formatUnit } from '@utils/formatUnit';
-import { IStock } from '@features/StockMain/type';
+import { IStock } from '@features/Stock/types';
 import blueLogo from '@assets/Stock/blueLogo.png';
 
 
-export const RealTimeStockFirstRow = () => {
+export const AllStockFirstRow = () => {
   return (
     <StockCardRow>
       <TextLeft>종목명</TextLeft>
@@ -28,7 +28,7 @@ export const RealTimeStockFirstRow = () => {
   );
 };
 
-const RealTimeStock = ({stock}:{stock:IStock}) => {
+const AllStock = ({stock}:{stock:IStock}) => {
   return (
       <StockCardRow>
         <StockTitle>
@@ -49,4 +49,4 @@ const RealTimeStock = ({stock}:{stock:IStock}) => {
       </StockCardRow>
   );
 };
-export default RealTimeStock;
+export default AllStock;

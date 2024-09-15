@@ -1,16 +1,16 @@
-import { CategoryCardRow } from '@features/StockMain/styledComponent';
-import { ICategory } from '@features/StockMain/type';
+import { ICategory } from '@features/Stock/types';
 import {
   Text,
   CategoryImgWrapper,
   CategoryImg,
   CategoryData,
-} from '@features/StockMain/styledComponent';
+  CategoryCardRow,
+} from '@features/Stock/styledComponent';
 import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
 import blueLogo from '@assets/Stock/blueLogo.png';
 
-export const CategoryFirstRow = () => {
+export const AllCategoryFirstRow = () => {
   return (
     <CategoryCardRow>
       <Text>카테고리</Text>
@@ -22,13 +22,19 @@ export const CategoryFirstRow = () => {
   );
 };
 
-const Categories: React.FC<ICategory> = ({ category, imageUrl }) => {
+const AllCategoryStock: React.FC<ICategory> = ({
+  category,
+  imageUrl,
+  imageBgColor,
+}) => {
   return (
     <CategoryCardRow>
-      <CategoryImgWrapper>
-        <CategoryImg src={imageUrl} alt={blueLogo} />
-        {category.industryName}
-      </CategoryImgWrapper>
+      <div style={{display:'flex', gap:'1rem', alignItems:'center'}}>
+        <CategoryImgWrapper backgroundColor={imageBgColor}>
+          <CategoryImg src={imageUrl} alt={blueLogo} />
+        </CategoryImgWrapper>
+        <Text>{category.industryName}</Text>
+      </div>
       <Text>{category.bstpNmixPrpr}</Text>
       <CategoryData isPositive={category.bstpNmixPrdyVrss.startsWith('-')}>
         {formatChange(category.bstpNmixPrdyVrss)}
@@ -41,4 +47,4 @@ const Categories: React.FC<ICategory> = ({ category, imageUrl }) => {
   );
 };
 
-export default Categories;
+export default AllCategoryStock;
