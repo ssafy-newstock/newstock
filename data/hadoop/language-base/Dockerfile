@@ -1,27 +1,23 @@
-FROM alpine:latest
+FROM centos
 
-# Set non-interactive mode for apk
-ENV DEBIAN_FRONTEND=noninteractive
+RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
 
-# Install packages including bash
-RUN apk update && apk add --no-cache \
-    tzdata \
-    openjdk8-jdk \
-    build-base \
-    libressl-dev \
-    bzip2-dev \
-    libffi-dev \
-    wget \
-    bash && \
-    cp /usr/share/zoneinfo/Asia/Seoul /etc/localtime && \
-    echo "Asia/Seoul" > /etc/timezone
+RUN yum install -y wget
+RUN yum -y groupinstall "Development Tools"
+RUN yum -y install openssl-devel bzip2-devel libffi-devel
 
-# Set JAVA_HOME environment variable
-ENV JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk
+ENV PYTHON_VERSION=3.7.6
+ENV PYTHON_URL=https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tgz
 
-# Clean up
-RUN apk del build-base \
-    libressl-dev \
-    bzip2-dev \
-    libffi-dev && \
-    rm -rf /var/cache/apk/*
+# python install
+RUN wget $PYTHON_URL
+RUN tar -xvzf Python-$PYTHON_VERSION.tgz && rm Python-$PYTHON_VERSION.tgz
+RUN /Python-$PYTHON_VERSION/configure --enable-optimizations
+RUN make altinstall
+RUN ln -s /usr/local/bin/python3.7 /usr/bin/python3
+RUN ln -s /usr/local/bin/python3.7 /usr/bin/python
+
+# java install
+RUN yum install -y java-1.8.0-openjdk.x86_64
+ENV JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.312.b07-2.el8_5.x86_64/jre

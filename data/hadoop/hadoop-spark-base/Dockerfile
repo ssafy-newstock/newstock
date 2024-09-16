@@ -7,7 +7,7 @@ ENV SAPRK_URL=https://archive.apache.org/dist/spark/spark-$SPARK_VERSION/$SPARK_
 
 # spark setting
 RUN wget $SAPRK_URL
-RUN tar -xvzf $SPARK_FILE_NAME.tgz && rm $SPARK_FILE_NAME.tgz
+RUN tar -xvzf $SPARK_FILE_NAME.tgz
 RUN mv $SPARK_FILE_NAME /opt
 RUN ln -s /opt/$SPARK_FILE_NAME /opt/spark
 

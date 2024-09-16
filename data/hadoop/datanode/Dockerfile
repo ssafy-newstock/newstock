@@ -25,4 +25,4 @@ RUN chmod a+x /start.sh
 # dummy로 디렉토리를 만들어줘야 함
 RUN mkdir -p /opt/spark/eventLog
 
-CMD ["/start.sh"]
+CMD ["sh", "/start.sh"]

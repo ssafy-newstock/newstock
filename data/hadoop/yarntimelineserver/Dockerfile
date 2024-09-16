@@ -9,4 +9,4 @@ RUN chmod a+x /start.sh
 # 10200 : yarn timeline service port
 EXPOSE 8188 10200
 
-CMD ["/start.sh"]
+CMD ["sh", "/start.sh"]

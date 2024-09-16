@@ -10,4 +10,4 @@ RUN chmod a+x /start.sh
 # 8032 : yarn resource manager IPC port
 EXPOSE 8088 8032 8030
 
-CMD ["/start.sh"]
+CMD ["sh", "/start.sh"]

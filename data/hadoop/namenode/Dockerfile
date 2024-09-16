@@ -16,4 +16,4 @@ RUN chmod a+x /start.sh
 # 9870 : NameNode HTTP web ui
 EXPOSE 9000 9870
 
-CMD ["/start.sh", "/opt/hadoop/dfs/name"]
+CMD ["sh", "/start.sh", "/opt/hadoop/dfs/name"]

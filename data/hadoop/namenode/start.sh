@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # 네임스페이스 디렉토리를 입력받아서 
 NAME_DIR=$1
