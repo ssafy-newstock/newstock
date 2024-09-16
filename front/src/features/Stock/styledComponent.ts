@@ -51,6 +51,7 @@ export const StockCardColumn = styled.div`
   border-radius: 1.25rem;
   background-color: ${({ theme }) => theme.stockBackgroundColor};
   box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+  cursor: pointer;
 `;
 
 export const StockCardTitle = styled.div`
@@ -111,6 +112,7 @@ export const StockCardRow = styled.div`
   border-radius: 1.25rem;
   background-color: ${({ theme }) => theme.stockBackgroundColor};
   box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+  cursor: pointer;
 `;
 
 export const CategoryCardRow = styled(StockCardRow)`

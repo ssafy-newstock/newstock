@@ -13,6 +13,7 @@ import { formatNumber } from '@utils/formatNumber';
 import { formatUnit } from '@utils/formatUnit';
 import { IStock } from '@features/Stock/types';
 import blueLogo from '@assets/Stock/blueLogo.png';
+import { useNavigate } from 'react-router-dom';
 
 
 export const AllStockFirstRow = () => {
@@ -29,8 +30,13 @@ export const AllStockFirstRow = () => {
 };
 
 const AllStock = ({stock}:{stock:IStock}) => {
+  const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    navigate(`/stock-detail/${stock.stockCode}`);
+  };
   return (
-      <StockCardRow>
+      <StockCardRow onClick={handleNavigate}>
         <StockTitle>
           <StockImage
             src={`https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stock.stockCode}.png`}

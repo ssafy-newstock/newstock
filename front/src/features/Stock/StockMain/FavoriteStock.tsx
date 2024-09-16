@@ -12,11 +12,17 @@ import {
 import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
 import blueLogo from '@assets/Stock/blueLogo.png';
+import { useNavigate } from 'react-router-dom';
 
 
 const FavoriteStock = ({ stock }: { stock: IStock }) => {
+  const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    navigate(`/stock-detail/${stock.stockCode}`);
+  };
   return (
-    <StockCardColumn>
+    <StockCardColumn onClick={handleNavigate}>
       <StockCardTitle>
         <StockTitle>
           <StockImage
