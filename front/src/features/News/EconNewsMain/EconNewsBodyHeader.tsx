@@ -1,30 +1,19 @@
 import styled from 'styled-components';
 
-const NewsBodyHeaderWrapper = styled.div`
-  display: flex;
-  /* width: 294px; */
-  align-items: flex-start;
-`;
-
 const NewsBodyHeaderText = styled.div`
   color: #828282;
   font-family: Inter;
-  font-size: 16px;
+  font-size: 1rem;
   font-style: normal;
-  /* font-weight: 400; */
-  line-height: 30px;
+  line-height: 1.9rem;
 `;
 
 interface NewsBodyHeaderProps {
   header: string;
 }
 
-const NewsBodyHeader: React.FC<NewsBodyHeaderProps> = ({ header }) => {
-  return (
-    <NewsBodyHeaderWrapper>
-      <NewsBodyHeaderText>{header}</NewsBodyHeaderText>
-    </NewsBodyHeaderWrapper>
-  );
+const EconNewsBodyHeader: React.FC<NewsBodyHeaderProps> = ({ header }) => {
+  return <NewsBodyHeaderText>{header}</NewsBodyHeaderText>;
 };
 
-export default NewsBodyHeader;
+export default EconNewsBodyHeader;

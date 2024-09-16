@@ -1,67 +1,23 @@
 import { Center } from '@components/Center';
 import LeftStock from '@components/LeftStock';
-import { categoryImage, categoryStock } from '@features/StockMain/category';
-import styled from 'styled-components';
-import StockHeader from '@features/StockMain/StockHeader';
-import FavoriteStock from '@features/StockMain/FavoriteStock';
-import { IStock } from '@features/StockMain/type';
-import { RealTimeStockFirstRow } from '@features/StockMain/RealTimeStock';
-import RealTimeStock from '@features/StockMain/RealTimeStock';
-import { CategoryFirstRow } from '@features/StockMain/categories';
-import Categories from '@features/StockMain/categories';
-
-const stockData = [
-  {
-    stockCode: '039490',
-    stockName: '키움증권',
-    stockIndustry: '증권',
-    stckPrpr: '125100',
-    prdyVrss: '-7000',
-    prdyCtrt: '-5.30',
-    acmlTrPbmn: '38538368',
-    acmlVol: '1332',
-  },
-  {
-    stockCode: '005930',
-    stockName: '삼성전자',
-    stockIndustry: '반도체',
-    stckPrpr: '66100',
-    prdyVrss: '1200',
-    prdyCtrt: '1.80',
-    acmlTrPbmn: '38538368000',
-    acmlVol: '111332',
-  },
-  {
-    stockCode: '000660',
-    stockName: 'SK하이닉스',
-    stockIndustry: '전기전자',
-    stckPrpr: '167700',
-    prdyVrss: '10500',
-    prdyCtrt: '6.68',
-    acmlTrPbmn: '38538',
-    acmlVol: '111',
-  },
-];
-
-const HrTag = styled.hr`
-  width: 95%;
-`;
-
-const StockGridColumn = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 20px;
-  margin: 20px;
-  padding: 0px 10px;
-`;
-
-const StockGridRow = styled.div`
-  display: grid;
-  grid-template-rows: repeat(auto-fill, minmax(50px, 1fr));
-  gap: 5px;
-  margin: 20px;
-  padding: 0px 10px;
-`;
+import { categoryImage, categoryStock } from '@features/Stock/category';
+import {
+  HrTag,
+  StockGridColumn,
+  StockGridRow,
+  CategoryGridColumn,
+  StockHeader,
+  StockHeaderMore,
+} from '@features/Stock/styledComponent';
+import FavoriteStock from '@features/Stock/StockMain/FavoriteStock';
+import { IStock } from '@features/Stock/types';
+import RealTimeStock, {
+  RealTimeStockFirstRow,
+} from '@features/Stock/StockMain/RealTimeStock';
+import CategoryStock from '@features/Stock/StockMain/CategoryStock';
+import More from '@features/Stock/More';
+import { stockData } from '@features/Stock/stock';
+import { RightVacant } from '@components/RightVacant';
 
 const StockMainPage = () => {
   return (
@@ -76,7 +32,8 @@ const StockMainPage = () => {
           ))}
         </StockGridColumn>
 
-        <StockHeader>실시간 차트</StockHeader>
+        <StockHeaderMore>실시간 차트</StockHeaderMore>
+        <More path="/all-stock" />
         <HrTag />
         <StockGridRow>
           <RealTimeStockFirstRow />
@@ -85,23 +42,38 @@ const StockMainPage = () => {
           ))}
         </StockGridRow>
 
-        <StockHeader>카테고리</StockHeader>
+        <StockHeaderMore>카테고리</StockHeaderMore>
+        <More path="/section-stock" />
         <HrTag />
-        <StockGridRow>
-          <CategoryFirstRow />
-          {categoryStock.map((category, index: number) => {
-            const imageUrl =
-              category.industryName in categoryImage
-                ? categoryImage[
-                    category.industryName as keyof typeof categoryImage
-                  ]
-                : 'default-image'; // 기본 이미지 처리
-            return (
-              <Categories key={index} category={category} imageUrl={imageUrl} />
-            );
-          })}
-        </StockGridRow>
+        <CategoryGridColumn>
+          {categoryStock
+            .sort((a, b) => parseFloat(b.acmlTrPbmn) - parseFloat(a.acmlTrPbmn)) // 누적 거래 대금 순으로 내림차순 정렬
+            .slice(0, 3) // 상위 3개만 가져옴
+            .map((category, index: number) => {
+              // 기본 이미지 객체
+              const defaultImage = {
+                url: 'default-image-url',
+                backgroundColor: 'default-bg-color',
+              };
+              // 카테고리 이미지 객체를 찾고, 없으면 기본 이미지 사용
+              const imageUrl =
+                category.industryName in categoryImage
+                  ? categoryImage[
+                      category.industryName as keyof typeof categoryImage
+                    ]
+                  : defaultImage; // 기본 이미지 객체로 처리
+              return (
+                <CategoryStock
+                  key={index}
+                  category={category}
+                  imageUrl={imageUrl.url}
+                  imageBgColor={imageUrl.backgroundColor}
+                />
+              );
+            })}
+        </CategoryGridColumn>
       </Center>
+      <RightVacant />
     </>
   );
 };

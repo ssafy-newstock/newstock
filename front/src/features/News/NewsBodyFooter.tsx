@@ -2,33 +2,31 @@ import styled from 'styled-components';
 
 const NewsBodyFooterWrapper = styled.div`
   display: flex;
-  padding: 0px 10px;
+  padding: 0 0.6rem;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
 `;
 
 const NewsBodyFooterWriter = styled.div`
   color: #828282;
   font-family: Inter;
-  font-size: 18px;
+  font-size: 1.1rem;
   font-style: normal;
-  /* font-weight: 400; */
-  line-height: 30px;
+  line-height: 1.9rem;
 `;
 
 const LineSVG = styled.div`
-  width: 1.5px;
-  height: 22px;
+  width: 0.09rem;
+  height: 1.3rem;
   background: #e0e0e0;
 `;
 
 const NewsBodyFooterDate = styled.div`
   color: #828282;
   font-family: Inter;
-  font-size: 18px;
+  font-size: 1.1rem;
   font-style: normal;
-  /* font-weight: 400; */
-  line-height: 30px;
+  line-height: 1.9rem;
 `;
 
 interface NewsBodyFooterProps {
