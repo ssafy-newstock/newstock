@@ -32,7 +32,7 @@ public class MemberService {
     public Member findMember(Long memberId) {
         return memberRepository
                 .findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException("멤버가 존재하지 않습니다."));
+                .orElseThrow(() -> new MemberNotFoundException(memberId));
     }
 
 
@@ -85,6 +85,27 @@ public class MemberService {
             }
         }
         return refreshToken;
+    }
+
+    /**
+     * 해당 멤버가 가진 포인트를 반환해주는 메소드
+     * @param memberId 멤버 아이디
+     * @return 가진 포인트
+     */
+    public Long getMyPoint(Long memberId) {
+        Member member = findMember(memberId);
+
+        return member.getPoint();
+    }
+
+    /**
+     * 해당 멤버가 가진 포인트를 업데이트하는 메소드
+     * @param memberId 멤버 아이디
+     * @param point 변경할 포인트 값
+     */
+    public void updateMyPoint(Long memberId, Long point) {
+        Member member = findMember(memberId);
+        member.updateMemberPoint(point);
     }
 
 }
