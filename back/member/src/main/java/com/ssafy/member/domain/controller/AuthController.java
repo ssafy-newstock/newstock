@@ -1,6 +1,7 @@
 package com.ssafy.member.domain.controller;
 
 
+import com.ssafy.member.domain.controller.request.TokenVerifyRequest;
 import com.ssafy.member.domain.controller.response.LoginResponse;
 import com.ssafy.member.domain.controller.response.MemberVerifyResponse;
 import com.ssafy.member.domain.entity.dto.MemberDetailDto;
@@ -145,8 +146,8 @@ public class AuthController {
      * @return 200, MemberDetailDto
      */
     @GetMapping("/verify")
-    public ResponseEntity<?> verify(String token) {
-        Long memberIdInToken = memberService.checkAuthentication(token);
+    public ResponseEntity<?> verify(@RequestBody TokenVerifyRequest request) {
+        Long memberIdInToken = memberService.checkAuthentication(request.getToken());
         MemberDetailDto memberDetail = memberService.getMemberDetail(memberIdInToken);
 
         MemberVerifyResponse response = modelMapper.map(memberDetail, MemberVerifyResponse.class);
