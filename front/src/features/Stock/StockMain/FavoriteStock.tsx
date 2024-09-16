@@ -19,7 +19,7 @@ const FavoriteStock = ({ stock }: { stock: IStock }) => {
   const navigate = useNavigate();
 
   const handleNavigate = () => {
-    navigate(`/stock-detail/${stock.stockCode}`);
+    navigate(`/stock-detail/${stock.stockCode}`, { state: { stock } });
   };
   return (
     <StockCardColumn onClick={handleNavigate}>

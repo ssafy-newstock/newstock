@@ -29,7 +29,7 @@ const AllCategoryStock: React.FC<ICategory> = ({
 }) => {
   return (
     <CategoryCardRow>
-      <div style={{display:'flex', gap:'1rem', alignItems:'center'}}>
+      <div style={{display:'flex', gap:'1rem', justifyContent:'center', alignItems:'center'}}>
         <CategoryImgWrapper backgroundColor={imageBgColor}>
           <CategoryImg src={imageUrl} alt={blueLogo} />
         </CategoryImgWrapper>
