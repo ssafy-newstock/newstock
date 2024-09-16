@@ -35,13 +35,15 @@ public class StocksHoldings extends BaseEntity{
     }
 
     public void update(Long amount, Long price, TYPE updateType){
-        if(updateType == TYPE.BUY){
-            this.stockHoldingBuyAmount += amount;
-            this.stockHoldingBuyPrice += price;
-        } else if(updateType == TYPE.SELL){
+        if (updateType == TYPE.BUY) {
+            // 총 수량
+            Long totalAmount = this.stockHoldingBuyAmount + amount;
+            // 새로운 평단가 계산: 기존 총액 + 신규 매수 총액 / 총 수량
+            this.stockHoldingBuyPrice = ((this.stockHoldingBuyAmount * this.stockHoldingBuyPrice) + price) / totalAmount;
+            this.stockHoldingBuyAmount = totalAmount;
+        } else if (updateType == TYPE.SELL) {
+            // 판매 수량만큼 차감 (평단가는 유지)
             this.stockHoldingBuyAmount -= amount;
-            this.stockHoldingBuyPrice -= price;
         }
-
     }
 }
