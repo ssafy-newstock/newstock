@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginResponseDto {
+public class LoginResponse {
     private String memberName; // 멤버 이름
     private Long memberId; // 멤버 id
     private String providerEmail; // OAuth 가입 시 memberProviderEmail
