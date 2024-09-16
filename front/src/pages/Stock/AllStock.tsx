@@ -7,11 +7,13 @@ import {
   StockHeader,
 } from '@features/Stock/styledComponent';
 import { IStock } from '@features/Stock/types';
-import { stockData } from '@features/Stock/stock';
 import { RightVacant } from '@components/RightVacant';
+import { useLocation } from 'react-router-dom';
 
 
 const AllStockPage = () => {
+  const location = useLocation();
+  const { allStockData } = location.state as { allStockData: IStock[] };
   return (
     <>
       <LeftStock />
@@ -20,7 +22,7 @@ const AllStockPage = () => {
         <HrTag />
         <StockGridRow>
           <AllStockFirstRow />
-          {stockData.map((stock: IStock, index: number) => (
+          {allStockData.map((stock: IStock, index: number) => (
             <AllStock key={index} stock={stock} />
           ))}
         </StockGridRow>

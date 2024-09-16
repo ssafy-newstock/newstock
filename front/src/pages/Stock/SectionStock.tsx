@@ -6,12 +6,16 @@ import {
   StockGridRow,
   StockHeader,
 } from '@features/Stock/styledComponent';
-import { categoryImage, categoryStock } from '@features/Stock/category';
+import { categoryImage } from '@features/Stock/category';
 import AllCategoryStock, {
   AllCategoryFirstRow,
 } from '@features/Stock/SectionStock/AllCategoryStock';
+import { useLocation } from 'react-router-dom';
+import { ICategoryStock } from '@features/Stock/types';
 
 const SectionStockPage = () => {
+  const location = useLocation();
+  const { industryData } = location.state as { industryData : ICategoryStock[] };
   return (
     <>
       <LeftStock />
@@ -20,7 +24,7 @@ const SectionStockPage = () => {
         <HrTag />
         <StockGridRow>
           <AllCategoryFirstRow />
-          {categoryStock.map((category, index: number) => {
+          {industryData.map((category, index: number) => {
             // 기본 이미지 객체
             const defaultImage = {
               url: 'default-image-url',

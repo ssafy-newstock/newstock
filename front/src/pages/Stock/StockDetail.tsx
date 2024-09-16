@@ -28,6 +28,12 @@ const StockDetailPage = () => {
   const location = useLocation();
   const { stock } = location.state as { stock: IStock };
   const initialPrice = Number(stock.stckPrpr);
+
+  const getStockImageUrl = () => {
+    // 이미지 URL 생성
+    const url = `https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stock.stockCode}.png`;
+    return url;
+  };
   return (
     <>
       <LeftStock />
@@ -43,8 +49,9 @@ const StockDetailPage = () => {
             <div style={{ display: 'flex', alignItems: 'end', gap: '1rem' }}>
               <StockTitle>
                 <StockImage
-                  src={`https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stock.stockCode}.png`}
-                  alt={blueLogo}
+                  src={getStockImageUrl()}
+                  onError={(e) => (e.currentTarget.src = blueLogo)} // 기본 이미지 설정
+                  alt=""
                 />
                 {stock.stockName}
               </StockTitle>

@@ -44,7 +44,7 @@ const RealTimeStock = ({stock}:{stock:IStock}) => {
           />
           {stock.stockName}
         </StockTitle>
-        <StckPrice>{formatChange(formatNumber(stock.stckPrpr))}원</StckPrice>
+        <StckPrice>{formatNumber(stock.stckPrpr)}원</StckPrice>
         <StockPrev isPositive={stock.prdyVrss.startsWith('-')}>
           {formatChange(formatNumber(stock.prdyVrss))}원 ({stock.prdyCtrt}
           %)

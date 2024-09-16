@@ -33,7 +33,7 @@ const FavoriteStock = ({ stock }: { stock: IStock }) => {
         </StockTitle>
         <HeartFill />
       </StockCardTitle>
-      <StckPrice>{formatChange(formatNumber(stock.stckPrpr))}원</StckPrice>
+      <StckPrice>{formatNumber(stock.stckPrpr)}원</StckPrice>
       <StockPrev isPositive={stock.prdyVrss.startsWith('-')}>
         <SpanTag>어제보다</SpanTag> {formatChange(formatNumber(stock.prdyVrss))}
         원 ({stock.prdyCtrt}
