@@ -1,3 +1,8 @@
+import { useEffect } from 'react';
+import SockJS from 'sockjs-client';
+import Stomp from 'stompjs';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
 import { Center } from '@components/Center';
 import LeftStock from '@components/LeftStock';
 import { categoryImage, categoryStock } from '@features/Stock/category';
@@ -10,16 +15,88 @@ import {
   StockHeaderMore,
 } from '@features/Stock/styledComponent';
 import FavoriteStock from '@features/Stock/StockMain/FavoriteStock';
-import { IStock } from '@features/Stock/types';
 import RealTimeStock, {
   RealTimeStockFirstRow,
 } from '@features/Stock/StockMain/RealTimeStock';
 import CategoryStock from '@features/Stock/StockMain/CategoryStock';
 import More from '@features/Stock/More';
-import { stockData } from '@features/Stock/stock';
+import { IStock } from '@features/Stock/types';
 import { RightVacant } from '@components/RightVacant';
+import { stockData } from '@features/Stock/stock';
 
 const StockMainPage = () => {
+  const queryClient = useQueryClient();
+
+  // 웹소켓 초기화 및 구독 설정
+  useEffect(() => {
+    const socket = new SockJS('http://newstock.info/api/stock/websocket');
+    const stompClient = Stomp.over(socket);
+
+    stompClient.connect({}, () => {
+      // Top 10 종목 정보 구독
+      stompClient.subscribe('/sub/stock/info/live', (message) => {
+        const updatedStockData = JSON.parse(message.body);
+        queryClient.setQueryData(
+          { queryKey: ['top10StockData'] },
+          updatedStockData
+        );
+      });
+
+      // 산업군 정보 구독 (10분 단위 갱신)
+      stompClient.subscribe('/sub/stock/industry/info', (message) => {
+        const updatedIndustryData = JSON.parse(message.body);
+        queryClient.setQueryData(
+          { queryKey: ['industryData'] },
+          updatedIndustryData
+        );
+      });
+
+      // 코스피 전 종목 정보 구독 (30~40초 단위 갱신)
+      stompClient.subscribe('/sub/stock/info', (message) => {
+        const updatedStockData = JSON.parse(message.body);
+        queryClient.setQueryData(
+          { queryKey: ['allStockData'] },
+          updatedStockData
+        );
+      });
+    });
+
+    return () => {
+      stompClient.disconnect();
+    };
+  }, [queryClient]);
+
+  // 최초 데이터 조회 - axios 사용
+  const { data: top10StockData } = useQuery({
+    queryKey: ['top10StockData'],
+    queryFn: async () => {
+      const response = await axios.get(
+        'http://newstock.info/api/stock/price-list/live'
+      );
+      return response.data;
+    },
+  });
+
+  const { data: industryData } = useQuery({
+    queryKey: ['industryData'],
+    queryFn: async () => {
+      const response = await axios.get(
+        'http://newstock.info/api/stock/industry-list'
+      );
+      return response.data;
+    },
+  });
+
+  const { data: allStockData } = useQuery({
+    queryKey: ['allStockData'],
+    queryFn: async () => {
+      const response = await axios.get(
+        'http://newstock.info/api/stock/price-list'
+      );
+      return response.data;
+    },
+  });
+
   return (
     <>
       <LeftStock />
