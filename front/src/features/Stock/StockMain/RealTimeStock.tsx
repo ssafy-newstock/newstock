@@ -18,7 +18,7 @@ import { useNavigate } from 'react-router-dom';
 
 export const RealTimeStockFirstRow = () => {
   return (
-    <StockCardRow>
+    <StockCardRow style={{cursor:'default'}}>
       <TextLeft>종목명</TextLeft>
       <Text>현재가</Text>
       <Text>등락률</Text>

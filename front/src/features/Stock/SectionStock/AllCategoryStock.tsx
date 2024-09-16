@@ -12,7 +12,7 @@ import blueLogo from '@assets/Stock/blueLogo.png';
 
 export const AllCategoryFirstRow = () => {
   return (
-    <CategoryCardRow>
+    <CategoryCardRow style={{cursor:'default'}}>
       <Text>카테고리</Text>
       <Text>지수 현재가</Text>
       <Text>지수 전일 대비</Text>
