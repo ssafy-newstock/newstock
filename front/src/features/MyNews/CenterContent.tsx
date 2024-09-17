@@ -1,6 +1,6 @@
 import NewsSection from './NewsSection';
 import ScrapSection from './ScrapSection';
-import { CenterContentDiv } from './StyledComponent';
+import { CenterContentDiv } from './styledComponent';
 
 const CenterContent: React.FC = () => {
   return (

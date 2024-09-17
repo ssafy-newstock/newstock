@@ -2,7 +2,7 @@ import CenterNewsCard from './CenterNewsCard';
 import {
   CenterContentSection,
   CenterContentSectionTitle,
-} from './StyledComponent';
+} from './styledComponent';
 
 interface NewsSectionProps {
   title: string;
