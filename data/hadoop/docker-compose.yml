@@ -1,0 +1,114 @@
+version: "3.7"
+
+x-datanode_base: &datanode_base
+  image: hadoop-datanode
+  networks:
+    - bridge
+
+services:
+  namenode:
+    image: hadoop-namenode
+    container_name: namenode
+    hostname: namenode
+    ports:
+      - "9098:9870" # namenode web UI
+    volumes:
+      - namenode:/opt/hadoop/dfs/name # namenode data mount
+      - namenode:/opt/spark/eventLog # spark history log data mount 
+      - namenode:/opt/hadoop/yarn/timeline # yarn timeline data mount
+    networks:
+      - bridge
+#      hs_bridge:
+#        ipv4_address: 192.0.0.5
+
+  datanode01:
+    <<: *datanode_base
+    container_name: datanode01
+    hostname: datanode01
+    volumes:
+      - datanode01:/opt/hadoop/dfs/data
+      - datanode01:/opt/hadoop/yarn/data
+      - namenode:/opt/spark/eventLog
+#    networks:
+#      hs_bridge:
+#        ipv4_address: 192.0.0.2 
+  datanode02:
+    <<: *datanode_base
+    container_name: datanode02
+    hostname: datanode02
+    volumes:
+      - datanode02:/opt/hadoop/dfs/data
+      - datanode02:/opt/hadoop/yarn/data
+      - namenode:/opt/spark/eventLog
+#    networks:
+#      hs_bridge:
+#        ipv4_address: 192.0.0.3
+  datanode03:
+    <<: *datanode_base
+    container_name: datanode03
+    hostname: datanode03
+    volumes:
+      - datanode03:/opt/hadoop/dfs/data
+      - datanode03:/opt/hadoop/yarn/data
+      - namenode:/opt/spark/eventLog
+#    networks:
+#      hs_bridge:
+#        ipv4_address: 192.0.0.4
+
+  resourcemanager:
+    image: resourcemanager
+    container_name: resourcemanager
+    hostname: resourcemanager
+    ports:
+      - "9099:8088"
+    networks:
+      - bridge
+#   volumes:
+#     - namenode:/opt/hadoop/yarn/data
+#      hs_bridge:
+#        ipv4_address: 192.0.0.10
+
+  yarntimelineserver:
+    image: yarn-timelineserver
+    container_name: yarntimelineserver
+    hostname: yarntimelineserver
+    ports:
+      - "9096:8188"
+    networks:
+      - bridge
+    volumes:
+      - namenode:/opt/hadoop/yarn/timeline
+#      hs_bridge:
+#        ipv4_address: 192.0.0.12
+  
+  sparkhistoryserver:
+    image: spark-historyserver
+    container_name: sparkhistoryserver
+    hostname: sparkhistoryserver
+    ports:
+      - "9093:18080"
+    depends_on:
+      - namenode
+      - resourcemanager
+    volumes:
+      - namenode:/opt/spark/eventLog
+    networks:
+      - bridge
+
+
+volumes:
+  namenode:
+  datanode01:
+  datanode02:
+  datanode03:
+
+networks:
+  bridge:
+
+#networks:
+#  hs_bridge:
+#    driver: bridge
+#    ipam:
+#      driver: default
+#      config:
+#        - subnet: 192.0.0.0/16
