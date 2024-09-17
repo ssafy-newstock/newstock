@@ -14,26 +14,24 @@ import { useQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
 
 const ITEMS_PER_PAGE = 15; // 한 번에 표시할 항목 수
-const REFRESH_INTERVAL = 30000; // 30초 (밀리초 단위)
 
 const AllStockPage: React.FC = () => {
   const [displayedItems, setDisplayedItems] = useState<IStock[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const { ref, inView } = useInView();
 
-  const fetchStocks = async (): Promise<IStock[]> => {
-    const response = await axios.get('http://newstock.info/api/stock/price-list');
-    return response.data.data;
-  };
-
-  const { data: allStockData, isLoading } = useQuery({
+  const { data: allStockData, isLoading: isAllStockLoading } = useQuery({
     queryKey: ['allStockData'],
-    queryFn: fetchStocks,
-    refetchInterval: REFRESH_INTERVAL,
+    queryFn: async () => {
+      const response = await axios.get(
+        'http://newstock.info/api/stock/price-list'
+      );
+      return response.data.data;
+    },
   });
 
   const loadMore = useCallback(() => {
-    if (allStockData) {
+    if (Array.isArray(allStockData)) {
       const nextPage = currentPage + 1;
       const endIndex = nextPage * ITEMS_PER_PAGE;
       setDisplayedItems(allStockData.slice(0, endIndex));
@@ -42,7 +40,7 @@ const AllStockPage: React.FC = () => {
   }, [allStockData, currentPage]);
 
   useEffect(() => {
-    if (allStockData) {
+    if (Array.isArray(allStockData)) {
       setDisplayedItems(allStockData.slice(0, ITEMS_PER_PAGE));
       setCurrentPage(1);
     }
@@ -54,17 +52,15 @@ const AllStockPage: React.FC = () => {
     }
   }, [inView, allStockData, displayedItems.length, loadMore]);
 
-  if (isLoading) {
+  if (isAllStockLoading) {
     return <div>Loading...</div>;
   }
 
   return (
     <>
       <LeftStock />
-      <Center style={{paddingBottom:'1rem'}}>
-        <StockHeader>
-          전체 종목
-        </StockHeader>
+      <Center style={{ paddingBottom: '1rem' }}>
+        <StockHeader>전체 종목</StockHeader>
         <HrTag />
         <StockGridRow>
           <AllStockFirstRow />
@@ -73,7 +69,10 @@ const AllStockPage: React.FC = () => {
           ))}
         </StockGridRow>
         {allStockData && displayedItems.length < allStockData.length && (
-          <div ref={ref} style={{ height: '20px', background: 'transparent' }} />
+          <div
+            ref={ref}
+            style={{ height: '20px', background: 'transparent' }}
+          />
         )}
       </Center>
       <RightVacant />
