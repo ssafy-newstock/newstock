@@ -23,16 +23,126 @@ import More from '@features/Stock/More';
 import { ICategoryStock, IStock } from '@features/Stock/types';
 import { RightVacant } from '@components/RightVacant';
 import { stockData } from '@features/Stock/stock';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
+import useAllStockStore from '@store/useAllStockStore';
+import useCategoryStockStore from '@store/useCategoryStockStore';
 
 const StockMainPage = () => {
-  const navigate = useNavigate();
-  const allStockNavigate = () => {
-    navigate('/all-stock', { state: { allStockData } });
-  };
-  const sectionStockNavigate = () => {
-    navigate('/section-stock', { state: { industryData } });
-  };
+  // const navigate = useNavigate();
+  // const allStockNavigate = () => {
+  //   navigate('/all-stock', { state: { allStockData } });
+  // };
+  // const sectionStockNavigate = () => {
+  //   navigate('/section-stock', { state: { industryData } });
+  // };
+
+  // 주스탠트 상태 관리 훅 사용
+  const [ allStock, setAllStock ] = useAllStockStore((state) => [state.allStock, state.setAllStock]);
+  const [ categoryStock, setCategoryStock ] = useCategoryStockStore((state) => [state.categoryStock, state.setCategoryStock]);
+
+  // 최초 데이터 조회 - axios 사용
+  const { data: top10StockData, isLoading: isTop10StockLoading } = useQuery({
+    queryKey: ['top10StockData'],
+    queryFn: async () => {
+      const response = await axios.get(
+        'http://newstock.info/api/stock/price-list/live'
+      );
+      return response.data;
+    },
+  });
+
+  const { data: industryData, isLoading: isIndustryLoading } = useQuery<ICategoryStock[]>({
+    queryKey: ['industryData'],
+    queryFn: async () => {
+      const response = await axios.get(
+        'http://newstock.info/api/stock/industry-list'
+      );
+      return response.data;
+    },
+    select: (data) => {
+      setCategoryStock(data);
+      return data;
+    },
+  });
+
+  const { data: allStockData, isLoading: isAllStockLoading } = useQuery<IStock[]>({
+    queryKey: ['allStockData'],
+    queryFn: async () => {
+      const response = await axios.get(
+        'http://newstock.info/api/stock/price-list'
+      );
+      return response.data;
+    },
+    select: (data) => {
+      setAllStock(data);
+      return data;
+    }
+  });
+
+  if (isTop10StockLoading || isIndustryLoading || isAllStockLoading) {
+    return <div>Loading...</div>;
+  }
+
+  console.log('top10StockData', top10StockData);
+  console.log('industryData', industryData);
+  console.log('allStockData', allStockData);
+  return (
+    <>
+      <LeftStock />
+      <Center>
+        <StockHeader>관심 종목</StockHeader>
+        <HrTag />
+        <StockGridColumn>
+          {stockData.map((stock: IStock, index: number) => (
+            <FavoriteStock key={index} stock={stock} />
+          ))}
+        </StockGridColumn>
+
+        <StockHeaderMore>실시간 차트</StockHeaderMore>
+        <More/>
+        <HrTag />
+        <StockGridRow>
+          <RealTimeStockFirstRow />
+          {top10StockData.map((stock: IStock, index: number) => (
+            <RealTimeStock key={index} stock={stock} />
+          ))}
+        </StockGridRow>
+
+        <StockHeaderMore>카테고리</StockHeaderMore>
+        <More />
+        <HrTag />
+        <CategoryGridColumn>
+          {industryData?.slice(0, 3).map((category: ICategoryStock, index: number) => {
+            // 기본 이미지 객체
+            const defaultImage = {
+              url: 'default-image-url',
+              backgroundColor: 'default-bg-color',
+            };
+            // 카테고리 이미지 객체를 찾고, 없으면 기본 이미지 사용
+            const imageUrl =
+              category.industryName in categoryImage
+                ? categoryImage[
+                    category.industryName as keyof typeof categoryImage
+                  ]
+                : defaultImage; // 기본 이미지 객체로 처리
+            return (
+              <CategoryStock
+                key={index}
+                category={category}
+                imageUrl={imageUrl.url}
+                imageBgColor={imageUrl.backgroundColor}
+              />
+            );
+          })}
+        </CategoryGridColumn>
+      </Center>
+      <RightVacant />
+    </>
+  );
+};
+
+export default StockMainPage;
+
   // const queryClient = useQueryClient();
   // const [isWebSocketConnected, setIsWebSocketConnected] = useState(false);
 
@@ -76,98 +186,3 @@ const StockMainPage = () => {
   //     setIsWebSocketConnected(false); // 연결 해제
   //   };
   // }, [queryClient]);
-
-  // 최초 데이터 조회 - axios 사용
-  const { data: top10StockData } = useQuery({
-    queryKey: ['top10StockData'],
-    queryFn: async () => {
-      const response = await axios.get(
-        'http://newstock.info/api/stock/price-list/live'
-      );
-      return response.data;
-    },
-  });
-
-  const { data: industryData } = useQuery({
-    queryKey: ['industryData'],
-    queryFn: async () => {
-      const response = await axios.get(
-        'http://newstock.info/api/stock/industry-list'
-      );
-      return response.data;
-    },
-  });
-
-  const { data: allStockData } = useQuery({
-    queryKey: ['allStockData'],
-    queryFn: async () => {
-      const response = await axios.get(
-        'http://newstock.info/api/stock/price-list'
-      );
-      return response.data;
-    },
-  });
-
-  if (!top10StockData || !industryData || !allStockData) {
-    return <div>Loading...</div>;
-  }
-
-  console.log('top10StockData', top10StockData);
-  console.log('industryData', industryData);
-  console.log('allStockData', allStockData);
-  return (
-    <>
-      <LeftStock />
-      <Center>
-        <StockHeader>관심 종목</StockHeader>
-        <HrTag />
-        <StockGridColumn>
-          {stockData.map((stock: IStock, index: number) => (
-            <FavoriteStock key={index} stock={stock} />
-          ))}
-        </StockGridColumn>
-
-        <StockHeaderMore>실시간 차트</StockHeaderMore>
-        <More onClick={allStockNavigate}/>
-        <HrTag />
-        <StockGridRow>
-          <RealTimeStockFirstRow />
-          {top10StockData.map((stock: IStock, index: number) => (
-            <RealTimeStock key={index} stock={stock} />
-          ))}
-        </StockGridRow>
-
-        <StockHeaderMore>카테고리</StockHeaderMore>
-        <More onClick={sectionStockNavigate} />
-        <HrTag />
-        <CategoryGridColumn>
-          {industryData.slice(0, 3).map((category: ICategoryStock, index: number) => {
-            // 기본 이미지 객체
-            const defaultImage = {
-              url: 'default-image-url',
-              backgroundColor: 'default-bg-color',
-            };
-            // 카테고리 이미지 객체를 찾고, 없으면 기본 이미지 사용
-            const imageUrl =
-              category.industryName in categoryImage
-                ? categoryImage[
-                    category.industryName as keyof typeof categoryImage
-                  ]
-                : defaultImage; // 기본 이미지 객체로 처리
-            return (
-              <CategoryStock
-                key={index}
-                category={category}
-                imageUrl={imageUrl.url}
-                imageBgColor={imageUrl.backgroundColor}
-              />
-            );
-          })}
-        </CategoryGridColumn>
-      </Center>
-      <RightVacant />
-    </>
-  );
-};
-
-export default StockMainPage;

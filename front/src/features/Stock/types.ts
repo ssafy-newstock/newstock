@@ -117,11 +117,6 @@ export interface IcategoryImage {
   };
 }
 
-
-export interface IMore {
-  path: string;
-}
-
 export interface ICategoryImgWrapper {
   backgroundColor?: string;
 }
