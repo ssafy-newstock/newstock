@@ -10,12 +10,27 @@ import { categoryImage } from '@features/Stock/category';
 import AllCategoryStock, {
   AllCategoryFirstRow,
 } from '@features/Stock/SectionStock/AllCategoryStock';
-import { useLocation } from 'react-router-dom';
+import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
 import { ICategoryStock } from '@features/Stock/types';
 
 const SectionStockPage = () => {
-  const location = useLocation();
-  const { industryData } = location.state as { industryData : ICategoryStock[] };
+  const { data: industryData, isLoading: isIndustryLoading } = useQuery({
+    queryKey: ['industryData'],
+    queryFn: async () => {
+      const response = await axios.get(
+        'http://newstock.info/api/stock/industry-list'
+      );
+      console.log(response.data);
+
+      return response.data;
+    },
+  });
+
+  if (isIndustryLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
       <LeftStock />
@@ -24,7 +39,7 @@ const SectionStockPage = () => {
         <HrTag />
         <StockGridRow>
           <AllCategoryFirstRow />
-          {industryData.map((category, index: number) => {
+          {industryData?.data.map((category:ICategoryStock, index: number) => {
             // 기본 이미지 객체
             const defaultImage = {
               url: 'default-image-url',

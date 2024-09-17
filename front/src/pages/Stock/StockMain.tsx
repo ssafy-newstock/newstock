@@ -1,7 +1,7 @@
 // import { useEffect, useState } from 'react';
 // import SockJS from 'sockjs-client';
 // import Stomp from 'stompjs';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, UseQueryOptions, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Center } from '@components/Center';
 import LeftStock from '@components/LeftStock';
@@ -23,22 +23,17 @@ import More from '@features/Stock/More';
 import { ICategoryStock, IStock } from '@features/Stock/types';
 import { RightVacant } from '@components/RightVacant';
 import { stockData } from '@features/Stock/stock';
-// import { useNavigate } from 'react-router-dom';
-import useAllStockStore from '@store/useAllStockStore';
-import useCategoryStockStore from '@store/useCategoryStockStore';
+import { useNavigate } from 'react-router-dom';
 
 const StockMainPage = () => {
-  // const navigate = useNavigate();
-  // const allStockNavigate = () => {
-  //   navigate('/all-stock', { state: { allStockData } });
-  // };
-  // const sectionStockNavigate = () => {
-  //   navigate('/section-stock', { state: { industryData } });
-  // };
+  const navigate = useNavigate();
+  const allStockNavigate = () => {
+    navigate('/all-stock');
+  };
+  const categoryNavigate = () => {
+    navigate('/section-stock');
+  };
 
-  // 주스탠트 상태 관리 훅 사용
-  const [ allStock, setAllStock ] = useAllStockStore((state) => [state.allStock, state.setAllStock]);
-  const [ categoryStock, setCategoryStock ] = useCategoryStockStore((state) => [state.categoryStock, state.setCategoryStock]);
 
   // 최초 데이터 조회 - axios 사용
   const { data: top10StockData, isLoading: isTop10StockLoading } = useQuery({
@@ -47,45 +42,39 @@ const StockMainPage = () => {
       const response = await axios.get(
         'http://newstock.info/api/stock/price-list/live'
       );
+      console.log(response.data);
       return response.data;
     },
   });
 
-  const { data: industryData, isLoading: isIndustryLoading } = useQuery<ICategoryStock[]>({
+  const { data: industryData, isLoading: isIndustryLoading } = useQuery({
     queryKey: ['industryData'],
     queryFn: async () => {
       const response = await axios.get(
         'http://newstock.info/api/stock/industry-list'
       );
+      console.log(response.data);
+
       return response.data;
-    },
-    select: (data) => {
-      setCategoryStock(data);
-      return data;
     },
   });
 
-  const { data: allStockData, isLoading: isAllStockLoading } = useQuery<IStock[]>({
+  const { data: allStockData, isLoading: isAllStockLoading } = useQuery({
     queryKey: ['allStockData'],
     queryFn: async () => {
       const response = await axios.get(
         'http://newstock.info/api/stock/price-list'
       );
+      console.log(response.data);
+
       return response.data;
     },
-    select: (data) => {
-      setAllStock(data);
-      return data;
-    }
   });
 
   if (isTop10StockLoading || isIndustryLoading || isAllStockLoading) {
     return <div>Loading...</div>;
   }
 
-  console.log('top10StockData', top10StockData);
-  console.log('industryData', industryData);
-  console.log('allStockData', allStockData);
   return (
     <>
       <LeftStock />
@@ -93,26 +82,26 @@ const StockMainPage = () => {
         <StockHeader>관심 종목</StockHeader>
         <HrTag />
         <StockGridColumn>
-          {stockData.map((stock: IStock, index: number) => (
+          {stockData?.map((stock: IStock, index: number) => (
             <FavoriteStock key={index} stock={stock} />
           ))}
         </StockGridColumn>
 
         <StockHeaderMore>실시간 차트</StockHeaderMore>
-        <More/>
+        <More onClick={allStockNavigate}/>
         <HrTag />
         <StockGridRow>
           <RealTimeStockFirstRow />
-          {top10StockData.map((stock: IStock, index: number) => (
+          {top10StockData.data?.map((stock: IStock, index: number) => (
             <RealTimeStock key={index} stock={stock} />
           ))}
         </StockGridRow>
 
         <StockHeaderMore>카테고리</StockHeaderMore>
-        <More />
+        <More onClick={categoryNavigate}/>
         <HrTag />
         <CategoryGridColumn>
-          {industryData?.slice(0, 3).map((category: ICategoryStock, index: number) => {
+          {industryData?.data.slice(0,3).map((category: ICategoryStock, index: number) => {
             // 기본 이미지 객체
             const defaultImage = {
               url: 'default-image-url',

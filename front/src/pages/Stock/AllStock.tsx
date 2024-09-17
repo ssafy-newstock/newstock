@@ -8,12 +8,25 @@ import {
 } from '@features/Stock/styledComponent';
 import { IStock } from '@features/Stock/types';
 import { RightVacant } from '@components/RightVacant';
-import { useLocation } from 'react-router-dom';
+import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
 
 
 const AllStockPage = () => {
-  const location = useLocation();
-  const { allStockData } = location.state as { allStockData: IStock[] };
+  const { data: allStockData, isLoading: isAllStockLoading } = useQuery({
+    queryKey: ['allStockData'],
+    queryFn: async () => {
+      const response = await axios.get(
+        'http://newstock.info/api/stock/price-list'
+      );
+      return response.data;
+    },
+  });
+
+  if (isAllStockLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
       <LeftStock />
@@ -22,7 +35,7 @@ const AllStockPage = () => {
         <HrTag />
         <StockGridRow>
           <AllStockFirstRow />
-          {allStockData.map((stock: IStock, index: number) => (
+          {allStockData?.data.map((stock: IStock, index: number) => (
             <AllStock key={index} stock={stock} />
           ))}
         </StockGridRow>
