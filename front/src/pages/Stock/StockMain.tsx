@@ -24,6 +24,8 @@ import { ICategoryStock, IStock } from '@features/Stock/types';
 import { RightVacant } from '@components/RightVacant';
 import { stockData } from '@features/Stock/stock';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import Modal from '@features/Stock/SectionStock/Modal';
 
 const StockMainPage = () => {
   const navigate = useNavigate();
@@ -34,6 +36,19 @@ const StockMainPage = () => {
     navigate('/section-stock');
   };
 
+    // 모달 관련
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState<ICategoryStock | null>(null);
+  
+    const openModal = (category: ICategoryStock) => {
+      setSelectedCategory(category);
+      setIsModalOpen(true);
+    };
+  
+    const closeModal = () => {
+      setSelectedCategory(null);
+      setIsModalOpen(false);
+    };
 
   // 최초 데이터 조회 - axios 사용
   const { data: top10StockData, isLoading: isTop10StockLoading } = useQuery({
@@ -120,12 +135,16 @@ const StockMainPage = () => {
                 category={category}
                 imageUrl={imageUrl.url}
                 imageBgColor={imageUrl.backgroundColor}
+                onClick={() => openModal(category)}
               />
             );
           })}
         </CategoryGridColumn>
       </Center>
       <RightVacant />
+      {isModalOpen && selectedCategory && (
+        <Modal onClose={closeModal} category={selectedCategory} />
+      )}
     </>
   );
 };

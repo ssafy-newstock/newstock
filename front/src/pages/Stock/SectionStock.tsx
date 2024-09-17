@@ -13,8 +13,24 @@ import AllCategoryStock, {
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import { ICategoryStock } from '@features/Stock/types';
+import Modal from '@features/Stock/SectionStock/Modal';
+import { useState } from 'react';
 
 const SectionStockPage = () => {
+  // 모달 관련
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<ICategoryStock | null>(null);
+
+  const openModal = (category: ICategoryStock) => {
+    setSelectedCategory(category);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setSelectedCategory(null);
+    setIsModalOpen(false);
+  };
+
   const { data: industryData, isLoading: isIndustryLoading } = useQuery({
     queryKey: ['industryData'],
     queryFn: async () => {
@@ -39,7 +55,7 @@ const SectionStockPage = () => {
         <HrTag />
         <StockGridRow>
           <AllCategoryFirstRow />
-          {industryData?.data.map((category:ICategoryStock, index: number) => {
+          {industryData?.data.map((category: ICategoryStock, index: number) => {
             // 기본 이미지 객체
             const defaultImage = {
               url: 'default-image-url',
@@ -58,12 +74,16 @@ const SectionStockPage = () => {
                 category={category}
                 imageUrl={imageUrl.url}
                 imageBgColor={imageUrl.backgroundColor}
+                onClick={() => openModal(category)}
               />
             );
           })}
         </StockGridRow>
       </Center>
       <Right />
+      {isModalOpen && selectedCategory && (
+        <Modal onClose={closeModal} category={selectedCategory} />
+      )}
     </>
   );
 };

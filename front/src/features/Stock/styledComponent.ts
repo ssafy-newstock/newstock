@@ -147,7 +147,7 @@ export const CategoryImgWrapper = styled.div<ICategoryImgWrapper>`
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 10%;
+  border-radius: 1rem;
   background-color: ${({ backgroundColor }) => backgroundColor || 'white'};
 `;
 

@@ -9,6 +9,16 @@ export interface IStock {
   acmlVol: string | number;
 }
 
+export interface IApiStock {
+  success: boolean;
+  data: IStock[];
+}
+
+export interface IApiCategory {
+  success: boolean;
+  data: ICategoryStock[];
+}
+
 export interface ICategory {
   category: {
     industryCode: string | number;
@@ -20,6 +30,7 @@ export interface ICategory {
   };
   imageUrl: string | number;
   imageBgColor: string | number;
+  onClick?: () => void;
 }
 
 export interface ICategoryStock {

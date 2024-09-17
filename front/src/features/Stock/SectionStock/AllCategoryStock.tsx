@@ -25,9 +25,10 @@ const AllCategoryStock: React.FC<ICategory> = ({
   category,
   imageUrl,
   imageBgColor,
+  onClick,
 }) => {
   return (
-    <CategoryCardRow>
+    <CategoryCardRow onClick={onClick}>
       <div style={{display:'flex', gap:'1rem', justifyContent:'center', alignItems:'center'}}>
         <CategoryImgWrapper backgroundColor={String(imageBgColor)}>
           <CategoryImg src={String(imageUrl)} alt="Category Image" />
