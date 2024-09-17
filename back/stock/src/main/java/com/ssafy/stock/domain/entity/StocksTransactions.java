@@ -32,4 +32,13 @@ public class StocksTransactions extends BaseEntity{
     private TYPE stockTransactionType;
 
     private LocalDateTime stockTransactionDate;
+
+    public StocksTransactions(Long memberId, Stocks stock, Long stockTransactionAmount, Long stockTransactionPrice, TYPE stockTransactionType, LocalDateTime stockTransactionDate) {
+        this.memberId = memberId;
+        this.stock = stock;
+        this.stockTransactionAmount = stockTransactionAmount;
+        this.stockTransactionPrice = stockTransactionPrice;
+        this.stockTransactionType = stockTransactionType;
+        this.stockTransactionDate = stockTransactionDate;
+    }
 }

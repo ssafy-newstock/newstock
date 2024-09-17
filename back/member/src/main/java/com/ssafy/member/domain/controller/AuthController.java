@@ -145,7 +145,7 @@ public class AuthController {
      * @param token 다른 마이크로서비스가 받은 accessToken
      * @return 200, MemberDetailDto
      */
-    @GetMapping("/verify")
+    @PostMapping("/verify")
     public ResponseEntity<?> verify(@RequestBody TokenVerifyRequest request) {
         Long memberIdInToken = memberService.checkAuthentication(request.getToken());
         MemberDetailDto memberDetail = memberService.getMemberDetail(memberIdInToken);

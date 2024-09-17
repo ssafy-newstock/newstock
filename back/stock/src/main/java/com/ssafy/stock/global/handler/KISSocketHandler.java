@@ -81,14 +81,14 @@ public class KISSocketHandler extends TextWebSocketHandler {
             String[] subValues = dataSection.split("\\^");
 
             String stockCode = subValues[0];// 종목 코드
-            List<String> stockInfo = stockNameMap.get(stockCode);// 종목 이름
+            List<String> stockInfo = stockNameMap.get(stockCode);
             String stockName = stockInfo.get(0);    // 종목 이름
             String stockIndustry = stockInfo.get(1);    // 종목 카테고리
-            String stckPrpr = subValues[2]; // 주식 현재가
-            String prdyVrss = subValues[4]; // 전일 대비
-            String prdyCtrt = subValues[5]; // 전일 대비율
-            String acmlVol = subValues[13]; // 누적 거래량
-            String acmlTrPbmn = subValues[14]; // 누적 거래 대금
+            Long stckPrpr = Long.parseLong(subValues[2]); // 주식 현재가
+            Long prdyVrss = Long.parseLong(subValues[4]); // 전일 대비
+            Double prdyCtrt = Double.parseDouble(subValues[5]); // 전일 대비율
+            Long acmlVol = Long.parseLong(subValues[13]); // 누적 거래량
+            Long acmlTrPbmn = Long.parseLong(subValues[14]); // 누적 거래 대금
 
             Optional<StocksPriceLiveRedis> stocksPriceLiveRedis = stocksPriceLiveRedisRepository.findById(stockCode);
             if (stocksPriceLiveRedis.isPresent()) {
