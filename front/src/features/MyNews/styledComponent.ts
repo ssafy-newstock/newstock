@@ -11,7 +11,6 @@ export const CenterDiv = styled.div`
 
 export const CenterTitleDiv = styled.div`
   display: flex;
-  padding-top: 1.5625rem;
   flex-direction: column;
   align-items: flex-start;
   gap: 0.625rem;
@@ -19,20 +18,16 @@ export const CenterTitleDiv = styled.div`
 `;
 
 export const CenterTitleFontStyle = styled.p`
-  color: ${({ theme }) => theme.textColor};
-  font-family: Inter;
   font-size: 2rem;
-  font-style: normal;
   font-weight: 600;
-  line-height: 1.875rem;
 `;
 
 export const CenterMenu = styled.div`
   display: flex;
-  padding: 0.3125rem 0.625rem;
   justify-content: space-between;
   align-items: center;
   align-self: stretch;
+  margin-top: 1.25rem;
 `;
 
 export const CenterMenuLeft = styled.div`
@@ -51,7 +46,7 @@ export const SelectDateDiv = styled.div`
 export const CenterHr = styled.hr`
   width: 100%;
   height: 0.1875rem;
-  background: #000;
+  background-color: #828282;
 `;
 
 export const CenterContentDiv = styled.div`
@@ -65,10 +60,7 @@ export const CenterContentDiv = styled.div`
 
 export const FontStyle = styled.p`
   color: #828282;
-  font-family: Inter;
   font-size: 1rem;
-  font-style: normal;
-  font-weight: 400;
   line-height: 1.875rem;
 `;
 
@@ -124,7 +116,9 @@ export const CardContextDiv = styled.div`
   margin-left: 0.625rem;
 `;
 
-export const CardBottomContainer = styled.div<{ hasKeyword: boolean }>`
+export const CardBottomContainer = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'hasKeyword',
+})<{ hasKeyword: boolean }>`
   display: flex;
   align-items: center;
   justify-content: ${({ hasKeyword }) =>
@@ -152,9 +146,6 @@ export const CardKeywordDiv = styled.div`
 
 export const CardKeywordFontStyle = styled.p`
   color: #fff;
-  font-family: Inter;
   font-size: 1.25rem;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 1.875rem; 
+  line-height: 1.875rem;
 `;
