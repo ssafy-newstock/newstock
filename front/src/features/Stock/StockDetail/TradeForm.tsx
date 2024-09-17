@@ -56,9 +56,7 @@ const TradeForm: React.FC<TradeFormProps> = ({initialPrice}) => {
   const { control, reset, getValues } = useForm<FormValues>({
     defaultValues: {
       buyPrice: initialPrice,
-      buyAmount: 0,
       sellPrice: initialPrice,
-      sellAmount: 0,
     },
   });
 
@@ -104,6 +102,7 @@ const TradeForm: React.FC<TradeFormProps> = ({initialPrice}) => {
                   borderRadius: '4px',
                   border: '1px solid #ccc',
                 }}
+                disabled
               />
             )}
           />
@@ -149,6 +148,7 @@ const TradeForm: React.FC<TradeFormProps> = ({initialPrice}) => {
                   borderRadius: '4px',
                   border: '1px solid #ccc',
                 }}
+                disabled
               />
             )}
           />
