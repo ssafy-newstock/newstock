@@ -48,10 +48,10 @@ const StockDetailPage = () => {
             style={{
               display: 'flex',
               justifyContent: 'space-between',
-              alignItems: 'center',
+              alignItems: 'end',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'end', gap: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <StockTitle>
                 <StockImage
                   src={getStockImageUrl()}
