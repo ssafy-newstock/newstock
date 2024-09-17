@@ -21,8 +21,8 @@ export const lightTheme: DefaultTheme = {
   newsBackgroundColor: '#FFF',
   // 주식 카드 백그라운드
   stockBackgroundColor: '#FFF',
-  stockRed: "#FF0000",
-  stockBlue:"#0000FF",
+  stockRed: '#FF0000',
+  stockBlue: '#0000FF',
   // 주호꺼(저장한 뉴스 센터컨텐츠요소 중 중간 박스)
   centerContentSectionBackgroundColor: '#F7F7F7',
 };
@@ -48,8 +48,8 @@ export const darkTheme: DefaultTheme = {
   newsBackgroundColor: '#17223B',
   // 주식 카드 백그라운드
   stockBackgroundColor: '#17223B',
-  stockRed: "#FF4500",
-  stockBlue:"#87CEFA",
+  stockRed: '#FF4500',
+  stockBlue: '#87CEFA',
   // 주호꺼(저장한 뉴스 센터컨텐츠요소 중 중간 박스)
   centerContentSectionBackgroundColor: '#4C506B',
 };
