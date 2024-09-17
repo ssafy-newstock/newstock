@@ -1,33 +1,33 @@
 export interface IStock {
-  stockCode: string;
-  stockName: string;
-  stockIndustry: string;
-  stckPrpr: string;
-  prdyVrss: string;
-  prdyCtrt: string;
-  acmlTrPbmn: string;
-  acmlVol: string;
+  stockCode: string | number;
+  stockName: string | number;
+  stockIndustry: string | number;
+  stckPrpr: string | number;
+  prdyVrss: string | number;
+  prdyCtrt: string | number;
+  acmlTrPbmn: string | number;
+  acmlVol: string | number;
 }
 
 export interface ICategory {
   category: {
-    industryName: string;
-    bstpNmixPrpr: string;
-    bstpNmixPrdyVrss: string;
-    bstpNmixPrdyCtrt: string;
-    acmlTrPbmn: string;
+    industryName: string | number;
+    bstpNmixPrpr: string | number;
+    bstpNmixPrdyVrss: string | number;
+    bstpNmixPrdyCtrt: string | number;
+    acmlTrPbmn: string | number;
   };
-  imageUrl: string;
-  imageBgColor: string;
+  imageUrl: string | number;
+  imageBgColor: string | number;
 }
 
 export interface ICategoryStock {
-  industryCode: string;
-  industryName: string;
-  bstpNmixPrpr: string;
-  bstpNmixPrdyVrss: string;
-  bstpNmixPrdyCtrt: string;
-  acmlTrPbmn: string;
+  industryCode: string | number;
+  industryName: string | number;
+  bstpNmixPrpr: string | number;
+  bstpNmixPrdyVrss: string | number;
+  bstpNmixPrdyCtrt: string | number;
+  acmlTrPbmn: string | number;
 }
 
 export interface IcategoryImage {

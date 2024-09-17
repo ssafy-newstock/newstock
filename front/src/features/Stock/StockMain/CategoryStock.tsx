@@ -15,13 +15,13 @@ import blueLogo from '@assets/Stock/blueLogo.png';
 const CategoryStock: React.FC<ICategory> = ({ category, imageUrl, imageBgColor }) => {
   return (
     <CategoryCardColumn>
-      <CategoryImgWrapper backgroundColor={imageBgColor} >
-        <CategoryImgMain src={imageUrl} alt={blueLogo} />
+      <CategoryImgWrapper backgroundColor={imageBgColor.toString()} >
+        <CategoryImgMain src={imageUrl.toString()} alt={blueLogo} />
       </CategoryImgWrapper>
       <CategoryInfo>
         {' '}
         <TextLarge>{category.industryName}</TextLarge>
-        <CategoryData isPositive={category.bstpNmixPrdyCtrt.startsWith('-')}>
+        <CategoryData isPositive={category.bstpNmixPrdyCtrt.toString().startsWith('-')}>
           {formatChange(category.bstpNmixPrdyCtrt)}%
         </CategoryData>
         <Text>{formatNumber(category.acmlTrPbmn)}</Text>

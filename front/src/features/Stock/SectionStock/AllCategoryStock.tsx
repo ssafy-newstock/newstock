@@ -8,7 +8,6 @@ import {
 } from '@features/Stock/styledComponent';
 import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
-import blueLogo from '@assets/Stock/blueLogo.png';
 
 export const AllCategoryFirstRow = () => {
   return (
@@ -30,16 +29,16 @@ const AllCategoryStock: React.FC<ICategory> = ({
   return (
     <CategoryCardRow>
       <div style={{display:'flex', gap:'1rem', justifyContent:'center', alignItems:'center'}}>
-        <CategoryImgWrapper backgroundColor={imageBgColor}>
-          <CategoryImg src={imageUrl} alt={blueLogo} />
+        <CategoryImgWrapper backgroundColor={String(imageBgColor)}>
+          <CategoryImg src={String(imageUrl)} alt="Category Image" />
         </CategoryImgWrapper>
         <Text>{category.industryName}</Text>
       </div>
       <Text>{category.bstpNmixPrpr}</Text>
-      <CategoryData isPositive={category.bstpNmixPrdyVrss.startsWith('-')}>
+      <CategoryData isPositive={category.bstpNmixPrdyVrss.toString().startsWith('-')}>
         {formatChange(category.bstpNmixPrdyVrss)}
       </CategoryData>
-      <CategoryData isPositive={category.bstpNmixPrdyCtrt.startsWith('-')}>
+      <CategoryData isPositive={category.bstpNmixPrdyCtrt.toString().startsWith('-')}>
         {formatChange(category.bstpNmixPrdyCtrt)}%
       </CategoryData>
       <Text>{formatNumber(category.acmlTrPbmn)}</Text>
