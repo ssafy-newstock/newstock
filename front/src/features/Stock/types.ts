@@ -11,6 +11,7 @@ export interface IStock {
 
 export interface ICategory {
   category: {
+    industryCode: string | number;
     industryName: string | number;
     bstpNmixPrpr: string | number;
     bstpNmixPrdyVrss: string | number;
