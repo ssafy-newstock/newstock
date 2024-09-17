@@ -19,8 +19,8 @@ import TradeForm from '@features/Stock/StockDetail/TradeForm';
 import { Heart } from '@features/Stock/Heart';
 
 const Button = styled.div`
-  background-color: ${({ theme }) => theme.buttonBackgroundColor};
-  color: ${({ theme }) => theme.buttonTextColor};
+  background-color: ${({ theme }) => theme.profileBackgroundColor};
+  color: ${({ theme }) => theme.profileColor};
   border-radius: 1rem;
   padding: 0.5rem 1rem;
 `;
@@ -39,7 +39,7 @@ const StockDetailPage = () => {
     <>
       <LeftStock />
       <Center style={{ padding: '0rem 1rem' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
           <div
             style={{
               display: 'flex',

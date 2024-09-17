@@ -33,6 +33,14 @@ const InputWrapper = styled.div`
   gap: 0.5rem;
 `;
 
+const InputTag = styled.input`
+  padding: 0.5rem;
+  border-radius: 1rem;
+  border: none;
+  background-color: ${({ theme }) => theme.profileBackgroundColor};
+  color: ${({ theme }) => theme.profileColor};
+`;
+
 const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -42,7 +50,7 @@ const ButtonWrapper = styled.div`
 const Button = styled.button<{ variant: 'buy' | 'sell' }>`
   padding: 0.5rem 1rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 1rem;
   color: #fff;
   cursor: pointer;
   background-color: ${(props) =>
@@ -52,7 +60,7 @@ const Button = styled.button<{ variant: 'buy' | 'sell' }>`
   }
 `;
 
-const TradeForm: React.FC<TradeFormProps> = ({initialPrice}) => {
+const TradeForm: React.FC<TradeFormProps> = ({ initialPrice }) => {
   const { control, reset, getValues } = useForm<FormValues>({
     defaultValues: {
       buyPrice: initialPrice,
@@ -93,15 +101,10 @@ const TradeForm: React.FC<TradeFormProps> = ({initialPrice}) => {
             name="buyPrice"
             control={control}
             render={({ field }) => (
-              <input
+              <InputTag
                 {...field}
                 type="number"
                 placeholder="Buy Price"
-                style={{
-                  padding: '0.5rem',
-                  borderRadius: '4px',
-                  border: '1px solid #ccc',
-                }}
                 disabled
               />
             )}
@@ -112,16 +115,7 @@ const TradeForm: React.FC<TradeFormProps> = ({initialPrice}) => {
             name="buyAmount"
             control={control}
             render={({ field }) => (
-              <input
-                {...field}
-                type="number"
-                placeholder="Buy Amount"
-                style={{
-                  padding: '0.5rem',
-                  borderRadius: '4px',
-                  border: '1px solid #ccc',
-                }}
-              />
+              <InputTag {...field} type="number" placeholder="Buy Amount" />
             )}
           />
         </InputWrapper>
@@ -139,15 +133,10 @@ const TradeForm: React.FC<TradeFormProps> = ({initialPrice}) => {
             name="sellPrice"
             control={control}
             render={({ field }) => (
-              <input
+              <InputTag
                 {...field}
                 type="number"
                 placeholder="Sell Price"
-                style={{
-                  padding: '0.5rem',
-                  borderRadius: '4px',
-                  border: '1px solid #ccc',
-                }}
                 disabled
               />
             )}
@@ -158,16 +147,7 @@ const TradeForm: React.FC<TradeFormProps> = ({initialPrice}) => {
             name="sellAmount"
             control={control}
             render={({ field }) => (
-              <input
-                {...field}
-                type="number"
-                placeholder="Sell Amount"
-                style={{
-                  padding: '0.5rem',
-                  borderRadius: '4px',
-                  border: '1px solid #ccc',
-                }}
-              />
+              <InputTag {...field} type="number" placeholder="Sell Amount" />
             )}
           />
         </InputWrapper>
