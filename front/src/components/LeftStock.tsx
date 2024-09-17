@@ -45,9 +45,9 @@ const TextP = styled.p`
 `;
 
 const Lefthr = styled.hr`
-  background: #e0e0e0;
   width: 180px;
   height: 2px;
+  background-color: #828282;
 `;
 
 const LeftStock: React.FC = () => {
