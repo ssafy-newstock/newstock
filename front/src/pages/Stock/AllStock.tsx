@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Center } from '@components/Center';
 import LeftStock from '@components/LeftStock';
 import AllStock, { AllStockFirstRow } from '@features/Stock/AllStock/AllStock';
