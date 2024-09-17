@@ -104,7 +104,7 @@ export const HeartWrapper = styled.div`
 
 export const StockCardRow = styled.div`
   display: grid;
-  grid-template-columns: 2fr 1fr 1.5fr 1fr 1fr 0.5fr; /* 각 열의 너비를 설정 */
+  grid-template-columns: 2fr 1fr 1.5fr 1fr 1fr; /* 각 열의 너비를 설정 */
   text-align: center;
   align-items: center;
   width: 100%;

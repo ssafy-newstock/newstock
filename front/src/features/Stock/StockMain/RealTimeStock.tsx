@@ -24,7 +24,6 @@ export const RealTimeStockFirstRow = () => {
       <Text>등락률</Text>
       <Text>거래대금</Text>
       <Text>거래량</Text>
-      <Text>관심</Text>
     </StockCardRow>
   );
 };
@@ -51,7 +50,6 @@ const RealTimeStock = ({stock}:{stock:IStock}) => {
         </StockPrev>
         <Text>{formatUnit(stock.acmlTrPbmn)}</Text>
         <Text>{formatNumber(stock.acmlVol)}주</Text>
-        <Heart />
       </StockCardRow>
   );
 };

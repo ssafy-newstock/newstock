@@ -16,6 +16,7 @@ import { Link, Outlet, useLocation } from 'react-router-dom';
 import blueLogo from '@assets/Stock/blueLogo.png';
 import styled from 'styled-components';
 import TradeForm from '@features/Stock/StockDetail/TradeForm';
+import { Heart } from '@features/Stock/Heart';
 
 const Button = styled.div`
   background-color: ${({ theme }) => theme.buttonBackgroundColor};
@@ -58,13 +59,16 @@ const StockDetailPage = () => {
               <StckPrice>
                 {formatChange(formatNumber(stock.stckPrpr))}원
               </StckPrice>
-              <StockPrev isPositive={stock.prdyVrss.startsWith('-')}>
+              <StockPrev isPositive={stock.prdyVrss.toString().startsWith('-')}>
                 <SpanTag>어제보다</SpanTag>{' '}
                 {formatChange(formatNumber(stock.prdyVrss))}원 ({stock.prdyCtrt}
                 %)
               </StockPrev>
             </div>
-            <Button>유사도 분석</Button>
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <Heart />
+              <Button>유사도 분석</Button>
+            </div>
           </div>
           <HrTag style={{ width: '100%' }} />
           <div style={{ display: 'flex', gap: '1rem' }}>

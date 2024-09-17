@@ -7,7 +7,6 @@ import {
   Text,
   TextLeft,
 } from '@features/Stock/styledComponent';
-import { Heart } from '@features/Stock/Heart';
 import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
 import { formatUnit } from '@utils/formatUnit';
@@ -24,7 +23,6 @@ export const AllStockFirstRow = () => {
       <Text>등락률</Text>
       <Text>거래대금</Text>
       <Text>거래량</Text>
-      <Text>관심</Text>
     </StockCardRow>
   );
 };
@@ -53,14 +51,13 @@ const AllStock = ({ stock }: { stock: IStock }) => {
         />
         {stock.stockName}
       </StockTitle>
-      <StckPrice>{formatChange(formatNumber(stock.stckPrpr))}원</StckPrice>
+      <StckPrice>{formatNumber(stock.stckPrpr)}원</StckPrice>
       <StockPrev isPositive={stock.prdyVrss.toString().startsWith('-')}>
         {formatChange(formatNumber(stock.prdyVrss))}원 ({stock.prdyCtrt}
         %)
       </StockPrev>
       <Text>{formatUnit(stock.acmlTrPbmn)}</Text>
       <Text>{formatNumber(stock.acmlVol)}주</Text>
-      <Heart />
     </StockCardRow>
   );
 };
