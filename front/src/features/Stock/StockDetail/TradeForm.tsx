@@ -3,21 +3,18 @@ import styled from 'styled-components';
 import { useForm, Controller } from 'react-hook-form';
 
 interface FormValues {
-  buyPrice: number;
-  buyAmount: number;
-  sellPrice: number;
-  sellAmount: number;
+  price: number;
+  amount: number;
 }
 
 interface TradeFormProps {
   initialPrice: number;
 }
 
-const FormWrapper = styled.form`
+const FormWrapper = styled.div`
   display: flex;
   gap: 2rem;
   max-width: 100%;
-  /* margin: 0 auto; */
 `;
 
 const ColumnWrapper = styled.div`
@@ -33,12 +30,24 @@ const InputWrapper = styled.div`
   gap: 0.5rem;
 `;
 
+const InputRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+const InputLabel = styled.label`
+  min-width: 60px;
+  font-weight: bold;
+`;
+
 const InputTag = styled.input`
   padding: 0.5rem;
   border-radius: 1rem;
   border: none;
   background-color: ${({ theme }) => theme.profileBackgroundColor};
   color: ${({ theme }) => theme.profileColor};
+  flex-grow: 1;
 `;
 
 const ButtonWrapper = styled.div`
@@ -60,103 +69,151 @@ const Button = styled.button<{ variant: 'buy' | 'sell' }>`
   }
 `;
 
-const TradeForm: React.FC<TradeFormProps> = ({ initialPrice }) => {
-  const { control, reset, getValues } = useForm<FormValues>({
+const BuyForm: React.FC<{ initialPrice: number }> = ({ initialPrice }) => {
+  const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValues>({
     defaultValues: {
-      buyPrice: initialPrice,
-      sellPrice: initialPrice,
+      price: initialPrice,
+      amount: 0,
     },
   });
 
-  const handleBuy = () => {
-    const values = getValues();
+  const onSubmit = (data: FormValues) => {
     const buyData = {
-      price: values.buyPrice,
-      amount: values.buyAmount,
+      price: data.price,
+      amount: data.amount,
     };
     console.log('Buy Data:', buyData);
-    // 매수 로직을 여기에 추가합니다.
-    // 예: sendBuyOrder(buyData);
-    reset(); // 폼 리셋
-  };
-
-  const handleSell = () => {
-    const values = getValues();
-    const sellData = {
-      price: values.sellPrice,
-      amount: values.sellAmount,
-    };
-    console.log('Sell Data:', sellData);
-    // 매도 로직을 여기에 추가합니다.
-    // 예: sendSellOrder(sellData);
-    reset(); // 폼 리셋
+    // 매수 로직
+    reset({ price: initialPrice, amount: 0 }); // 폼 리셋
   };
 
   return (
-    <FormWrapper>
-      <ColumnWrapper>
-        <h3>Buy</h3>
-        <InputWrapper>
+    <ColumnWrapper>
+      <InputWrapper>
+        <InputRow>
+          <InputLabel>Price:</InputLabel>
           <Controller
-            name="buyPrice"
+            name="price"
             control={control}
             render={({ field }) => (
               <InputTag
                 {...field}
                 type="number"
-                placeholder="Buy Price"
+                placeholder="Enter buy price"
                 disabled
               />
             )}
           />
-        </InputWrapper>
-        <InputWrapper>
+        </InputRow>
+      </InputWrapper>
+      <InputWrapper>
+        <InputRow>
+          <InputLabel>Amount:</InputLabel>
           <Controller
-            name="buyAmount"
+            name="amount"
             control={control}
+            rules={{
+              required: 'Buy amount is required',
+              min: {
+                value: 1,
+                message: 'Buy amount must be at least 1'
+              }
+            }}
             render={({ field }) => (
-              <InputTag {...field} type="number" placeholder="Buy Amount" />
+              <>
+                <InputTag {...field} type="number" placeholder="Enter buy amount" />
+                {errors.amount && (
+                  <p style={{ color: 'red' }}>{errors.amount.message}</p>
+                )}
+              </>
             )}
           />
-        </InputWrapper>
-        <ButtonWrapper>
-          <Button type="button" variant="buy" onClick={handleBuy}>
-            Buy
-          </Button>
-        </ButtonWrapper>
-      </ColumnWrapper>
+        </InputRow>
+      </InputWrapper>
+      <ButtonWrapper>
+        <Button type="button" variant="buy" onClick={handleSubmit(onSubmit)}>
+          Buy
+        </Button>
+      </ButtonWrapper>
+    </ColumnWrapper>
+  );
+};
 
-      <ColumnWrapper>
-        <h3>Sell</h3>
-        <InputWrapper>
+const SellForm: React.FC<{ initialPrice: number }> = ({ initialPrice }) => {
+  const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValues>({
+    defaultValues: {
+      price: initialPrice,
+      amount: 0,
+    },
+  });
+
+  const onSubmit = (data: FormValues) => {
+    const sellData = {
+      price: data.price,
+      amount: data.amount,
+    };
+    console.log('Sell Data:', sellData);
+    // 매도 로직
+    reset({ price: initialPrice, amount: 0 }); // 폼 리셋
+  };
+
+  return (
+    <ColumnWrapper>
+      <InputWrapper>
+        <InputRow>
+          <InputLabel>Price:</InputLabel>
           <Controller
-            name="sellPrice"
+            name="price"
             control={control}
             render={({ field }) => (
               <InputTag
                 {...field}
                 type="number"
-                placeholder="Sell Price"
+                placeholder="Enter sell price"
                 disabled
               />
             )}
           />
-        </InputWrapper>
-        <InputWrapper>
+        </InputRow>
+      </InputWrapper>
+      <InputWrapper>
+        <InputRow>
+          <InputLabel>Amount:</InputLabel>
           <Controller
-            name="sellAmount"
+            name="amount"
             control={control}
+            rules={{
+              required: 'Sell amount is required',
+              min: {
+                value: 1,
+                message: 'Sell amount must be at least 1'
+              }
+            }}
             render={({ field }) => (
-              <InputTag {...field} type="number" placeholder="Sell Amount" />
+              <>
+                <InputTag {...field} type="number" placeholder="Enter sell amount" />
+                {errors.amount && (
+                  <p style={{ color: 'red' }}>{errors.amount.message}</p>
+                )}
+              </>
             )}
           />
-        </InputWrapper>
-        <ButtonWrapper>
-          <Button type="button" variant="sell" onClick={handleSell}>
-            Sell
-          </Button>
-        </ButtonWrapper>
-      </ColumnWrapper>
+        </InputRow>
+      </InputWrapper>
+      <ButtonWrapper>
+        <Button type="button" variant="sell" onClick={handleSubmit(onSubmit)}>
+          Sell
+        </Button>
+      </ButtonWrapper>
+    </ColumnWrapper>
+  );
+};
+
+const TradeForm: React.FC<TradeFormProps> = ({ initialPrice }) => {
+  return (
+    <FormWrapper>
+      <BuyForm initialPrice={initialPrice} />
+      <SellForm initialPrice={initialPrice} />
     </FormWrapper>
   );
 };

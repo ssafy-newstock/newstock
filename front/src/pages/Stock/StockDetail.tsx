@@ -30,6 +30,8 @@ const StockDetailPage = () => {
   const { stock } = location.state as { stock: IStock };
   const initialPrice = Number(stock.stckPrpr);
 
+  const showButton = location.pathname.includes('daily-chart');
+
   const getStockImageUrl = () => {
     // 이미지 URL 생성
     const url = `https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stock.stockCode}.png`;
@@ -39,7 +41,9 @@ const StockDetailPage = () => {
     <>
       <LeftStock />
       <Center style={{ padding: '0rem 1rem' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        <div
+          style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}
+        >
           <div
             style={{
               display: 'flex',
@@ -67,7 +71,7 @@ const StockDetailPage = () => {
             </div>
             <div style={{ display: 'flex', gap: '1rem' }}>
               <Heart />
-              <Button>유사도 분석</Button>
+              {showButton && <Button>유사도 분석</Button>}
             </div>
           </div>
           <HrTag style={{ width: '100%' }} />
