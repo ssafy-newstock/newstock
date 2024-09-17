@@ -86,7 +86,7 @@ public class KISSocketHandler extends TextWebSocketHandler {
             String stockIndustry = stockInfo.get(1);    // 종목 카테고리
             Long stckPrpr = Long.parseLong(subValues[2]); // 주식 현재가
             Long prdyVrss = Long.parseLong(subValues[4]); // 전일 대비
-            Long prdyCtrt = Long.parseLong(subValues[5]); // 전일 대비율
+            Double prdyCtrt = Double.parseDouble(subValues[5]); // 전일 대비율
             Long acmlVol = Long.parseLong(subValues[13]); // 누적 거래량
             Long acmlTrPbmn = Long.parseLong(subValues[14]); // 누적 거래 대금
 

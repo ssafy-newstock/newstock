@@ -17,11 +17,11 @@ public class StocksPriceLiveRedis {
     private String stockIndustry; // 종목 카테고리
     private Long stckPrpr;      // 주식 현재가
     private Long prdyVrss;      // 전일 대비
-    private Long prdyCtrt;      // 전일 대비율
+    private Double prdyCtrt;      // 전일 대비율
     private Long acmlTrPbmn;    // 누적 거래 대금
     private Long acmlVol;       // 누적 거래량
 
-    public void update(String stockCode, String stockName, String stockIndustry, Long stckPrpr, Long prdyVrss, Long prdyCtrt, Long acmlTrPbmn, Long acmlVol) {
+    public void update(String stockCode, String stockName, String stockIndustry, Long stckPrpr, Long prdyVrss, Double prdyCtrt, Long acmlTrPbmn, Long acmlVol) {
         this.stockCode = stockCode;
         this.stockName = stockName;
         this.stockIndustry = stockIndustry;

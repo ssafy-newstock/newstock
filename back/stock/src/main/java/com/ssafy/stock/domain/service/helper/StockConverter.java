@@ -59,12 +59,12 @@ public class StockConverter {
                 stockInfo.getStockIndustry(),
                 Long.parseLong(stockOutput.getStckPrpr()),
                 Long.parseLong(stockOutput.getPrdyVrss()),
-                Long.parseLong(stockOutput.getPrdyCtrt()),
+                Double.parseDouble(stockOutput.getPrdyCtrt()),
                 Long.parseLong(stockOutput.getAcmlTrPbmn()),
                 Long.parseLong(stockOutput.getAcmlVol()));
     }
 
-    public StockPricesResponseDto convertToStockPriceResponseDto(String stockCode, String stockName, String stockIndustry, Long stckPrpr, Long prdyVrss, Long prdyCtrt, Long acmlTrPbmn, Long acmlVol) {
+    public StockPricesResponseDto convertToStockPriceResponseDto(String stockCode, String stockName, String stockIndustry, Long stckPrpr, Long prdyVrss, Double prdyCtrt, Long acmlTrPbmn, Long acmlVol) {
         return new StockPricesResponseDto(stockCode,
                 stockName,
                 stockIndustry,
