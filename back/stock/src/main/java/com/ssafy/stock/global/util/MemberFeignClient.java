@@ -13,14 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface MemberFeignClient {
 
     @PostMapping("/{memberId}/buy")
-    ResponseEntity<?> updateBuyingPoints(
-            @PathVariable("memberId") Long memberId,
-            @RequestBody MemberPointUpdateRequest pointRequestDto);
+    ResponseEntity<?> updateBuyingPoints(@PathVariable("memberId") Long memberId,
+                                            @RequestBody MemberPointUpdateRequest pointRequestDto);
 
     @PostMapping("/{memberId}/sell")
-    ResponseEntity<?> updateSellingPoints(
-            @PathVariable("memberId") Long memberId,
-            @RequestBody MemberPointUpdateRequest pointRequestDto);
+    ResponseEntity<?> updateSellingPoints(@PathVariable("memberId") Long memberId,
+                                            @RequestBody MemberPointUpdateRequest pointRequestDto);
 
     @PostMapping("/verify")
     ResponseEntity<MemberIdResponse> getMemberId(@RequestBody MemberIdRequest memberIdRequest);

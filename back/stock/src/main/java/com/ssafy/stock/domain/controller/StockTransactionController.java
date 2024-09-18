@@ -14,7 +14,7 @@ import static com.ssafy.stock.global.common.CommonResponse.success;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/stock-transaction")
+@RequestMapping("/api/stock/transaction")
 @Slf4j
 public class StockTransactionController {
 
