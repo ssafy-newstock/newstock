@@ -2,7 +2,7 @@ import CenterScrapCard from './CenterScrapCard';
 import {
   CenterContentSection,
   CenterContentSectionTitle,
-} from './StyledComponent';
+} from './styledComponent';
 
 interface ScrapSectionProps {
   title: string;

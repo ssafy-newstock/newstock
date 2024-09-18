@@ -6,7 +6,7 @@ import {
   CenterTitleFontStyle,
   FontStyle,
   SelectDateDiv,
-} from './StyledComponent';
+} from './styledComponent';
 
 const CenterTitle: React.FC = () => {
   return (
