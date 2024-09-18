@@ -11,7 +11,9 @@ const ThemedButton = styled.button`
   color: ${({ theme }) => theme.buttonTextColor};
   border: none;
   padding: 10px 20px;
-  border-radius: 5px;
+  border-radius: 10px;
+  margin-left: 10px;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   cursor: pointer;
 
   &:hover {

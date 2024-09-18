@@ -1,5 +1,6 @@
 export const formatUnit = (value: string | number): string => {
-  const numericValue = typeof value === 'string' ? parseInt(value, 10) : value;
+  // string일 경우 숫자로 변환
+  const numericValue = typeof value === 'string' ? Number(value.replace(/,/g, '')) : value;
 
   if (numericValue >= 100000000) {
     return `${Math.floor(numericValue / 100000000)}억`; // 1억 이상일 때 "억"

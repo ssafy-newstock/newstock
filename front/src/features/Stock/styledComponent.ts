@@ -51,6 +51,7 @@ export const StockCardColumn = styled.div`
   border-radius: 1.25rem;
   background-color: ${({ theme }) => theme.stockBackgroundColor};
   box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+  cursor: pointer;
 `;
 
 export const StockCardTitle = styled.div`
@@ -103,7 +104,7 @@ export const HeartWrapper = styled.div`
 
 export const StockCardRow = styled.div`
   display: grid;
-  grid-template-columns: 2fr 1fr 1.5fr 1fr 1fr 0.5fr; /* 각 열의 너비를 설정 */
+  grid-template-columns: 2fr 1fr 1.5fr 1fr 1fr; /* 각 열의 너비를 설정 */
   text-align: center;
   align-items: center;
   width: 100%;
@@ -111,6 +112,7 @@ export const StockCardRow = styled.div`
   border-radius: 1.25rem;
   background-color: ${({ theme }) => theme.stockBackgroundColor};
   box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+  cursor: pointer;
 `;
 
 export const CategoryCardRow = styled(StockCardRow)`
@@ -145,7 +147,7 @@ export const CategoryImgWrapper = styled.div<ICategoryImgWrapper>`
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 10%;
+  border-radius: 1rem;
   background-color: ${({ backgroundColor }) => backgroundColor || 'white'};
 `;
 

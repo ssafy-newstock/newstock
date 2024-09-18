@@ -12,11 +12,17 @@ import {
 import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
 import blueLogo from '@assets/Stock/blueLogo.png';
+import { useNavigate } from 'react-router-dom';
 
 
 const FavoriteStock = ({ stock }: { stock: IStock }) => {
+  const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    navigate(`/stock-detail/${stock.stockCode}`, { state: { stock } });
+  };
   return (
-    <StockCardColumn>
+    <StockCardColumn onClick={handleNavigate}>
       <StockCardTitle>
         <StockTitle>
           <StockImage
@@ -27,8 +33,8 @@ const FavoriteStock = ({ stock }: { stock: IStock }) => {
         </StockTitle>
         <HeartFill />
       </StockCardTitle>
-      <StckPrice>{formatChange(formatNumber(stock.stckPrpr))}원</StckPrice>
-      <StockPrev isPositive={stock.prdyVrss.startsWith('-')}>
+      <StckPrice>{formatNumber(stock.stckPrpr)}원</StckPrice>
+      <StockPrev isPositive={stock.prdyVrss.toString().startsWith('-')}>
         <SpanTag>어제보다</SpanTag> {formatChange(formatNumber(stock.prdyVrss))}
         원 ({stock.prdyCtrt}
         %)
