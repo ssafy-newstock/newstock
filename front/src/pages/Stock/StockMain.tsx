@@ -1,7 +1,7 @@
 // import { useEffect, useState } from 'react';
 // import SockJS from 'sockjs-client';
 // import Stomp from 'stompjs';
-import { useQuery, UseQueryOptions, useQueryClient } from '@tanstack/react-query';
+import { useQuery, } from '@tanstack/react-query';
 import axios from 'axios';
 import { Center } from '@components/Center';
 import LeftStock from '@components/LeftStock';
@@ -81,7 +81,7 @@ const StockMainPage = () => {
         'http://newstock.info/api/stock/price-list'
       );
       console.log(response.data);
-
+      console.log(allStockData.data);
       return response.data;
     },
   });

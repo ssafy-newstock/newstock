@@ -4,7 +4,7 @@ import { ApexOptions } from 'apexcharts';
 
 const StockLiveUpdates: React.FC = () => {
   const [series, setSeries] = useState([{ data: [] as { x: number; y: number }[] }]);
-  const [options, setOptions] = useState<ApexOptions>({
+  const [options] = useState<ApexOptions>({
     chart: {
       type: 'line',
       animations: {

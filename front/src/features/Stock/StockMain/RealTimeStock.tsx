@@ -7,7 +7,6 @@ import {
   Text,
   TextLeft,
 } from '@features/Stock/styledComponent';
-import { Heart } from '@features/Stock/Heart';
 import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
 import { formatUnit } from '@utils/formatUnit';
