@@ -40,10 +40,15 @@ public class Member extends BaseTimeEntity {
         this.point = 0L;
     }
 
-    // MemberUpdate
+    // update name
     public Member updateMemberName(String memberName) {
         this.memberName = memberName;
         return this;
+    }
+
+    // update point
+    public void updateMemberPoint(Long point) {
+        this.point = point;
     }
 }
 

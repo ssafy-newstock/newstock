@@ -1,7 +1,10 @@
 package com.ssafy.member.domain.controller;
 
 
-import com.ssafy.member.domain.controller.response.LoginResponseDto;
+import com.ssafy.member.domain.controller.request.TokenVerifyRequest;
+import com.ssafy.member.domain.controller.response.LoginResponse;
+import com.ssafy.member.domain.controller.response.MemberVerifyResponse;
+import com.ssafy.member.domain.entity.dto.MemberDetailDto;
 import com.ssafy.member.global.security.token.TokenProvider;
 import com.ssafy.member.domain.entity.Member;
 import com.ssafy.member.domain.service.MemberService;
@@ -10,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -21,18 +25,26 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+import static com.ssafy.member.global.common.CommonResponse.success;
 import static com.ssafy.member.global.constant.TokenKey.*;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/member")
-public class OAuth2Controller {
-
+public class AuthController {
+    private final ModelMapper modelMapper;
     private final OAuth2Service oAuth2Service;
     private final TokenProvider tokenProvider;
     private final MemberService memberService;
 
+    /**
+     * OAuth2를 이용한 소셜 로그인 컨트롤러
+     *
+     * @param request
+     * @param response
+     * @return LoginResponseDto
+     */
     @PostMapping("/login")
     public ResponseEntity<?> exchangeAuthorizationCode(@RequestBody Map<String, String> request, HttpServletResponse response) {
         // accessToken 발급
@@ -80,7 +92,7 @@ public class OAuth2Controller {
 
 
         // LoginResponseDto 생성
-        LoginResponseDto loginResponseDto = new LoginResponseDto(
+        LoginResponse loginResponse = new LoginResponse(
                 memberName,
                 memberId,
                 memberProviderEmail,
@@ -89,9 +101,15 @@ public class OAuth2Controller {
         // 응답 반환
         return ResponseEntity.ok()
                 .headers(headers)
-                .body(loginResponseDto);
+                .body(loginResponse);
     }
 
+    /**
+     * 리프레시 토큰으로 액세스 토큰의 재발급을 요청하는 컨트롤러
+     * @param request
+     * @param response
+     * @return 204, No-Content
+     */
     @GetMapping("/reissue-tokens")
     public ResponseEntity<?> reissueAllToken(HttpServletRequest request, HttpServletResponse response) {
         List<String> tokenList = oAuth2Service.reissueAllTokens(request);
@@ -119,6 +137,22 @@ public class OAuth2Controller {
         return ResponseEntity.noContent()
                 .headers(headers)
                 .build();
+    }
+
+    /**
+     * 토큰의 유효성을 검증하는 컨트롤러
+     * 만약 요청된 토큰이 유효하면 MemberDetailDto 를 반환
+     * @param token 다른 마이크로서비스가 받은 accessToken
+     * @return 200, MemberDetailDto
+     */
+    @PostMapping("/verify")
+    public ResponseEntity<?> verify(@RequestBody TokenVerifyRequest request) {
+        Long memberIdInToken = memberService.checkAuthentication(request.getToken());
+        MemberDetailDto memberDetail = memberService.getMemberDetail(memberIdInToken);
+
+        MemberVerifyResponse response = modelMapper.map(memberDetail, MemberVerifyResponse.class);
+
+        return ResponseEntity.ok(success(response));
     }
 
 }

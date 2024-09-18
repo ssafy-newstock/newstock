@@ -5,6 +5,7 @@ import com.ssafy.member.domain.entity.Member;
 import com.ssafy.member.domain.entity.dto.MemberDetailDto;
 import com.ssafy.member.domain.repository.MemberRepository;
 import com.ssafy.member.global.exception.MemberNotFoundException;
+import com.ssafy.member.global.exception.NotEnoughPointsException;
 import com.ssafy.member.global.exception.TokenException;
 import com.ssafy.member.global.security.token.TokenProvider;
 import com.ssafy.member.global.security.token.TokenService;
@@ -32,7 +33,7 @@ public class MemberService {
     public Member findMember(Long memberId) {
         return memberRepository
                 .findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException("멤버가 존재하지 않습니다."));
+                .orElseThrow(() -> new MemberNotFoundException(memberId));
     }
 
 
@@ -85,6 +86,68 @@ public class MemberService {
             }
         }
         return refreshToken;
+    }
+
+    /**
+     * 해당 멤버가 가진 포인트를 반환해주는 메소드
+     *
+     * @param memberId 멤버 아이디
+     * @return 가진 포인트
+     */
+    public Long getMyPoint(Long memberId) {
+        Member member = findMember(memberId);
+
+        return member.getPoint();
+    }
+
+    /**
+     * 해당 멤버가 가진 포인트를 업데이트하는 메소드
+     *
+     * @param memberId 멤버 아이디
+     * @param point    변경할 포인트 값
+     */
+    public void updateMyPoint(Long memberId, Long point) {
+        Member member = findMember(memberId);
+        member.updateMemberPoint(point);
+    }
+
+    /**
+     * 주식이 매수되었을 때 포인트를 업데이트하는 메소드
+     *
+     * @param memberId        멤버 아이디
+     * @param orderTotalPrice 총 주문 금액
+     * @return member
+     */
+    public Member buyStock(Long memberId, Long orderTotalPrice) {
+        Member member = findMember(memberId);
+        Long nowPoint = member.getPoint();
+
+        // 현재 가진 포인트가 주문 금액보다 작은 경우
+        if (nowPoint < orderTotalPrice) {
+            throw new NotEnoughPointsException(memberId);
+        }
+
+        // 주문이 가능한 경우 포인트를 차감함
+        long remainPoint = nowPoint - orderTotalPrice;
+        member.updateMemberPoint(remainPoint);
+        return member;
+    }
+
+    /**
+     * 주식이 매도되었을 때 포인트를 업데이트하는 메소드
+     *
+     * @param memberId        멤버 아이디
+     * @param orderTotalPrice 총 반환 금액
+     * @return member
+     */
+    public Member sellStock(Long memberId, Long orderTotalPrice) {
+        Member member = findMember(memberId);
+        Long nowPoint = member.getPoint();
+
+        // 매도가 성공한 경우 포인트를 업데이트 함
+        long totalPoint = nowPoint + orderTotalPrice;
+        member.updateMemberPoint(totalPoint);
+        return member;
     }
 
 }
