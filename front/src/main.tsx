@@ -7,6 +7,10 @@ import { RouterProvider } from 'react-router-dom';
 
 const queryClient = new QueryClient();
 
+if (typeof global === 'undefined') {
+  (window as any).global = window;
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>

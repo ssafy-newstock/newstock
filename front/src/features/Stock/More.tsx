@@ -1,8 +1,11 @@
 import styled from "styled-components";
 import { Text } from "@features/Stock/styledComponent";
 import { RightArrow } from "@features/Stock/RightArrow";
-import { useNavigate } from "react-router-dom";
-import { IMore } from "@features/Stock/types";
+// import { IMore } from "@features/Stock/types";
+
+interface MoreProps {
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
+}
 
 const MoreWrapper = styled.div`
   display: flex;
@@ -15,13 +18,9 @@ const MoreWrapper = styled.div`
   cursor: pointer;
 `;
 
-const More: React.FC<IMore> = ({path}) => {
-  const navigate = useNavigate();
-  const handleNavigate = () => {
-    navigate(path);
-  }
+const More: React.FC<MoreProps> = ({onClick}) => {
   return (
-    <MoreWrapper onClick={handleNavigate}>
+    <MoreWrapper onClick={onClick}>
       <Text>더보기</Text>
       <RightArrow/>
     </MoreWrapper>

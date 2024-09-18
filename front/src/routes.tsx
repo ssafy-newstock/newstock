@@ -17,8 +17,8 @@ import ScrapDetailPage from '@pages/Etc/ScrapDetail';
 import ScrapEditPage from '@pages/Etc/ScrapEdit';
 import StockMainPage from '@pages/Stock/StockMain';
 import StockDetailPage from '@pages/Stock/StockDetail';
-import StockDetailGraphPage from '@pages/Stock/StockDetailGraph';
-import StockDetailSimilarityPage from '@pages/Stock/StockDetailSimilarity';
+import StockDailyChart from '@pages/Stock/StockDailyChart';
+import StockLiveUpdates from '@pages/Stock/StockLiveUpdates';
 import MyStockPage from '@pages/Stock/MyStock';
 import AllStockPage from '@pages/Stock/AllStock';
 import FavoriteStockPage from '@pages/Stock/FavoriteStock';
@@ -56,13 +56,13 @@ const router = createBrowserRouter([
       { path: 'favorite-stock', element: <FavoriteStockPage /> },
       { path: 'section-stock', element: <SectionStockPage /> },
       {
-        path: 'stock-detail',
+        path: 'stock-detail/:stockCode',
         element: <StockDetailPage />,
         children: [
-          { path: 'stock-detail-graph', element: <StockDetailGraphPage /> },
+          { path: 'daily-chart', element: <StockDailyChart /> },
           {
-            path: 'stock-detail-similarity',
-            element: <StockDetailSimilarityPage />,
+            path: 'live-updates',
+            element: <StockLiveUpdates />,
           },
         ],
       },
