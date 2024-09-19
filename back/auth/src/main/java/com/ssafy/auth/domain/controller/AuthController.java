@@ -129,7 +129,8 @@ public class AuthController {
 
     @PostMapping("/token-info")
     public ResponseEntity<?> tokenInfo(@RequestBody MemberIdRequest request) {
-        String token = request.getToken();
+        String bToken = request.getToken();
+        String token = tokenProvider.stripBearerPrefix(bToken);
         Long memberId = tokenProvider.getMemberIdFromToken(token);
         MemberIdResponse memberIdResponse = new MemberIdResponse(memberId);
         return ResponseEntity.ok(memberIdResponse);
