@@ -1,6 +1,10 @@
-package com.ssafy.member.domain.controller.response;
+package com.ssafy.auth.domain.controller.response;
 
-public class MemberVerifyResponse {
+
+import lombok.Getter;
+
+@Getter
+public class MemberDetailResponse {
     private Long memberId;
     private String memberName;
     private String providerEmail;
