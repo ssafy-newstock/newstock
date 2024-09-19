@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { IApiStock, ICategoryStock } from '@features/Stock/types';
+import { ICategoryStock, IStock } from '@features/Stock/types';
 import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
 import { categoryImage } from '@features/Stock/category';
@@ -73,19 +73,55 @@ const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
   const queryClient = useQueryClient();
 
   // 캐시된 allStock 데이터를 가져옴
-  const allStock = queryClient.getQueryData<IApiStock>(['allStockData']);
+  const allStock = queryClient.getQueryData<IStock[]>(['allStockData']);
   console.log('allStock', allStock);
+
+  const mapIndustryNames: { [key: string]: string | string[] } = {
+    음식료품: '음식료품',
+    '섬유·의복': '섬유의복',
+    '종이·목재': '종이목재',
+    화학: '화학',
+    의약품: '의약품',
+    비금속광물: '비금속광물',
+    '철강·금속': '철강금속',
+    기계: '기계',
+    '전기·전자': '전기전자',
+    의료정밀: '의료정밀',
+    '운수·장비': '운수장비',
+    유통업: '유통업',
+    '전기·가스업': '전기가스업',
+    건설업: '건설업',
+    '운수·창고': '운수창고업',
+    통신업: '통신업',
+    금융업: ['은행', '농업', '기타금융'],
+    증권: '증권',
+    보험: '보험',
+    서비스업: '서비스업',
+    제조업: '기타제조업',
+  };
+
   // 선택한 카테고리에 맞는 주식 필터링
-  const filteredStocks = allStock?.data.filter(
-    (stock) => stock.stockIndustry === category.industryName
-  );
+  const filteredStocks = allStock?.filter((stock) => {
+    const mappedIndustry = mapIndustryNames[category.industryName];
+
+    // 금융업의 경우 은행, 농업, 기타금융을 포함하는지 확인
+    if (Array.isArray(mappedIndustry)) {
+      return mappedIndustry.includes(stock.stockIndustry);
+    }
+
+    // 나머지 경우 매핑된 이름과 일치하는지 확인
+    return stock.stockIndustry === mappedIndustry;
+  });
+
   console.log('filteredStocks', filteredStocks);
 
   return (
     <ModalOverlay onClick={onClose}>
       <ModalContent onClick={(e) => e.stopPropagation()}>
         {category && (
-          <div style={{display:'flex', flexDirection:'column', gap:'1rem'}}>
+          <div
+            style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
+          >
             <CategoryImgWrapper backgroundColor={imageUrl.backgroundColor}>
               <img src={imageUrl.url} alt="" />
             </CategoryImgWrapper>
@@ -104,7 +140,7 @@ const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
                   .toString()
                   .startsWith('-')}
               >
-                {formatChange(category.bstpNmixPrdyVrss)}
+                {formatChange(category.bstpNmixPrdyVrss.toString())}
               </CategoryData>
               <CategoryData
                 isPositive={category.bstpNmixPrdyCtrt
@@ -115,37 +151,37 @@ const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
               </CategoryData>
               <Text>{formatNumber(category.acmlTrPbmn)}</Text>
             </CategoryCardRow>
-              <Text style={{textAlign:"center"}}>해당 카테고리의 종목들</Text>
-              <StockCardRow style={{ cursor: 'default' }}>
-                <TextLeft>종목명</TextLeft>
-                <Text>현재가</Text>
-                <Text>등락률</Text>
-                <Text>거래대금</Text>
-                <Text>거래량</Text>
-              </StockCardRow>
-              {filteredStocks?.slice(0, 10).map((stock) => (
-                <>
-                  <StockCardRow>
-                    <StockTitle>
-                      <StockImage
-                        src={`https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stock.stockCode}.png`}
-                        onError={(e) => (e.currentTarget.src = blueLogo)} // 기본 이미지 설정
-                      />
-                      {stock.stockName}
-                    </StockTitle>
-                    <StckPrice>{formatNumber(stock.stckPrpr)}원</StckPrice>
-                    <StockPrev
-                      isPositive={stock.prdyVrss.toString().startsWith('-')}
-                    >
-                      {formatChange(formatNumber(stock.prdyVrss))}원 (
-                      {stock.prdyCtrt}
-                      %)
-                    </StockPrev>
-                    <Text>{formatUnit(stock.acmlTrPbmn)}</Text>
-                    <Text>{formatNumber(stock.acmlVol)}주</Text>
-                  </StockCardRow>
-                </>
-              ))}
+            <Text style={{ textAlign: 'center' }}>해당 카테고리의 종목들</Text>
+            <StockCardRow style={{ cursor: 'default' }}>
+              <TextLeft>종목명</TextLeft>
+              <Text>현재가</Text>
+              <Text>등락률</Text>
+              <Text>거래대금</Text>
+              <Text>거래량</Text>
+            </StockCardRow>
+            {filteredStocks?.slice(0, 10).map((stock) => (
+              <>
+                <StockCardRow>
+                  <StockTitle>
+                    <StockImage
+                      src={`https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stock.stockCode}.png`}
+                      onError={(e) => (e.currentTarget.src = blueLogo)} // 기본 이미지 설정
+                    />
+                    {stock.stockName}
+                  </StockTitle>
+                  <StckPrice>{formatNumber(stock.stckPrpr)}원</StckPrice>
+                  <StockPrev
+                    isPositive={stock.prdyVrss.toString().startsWith('-')}
+                  >
+                    {formatChange(formatNumber(stock.prdyVrss))}원 (
+                    {stock.prdyCtrt}
+                    %)
+                  </StockPrev>
+                  <Text>{formatUnit(stock.acmlTrPbmn)}</Text>
+                  <Text>{formatNumber(stock.acmlVol)}주</Text>
+                </StockCardRow>
+              </>
+            ))}
           </div>
         )}
         <CloseButton onClick={onClose}>X</CloseButton>
