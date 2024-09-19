@@ -162,6 +162,7 @@ public class StockTransactionService {
     public Long getMemberId(String token){
         ResponseEntity<MemberIdResponse> response = authFeignClient.getMemberId(new MemberIdRequest(token));
         MemberIdResponse body = response.getBody();
+        log.info("body={}", body);
         if (body == null || body.getMemberId() == null) {
             throw new MemberIdNotFoundException();
         }
