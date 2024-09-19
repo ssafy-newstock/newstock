@@ -13,7 +13,7 @@ import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
 
-const ITEMS_PER_PAGE = 15; // 한 번에 표시할 항목 수
+const ITEMS_PER_PAGE = 15; // 한 번에 표시할 항목 수.
 
 const AllStockPage: React.FC = () => {
   const [displayedItems, setDisplayedItems] = useState<IStock[]>([]);
