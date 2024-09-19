@@ -77,10 +77,7 @@ export const CenterContentSection = styled.div`
 export const CenterContentSectionTitle = styled.p`
   color: ${({ theme }) => theme.textColor};
   text-align: center;
-  font-family: Inter;
   font-size: 1.25rem;
-  font-style: normal;
-  font-weight: 400;
   line-height: 1.875rem; /* 150% */
 `;
 
@@ -99,11 +96,7 @@ export const CardContainer = styled.div`
 `;
 
 export const CardTitleFontStyle = styled.p`
-  color: ${({ theme }) => theme.textColor};
-  font-family: Inter;
   font-size: 1.375rem;
-  font-style: normal;
-  font-weight: 400;
   line-height: 1.5625rem; /* 113.636% */
   margin: 0.625rem;
 `;
