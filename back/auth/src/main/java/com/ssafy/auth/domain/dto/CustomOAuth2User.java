@@ -1,4 +1,4 @@
-package com.ssafy.member.domain.entity.oauth;
+package com.ssafy.auth.domain.dto;
 
 
 import lombok.Getter;

@@ -1,19 +1,14 @@
-package com.ssafy.member.domain.controller;
+package com.ssafy.auth.domain.controller;
 
 
-import com.ssafy.member.domain.controller.request.TokenVerifyRequest;
-import com.ssafy.member.domain.controller.response.LoginResponse;
-import com.ssafy.member.domain.controller.response.MemberVerifyResponse;
-import com.ssafy.member.domain.entity.dto.MemberDetailDto;
-import com.ssafy.member.global.security.token.TokenProvider;
-import com.ssafy.member.domain.entity.Member;
-import com.ssafy.member.domain.service.MemberService;
-import com.ssafy.member.domain.service.OAuth2Service;
+import com.ssafy.auth.domain.controller.client.MemberClient;
+import com.ssafy.auth.domain.controller.response.MemberLoginResponse;
+import com.ssafy.auth.domain.service.OAuth2Service;
+import com.ssafy.auth.global.security.token.TokenProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -25,18 +20,16 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-import static com.ssafy.member.global.common.CommonResponse.success;
-import static com.ssafy.member.global.constant.TokenKey.*;
+import static com.ssafy.auth.global.constant.TokenKey.TOKEN_PREFIX;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/member")
+@RequestMapping("/api/auth")
 public class AuthController {
-    private final ModelMapper modelMapper;
     private final OAuth2Service oAuth2Service;
     private final TokenProvider tokenProvider;
-    private final MemberService memberService;
+    private final MemberClient memberClient;
 
     /**
      * OAuth2를 이용한 소셜 로그인 컨트롤러
@@ -84,24 +77,12 @@ public class AuthController {
         }
 
         Long memberId = tokenProvider.getMemberId(authentication);
-        Member member = memberService.findMember(memberId);
 
-
-        String memberProviderEmail = member.getProviderEmail();
-        String memberProfileImageUrl = member.getProfileImageUrl();
-
-
-        // LoginResponseDto 생성
-        LoginResponse loginResponse = new LoginResponse(
-                memberName,
-                memberId,
-                memberProviderEmail,
-                memberProfileImageUrl);
-
+        MemberLoginResponse memberLoginResponse = new MemberLoginResponse(memberId, memberName);
         // 응답 반환
         return ResponseEntity.ok()
                 .headers(headers)
-                .body(loginResponse);
+                .body(memberLoginResponse);
     }
 
     /**
@@ -139,20 +120,10 @@ public class AuthController {
                 .build();
     }
 
-    /**
-     * 토큰의 유효성을 검증하는 컨트롤러
-     * 만약 요청된 토큰이 유효하면 MemberDetailDto 를 반환
-     * @param token 다른 마이크로서비스가 받은 accessToken
-     * @return 200, MemberDetailDto
-     */
+
     @PostMapping("/verify")
-    public ResponseEntity<?> verify(@RequestBody TokenVerifyRequest request) {
-        Long memberIdInToken = memberService.checkAuthentication(request.getToken());
-        MemberDetailDto memberDetail = memberService.getMemberDetail(memberIdInToken);
-
-        MemberVerifyResponse response = modelMapper.map(memberDetail, MemberVerifyResponse.class);
-
-        return ResponseEntity.ok(success(response));
+    public ResponseEntity<?> verify() {
+        log.info("[Auth Controller] 필터 통과 후, 200 반환");
+        return ResponseEntity.ok("Valid token");
     }
-
 }
