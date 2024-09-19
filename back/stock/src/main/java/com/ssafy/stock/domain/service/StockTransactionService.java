@@ -17,6 +17,7 @@ import com.ssafy.stock.domain.service.request.StockTransactionRequest;
 import com.ssafy.stock.domain.service.response.StockTransactionDto;
 import com.ssafy.stock.global.common.MemberIdRequest;
 import com.ssafy.stock.global.common.MemberIdResponse;
+import com.ssafy.stock.global.util.AuthFeignClient;
 import com.ssafy.stock.global.util.MemberFeignClient;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,8 @@ public class StockTransactionService {
     private final StockHoldingRepository stockHoldingRepository;
     private final StockTransactionRepository stockTransactionRepository;
     private final MemberFeignClient memberFeignClient;
+    private final AuthFeignClient authFeignClient;
+
 
     @Transactional
     public StockTransactionDto buyStock(Long memberId, StockTransactionRequest stockTransactionRequest) {
@@ -157,7 +160,7 @@ public class StockTransactionService {
      * @return
      */
     public Long getMemberId(String token){
-        ResponseEntity<MemberIdResponse> response = memberFeignClient.getMemberId(new MemberIdRequest(token));
+        ResponseEntity<MemberIdResponse> response = authFeignClient.getMemberId(new MemberIdRequest(token));
         MemberIdResponse body = response.getBody();
         if (body == null || body.getMemberId() == null) {
             throw new MemberIdNotFoundException();
