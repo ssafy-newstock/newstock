@@ -21,7 +21,7 @@ spring:
             client-id: 525008052920-7q5qrrg047jk5qcfg9eg5krthhbea13o.apps.googleusercontent.com
             client-secret: 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
             scope: profile, email
-            redirect-uri: http://localhost:5173/login/oauth2/code/google
+            redirect-uri: http://newstock.info/login/oauth2/code/google
 
 jwt:
   key: S/64kn2/rYwU2WsyhOTvlG4pcFiDHNtiMDn3bfEc7hAhhjJkZcFy75ciT5KPu+xlVFJGJ7dgLEeTw0z6BDXP5g==
