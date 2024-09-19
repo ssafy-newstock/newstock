@@ -160,7 +160,7 @@ public class TokenProvider {
         return claims.getExpiration().after(new Date());
     }
 
-    private String stripBearerPrefix(String token) {
+    public String stripBearerPrefix(String token) {
         if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
             return token.substring(7);
         }
