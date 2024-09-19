@@ -2,50 +2,51 @@ import styled from 'styled-components';
 import summaryIcon from '@features/summaryIcon.png';
 
 const EconomicSubNewsWrapper = styled.div`
-  width: 28%;
-  background-color: #f0f0f0; /* 배경색 설정 */
-  padding: 10px;
+  width: 25%;
+  height: 100%;
+  /* background-color: #f0f0f0; */
+  padding: 0.6rem;
 `;
 
 const EconomicSubNewsBody = styled.div`
   display: flex;
-  /* width: 135px; */
-  max-width: 20%;
-  padding-right: 10px;
+  max-width: 100%;
+  /* padding-right: 0.625rem; */
   flex-direction: column;
-  justify-content: center;
-  align-items: flex-end;
-  gap: 5px;
-  /* height: 100%; */
-  /* background-color: black; */
+  /* justify-content: center; */
+  align-items: center;
+  gap: 0.3rem;
+  height: 100%;
 `;
 
 const EconomicSubNewsHeader = styled.div`
   display: flex;
-  width: 100%;
-  padding: 0px 10px 10px 10px;
+  width: 80%;
+  padding: 0 0.625rem 0.625rem 0.625rem;
   justify-content: space-between;
   align-items: center;
+  /* background-color: aqua; */
 `;
 
 const EconomicSubNewsPNG = styled.img`
-  height: 30px;
-  width: auto;
-  border-radius: 5px;
+  height: 1.9rem;
+  width: 1.9rem;
+  border-radius: 0.3rem;
   color: #828282;
 `;
 
 const EconomicSubNewsThumbnail = styled.div`
-  width: 150px;
-  aspect-ratio: 16/12;
+  width: 100%;
+  height: 10rem;
+  /* aspect-ratio: 16/12; */
   flex-shrink: 0;
   align-self: stretch;
-
+  background-color: white;
   img {
     width: 100%;
-    max-height: 100px;
-    object-fit: cover; /* 이미지가 부모 요소를 덮도록 설정 */
-    border-radius: 5px; /* 둥근 모서리 추가 */
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0.3rem; /* 둥근 모서리 추가 */
   }
 `;
 
