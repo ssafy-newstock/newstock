@@ -19,7 +19,4 @@ public interface MemberFeignClient {
     @PostMapping("/{memberId}/sell")
     ResponseEntity<?> updateSellingPoints(@PathVariable("memberId") Long memberId,
                                             @RequestBody MemberPointUpdateRequest pointRequestDto);
-
-    @PostMapping("/verify")
-    ResponseEntity<MemberIdResponse> getMemberId(@RequestBody MemberIdRequest memberIdRequest);
 }
