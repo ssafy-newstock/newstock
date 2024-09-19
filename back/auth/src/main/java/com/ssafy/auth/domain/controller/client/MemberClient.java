@@ -7,7 +7,7 @@ import com.ssafy.auth.domain.controller.response.MemberFindResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-@FeignClient(name = "member-service", url = "http://newstock.info/api/member")  // Ingress를 통한 호출
+@FeignClient(name = "member-service", url = "http://newstock-stock-member-service/api/member")  // Ingress를 통한 호출
 //@FeignClient(name = "member-service", url = "http://localhost:8001/api/member")
 // Ingress를 통한 호출
 public interface MemberClient {
