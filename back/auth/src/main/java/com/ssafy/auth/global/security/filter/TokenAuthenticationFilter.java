@@ -34,11 +34,13 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
         // /api 경로가 아닌 경우 필터를 통과시키고 인증을 건너뜀
         if (!requestURI.startsWith("/api")) {
+            log.info("not /api, requestURI: {}", requestURI);
             filterChain.doFilter(request, response);
             return;
         }
         log.info("requestURI: {}", requestURI);
         if (requestURI.startsWith("/api/auth/login")) {
+            log.info("not /login, requestURI: {}", requestURI);
             filterChain.doFilter(request, response);
             return;
         }
