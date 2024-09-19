@@ -6,7 +6,7 @@ import {
   CardTitleFontStyle,
   FontStyle,
   IconWrapper,
-} from './StyledComponent';
+} from './styledComponent';
 
 interface Data {
   Title: string;

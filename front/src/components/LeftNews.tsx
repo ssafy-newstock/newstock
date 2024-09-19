@@ -29,26 +29,21 @@ const TextDiv = styled.div`
 
 const TextTitle = styled.p`
   color: ${({ theme }) => theme.textColor};
-  font-family: Inter;
   font-size: 24px;
-  font-style: normal;
   font-weight: 600;
   line-height: 30px; /* 125% */
 `;
 
 const TextP = styled.p`
   color: #828282;
-  font-family: Inter;
   font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
   line-height: 30px; /* 187.5% */
 `;
 
 const Lefthr = styled.hr`
-  background: #e0e0e0;
   width: 180px;
   height: 2px;
+  background-color: #828282;
 `;
 
 const LeftNews: React.FC = () => {
@@ -60,7 +55,7 @@ const LeftNews: React.FC = () => {
           <TextTitle>뉴스</TextTitle>
         </TextDiv>
         <TextDiv
-          onClick={() => navigate('/subNewsMain/economicNews')}
+          onClick={() => navigate('/subnews-main/economic-news')}
           style={{ cursor: 'pointer' }}
         >
           <svg
@@ -84,7 +79,7 @@ const LeftNews: React.FC = () => {
           <TextP>시황 뉴스</TextP>
         </TextDiv>
         <TextDiv
-          onClick={() => navigate('/subNewsMain/stockNews')}
+          onClick={() => navigate('/subnews-main/stock-news')}
           style={{ cursor: 'pointer' }}
         >
           <svg
@@ -102,7 +97,7 @@ const LeftNews: React.FC = () => {
           <TextP>종목 뉴스</TextP>
         </TextDiv>
         <TextDiv
-          onClick={() => navigate('/myNews')}
+          onClick={() => navigate('/my-news')}
           style={{ cursor: 'pointer' }}
         >
           <svg
@@ -120,7 +115,7 @@ const LeftNews: React.FC = () => {
           <TextP>저장한 뉴스</TextP>
         </TextDiv>
         <TextDiv
-          onClick={() => navigate('/scrapDetail')}
+          onClick={() => navigate('/scrap-detail')}
           style={{ cursor: 'pointer' }}
         >
           <svg

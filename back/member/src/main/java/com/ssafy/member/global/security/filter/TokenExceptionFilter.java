@@ -1,20 +1,17 @@
 package com.ssafy.member.global.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import com.ssafy.member.global.exception.TokenException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
 @RequiredArgsConstructor
-@Component
 public class TokenExceptionFilter extends OncePerRequestFilter {
 
     private final ObjectMapper objectMapper;

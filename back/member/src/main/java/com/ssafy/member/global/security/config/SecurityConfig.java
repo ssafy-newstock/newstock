@@ -1,9 +1,8 @@
 package com.ssafy.member.global.security.config;
 
 
-import com.ssafy.member.global.security.filter.TokenAuthenticationFilter;
-import com.ssafy.member.global.security.filter.TokenExceptionFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -14,11 +13,9 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 
 import java.util.Arrays;
 
@@ -28,13 +25,13 @@ import java.util.Arrays;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final TokenAuthenticationFilter tokenAuthenticationFilter;
-    private final TokenExceptionFilter tokenExceptionFilter;
+//    private final TokenAuthenticationFilter tokenAuthenticationFilter;
+//    private final TokenExceptionFilter tokenExceptionFilter;
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
-                .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).anyRequest();
     }
 
     @Bean
@@ -45,12 +42,12 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions().disable())
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/", "/login/oauth2/code/google", "/login", "/test/**",
-                                        "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/swagger-resources/**", "/webjars/**").permitAll()
-                                .anyRequest().authenticated()
-                )
-                .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(tokenExceptionFilter, TokenAuthenticationFilter.class); // 수정됨
+//                                .requestMatchers("/", "/login/oauth2/code/google", "/api/member/login", "/api/member/test/**",
+//                                        "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/swagger-resources/**", "/webjars/**").permitAll()
+                                .anyRequest().permitAll()
+                );
+//                .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+//                .addFilterBefore(tokenExceptionFilter, TokenAuthenticationFilter.class); // 수정됨
 
         return http.build();
     }

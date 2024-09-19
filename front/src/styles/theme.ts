@@ -21,10 +21,17 @@ export const lightTheme: DefaultTheme = {
   newsBackgroundColor: '#FFF',
   // 주식 카드 백그라운드
   stockBackgroundColor: '#FFF',
-  stockRed: "#FF0000",
-  stockBlue:"#0000FF",
+  stockRed: '#FF0000',
+  stockBlue: '#0000FF',
   // 주호꺼(저장한 뉴스 센터컨텐츠요소 중 중간 박스)
   centerContentSectionBackgroundColor: '#F7F7F7',
+
+  activeOptionBackgroundColor: '#D3D3D3', // 드롭다운 활성화 옵션 배경색
+  activeOptionTextColor: '#000000', // 드롭다운 활성화 옵션 텍스트 색상
+  hoverOptionBackgroundColor: '#E0E0E0', // 드롭다운 마우스 오버시 배경색
+  hoverOptionTextColor: '#333333', // 드롭다운 마우스 오버시 텍스트 색상
+  editorBackgroundColor: '#FFFFFF', // 에디터 배경색
+  editorTextColor: '#000000', // 에디터 텍스트 색상
 };
 
 export const darkTheme: DefaultTheme = {
@@ -48,8 +55,15 @@ export const darkTheme: DefaultTheme = {
   newsBackgroundColor: '#17223B',
   // 주식 카드 백그라운드
   stockBackgroundColor: '#17223B',
-  stockRed: "#FF4500",
-  stockBlue:"#87CEFA",
+  stockRed: '#FF4500',
+  stockBlue: '#87CEFA',
   // 주호꺼(저장한 뉴스 센터컨텐츠요소 중 중간 박스)
   centerContentSectionBackgroundColor: '#4C506B',
+
+  activeOptionBackgroundColor: '#333333', // 드롭다운 활성화 옵션 배경색
+  activeOptionTextColor: '#FFFFFF', // 드롭다운 활성화 옵션 텍스트 색상
+  hoverOptionBackgroundColor: '#2F2F2F', // 드롭다운 마우스 오버시 배경색
+  hoverOptionTextColor: '#FFFFFF', // 드롭다운 마우스 오버시 텍스트 색상
+  editorBackgroundColor: '#4C506B', // 에디터 배경색
+  editorTextColor: '#FFFFFF', // 에디터 텍스트 색상
 };
