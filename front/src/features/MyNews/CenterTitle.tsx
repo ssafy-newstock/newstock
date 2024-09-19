@@ -1,4 +1,6 @@
 import CalendarIcon from './CalendarIcon';
+import 'react-datepicker/dist/react-datepicker.css';
+
 import {
   CenterMenu,
   CenterMenuLeft,
@@ -7,8 +9,17 @@ import {
   FontStyle,
   SelectDateDiv,
 } from './styledComponent';
+import { useState } from 'react';
 
 const CenterTitle: React.FC = () => {
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null); // 선택한 날짜 상태
+  const [isCalendarVisible, setIsCalendarVisible] = useState(false); // 캘린더 토글 상태
+
+  // SelectDateDiv 클릭 시 캘린더 보이기/숨기기
+  const toggleCalendar = () => {
+    setIsCalendarVisible(!isCalendarVisible);
+  };
+
   return (
     <CenterTitleDiv>
       <CenterTitleFontStyle>저장한 뉴스</CenterTitleFontStyle>
