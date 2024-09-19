@@ -105,4 +105,4 @@ spec:
     - protocol: TCP
       port: 8000           # 클러스터 내부에서 접근할 서비스 포트
       targetPort: 8000    # 컨테이너 내부 포트
-  type: ClusterIP      # 외부에서 접근할 수 있는 서비스 타입 (필요시 ClusterIP로 변경 가능)
+  type: LoadBalancer      # 외부에서 접근할 수 있는 서비스 타입 (필요시 ClusterIP로 변경 가능)
