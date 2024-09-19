@@ -160,6 +160,21 @@ pipeline {
                 }
             }
         }
+
+        stage('Update Kubernetes Deployment for Auth') {
+//             when {
+//                 expression { env.MEMBER_CHANGED == 'true' }
+//             }
+            steps {
+                script {
+                    def deploymentPath = 'k8s/backend/deployment-auth.yaml'  // deploymentPath 정의
+                    sh """
+                        sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
+                        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f ${deploymentPath}
+                    """
+                }
+            }
+        }
     }
 
     post {
