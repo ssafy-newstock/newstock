@@ -146,6 +146,20 @@ pipeline {
                 }
             }
         }
+
+        stage('Build and Push Docker Image for Auth') {
+//             when {
+//                 expression { env.NEWS_CHANGED == 'true' }
+//             }
+            steps {
+                script {
+                    sh """
+                        docker build -t ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstockauth:${IMAGE_TAG} back/auth/
+                        docker push ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstockauth:${IMAGE_TAG}
+                    """
+                }
+            }
+        }
     }
 
     post {
