@@ -62,22 +62,31 @@ const StockMainPage = () => {
       // setIsWebSocketConnected(true);
       // Top 10 종목 정보 구독
       stompClient.subscribe('/api/sub/stock/info/live', (message) => {
-        const updatedStockData = JSON.parse(message.body);
-        console.log("updatedStockData", updatedStockData);
-        queryClient.setQueryData(['top10StockData'], updatedStockData);
+        const newStockPrice = JSON.parse(message.body);
+
+        queryClient.setQueryData(
+          ['top10StockData'],
+          (prevStockPrices: IStock[]) => {
+            return prevStockPrices.map((stock) =>
+              stock.stockCode === newStockPrice.stockCode
+                ? newStockPrice
+                : stock
+            );
+          }
+        );
       });
 
       // 산업군 정보 구독 (10분 단위 갱신)
       stompClient.subscribe('/api/sub/stock/industry/info', (message) => {
         const updatedIndustryData = JSON.parse(message.body);
-        console.log("updatedIndustryData", updatedIndustryData);
+        console.log('updatedIndustryData', updatedIndustryData);
         queryClient.setQueryData(['industryData'], updatedIndustryData);
       });
 
       // 코스피 전 종목 정보 구독 (30~40초 단위 갱신)
       stompClient.subscribe('/api/sub/stock/info', (message) => {
         const updatedStockData = JSON.parse(message.body);
-        console.log("updatedStockData", updatedStockData);
+        console.log('updatedStockData', updatedStockData);
         queryClient.setQueryData(['allStockData'], updatedStockData);
       });
     });
@@ -99,8 +108,8 @@ const StockMainPage = () => {
       const response = await axios.get(
         'http://newstock.info/api/stock/price-list/live'
       );
-      console.log(response.data);
-      return response.data;
+      console.log('top10StockData', response.data.data);
+      return response.data.data;
     },
   });
 
@@ -110,9 +119,9 @@ const StockMainPage = () => {
       const response = await axios.get(
         'http://newstock.info/api/stock/industry-list'
       );
-      console.log(response.data);
+      console.log('industryData', response.data.data);
 
-      return response.data;
+      return response.data.data;
     },
   });
 
@@ -122,9 +131,8 @@ const StockMainPage = () => {
       const response = await axios.get(
         'http://newstock.info/api/stock/price-list'
       );
-      console.log(response.data);
-      console.log(allStockData.data);
-      return response.data;
+      console.log('allStockData', response.data.data);
+      return response.data.data;
     },
   });
 
@@ -149,7 +157,7 @@ const StockMainPage = () => {
         <HrTag />
         <StockGridRow>
           <RealTimeStockFirstRow />
-          {top10StockData.data?.map((stock: IStock, index: number) => (
+          {top10StockData?.map((stock: IStock, index: number) => (
             <RealTimeStock key={index} stock={stock} />
           ))}
         </StockGridRow>
@@ -158,7 +166,12 @@ const StockMainPage = () => {
         <More onClick={categoryNavigate} />
         <HrTag />
         <CategoryGridColumn>
-          {industryData?.data
+          {industryData
+            ?.sort(
+              (a: ICategoryStock, b: ICategoryStock) =>
+                Math.abs(parseFloat(b.bstpNmixPrdyCtrt)) -
+                Math.abs(parseFloat(a.bstpNmixPrdyCtrt))
+            )
             .slice(0, 3)
             .map((category: ICategoryStock, index: number) => {
               // 기본 이미지 객체

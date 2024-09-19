@@ -1,6 +1,6 @@
 import { Center } from '@components/Center';
 import LeftStock from '@components/LeftStock';
-import { Right } from '@components/Right';
+import { RightVacant } from '@components/RightVacant';
 import {
   HrTag,
   StockGridRow,
@@ -39,7 +39,7 @@ const SectionStockPage = () => {
       );
       console.log(response.data);
 
-      return response.data;
+      return response.data.data;
     },
   });
 
@@ -55,7 +55,7 @@ const SectionStockPage = () => {
         <HrTag />
         <StockGridRow>
           <AllCategoryFirstRow />
-          {industryData?.data.map((category: ICategoryStock, index: number) => {
+          {industryData?.map((category: ICategoryStock, index: number) => {
             // 기본 이미지 객체
             const defaultImage = {
               url: 'default-image-url',
@@ -80,7 +80,7 @@ const SectionStockPage = () => {
           })}
         </StockGridRow>
       </Center>
-      <Right />
+      <RightVacant />
       {isModalOpen && selectedCategory && (
         <Modal onClose={closeModal} category={selectedCategory} />
       )}
