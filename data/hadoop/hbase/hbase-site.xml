@@ -1,0 +1,49 @@
+<configuration>
+    <!-- HBase 설정 -->
+    <property>
+        <name>hbase.root.logger</name>
+        <value>INFO,console</value>
+    </property>
+    
+    <property>
+        <name>hbase.zookeeper.quorum</name>
+        <value>zookeeper</value> <!-- ZooKeeper 컨테이너의 이름을 사용합니다 -->
+    </property>
+    
+    <property>
+        <name>hbase.zookeeper.property.dataDir</name>
+        <value>/data/hbase-zookeeper</value>
+    </property>
+    
+    <property>
+        <name>hbase.master</name>
+        <value>namenode:16000</value> <!-- HBase 마스터의 호스트와 포트 -->
+    </property>
+    
+    <property>
+        <name>hbase.regionserver.port</name>
+        <value>16020</value>
+    </property>
+    
+    <property>
+        <name>hbase.hregion.max.filesize</name>
+        <value>1073741824</value>
+    </property>
+    
+    <property>
+        <name>hbase.tmp.dir</name>
+        <value>/tmp/hbase-${user.name}</value>
+    </property>
+    
+    <!-- HDFS 설정 -->
+    <property>
+        <name>hbase.fs.defaultFS</name>
+        <value>hdfs://namenode:9000</value> <!-- HDFS의 namenode 호스트와 포트 -->
+    </property>
+
+    <!-- 에러 처리 : https://stackoverflow.com/questions/48709569/hbase-error-illegalstateexception-when-starting-master-hsync -->
+    <property>
+        <name>hbase.unsafe.stream.capability.enforce</name>
+        <value>false</value>
+    </property>
+</configuration>
