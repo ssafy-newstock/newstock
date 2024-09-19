@@ -93,10 +93,10 @@ public class StockIndustryService {
                 .map(stockIndustryResponse -> new StockIndustryRedis(
                         stockIndustryResponse.getIndustryCode(),
                         stockIndustryResponse.getIndustryName(),
-                        stockIndustryResponse.getBstpNmixPrpr(),
-                        stockIndustryResponse.getBstpNmixPrdyVrss(),
-                        stockIndustryResponse.getBstpNmixPrdyCtrt(),
-                        stockIndustryResponse.getAcmlTrPbmn()
+                        Long.parseLong(stockIndustryResponse.getBstpNmixPrpr()),
+                        Long.parseLong(stockIndustryResponse.getBstpNmixPrdyVrss()),
+                        Double.parseDouble(stockIndustryResponse.getBstpNmixPrdyCtrt()),
+                        Long.parseLong(stockIndustryResponse.getAcmlTrPbmn())
                 )).collect(Collectors.toList());
 
         stockIndustryRedisRepository.deleteAll();
