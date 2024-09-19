@@ -1,4 +1,4 @@
-package com.ssafy.member.global.exception;
+package com.ssafy.auth.global.exception;
 
 
 public class TokenException extends RuntimeException {

@@ -1,8 +1,9 @@
-package com.ssafy.member.global.security.filter;
+package com.ssafy.auth.global.security.filter;
 
-import com.ssafy.member.global.constant.TokenKey;
-import com.ssafy.member.global.exception.TokenException;
-import com.ssafy.member.global.security.token.TokenProvider;
+
+import com.ssafy.auth.global.constant.TokenKey;
+import com.ssafy.auth.global.exception.TokenException;
+import com.ssafy.auth.global.security.token.TokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -20,6 +22,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
 @Slf4j
+@Component
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenProvider tokenProvider;
@@ -29,16 +32,13 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         String requestURI = request.getRequestURI();
 
-        if ("/api/member/login".equals(requestURI)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-        if (requestURI.startsWith("/api/member/test/")) {
+        log.info("requestURI: {}", requestURI);
+        if (requestURI.startsWith("/api/auth/login")) {
             filterChain.doFilter(request, response);
             return;
         }
         String accessToken = resolveToken(request);
-        log.info("accesstoken: {}", accessToken);
+        log.info("accessToken: {}", accessToken);
         // 1. 우선 filter을 통해 accessToken에 이상이 없을 경우
         if (tokenProvider.validateAccessToken(accessToken)) {
             log.info("AccessToken is valid!!");

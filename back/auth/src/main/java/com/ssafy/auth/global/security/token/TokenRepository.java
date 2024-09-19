@@ -1,7 +1,6 @@
-package com.ssafy.member.domain.repository;
+package com.ssafy.auth.global.security.token;
 
 
-import com.ssafy.member.domain.entity.oauth.Token;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;

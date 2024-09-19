@@ -1,8 +1,8 @@
-package com.ssafy.member.global.security.token;
+package com.ssafy.auth.global.security.token;
 
 
-import com.ssafy.member.domain.entity.oauth.CustomOAuth2User;
-import com.ssafy.member.global.exception.TokenException;
+import com.ssafy.auth.domain.dto.CustomOAuth2User;
+import com.ssafy.auth.global.exception.TokenException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;

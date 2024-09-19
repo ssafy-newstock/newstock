@@ -1,8 +1,7 @@
-package com.ssafy.member.global.security.token;
+package com.ssafy.auth.global.security.token;
 
-import com.ssafy.member.domain.entity.oauth.Token;
-import com.ssafy.member.global.exception.TokenException;
-import com.ssafy.member.domain.repository.TokenRepository;
+
+import com.ssafy.auth.global.exception.TokenException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

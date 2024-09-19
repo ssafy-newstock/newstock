@@ -1,4 +1,4 @@
-package com.ssafy.member.domain.entity.oauth;
+package com.ssafy.auth.global.security.token;
 
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;

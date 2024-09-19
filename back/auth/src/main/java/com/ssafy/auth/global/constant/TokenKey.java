@@ -1,4 +1,4 @@
-package com.ssafy.member.global.constant;
+package com.ssafy.auth.global.constant;
 
 public final class TokenKey {
 

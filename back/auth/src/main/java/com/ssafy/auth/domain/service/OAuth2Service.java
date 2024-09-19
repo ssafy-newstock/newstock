@@ -1,12 +1,18 @@
-package com.ssafy.member.domain.service;
+package com.ssafy.auth.domain.service;
 
 
-import com.ssafy.member.domain.repository.MemberRepository;
-import com.ssafy.member.domain.entity.dto.OAuthAttributesDto;
-import com.ssafy.member.domain.entity.oauth.CustomOAuth2User;
-import com.ssafy.member.domain.entity.Member;
-import com.ssafy.member.global.exception.TokenException;
-import com.ssafy.member.global.security.token.TokenProvider;
+import com.ssafy.auth.domain.controller.client.MemberClient;
+import com.ssafy.auth.domain.controller.request.MemberJoinRequest;
+import com.ssafy.auth.domain.controller.request.MemberUpdateRequest;
+import com.ssafy.auth.domain.controller.response.MemberDetailResponse;
+import com.ssafy.auth.domain.controller.response.MemberExistResponse;
+import com.ssafy.auth.domain.controller.response.MemberFindResponse;
+import com.ssafy.auth.domain.dto.CustomOAuth2User;
+import com.ssafy.auth.domain.dto.MemberDetailDto;
+import com.ssafy.auth.domain.dto.OAuthAttributesDto;
+import com.ssafy.auth.global.exception.TokenException;
+import com.ssafy.auth.global.security.token.TokenProvider;
+import feign.FeignException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +41,7 @@ public class OAuth2Service {
 
     private final ClientRegistrationRepository clientRegistrationRepository;
     private final TokenProvider tokenProvider;
-    private final MemberRepository memberRepository;
+    private final MemberClient memberClient;
 
     /*
         authorization으로 access token을 발급받는 코드
@@ -127,16 +133,15 @@ public class OAuth2Service {
 
         OAuthAttributesDto attributes = OAuthAttributesDto.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
 
-
         // 저장
-        Member member = saveOrUpdate(attributes);
+        MemberDetailDto memberDetailDto = saveOrUpdate(attributes, registrationId);
 
         // Return the user details (modify according to your needs)
         return new CustomOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
                 userAttributes,
                 userNameAttributeName,
-                member.getId()
+                memberDetailDto.getMemberId()
         );
     }
 
@@ -144,13 +149,37 @@ public class OAuth2Service {
     /*
     이미 존재하는 유저를 확인하는 메소드이며 신규 회원일 경우 통째로 entity 저장, 기존 회원일 경우, 닉네임만 수정하는 작업
     */
-    private Member saveOrUpdate(OAuthAttributesDto attributes) {
-        Member member = memberRepository.findByProviderEmail(attributes.getMemberProviderEmail())
-                .map(entity -> entity.updateMemberName(attributes.getMemberName()))
-                .orElse(attributes.toEntity());
+    private MemberDetailDto saveOrUpdate(OAuthAttributesDto attributes, String provider) {
+        String providerEmail = attributes.getMemberProviderEmail();
+        String memberName = attributes.getMemberName();
 
-        return memberRepository.save(member);
+        MemberFindResponse findResponse = null;
+
+        // 회원을 찾는 로직
+        MemberExistResponse memberExistResponse = memberClient.existMember(providerEmail, memberName);
+        Long existMemberId = memberExistResponse.getMemberId();
+
+        if (memberExistResponse.isExists()) {
+            findResponse = new MemberFindResponse(existMemberId, memberName, providerEmail);
+        } else {
+            MemberJoinRequest joinRequest = MemberJoinRequest.of(attributes);
+            MemberFindResponse memberFindResponse = memberClient.joinMember(joinRequest);
+            Long registerId = memberFindResponse.getMemberId();
+            findResponse = new MemberFindResponse(registerId, memberName, providerEmail);
+        }
+
+        // 공통된 로직을 사용해 MemberDetailDto를 반환
+        return toMemberDetailDto(findResponse);
     }
+
+    private MemberDetailDto toMemberDetailDto(MemberFindResponse findResponse) {
+        return new MemberDetailDto(
+                findResponse.getMemberId(),
+                findResponse.getMemberName(),
+                findResponse.getProviderEmail()
+        );
+    }
+
 
     /*
         refreshToken으로 accessToken 재발급 후 refreshToken 갱신 메소드

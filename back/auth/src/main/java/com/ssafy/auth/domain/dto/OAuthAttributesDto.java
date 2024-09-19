@@ -1,6 +1,5 @@
-package com.ssafy.member.domain.entity.dto;
+package com.ssafy.auth.domain.dto;
 
-import com.ssafy.member.domain.entity.Member;
 import lombok.Getter;
 
 import java.util.Map;
@@ -17,12 +16,10 @@ public class OAuthAttributesDto {
     private final String memberProviderEmail;
     private final String memberProfileImageUrl;
 
-    public OAuthAttributesDto(Map<String, Object> attributes,
-                              String nameAttributeKey,
-                              String memberName,
-                              String memberProvider,
-                              String memberProviderEmail,
-                              String memberProfileImageUrl) {
+    public OAuthAttributesDto(
+            Map<String, Object> attributes, String nameAttributeKey,
+            String memberName, String memberProvider,
+            String memberProviderEmail, String memberProfileImageUrl) {
         this.attributes = attributes;
         this.nameAttributeKey = nameAttributeKey;
         this.memberName = memberName;
@@ -39,20 +36,11 @@ public class OAuthAttributesDto {
             return ofKakao("id", registrationId, attributes);
         }
 
-        // TODO: 나중에 삭제
         return ofGoogle(userNameAttributeName, attributes);
     }
 
-    // TODO: 나중에 삭제
     private static OAuthAttributesDto ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {
-        return new OAuthAttributesDto(
-                attributes,
-                userNameAttributeName,
-                (String) attributes.get("name"),
-                "google",
-                (String) attributes.get("email"),
-                (String) attributes.get("picture")
-        );
+        return new OAuthAttributesDto(attributes, userNameAttributeName, (String) attributes.get("name"), "google", (String) attributes.get("email"), (String) attributes.get("picture"));
     }
 
     private static OAuthAttributesDto ofKakao(String userNameAttributeName, String registrationId, Map<String, Object> attributes) {
@@ -70,22 +58,9 @@ public class OAuthAttributesDto {
         String providerEmail = (String) kakaoAccount.get("email");
 
         // 생성자를 통해 OAuthAttributesDto 객체 반환
-        return new OAuthAttributesDto(
-                attributes,
-                userNameAttributeName, // oauth주체자가 user을 주체하는 식별자(ex. kakao는 id를 씀)
-                nickname,
-                registrationId, // memberProvider(ex. kakao, google)
-                providerEmail,
-                isDefaultImage ? "https://sarrr.s3.ap-northeast-2.amazonaws.com/%EC%96%BC%EC%9D%8C__1_-removebg-preview.png" : profileImageUrl
-        );
+        return new OAuthAttributesDto(attributes, userNameAttributeName, // oauth주체자가 user을 주체하는 식별자(ex. kakao는 id를 씀)
+                nickname, registrationId, // memberProvider(ex. kakao, google)
+                providerEmail, isDefaultImage ? "https://sarrr.s3.ap-northeast-2.amazonaws.com/%EC%96%BC%EC%9D%8C__1_-removebg-preview.png" : profileImageUrl);
     }
 
-    public Member toEntity() {
-        return new Member(
-                memberName,
-                memberProvider,
-                memberProviderEmail,
-                memberProfileImageUrl
-        );
-    }
 }
