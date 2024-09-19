@@ -25,6 +25,7 @@ const EconomicNewsWrapper = styled.div`
   box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
   width: 100%;
   height: 18rem;
+  /* height: 100%; */
 `;
 
 const ObserverTrigger = styled.div`

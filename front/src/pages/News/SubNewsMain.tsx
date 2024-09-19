@@ -109,6 +109,7 @@ const SubNewsMainPage = () => {
   const location = useLocation();
 
   const isEconomicNews = location.pathname.includes('economic-news');
+  // const isEconomicNews = location.pathname.includes(`stock-news`);
 
   return (
     <>
