@@ -4,7 +4,7 @@ metadata:
   name: my-app-ingress
   namespace: default
   annotations:
-
+    nginx.ingress.kubernetes.io/auth-url: "http://auth-service/api/auth/verify"
     nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   ingressClassName: nginx
