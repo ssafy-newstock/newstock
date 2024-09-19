@@ -121,7 +121,7 @@ public class AuthController {
     }
 
 
-    @PostMapping("/verify")
+    @GetMapping("/verify")
     public ResponseEntity<?> verify() {
         log.info("[Auth Controller] 필터 통과 후, 200 반환");
         return ResponseEntity.ok("Valid token");
