@@ -14,10 +14,10 @@ public class StockIndustryRedis {
     @Id
     private String industryCode; // 업종 코드
     private String industryName; // 업종 이름
-    private Long bstpNmixPrpr;  // 업종 지수 현재가
-    private Long bstpNmixPrdyVrss; // 업종 지수 전일 대비
-    private Double bstpNmixPrdyCtrt; // 업종 지수 전일 대비율
-    private Long acmlTrPbmn;    // 거래대금(백만)
+    private String bstpNmixPrpr;  // 업종 지수 현재가
+    private String bstpNmixPrdyVrss; // 업종 지수 전일 대비
+    private String bstpNmixPrdyCtrt; // 업종 지수 전일 대비율
+    private String acmlTrPbmn;    // 거래대금(백만)
 
     @Override
     public String toString() {
