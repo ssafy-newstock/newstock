@@ -4,7 +4,7 @@ metadata:
   name: my-app-ingress
   namespace: default
   annotations:
-    nginx.ingress.kubernetes.io/auth-url: "http://auth-service/api/auth/verify"
+    nginx.ingress.kubernetes.io/auth-url: "http://newstock.info/api/auth/verify"
     nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   ingressClassName: nginx
@@ -19,6 +19,20 @@ spec:
             name: newstock-stock-frontend-service
             port:
               number: 3000
+      - path: /api(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: newstock-stock-auth-service
+            port:
+              number: 8000
+      - path: /api/auth(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: newstock-stock-auth-service
+            port:
+              number: 8000
       - path: /api/member(/|$)(.*)
         pathType: ImplementationSpecific
         backend:
