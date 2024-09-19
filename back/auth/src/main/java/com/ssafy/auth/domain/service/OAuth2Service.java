@@ -3,8 +3,6 @@ package com.ssafy.auth.domain.service;
 
 import com.ssafy.auth.domain.controller.client.MemberClient;
 import com.ssafy.auth.domain.controller.request.MemberJoinRequest;
-import com.ssafy.auth.domain.controller.request.MemberUpdateRequest;
-import com.ssafy.auth.domain.controller.response.MemberDetailResponse;
 import com.ssafy.auth.domain.controller.response.MemberExistResponse;
 import com.ssafy.auth.domain.controller.response.MemberFindResponse;
 import com.ssafy.auth.domain.dto.CustomOAuth2User;
@@ -12,7 +10,6 @@ import com.ssafy.auth.domain.dto.MemberDetailDto;
 import com.ssafy.auth.domain.dto.OAuthAttributesDto;
 import com.ssafy.auth.global.exception.TokenException;
 import com.ssafy.auth.global.security.token.TokenProvider;
-import feign.FeignException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -157,9 +154,9 @@ public class OAuth2Service {
 
         // 회원을 찾는 로직
         MemberExistResponse memberExistResponse = memberClient.existMember(providerEmail, memberName);
-        Long existMemberId = memberExistResponse.getMemberId();
 
         if (memberExistResponse.isExists()) {
+            Long existMemberId = memberExistResponse.getMemberId();
             findResponse = new MemberFindResponse(existMemberId, memberName, providerEmail);
         } else {
             MemberJoinRequest joinRequest = MemberJoinRequest.of(attributes);

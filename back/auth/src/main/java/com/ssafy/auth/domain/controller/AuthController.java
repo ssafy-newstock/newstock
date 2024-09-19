@@ -1,7 +1,8 @@
 package com.ssafy.auth.domain.controller;
 
 
-import com.ssafy.auth.domain.controller.client.MemberClient;
+import com.ssafy.auth.domain.controller.request.MemberIdRequest;
+import com.ssafy.auth.domain.controller.response.MemberIdResponse;
 import com.ssafy.auth.domain.controller.response.MemberLoginResponse;
 import com.ssafy.auth.domain.service.OAuth2Service;
 import com.ssafy.auth.global.security.token.TokenProvider;
@@ -29,7 +30,6 @@ import static com.ssafy.auth.global.constant.TokenKey.TOKEN_PREFIX;
 public class AuthController {
     private final OAuth2Service oAuth2Service;
     private final TokenProvider tokenProvider;
-    private final MemberClient memberClient;
 
     /**
      * OAuth2를 이용한 소셜 로그인 컨트롤러
@@ -125,5 +125,13 @@ public class AuthController {
     public ResponseEntity<?> verify() {
         log.info("[Auth Controller] 필터 통과 후, 200 반환");
         return ResponseEntity.ok("Valid token");
+    }
+
+    @PostMapping("/token-info")
+    public ResponseEntity<?> tokenInfo(@RequestBody MemberIdRequest request) {
+        String token = request.getToken();
+        Long memberId = tokenProvider.getMemberIdFromToken(token);
+        MemberIdResponse memberIdResponse = new MemberIdResponse(memberId);
+        return ResponseEntity.ok(memberIdResponse);
     }
 }
