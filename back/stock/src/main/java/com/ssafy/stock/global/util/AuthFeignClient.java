@@ -10,5 +10,5 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = "authClient", url = "http://newstock-stock-auth-service/api/auth")
 public interface AuthFeignClient {
     @PostMapping("/token-info")
-    ResponseEntity<MemberIdResponse> getMemberId(@RequestBody MemberIdRequest memberIdRequest);
+    MemberIdResponse getMemberId(@RequestBody MemberIdRequest memberIdRequest);
 }
