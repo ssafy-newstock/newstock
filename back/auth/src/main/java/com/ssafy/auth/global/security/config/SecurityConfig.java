@@ -46,7 +46,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/api/auth/login").permitAll()
-                                .anyRequest().authenticated()
+                                .requestMatchers("/api/**").authenticated()
+                                .anyRequest().permitAll()
                 )
                 .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(tokenExceptionFilter, TokenAuthenticationFilter.class); // 수정됨

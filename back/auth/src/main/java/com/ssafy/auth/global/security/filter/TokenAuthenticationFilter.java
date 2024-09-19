@@ -32,6 +32,11 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         String requestURI = request.getRequestURI();
 
+        // /api 경로가 아닌 경우 필터를 통과시키고 인증을 건너뜀
+        if (!requestURI.startsWith("/api")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         log.info("requestURI: {}", requestURI);
         if (requestURI.startsWith("/api/auth/login")) {
             filterChain.doFilter(request, response);
