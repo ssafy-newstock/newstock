@@ -172,7 +172,7 @@ const StockMainPage = () => {
                 Math.abs(parseFloat(b.bstpNmixPrdyCtrt)) -
                 Math.abs(parseFloat(a.bstpNmixPrdyCtrt))
             )
-            .slice(0, 3)
+            .slice(0, 4)
             .map((category: ICategoryStock, index: number) => {
               // 기본 이미지 객체
               const defaultImage = {
