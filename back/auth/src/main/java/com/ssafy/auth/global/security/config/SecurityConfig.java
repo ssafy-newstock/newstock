@@ -45,7 +45,7 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions().disable())
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/api/auth/login", "/api/member/exist","/api/member/join").permitAll()
+                                .requestMatchers("/api/auth/login", "/api/member/exist","/api/member/join", "/api/auth/token-info").permitAll()
                                 .requestMatchers("/api/**").authenticated()
                                 .anyRequest().permitAll()
                 )
