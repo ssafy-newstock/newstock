@@ -3,6 +3,7 @@ import { Center } from '@components/Center';
 import { Right } from '@components/Right';
 import LeftNews from '@components/LeftNews';
 import { Outlet, useLocation, Link } from 'react-router-dom';
+import BookmarkedNews from '@features/News/BookmarkedNews';
 
 const SubNewsMainCenter = styled.div`
   display: flex;
@@ -10,7 +11,11 @@ const SubNewsMainCenter = styled.div`
   flex-direction: column;
   align-items: flex-start;
   align-self: stretch;
-  max-width: 106rem;
+  /* max-width: 106rem; */
+  max-width: 50rem;
+  /* min-width: 1024px; */
+  /* width: 64rem; */
+  width: 50rem;
 `;
 
 const SubNewsHeaderWrapper = styled.div`
@@ -22,7 +27,7 @@ const SubNewsHeaderWrapper = styled.div`
   align-self: stretch;
 `;
 
-const SubNewsHeaderText = styled.div`
+const SubNewsHeaderText = styled.p`
   color: ${({ theme }) => theme.textColor};
   font-family: Inter;
   font-size: 2rem;
@@ -39,7 +44,7 @@ const SubNewsBoarder = styled.div`
   gap: 0.625rem;
   width: 100%;
   height: 0.19rem;
-  background: ${({ theme }) => theme.textColor};
+  background-color: ${({ theme }) => theme.textColor};
 `;
 
 const CategoryWrapper = styled.div`
@@ -54,7 +59,7 @@ const CategoryWrapper = styled.div`
 `;
 
 const AllCategoryText = styled.p`
-  color: #000;
+  color: ${({ theme }) => theme.textColor};
   font-family: Inter;
   font-size: 1rem;
   font-style: normal;
@@ -86,7 +91,6 @@ const SubNewsMainRight = styled.div`
   align-items: flex-start;
   gap: 1.25rem;
   align-self: stretch;
-  background: #bbb;
 `;
 
 const categories = [
@@ -144,7 +148,9 @@ const SubNewsMainPage = () => {
       </Center>
 
       <Right>
-        <SubNewsMainRight></SubNewsMainRight>
+        <SubNewsMainRight>
+          <BookmarkedNews />
+        </SubNewsMainRight>
       </Right>
     </>
   );

@@ -11,6 +11,9 @@ const SubCenter = styled.div`
   flex-direction: column;
   align-items: flex-start;
   align-self: stretch;
+  /* min-width: 900px; */
+  width: 50rem;
+  max-width: 50rem;
 `;
 
 const EconomicNewsWrapper = styled.div`
@@ -21,7 +24,7 @@ const EconomicNewsWrapper = styled.div`
   justify-content: space-between;
   align-self: stretch;
   border-radius: 2rem;
-  background: ${({ theme }) => theme.newsBackgroundColor};
+  background-color: ${({ theme }) => theme.newsBackgroundColor};
   box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
   width: 100%;
   height: 18rem;
