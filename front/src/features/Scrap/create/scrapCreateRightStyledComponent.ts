@@ -50,13 +50,14 @@ export const RightNewsCardTagDiv = styled.div`
   justify-content: center;
   align-items: center;
   gap: 10px;
-  border-radius: 5px;
-  background: #81b5fc;
+  border-radius: 0.625rem;
+  background: ${({ theme }) => theme.buttonBackgroundColor};
 `;
 
 export const RightNewsCardTagP = styled.p`
-  color: #fff;
-  font-size: 1.25rem;
+  color: ${({ theme }) => theme.buttonTextColor};
+  padding: 0.3125rem;
+  font-size: 1rem;
   font-weight: 400;
-  line-height: 1.875rem; /* 150% */
+  /* line-height: 1.875rem;  */
 `;
