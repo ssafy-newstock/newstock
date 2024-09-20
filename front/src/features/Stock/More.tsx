@@ -1,10 +1,10 @@
-import styled from "styled-components";
-import { Text } from "@features/Stock/styledComponent";
-import { RightArrow } from "@features/Stock/RightArrow";
+import styled from 'styled-components';
+import { Text } from '@features/Stock/styledComponent';
+import { RightArrow } from '@features/Stock/RightArrow';
 // import { IMore } from "@features/Stock/types";
 
 interface MoreProps {
-  onClick?: React.MouseEventHandler<HTMLDivElement>;
+  handlClick: () => void;
 }
 
 const MoreWrapper = styled.div`
@@ -15,16 +15,15 @@ const MoreWrapper = styled.div`
   gap: 0.5rem;
   font-size: 1rem;
   color: ${({ theme }) => theme.textColor};
-  cursor: pointer;
 `;
 
-const More: React.FC<MoreProps> = ({onClick}) => {
+const More: React.FC<MoreProps> = ({ handlClick }) => {
   return (
-    <MoreWrapper onClick={onClick}>
-      <Text>더보기</Text>
-      <RightArrow/>
+    <MoreWrapper>
+      <Text onClick={handlClick} style={{cursor:'pointer'}}>더보기</Text>
+      <RightArrow />
     </MoreWrapper>
-  )
+  );
 };
 
 export default More;

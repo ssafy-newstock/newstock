@@ -153,7 +153,7 @@ const StockMainPage = () => {
         </StockGridColumn>
 
         <StockHeaderMore>실시간 차트</StockHeaderMore>
-        <More onClick={allStockNavigate} />
+        <More handlClick={allStockNavigate} />
         <HrTag />
         <StockGridRow>
           <RealTimeStockFirstRow />
@@ -163,7 +163,7 @@ const StockMainPage = () => {
         </StockGridRow>
 
         <StockHeaderMore>카테고리</StockHeaderMore>
-        <More onClick={categoryNavigate} />
+        <More handlClick={categoryNavigate} />
         <HrTag />
         <CategoryGridColumn>
           {industryData
