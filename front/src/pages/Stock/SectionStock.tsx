@@ -1,10 +1,12 @@
 import { Center } from '@components/Center';
 import LeftStock from '@components/LeftStock';
-import { Right } from '@components/Right';
+import { RightVacant } from '@components/RightVacant';
 import {
   HrTag,
   StockGridRow,
   StockHeader,
+  ButtonWrapper,
+  SortButton,
 } from '@features/Stock/styledComponent';
 import { categoryImage } from '@features/Stock/category';
 import AllCategoryStock, {
@@ -15,11 +17,33 @@ import { useQuery } from '@tanstack/react-query';
 import { ICategoryStock } from '@features/Stock/types';
 import Modal from '@features/Stock/SectionStock/Modal';
 import { useState } from 'react';
+import styled from 'styled-components';
+
+// 밑줄 스타일
+const Underline = styled.div<{ activeIndex: number }>`
+  position: absolute;
+  bottom: -0.5rem; /* 밑줄 위치 조정 */
+  left: ${({ activeIndex }) => activeIndex * 5.2 + 0.9}rem; /* 각 버튼의 위치에 따라 조정 */
+  width: 4rem; /* 버튼 너비에 맞춰 조정 */
+  height: 0.2rem;
+  background-color: black;
+  transition: left 0.3s ease-in-out; /* 부드러운 애니메이션 */
+  background-color: ${({theme})=>theme.textColor};
+`;
 
 const SectionStockPage = () => {
   // 모달 관련
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<ICategoryStock | null>(null);
+  const [selectedCategory, setSelectedCategory] =
+    useState<ICategoryStock | null>(null);
+
+  // 정렬 상태 관리 (asc, desc를 구분하거나, 기본 정렬 방식으로 변경 가능)
+  const [sortedIndustryData, setSortedIndustryData] = useState<
+    ICategoryStock[] | null
+  >(null);
+
+  // 밑줄 표시할 버튼 인덱스 상태
+  const [activeButtonIndex, setActiveButtonIndex] = useState<number>(0);
 
   const openModal = (category: ICategoryStock) => {
     setSelectedCategory(category);
@@ -39,13 +63,38 @@ const SectionStockPage = () => {
       );
       console.log(response.data);
 
-      return response.data;
+      return response.data.data;
     },
   });
+
+  // 정렬 함수: 문자열을 숫자로 변환한 후 정렬
+  const sortData = (
+    key: keyof ICategoryStock,
+    isAscending: boolean = false,
+    index: number
+  ) => {
+    setActiveButtonIndex(index); // 선택된 버튼 인덱스 저장
+
+    if (industryData) {
+      const sortedData = [...industryData].sort((a, b) => {
+        const valueA = parseFloat(a[key]);
+        const valueB = parseFloat(b[key]);
+
+        if (!isNaN(valueA) && !isNaN(valueB)) {
+          return isAscending ? valueA - valueB : valueB - valueA;
+        }
+        return 0; // 숫자가 아닌 값은 무시
+      });
+      setSortedIndustryData(sortedData);
+    }
+  };
 
   if (isIndustryLoading) {
     return <div>Loading...</div>;
   }
+
+  // 렌더링할 데이터 선택
+  const dataToRender = sortedIndustryData || industryData;
 
   return (
     <>
@@ -53,9 +102,32 @@ const SectionStockPage = () => {
       <Center>
         <StockHeader>전체 카테고리</StockHeader>
         <HrTag />
+
+        {/* 정렬 버튼들 */}
+        <ButtonWrapper>
+          <SortButton
+            onClick={() => sortData('bstpNmixPrpr', false, 0)}
+          >
+            지수 현재
+          </SortButton>
+          <SortButton
+            onClick={() => sortData('bstpNmixPrdyCtrt', false, 1)}
+          >
+            지수 등락
+          </SortButton>
+          <SortButton
+            onClick={() => sortData('acmlTrPbmn', false, 2)}
+          >
+            거래 대금
+          </SortButton>
+
+          {/* 밑줄 요소 */}
+          <Underline activeIndex={activeButtonIndex} />
+        </ButtonWrapper>
+
         <StockGridRow>
           <AllCategoryFirstRow />
-          {industryData?.data.map((category: ICategoryStock, index: number) => {
+          {dataToRender?.map((category: ICategoryStock, index: number) => {
             // 기본 이미지 객체
             const defaultImage = {
               url: 'default-image-url',
@@ -68,6 +140,7 @@ const SectionStockPage = () => {
                     category.industryName as keyof typeof categoryImage
                   ]
                 : defaultImage; // 기본 이미지 객체로 처리
+
             return (
               <AllCategoryStock
                 key={index}
@@ -80,7 +153,7 @@ const SectionStockPage = () => {
           })}
         </StockGridRow>
       </Center>
-      <Right />
+      <RightVacant />
       {isModalOpen && selectedCategory && (
         <Modal onClose={closeModal} category={selectedCategory} />
       )}

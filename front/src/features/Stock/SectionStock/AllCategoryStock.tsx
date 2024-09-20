@@ -12,6 +12,7 @@ import { formatNumber } from '@utils/formatNumber';
 export const AllCategoryFirstRow = () => {
   return (
     <CategoryCardRow style={{cursor:'default'}}>
+      <Text></Text>
       <Text>카테고리</Text>
       <Text>지수 현재가</Text>
       <Text>지수 전일 대비</Text>
@@ -28,8 +29,9 @@ const AllCategoryStock: React.FC<ICategory> = ({
   onClick,
 }) => {
   return (
-    <CategoryCardRow onClick={onClick}>
-      <div style={{display:'flex', gap:'1rem', justifyContent:'center', alignItems:'center'}}>
+    <CategoryCardRow onClick={onClick} >
+      <Text></Text>
+      <div style={{display:'flex', gap:'1rem', justifyContent:'start', alignItems:'center'}}>
         <CategoryImgWrapper backgroundColor={String(imageBgColor)}>
           <CategoryImg src={String(imageUrl)} alt="Category Image" />
         </CategoryImgWrapper>

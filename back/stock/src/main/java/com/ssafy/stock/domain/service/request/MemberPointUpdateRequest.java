@@ -1,10 +1,13 @@
 package com.ssafy.stock.domain.service.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
-@RequiredArgsConstructor
 public class MemberPointUpdateRequest {
-    private final Long point;
+    private Long point;
 }

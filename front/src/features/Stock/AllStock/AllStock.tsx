@@ -56,7 +56,7 @@ const AllStock = ({ stock }: { stock: IStock }) => {
         {formatChange(formatNumber(stock.prdyVrss))}원 ({stock.prdyCtrt}
         %)
       </StockPrev>
-      <Text>{formatUnit(stock.acmlTrPbmn)}</Text>
+      <Text>{formatUnit(stock.acmlTrPbmn)}원</Text>
       <Text>{formatNumber(stock.acmlVol)}주</Text>
     </StockCardRow>
   );

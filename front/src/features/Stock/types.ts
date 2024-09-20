@@ -1,12 +1,12 @@
 export interface IStock {
-  stockCode: string | number;
-  stockName: string | number;
-  stockIndustry: string | number;
-  stckPrpr: string | number;
-  prdyVrss: string | number;
-  prdyCtrt: string | number;
-  acmlTrPbmn: string | number;
-  acmlVol: string | number;
+  stockCode: string;
+  stockName: string;
+  stockIndustry: string;
+  stckPrpr: number;
+  prdyVrss: number;
+  prdyCtrt: number;
+  acmlTrPbmn: number;
+  acmlVol: number;
 }
 
 export interface IApiStock {
@@ -21,25 +21,25 @@ export interface IApiCategory {
 
 export interface ICategory {
   category: {
-    industryCode: string | number;
-    industryName: string | number;
-    bstpNmixPrpr: string | number;
-    bstpNmixPrdyVrss: string | number;
-    bstpNmixPrdyCtrt: string | number;
-    acmlTrPbmn: string | number;
+    industryCode: string;
+    industryName: string;
+    bstpNmixPrpr: string;
+    bstpNmixPrdyVrss: string;
+    bstpNmixPrdyCtrt: string;
+    acmlTrPbmn: string;
   };
-  imageUrl: string | number;
-  imageBgColor: string | number;
+  imageUrl: string;
+  imageBgColor: string;
   onClick?: () => void;
 }
 
 export interface ICategoryStock {
-  industryCode: string | number;
-  industryName: string | number;
-  bstpNmixPrpr: string | number;
-  bstpNmixPrdyVrss: string | number;
-  bstpNmixPrdyCtrt: string | number;
-  acmlTrPbmn: string | number;
+  industryCode: string;
+  industryName: string;
+  bstpNmixPrpr: string;
+  bstpNmixPrdyVrss: string;
+  bstpNmixPrdyCtrt: string;
+  acmlTrPbmn: string;
 }
 
 export interface IcategoryImage {

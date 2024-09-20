@@ -18,6 +18,10 @@ public class AppConfig {
 
     @Bean
     public ModelMapper modelMapper() {
-        return new ModelMapper();
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration()
+                .setFieldMatchingEnabled(true)
+                .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE);
+        return modelMapper;
     }
 }
