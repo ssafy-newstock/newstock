@@ -1,7 +1,13 @@
 package com.ssafy.member.domain.controller.response;
 
 import com.ssafy.member.domain.entity.Member;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class MemberDetailResponse {
     private Long memberId;
     private String memberName;
