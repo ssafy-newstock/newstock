@@ -116,7 +116,7 @@ export const StockCardRow = styled.div`
 `;
 
 export const CategoryCardRow = styled(StockCardRow)`
-  grid-template-columns: repeat(5, 1fr); /* 각 열의 너비를 설정 */
+  grid-template-columns: 1fr 4fr 4fr 4fr 4fr 4fr 1fr; /* 각 열의 너비를 설정 */
 `;
 
 export const Text = styled.div`

@@ -126,6 +126,7 @@ const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
               <img src={imageUrl.url} alt="" />
             </CategoryImgWrapper>
             <CategoryCardRow style={{ cursor: 'default' }}>
+              <Text></Text>
               <Text>카테고리</Text>
               <Text>지수 현재가</Text>
               <Text>지수 전일 대비</Text>
@@ -133,6 +134,7 @@ const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
               <Text>누적 거래 대금(백만)</Text>
             </CategoryCardRow>
             <CategoryCardRow>
+              <Text></Text>
               <TextLarge>{category.industryName}</TextLarge>
               <Text>{category.bstpNmixPrpr}</Text>
               <CategoryData
