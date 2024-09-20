@@ -13,7 +13,7 @@ import java.util.List;
 public class Stocks extends BaseEntity{
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "stock_id")
     private Long id;
 

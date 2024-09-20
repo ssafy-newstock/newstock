@@ -6,7 +6,8 @@ ENV SPARK_FILE_NAME=spark-$SPARK_VERSION-bin-hadoop3.2
 ENV SAPRK_URL=https://archive.apache.org/dist/spark/spark-$SPARK_VERSION/$SPARK_FILE_NAME.tgz
 
 # spark setting
-RUN wget $SAPRK_URL
+COPY ./spark-3.2.2-bin-hadoop3.2.tgz ./
+# RUN wget $SAPRK_URL
 RUN tar -xvzf $SPARK_FILE_NAME.tgz && rm $SPARK_FILE_NAME.tgz
 RUN mv $SPARK_FILE_NAME /opt
 RUN ln -s /opt/$SPARK_FILE_NAME /opt/spark

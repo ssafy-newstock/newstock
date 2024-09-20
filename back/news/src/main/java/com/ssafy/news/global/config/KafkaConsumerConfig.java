@@ -21,7 +21,7 @@ public class KafkaConsumerConfig {
         Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka-service:9092");  // Kafka 서비스 주소
         // config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");  // Kafka 서비스 주소
-        config.put(ConsumerConfig.GROUP_ID_CONFIG, "test_group");
+        config.put(ConsumerConfig.GROUP_ID_CONFIG, "develop");
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 

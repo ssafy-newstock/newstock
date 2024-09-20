@@ -1,10 +1,11 @@
 package com.ssafy.stock.global.common;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
+
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
-@RequiredArgsConstructor
 public class MemberIdRequest {
-    private final String token;
+    private String token;
 }

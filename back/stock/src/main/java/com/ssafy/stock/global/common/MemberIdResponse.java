@@ -1,10 +1,10 @@
 package com.ssafy.stock.global.common;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
-@RequiredArgsConstructor
 public class MemberIdResponse {
-    private final Long memberId;
+    private Long memberId;
 }

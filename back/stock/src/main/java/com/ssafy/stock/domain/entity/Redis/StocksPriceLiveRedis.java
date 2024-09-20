@@ -3,6 +3,7 @@ package com.ssafy.stock.domain.entity.Redis;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
@@ -10,6 +11,7 @@ import org.springframework.data.redis.core.RedisHash;
 @AllArgsConstructor
 @NoArgsConstructor
 @RedisHash(value = "StocksPriceLiveRedis")
+@ToString
 public class StocksPriceLiveRedis {
     @Id
     private String stockCode;     // 종목 코드

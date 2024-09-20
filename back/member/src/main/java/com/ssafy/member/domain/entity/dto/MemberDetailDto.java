@@ -2,8 +2,10 @@ package com.ssafy.member.domain.entity.dto;
 
 import com.ssafy.member.domain.entity.Member;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@ToString
 public class MemberDetailDto {
     private Long memberId;
     private String memberName;
