@@ -29,19 +29,14 @@ const TextDiv = styled.div`
 
 const TextTitle = styled.p`
   color: ${({ theme }) => theme.textColor};
-  font-family: Inter;
   font-size: 24px;
-  font-style: normal;
   font-weight: 600;
   line-height: 30px; /* 125% */
 `;
 
 const TextP = styled.p`
   color: #828282;
-  font-family: Inter;
   font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
   line-height: 30px; /* 187.5% */
 `;
 
