@@ -23,7 +23,7 @@ const BookmarkedNewsHeaderSVG = styled.div`
 `;
 
 const StyledArrowIcon = styled.svg`
-  width: 0.5;
+  width: 0.5rem;
   height: 1rem;
   fill: ${({ theme }) => theme.textColor}; /* 테마에 따른 색상 변경 */
 `;
@@ -54,14 +54,14 @@ const BookmarkedNewsWrapper = styled.div`
   display: flex;
   width: 100%;
   height: 10rem;
-  padding: 16px 21px;
+  padding: 1rem 1.3rem;
   flex-direction: column;
   align-items: flex-start;
   align-items: stretch;
-  gap: 10px;
+  gap: 0.625rem;
   background-color: ${({ theme }) => theme.newsBackgroundColor};
-  border-radius: 20px;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  border-radius: 1.25rem;
+  box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
 `;
 
 const BookmarkedNewsTitle = styled.p`
@@ -79,23 +79,23 @@ const BookmarkedNewsTitle = styled.p`
 
 const BookmarkedNewsMiddle = styled.div`
   display: flex;
-  padding: 0px 10px;
+  padding: 0 0.625rem;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
   align-self: stretch;
 `;
 
 const BookmarkedNewsMiddleText = styled.p`
   color: #828282;
   font-family: Inter;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-style: normal;
-  line-height: 30px; /* 166.667% */
+  line-height: 1.875rem; /* 166.667% */
 `;
 
 const BookmarkedNewsMiddleLine = styled.div`
-  width: 1.5px;
-  height: 28px;
+  width: 0.09rem;
+  height: 1.75rem;
   background: #e0e0e0;
 `;
 
@@ -109,26 +109,33 @@ const BookmarkedNewsFooter = styled.div`
 
 const BookmarkedNewsTag = styled.div`
   display: flex;
-  padding: 5px;
+  padding: 0.3rem;
   justify-content: center;
   align-items: center;
-  gap: 10px;
-  border-radius: 5px;
+  gap: 0.625rem;
+  border-radius: 0.3rem;
   background-color: #e0e0e0;
   color: #000;
   font-family: Inter;
-  font-size: 20px;
+  font-size: 1.25rem;
   font-style: normal;
-  line-height: 30px;
+  line-height: 1.875rem;
 `;
 
-const BookmarkedNews = () => {
+interface BookmarkedNewsItem {
+  title: string;
+  media: string;
+  uploadDatetime: string;
+}
+
+const BookmarkedNews: React.FC = () => {
   const navigate = useNavigate();
-  const bookmarkedNews = bookmarkedNewsData.data;
+  const bookmarkedNews: BookmarkedNewsItem[] = bookmarkedNewsData.data;
 
   const handleInterestNewsClick = () => {
     navigate(`/my-news`);
   };
+
   return (
     <>
       <BookmarkedNewsHeader
@@ -156,8 +163,8 @@ const BookmarkedNews = () => {
               <BookmarkedNewsTag># 싸피</BookmarkedNewsTag>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="36"
-                height="36"
+                width="2.25rem"
+                height="2.25rem"
                 viewBox="0 0 36 36"
                 fill="none"
               >

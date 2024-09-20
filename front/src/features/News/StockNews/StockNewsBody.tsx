@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { PositiveIcon, PositiveIconText } from '@features/News/PNSubicon';
 
-const EconomicNewsBody = styled.div`
+const StockNewsBodyWrapper = styled.div`
   display: flex;
   /* max-width: 72%; */
   width: 72%;
@@ -12,14 +12,14 @@ const EconomicNewsBody = styled.div`
   padding: 0.625rem 0;
 `;
 
-const EconomicNewsHeader = styled.div`
+const StockNewsTitleWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
   align-self: stretch;
 `;
 
-const EconomicNewsTitle = styled.div`
+const StockNewsTitle = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -28,7 +28,7 @@ const EconomicNewsTitle = styled.div`
   overflow: hidden;
 `;
 
-const EconomicNewsTitleText = styled.p`
+const StockNewsTitleText = styled.p`
   /* color: #0448a5; */
   color: ${({ theme }) => theme.highlightColor};
   font-family: Inter;
@@ -41,7 +41,7 @@ const EconomicNewsTitleText = styled.p`
   text-overflow: ellipsis;
 `;
 
-const EconomicNewsContent = styled.p`
+const StockNewsContent = styled.p`
   display: -webkit-box;
   -webkit-line-clamp: 3; /* 최대 2줄까지만 표시 */
   -webkit-box-orient: vertical;
@@ -58,7 +58,7 @@ const EconomicNewsContent = styled.p`
   line-height: 2rem;
 `;
 
-const EconomicNewsFooter = styled.div`
+const StockNewsFooter = styled.div`
   display: flex;
   align-items: center;
   gap: 2rem;
@@ -73,39 +73,69 @@ const FooterText = styled.p`
   line-height: 1.9rem;
 `;
 
-interface EconNewsBodyProps {
+const BookmarkedNewsTagWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  gap: 1rem;
+`;
+
+const BookmarkedNewsTag = styled.div`
+  display: flex;
+  padding: 0.3rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.625rem;
+  border-radius: 0.3rem;
+  /* background-color: ${({ theme }) => theme.newsBackgroundColor}; */
+  background-color: #e0e0e0;
+  color: #000;
+  font-family: Inter;
+  font-size: 1.25rem;
+  font-style: normal;
+  line-height: 1.875rem;
+`;
+
+interface StockNewsBodyProps {
   title: string;
   description: string;
   media: string;
   date: string;
+  keywords: string[];
 }
 
-const EconNewsBody: React.FC<EconNewsBodyProps> = ({
+const StockNewsBody: React.FC<StockNewsBodyProps> = ({
   title,
   description,
   media,
   date,
+  keywords,
 }) => {
   const formattedDate = date?.split(' ')[0].replace(/-/g, '.') || '날짜 불명';
   return (
-    <EconomicNewsBody>
-      <EconomicNewsHeader>
+    <StockNewsBodyWrapper>
+      <StockNewsTitleWrapper>
         <PositiveIcon>
           <PositiveIconText>긍정</PositiveIconText>
         </PositiveIcon>
-        <EconomicNewsTitle>
-          <EconomicNewsTitleText>{title}</EconomicNewsTitleText>
-        </EconomicNewsTitle>
-      </EconomicNewsHeader>
+        <StockNewsTitle>
+          <StockNewsTitleText>{title}</StockNewsTitleText>
+        </StockNewsTitle>
+      </StockNewsTitleWrapper>
 
-      <EconomicNewsContent>{description}</EconomicNewsContent>
+      <StockNewsContent>{description}</StockNewsContent>
 
-      <EconomicNewsFooter>
+      <StockNewsFooter>
         <FooterText>{media}</FooterText>
         <FooterText>{formattedDate}</FooterText>
-      </EconomicNewsFooter>
-    </EconomicNewsBody>
+      </StockNewsFooter>
+
+      <BookmarkedNewsTagWrapper>
+        {keywords.map((keyword, index) => (
+          <BookmarkedNewsTag key={index}># {keyword}</BookmarkedNewsTag>
+        ))}
+      </BookmarkedNewsTagWrapper>
+    </StockNewsBodyWrapper>
   );
 };
 
-export default EconNewsBody;
+export default StockNewsBody;

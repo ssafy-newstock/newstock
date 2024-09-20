@@ -11,11 +11,9 @@ const SubNewsMainCenter = styled.div`
   flex-direction: column;
   align-items: flex-start;
   align-self: stretch;
-  /* max-width: 106rem; */
-  max-width: 50rem;
+  max-width: 106rem;
   /* min-width: 1024px; */
-  /* width: 64rem; */
-  width: 50rem;
+  width: 64rem;
 `;
 
 const SubNewsHeaderWrapper = styled.div`
@@ -93,7 +91,12 @@ const SubNewsMainRight = styled.div`
   align-self: stretch;
 `;
 
-const categories = [
+interface Category {
+  label: string;
+  path: string;
+}
+
+const categories: Category[] = [
   { label: '전체 기사', path: '/newsMain' },
   { label: '금융', path: '/newsMain/finance' },
   { label: '산업', path: '/newsMain/industry' },
@@ -109,7 +112,7 @@ const categories = [
   { label: '벤처/스타트업', path: '/newsMain/startups' },
 ];
 
-const SubNewsMainPage = () => {
+const SubNewsMainPage: React.FC = () => {
   const location = useLocation();
 
   const isEconomicNews = location.pathname.includes('economic-news');
