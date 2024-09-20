@@ -5,6 +5,8 @@ import {
   HrTag,
   StockGridRow,
   StockHeader,
+  ButtonWrapper,
+  SortButton,
 } from '@features/Stock/styledComponent';
 import { categoryImage } from '@features/Stock/category';
 import AllCategoryStock, {
@@ -27,27 +29,6 @@ const Underline = styled.div<{ activeIndex: number }>`
   background-color: black;
   transition: left 0.3s ease-in-out; /* 부드러운 애니메이션 */
   background-color: ${({theme})=>theme.textColor};
-`;
-
-// 버튼 컨테이너 스타일
-const ButtonWrapper = styled.div`
-  display: flex;
-  gap: 1rem;
-  margin: 1.25rem;
-  padding: 0rem 0.625rem;
-  position: relative; /* 밑줄이 이 영역 안에서 움직이도록 */
-`;
-
-// 버튼 스타일
-const SortButton = styled.button`
-  background: none;
-  border: none;
-  font: inherit;
-  cursor: pointer;
-  padding: 0;
-  margin: 0;
-  position: relative;
-  color: ${({theme})=>theme.textColor};
 `;
 
 const SectionStockPage = () => {
