@@ -1,10 +1,17 @@
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import ThemedButton from '@components/ThemedButton';
-import { PlusIcon } from './Icon';
+import { DragIcon } from './Icon';
 import { useState } from 'react';
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState, convertToRaw } from 'draft-js';
-import { TextP_16, TextP_20, TextP_24_NOTGRAY } from '../scrapStyledComponent';
+import {
+  ScrapHr,
+  TextP_16_NOTGRAY,
+  TextP_20,
+  TextP_24_NOTGRAY,
+  TitleDiv,
+  TitleP,
+} from '../scrapStyledComponent';
 import {
   CenterContentDiv,
   CenterContentTopDiv,
@@ -17,6 +24,7 @@ import {
   CenterNewsRightDiv,
   CenterCotainer,
   CenterNewsLeftTopDiv,
+  ConterTitleDiv,
 } from './scrapCreateCenterStyledComponent';
 import { createScrap } from '@api/scrapApi';
 
@@ -63,6 +71,15 @@ const CenterContent: React.FC = () => {
 
   return (
     <>
+      <TitleDiv>
+        <ConterTitleDiv>
+          <TitleP>스크랩 작성</TitleP>
+          <ThemedButton onClick={handleCreateCompleteClick}>
+            작성 완료
+          </ThemedButton>
+        </ConterTitleDiv>
+      </TitleDiv>
+      <ScrapHr />
       <CenterGlobalStyle />
       <CenterContentDiv>
         <CenterContentTopDiv>
@@ -71,9 +88,6 @@ const CenterContent: React.FC = () => {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
-          <ThemedButton onClick={handleCreateCompleteClick}>
-            작성 완료
-          </ThemedButton>
         </CenterContentTopDiv>
         <CenterCotainer
           onDrop={handleDrop}
@@ -99,8 +113,10 @@ const CenterContent: React.FC = () => {
             </CenterNewsDiv>
           ) : (
             <CenterContentNewsDiv>
-              <PlusIcon />
-              <TextP_16>스크랩 할 뉴스를 드래그하여 끌고 와주세요</TextP_16>
+              <DragIcon />
+              <TextP_16_NOTGRAY>
+                스크랩 할 뉴스를 드래그해 주세요
+              </TextP_16_NOTGRAY>
             </CenterContentNewsDiv>
           )}
         </CenterCotainer>
