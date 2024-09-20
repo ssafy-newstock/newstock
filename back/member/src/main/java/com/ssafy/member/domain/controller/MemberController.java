@@ -94,6 +94,7 @@ public class MemberController {
     public ResponseEntity<?> buyStock(
             @PathVariable Long memberId,
             @RequestBody MemberPointUpdateRequest request) {
+        log.info("MemberController.buyStock = {}, {}", memberId, request.toString());
         Member member = memberService.buyStock(memberId, request.getPoint());
         MemberPointResponse response = new MemberPointResponse(memberId, member.getPoint());
         return ResponseEntity
