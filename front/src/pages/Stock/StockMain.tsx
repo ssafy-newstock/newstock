@@ -132,6 +132,7 @@ const StockMainPage = () => {
         'http://newstock.info/api/stock/price-list'
       );
       console.log('allStockData', response.data.data);
+      console.log('allStockData', allStockData);
       return response.data.data;
     },
   });
