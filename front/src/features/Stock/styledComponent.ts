@@ -116,7 +116,7 @@ export const StockCardRow = styled.div`
 `;
 
 export const CategoryCardRow = styled(StockCardRow)`
-  grid-template-columns: repeat(5, 1fr); /* 각 열의 너비를 설정 */
+  grid-template-columns: 1fr 4fr 4fr 4fr 4fr 4fr 1fr; /* 각 열의 너비를 설정 */
 `;
 
 export const Text = styled.div`
@@ -171,4 +171,25 @@ export const CategoryData = styled(StockPrev)`
   font-size: 1rem;
   color: ${({ isPositive, theme }) =>
     isPositive ? theme.stockBlue : theme.stockRed};
+`;
+
+// 버튼 컨테이너 스타일
+export const ButtonWrapper = styled.div`
+  display: flex;
+  gap: 1rem;
+  margin: 1.25rem;
+  padding: 0rem 0.625rem;
+  position: relative; /* 밑줄이 이 영역 안에서 움직이도록 */
+`;
+
+// 버튼 스타일
+export const SortButton = styled.button`
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  color: ${({theme})=>theme.textColor};
 `;
