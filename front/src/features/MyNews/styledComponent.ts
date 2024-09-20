@@ -92,7 +92,7 @@ export const CardContainer = styled.div`
   align-self: stretch;
   border-radius: 1.25rem;
   background: ${({ theme }) => theme.newsBackgroundColor};
-  box-shadow: 0rem 0.25rem 0.25rem 0rem rgba(0, 0, 0, 0.25);
+  box-shadow: 0rem 0.25rem 0.25rem 0rem rgba(0, 0, 0, 0.1);
 `;
 
 export const CardTitleFontStyle = styled.p`
