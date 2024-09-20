@@ -33,7 +33,7 @@ spec:
             name: newstock-stock-news-service
             port:
               number: 8002
-      - path: /api/stock(/|$)(.*)
+      - path: /api/stock/transaction(/|$)(.*)
         pathType: ImplementationSpecific
         backend:
           service:
