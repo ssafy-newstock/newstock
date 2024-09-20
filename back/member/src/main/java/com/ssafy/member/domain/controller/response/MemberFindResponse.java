@@ -1,14 +1,11 @@
 package com.ssafy.member.domain.controller.response;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @ToString
-@NoArgsConstructor
 @Getter
-@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class MemberFindResponse {
     private Long memberId;
     private String memberName;
