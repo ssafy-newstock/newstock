@@ -1,13 +1,15 @@
 package com.ssafy.stock.domain.service.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class StockTransactionResponse {
-    private final String stockCode;
-    private final Long currentPrice; // 체결가
-    private final Long amount;  // 수량
-    private final Long totalPrice;  // 총 금액
+    private String stockCode;
+    private Long currentPrice; // 체결가
+    private Long amount;  // 수량
+    private Long totalPrice;  // 총 금액
 }

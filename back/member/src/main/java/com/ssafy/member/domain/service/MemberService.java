@@ -9,6 +9,7 @@ import com.ssafy.member.global.exception.NotEnoughPointsException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -17,7 +18,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
-
 
     /*
         member 찾는 부분 메소드화
@@ -40,6 +40,7 @@ public class MemberService {
                 .map(Member::getId);
     }
 
+    @Transactional
     public MemberDetailDto joinMember(
             String memberName,
             String provider,
@@ -71,6 +72,7 @@ public class MemberService {
      * @param memberId 멤버 아이디
      * @param point    변경할 포인트 값
      */
+    @Transactional
     public void updateMyPoint(Long memberId, Long point) {
         Member member = findMember(memberId);
         member.updateMemberPoint(point);
@@ -83,7 +85,9 @@ public class MemberService {
      * @param orderTotalPrice 총 주문 금액
      * @return member
      */
+    @Transactional
     public Member buyStock(Long memberId, Long orderTotalPrice) {
+        log.info("MemberService.buyStock parameter = {}, {}", memberId, orderTotalPrice);
         Member member = findMember(memberId);
         Long nowPoint = member.getPoint();
 
@@ -105,6 +109,7 @@ public class MemberService {
      * @param orderTotalPrice 총 반환 금액
      * @return member
      */
+    @Transactional
     public Member sellStock(Long memberId, Long orderTotalPrice) {
         Member member = findMember(memberId);
         Long nowPoint = member.getPoint();
