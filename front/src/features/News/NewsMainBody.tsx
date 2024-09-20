@@ -2,8 +2,8 @@ import styled from 'styled-components';
 import NewsBodyFooter from './NewsBodyFooter';
 import NewsBodyContent from './NewsBodyContent';
 import NewsBodyTitle from './NewsBodyTitle';
-import EconNewsBodyHeader from './EconNewsMain/EconNewsBodyHeader';
-import StockNewsBodyHeader from './StockNewsMain/StockNewsBodyHeader';
+import EconNewsMainBodyHeader from './EconNewsMain/EconNewsMainBodyHeader';
+import StockNewsMainBodyHeader from './StockNewsMain/StockNewsMainBodyHeader';
 
 const NewsBodyInnerWrapper = styled.div`
   display: flex;
@@ -48,9 +48,9 @@ const NewsMainBody: React.FC<NewsMainBodyProps> = ({
     <NewsBodyInnerWrapper>
       <NewsBody>
         {isEconomicNews ? (
-          <EconNewsBodyHeader header={header} />
+          <EconNewsMainBodyHeader header={header} />
         ) : (
-          <StockNewsBodyHeader header={header} />
+          <StockNewsMainBodyHeader header={header} />
         )}
         <NewsBodyTitle title={title} />
         <NewsBodyContent content={description} />

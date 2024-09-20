@@ -44,7 +44,7 @@ interface NewsBodyHeaderProps {
   header: string;
 }
 
-const StockNewsBodyHeader: React.FC<NewsBodyHeaderProps> = ({ header }) => {
+const StockNewsMainBodyHeader: React.FC<NewsBodyHeaderProps> = ({ header }) => {
   return (
     <NewsBodyHeaderWrapper>
       <NewsBodyHeaderText>{header}</NewsBodyHeaderText>
@@ -56,4 +56,4 @@ const StockNewsBodyHeader: React.FC<NewsBodyHeaderProps> = ({ header }) => {
   );
 };
 
-export default StockNewsBodyHeader;
+export default StockNewsMainBodyHeader;
