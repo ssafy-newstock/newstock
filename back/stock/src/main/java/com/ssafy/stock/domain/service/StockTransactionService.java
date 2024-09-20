@@ -114,7 +114,7 @@ public class StockTransactionService {
         // MemberService 포인트 증가(반환) 로직
         // 이때 돌려줄 포인트는 totalPrice (현재 가격 * 판매 수량)
         try{
-            memberFeignClient.updateBuyingPoints(memberId, new MemberPointUpdateRequest(totalPrice));
+            memberFeignClient.updateSellingPoints(memberId, new MemberPointUpdateRequest(totalPrice));
         } catch (FeignException feignException){
             log.error("주식 판매 중 Member 포인트 추가 진행 중 오류 발생 : {}", feignException.getMessage());
             throw new RuntimeException("주식 판매 중 Member 포인트 차감 진행 중 임시 오류 메세지");
