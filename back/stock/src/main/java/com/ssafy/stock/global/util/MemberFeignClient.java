@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = "memberClient", url = "http://newstock-stock-member-service:8001/api/member")
 public interface MemberFeignClient {
 
-    @PostMapping("/{memberId}/buy")
+    @PostMapping(value = "/{memberId}/buy", consumes = "application/json", produces = "application/json")
     ResponseEntity<?> updateBuyingPoints(@PathVariable("memberId") Long memberId,
                                             @RequestBody MemberPointUpdateRequest pointRequestDto);
 
-    @PostMapping("/{memberId}/sell")
+    @PostMapping(value = "/{memberId}/sell", consumes = "application/json", produces = "application/json")
     ResponseEntity<?> updateSellingPoints(@PathVariable("memberId") Long memberId,
                                             @RequestBody MemberPointUpdateRequest pointRequestDto);
 }
