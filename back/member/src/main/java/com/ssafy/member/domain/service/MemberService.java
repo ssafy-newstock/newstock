@@ -111,6 +111,7 @@ public class MemberService {
      */
     @Transactional
     public Member sellStock(Long memberId, Long orderTotalPrice) {
+        log.info("MemberService.sellStock parameter = {}, {}", memberId, orderTotalPrice);
         Member member = findMember(memberId);
         Long nowPoint = member.getPoint();
 
