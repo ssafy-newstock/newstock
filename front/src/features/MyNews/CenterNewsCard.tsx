@@ -15,6 +15,7 @@ interface Data {
   Media: string;
   Date: string;
   keyword?: string;
+  category?: string;
 }
 
 interface CenterCardProps {
@@ -33,7 +34,12 @@ const CenterNewsCard: React.FC<CenterCardProps> = ({ data }) => {
       <CardBottomContainer hasKeyword={!!data.keyword}>
         {data.keyword && (
           <CardKeywordDiv>
-            <CardKeywordFontStyle>#{data.keyword}</CardKeywordFontStyle>
+            <CardKeywordFontStyle>{data.keyword}</CardKeywordFontStyle>
+          </CardKeywordDiv>
+        )}
+        {data.category && (
+          <CardKeywordDiv>
+            <CardKeywordFontStyle>{data.category}</CardKeywordFontStyle>
           </CardKeywordDiv>
         )}
         <IconWrapper>
