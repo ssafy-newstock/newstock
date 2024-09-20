@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "memberClient", url = "http://newstock-stock-member-service/api/member")
+@FeignClient(name = "memberClient", url = "http://newstock-stock-member-service:8001/api/member")
 public interface MemberFeignClient {
 
     @PostMapping("/{memberId}/buy")
