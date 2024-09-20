@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class StocksFavorite extends BaseEntity{
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "stock_favorite_id")
     private Long id;
 

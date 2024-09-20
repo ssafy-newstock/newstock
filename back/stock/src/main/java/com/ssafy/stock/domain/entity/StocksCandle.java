@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class StocksCandle extends BaseEntity{
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "stock_candle_id")
     private Long id;
 
