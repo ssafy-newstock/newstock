@@ -104,7 +104,7 @@ const Header = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post('http://withhim-jenkins.site/api/member/logout', {
+      await axios.post('https://newstock.info/api/member/logout', {
         withCredentials: true,
       });
       // 세션 스토리지에서 액세스 토큰 삭제
