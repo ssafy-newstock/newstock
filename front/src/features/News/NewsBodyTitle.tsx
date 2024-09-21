@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import {
-  PositiveIcon,
+  PositiveIcon as BasePositiveIcon,
   PositiveIconText,
   // NegativeIcon,
   // NegativeIconText,
@@ -30,6 +30,11 @@ const NewsBodyTitleText = styled.p`
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis; /* 말줄임표 적용 */
+`;
+
+const PositiveIcon = styled(BasePositiveIcon)`
+  position: absolute;
+  top: 0.3rem;
 `;
 
 interface NewsBodyTitleProps {

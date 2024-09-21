@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { PositiveIcon, PositiveIconText } from '@features/News/PNSubicon';
+import { NewsTag } from '../NewsIconTag';
 
 const StockNewsBodyWrapper = styled.div`
   display: flex;
@@ -79,22 +80,6 @@ const BookmarkedNewsTagWrapper = styled.div`
   gap: 1rem;
 `;
 
-const BookmarkedNewsTag = styled.div`
-  display: flex;
-  padding: 0.3rem;
-  justify-content: center;
-  align-items: center;
-  gap: 0.625rem;
-  border-radius: 0.3rem;
-  /* background-color: ${({ theme }) => theme.newsBackgroundColor}; */
-  background-color: #e0e0e0;
-  color: #000;
-  font-family: Inter;
-  font-size: 1.25rem;
-  font-style: normal;
-  line-height: 1.875rem;
-`;
-
 interface StockNewsBodyProps {
   title: string;
   description: string;
@@ -131,7 +116,7 @@ const StockNewsBody: React.FC<StockNewsBodyProps> = ({
 
       <BookmarkedNewsTagWrapper>
         {keywords.map((keyword, index) => (
-          <BookmarkedNewsTag key={index}># {keyword}</BookmarkedNewsTag>
+          <NewsTag key={index}># {keyword}</NewsTag>
         ))}
       </BookmarkedNewsTagWrapper>
     </StockNewsBodyWrapper>

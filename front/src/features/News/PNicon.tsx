@@ -7,8 +7,8 @@ export const PositiveIcon = styled.div`
   padding: 0.3rem;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  top: 0.3rem;
+  /* position: absolute; */
+  /* top: 0.3rem; */
   border-radius: 1.25rem;
   border: 1px solid #ea1212;
 `;
@@ -29,8 +29,8 @@ export const NeutralIcon = styled.div`
   padding: 0.3rem;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  top: 0.3rem;
+  /* position: absolute;
+  top: 0.3rem; */
   border-radius: 1.25rem;
   border: 1px solid #828282;
 `;
@@ -51,8 +51,8 @@ export const NegativeIcon = styled.div`
   padding: 0.3rem;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  top: 0.3rem;
+  /* position: absolute;
+  top: 0.3rem; */
   border-radius: 1.25rem;
   border: 1px solid #006dff;
 `;

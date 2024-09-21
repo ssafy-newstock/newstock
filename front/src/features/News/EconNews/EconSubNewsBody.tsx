@@ -2,6 +2,8 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import summaryIcon from '@features/summaryIcon.png';
 import NewsSummary from '@features/News/NewsSummary';
+import { bookmarkedIcon, unbookmarkedIcon } from '@features/News/NewsIconTag';
+import { Overlay, Background, Modal } from '@components/ModalComponents';
 
 const EconomicSubNewsWrapper = styled.div`
   width: 25%;
@@ -55,92 +57,55 @@ const EconomicSubNewsThumbnail = styled.div`
   }
 `;
 
-const UnbookmarkedIcon = styled.svg`
-  cursor: pointer;
-  &:hover path {
-    fill: #006dff;
-  }
-`;
+// const Overlay = styled.div`
+//   position: fixed;
+//   inset: 0;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   z-index: 9999;
+// `;
 
-const Overlay = styled.div`
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 50;
-`;
-
-const Background = styled.div`
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.5); /* 반투명 검은 배경 */
-`;
+// const Background = styled.div`
+//   position: fixed;
+//   inset: 0;
+//   background-color: rgba(0, 0, 0, 0.5); /* 반투명 검은 배경 */
+// `;
 
 interface EconSubNewsBodyProps {
   thumbnail: string;
 }
 
 // 요약창이 화면 중앙에 나타나도록 설정
-const Modal = styled.div`
-  background-color: ${({ theme }) => theme.backgroundColor};
-  border-radius: 0.5rem;
-  box-shadow: 0 0.25rem 0.375rem rgba(0, 0, 0, 0.1);
-  padding: 1.25rem 1.5rem;
-  z-index: 50;
-  width: 18.75rem;
-`;
+// const Modal = styled.div`
+//   background-color: ${({ theme }) => theme.backgroundColor};
+//   border-radius: 0.5rem;
+//   box-shadow: 0 0.25rem 0.375rem rgba(0, 0, 0, 0.1);
+//   padding: 1.25rem 1.5rem;
+//   z-index: 9999;
+//   width: 18.75rem;
+// `;
 
 const EconSubNewsBody: React.FC<EconSubNewsBodyProps> = ({ thumbnail }) => {
   const [showSummary, setShowSummary] = useState<boolean>(false);
   const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
 
-  const handleIconClick = () => {
+  const handleIconClick = (event: React.MouseEvent) => {
+    event.stopPropagation(); // 상위 클릭 이벤트 중지
     setIsBookmarked(!isBookmarked);
   };
 
-  const handleSummaryClick = () => {
+  const handleSummaryClick = (event: React.MouseEvent) => {
+    event.stopPropagation(); // 상위 클릭 이벤트 중지
     if (!showSummary) {
       setShowSummary(true);
     }
   };
 
-  const handleCloseSummary = () => {
+  const handleCloseSummary = (event: React.MouseEvent) => {
+    event.stopPropagation();
     setShowSummary(false);
   };
-
-  const bookmarkedIcon = (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="36"
-      height="36"
-      viewBox="0 0 36 36"
-      fill="none"
-      style={{ cursor: 'pointer' }}
-      onClick={handleIconClick}
-    >
-      <path
-        d="M7.5 31.5V7.5C7.5 6.675 7.794 5.969 8.382 5.382C8.97 4.795 9.676 4.501 10.5 4.5H25.5C26.325 4.5 27.0315 4.794 27.6195 5.382C28.2075 5.97 28.501 6.676 28.5 7.5V31.5L18 27L7.5 31.5Z"
-        fill="#006DFF"
-      />
-    </svg>
-  );
-
-  const unbookmarkedIcon = (
-    <UnbookmarkedIcon
-      xmlns="http://www.w3.org/2000/svg"
-      width="36"
-      height="36"
-      viewBox="0 0 36 36"
-      fill="none"
-      onClick={handleIconClick}
-    >
-      <path
-        d="M7.5 31.5V7.5C7.5 6.675 7.794 5.969 8.382 5.382C8.97 4.795 9.676 4.501 10.5 4.5H25.5C26.325 4.5 27.0315 4.794 27.6195 5.382C28.2075 5.97 28.501 6.676 28.5 7.5V31.5L18 27L7.5 31.5ZM10.5 26.925L18 23.7L25.5 26.925V7.5H10.5V26.925Z"
-        fill="#828282"
-      />
-    </UnbookmarkedIcon>
-  );
 
   return (
     <EconomicSubNewsWrapper>
@@ -151,7 +116,9 @@ const EconSubNewsBody: React.FC<EconSubNewsBodyProps> = ({ thumbnail }) => {
             alt="summaryIcon"
             onClick={handleSummaryClick}
           />
-          {isBookmarked ? bookmarkedIcon : unbookmarkedIcon}
+          <div onClick={handleIconClick}>
+            {isBookmarked ? bookmarkedIcon : unbookmarkedIcon}
+          </div>
         </EconomicSubNewsHeader>
 
         <EconomicSubNewsThumbnail>
@@ -162,6 +129,7 @@ const EconSubNewsBody: React.FC<EconSubNewsBodyProps> = ({ thumbnail }) => {
           <Overlay>
             <Background onClick={handleCloseSummary} />
             <Modal>
+              {/* 빨간줄은 나오는데 기능상 문제도 없고 콘솔에도 이상이 없어서 그냥 둠 */}
               <NewsSummary onClose={handleCloseSummary} />
             </Modal>
           </Overlay>

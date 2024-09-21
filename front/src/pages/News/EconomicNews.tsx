@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import newsData from '@api/dummyData/20240907.json';
@@ -29,7 +30,16 @@ const EconomicNewsWrapper = styled.div`
   box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
   width: 100%;
   height: 18rem;
-  /* height: 100%; */
+  cursor: pointer;
+  /* overflow: hidden;
+  position: relative;
+  z-index: 1; */
+
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.02);
+  }
 `;
 
 const ObserverTrigger = styled.div`
@@ -71,13 +81,18 @@ interface NewsItem {
   media: string;
   uploadDatetime: string;
   thumbnail: string;
+  // 더미데이터에 뉴스를 구분할수 있는 필드가 마땅히 없어서 임시로 stockId로 구분함
+  stockId: string;
 }
 
 const EconomicNewsPage: React.FC = () => {
-  const [newsList, setNewsList] = useState<NewsItem[]>(newsData.data.slice(0, 10));
+  const [newsList, setNewsList] = useState<NewsItem[]>(
+    newsData.data.slice(0, 10)
+  );
   const [displayedItems, setDisplayedItems] = useState<number>(10); // 처음에 표시할 데이터 개수
   const [loading, setLoading] = useState<boolean>(false); // 로딩 상태
   const observerRef = useRef<HTMLDivElement | null>(null);
+  const navigate = useNavigate();
 
   // Intersection Observer가 작동할 때 추가로 10개의 데이터를 보여줌
   const loadMoreNews = useCallback(() => {
@@ -113,11 +128,18 @@ const EconomicNewsPage: React.FC = () => {
     };
   }, [loadMoreNews, loading]);
 
+  const handleNewsClick = (stockId: string) => {
+    navigate(`/subnews-main/economic-news/${stockId}`);
+  };
+
   return (
     <>
       <SubCenter>
         {newsList.map((news, index) => (
-          <EconomicNewsWrapper key={index}>
+          <EconomicNewsWrapper
+            key={index}
+            onClick={() => handleNewsClick(news.stockId)}
+          >
             <EconNewsBody
               title={news.title}
               description={news.description}
