@@ -67,9 +67,9 @@ interface ILoginProps {
 
 const kakao_client_id = import.meta.env.VITE_KAKAO_CLIENT_ID;
 const kakao_client_secret = import.meta.env.VITE_KAKAO_CLIENT_SECRET;
-const KAKAO_REDIRECT_URI = 'https://newstock.info/login/oauth2/code/google';
+const KAKAO_REDIRECT_URI = 'http://newstock.info/login/oauth2/code/google';
 const google_client_id = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-const GOOGLE_REDIRECT_URI = 'https://newstock.info/login/oauth2/code/google';
+const GOOGLE_REDIRECT_URI = 'http://newstock.info/login/oauth2/code/google';
 
 const Login: React.FC<ILoginProps> = ({ closeLogin }) => {
   const navigate = useNavigate();
