@@ -39,7 +39,7 @@ const Auth = () => {
       setIsLoading(true);
       try {
         const response = await axios.post(
-          'http://withhim-jenkins.site/api/member/login',
+          'http://newstock.info/api/member/login',
           {
             registrationId: registrationId,
             authorization: code,
