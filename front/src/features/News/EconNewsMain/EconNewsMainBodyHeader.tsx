@@ -12,8 +12,8 @@ interface NewsBodyHeaderProps {
   header: string;
 }
 
-const EconNewsBodyHeader: React.FC<NewsBodyHeaderProps> = ({ header }) => {
+const EconNewsMainBodyHeader: React.FC<NewsBodyHeaderProps> = ({ header }) => {
   return <NewsBodyHeaderText>{header}</NewsBodyHeaderText>;
 };
 
-export default EconNewsBodyHeader;
+export default EconNewsMainBodyHeader;
