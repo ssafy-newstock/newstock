@@ -40,9 +40,12 @@ const router = createBrowserRouter([
         element: <SubNewsMainPage />,
         children: [
           { path: 'economic-news', element: <EconomicNewsPage /> },
-          { path: 'economic-news-detail', element: <EconomicNewsDetailPage /> },
+          {
+            path: 'economic-news/:newsId',
+            element: <EconomicNewsDetailPage />,
+          },
           { path: 'stock-news', element: <StockNewsPage /> },
-          { path: 'stock-news-detail', element: <StockNewsDetailPage /> },
+          { path: 'stock-news/:newsId', element: <StockNewsDetailPage /> },
         ],
       },
       { path: 'daily-report', element: <DailyReportPage /> },

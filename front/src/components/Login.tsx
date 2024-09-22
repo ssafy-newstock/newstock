@@ -2,31 +2,32 @@ import styled from 'styled-components';
 import kakaoLogin from '@assets/Login/kakaoLogin.png';
 import googleLogin from '@assets/Login/googleLogin.png';
 import { useNavigate } from 'react-router-dom';
+import { Overlay, Background, Modal } from './ModalComponents';
 
-const Overlay = styled.div`
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 50;
-`;
+// const Overlay = styled.div`
+//   position: fixed;
+//   inset: 0;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   z-index: 50;
+// `;
 
-const Background = styled.div`
-  position: fixed;
-  inset: 0;
-  background-color: black;
-  opacity: 0.5;
-`;
+// const Background = styled.div`
+//   position: fixed;
+//   inset: 0;
+//   background-color: black;
+//   opacity: 0.5;
+// `;
 
-const Modal = styled.div`
-  background-color: ${({ theme }) => theme.backgroundColor};
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 20px 24px;
-  z-index: 50;
-  width: 300px;
-`;
+// const Modal = styled.div`
+//   background-color: ${({ theme }) => theme.backgroundColor};
+//   border-radius: 8px;
+//   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+//   padding: 20px 24px;
+//   z-index: 50;
+//   width: 300px;
+// `;
 
 const Heading = styled.h2`
   font-size: 1rem;
