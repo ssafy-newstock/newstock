@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Entity
@@ -22,7 +22,7 @@ public class StocksCandle extends BaseEntity{
     @JoinColumn(name = "stock_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Stocks stock;
 
-    private LocalDateTime stockCandleDay;
+    private LocalDate stockCandleDay;
 
     private Long stockCandleOpen;
 
