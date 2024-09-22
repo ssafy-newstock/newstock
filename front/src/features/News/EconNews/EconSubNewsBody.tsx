@@ -37,9 +37,9 @@ const EconomicSubNewsPNG = styled.img`
   cursor: pointer; /* 클릭 가능한 커서 설정 */
 
   &:hover {
-    opacity: 0.8; /* hover 시 투명도 효과 */
-    transform: scale(1.1); /* hover 시 크기 확대 효과 */
-    transition: transform 0.2s ease-in-out; /* 부드러운 전환 */
+    opacity: 0.8;
+    transform: scale(1.1);
+    transition: transform 0.2s ease-in-out;
   }
 `;
 

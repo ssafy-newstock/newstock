@@ -49,6 +49,7 @@ const NewsMainPage: React.FC = () => {
                 media={news.media}
                 date={news.uploadDatetime}
                 header="벤처/스타트업"
+                stockId={news.stockId}
               />
             ))}
           </NewsMainBodyWrapper>
@@ -63,6 +64,7 @@ const NewsMainPage: React.FC = () => {
                 media={news.media}
                 date={news.uploadDatetime}
                 header="삼성전자"
+                stockId={news.stockId}
               />
             ))}
           </NewsMainBodyWrapper>

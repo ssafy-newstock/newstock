@@ -42,6 +42,13 @@ const BookmarkedNewsWrapper = styled.div`
   background-color: ${({ theme }) => theme.newsBackgroundColor};
   border-radius: 1.25rem;
   box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 `;
 
 const BookmarkedNewsTitle = styled.p`
@@ -91,6 +98,7 @@ interface BookmarkedNewsItem {
   title: string;
   media: string;
   uploadDatetime: string;
+  stockId: string;
 }
 
 const BookmarkedNews: React.FC = () => {
@@ -99,6 +107,10 @@ const BookmarkedNews: React.FC = () => {
 
   const handleInterestNewsClick = () => {
     navigate(`/my-news`);
+  };
+
+  const handleNewsClick = (stockId: string) => {
+    navigate(`/subnews-main/economic-news/${stockId}`);
   };
 
   return (
@@ -114,7 +126,7 @@ const BookmarkedNews: React.FC = () => {
       </BookmarkedNewsHeader>
       {bookmarkedNews.map((news, index) => (
         <BookmarkedNewsMain key={index}>
-          <BookmarkedNewsWrapper>
+          <BookmarkedNewsWrapper onClick={() => handleNewsClick(news.stockId)}>
             <BookmarkedNewsTitle>{news.title}</BookmarkedNewsTitle>
             <BookmarkedNewsMiddle>
               <BookmarkedNewsMiddleText>{news.media}</BookmarkedNewsMiddleText>

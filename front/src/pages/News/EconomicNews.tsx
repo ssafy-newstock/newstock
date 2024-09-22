@@ -31,9 +31,6 @@ const EconomicNewsWrapper = styled.div`
   width: 100%;
   height: 18rem;
   cursor: pointer;
-  /* overflow: hidden;
-  position: relative;
-  z-index: 1; */
 
   transition: transform 0.3s ease;
 
