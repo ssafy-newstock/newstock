@@ -90,7 +90,7 @@ const StockDetailPage = () => {
             </Link>
           </div>
           <Outlet />
-          <TradeForm initialPrice={initialPrice} />
+          <TradeForm initialPrice={initialPrice} stockCode={stock.stockCode} />
         </div>
       </Center>
       <Right />

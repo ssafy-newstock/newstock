@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useForm, Controller } from 'react-hook-form';
+import axios from 'axios';
 
 interface FormValues {
   price: number;
@@ -9,6 +10,7 @@ interface FormValues {
 
 interface TradeFormProps {
   initialPrice: number;
+  stockCode: string;
 }
 
 const FormWrapper = styled.div`
@@ -69,21 +71,46 @@ const Button = styled.button<{ variant: 'buy' | 'sell' }>`
   }
 `;
 
-const BuyForm: React.FC<{ initialPrice: number }> = ({ initialPrice }) => {
-  const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValues>({
+const BuyForm: React.FC<TradeFormProps> = ({ initialPrice, stockCode }) => {
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormValues>({
     defaultValues: {
       price: initialPrice,
       amount: 0,
     },
   });
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = async (data: FormValues) => {
     const buyData = {
       price: data.price,
       amount: data.amount,
     };
     console.log('Buy Data:', buyData);
     // 매수 로직
+    try {
+      // 매수 API 요청
+      const response = await axios.post(
+        'http://newstock.info/api/stock/transaction/buy',
+        {
+          StockCode: stockCode, // 실제 주식 코드를 사용하세요
+          stockTransactionAmount: buyData.amount,
+          stockTransactionType: 'BUY',
+        },
+        {
+          headers: {
+            Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMTYxODI2NjI5MTU2MDk4MzY4MjAiLCJyb2xlIjoiUk9MRV9VU0VSIiwibWVtYmVySWQiOjEsImlhdCI6MTcyNjcyOTUwOCwiZXhwIjoxNzI5MzIxNTA4fQ.Pbt8vCn7uiV5KIZAX0XpIEN8Ysi2dTlch0Ty_gWpB8t-STtELADpBcw-oGBfeFoPr1PfbmKX8nI5gjguSJAYmQ`, // 실제 인증 토큰을 사용하세요
+          },
+        }
+      );
+
+      console.log('Buy Response:', response.data);
+    } catch (error) {
+      console.error('Buy Error:', error);
+    }
     reset({ price: initialPrice, amount: 0 }); // 폼 리셋
   };
 
@@ -116,12 +143,16 @@ const BuyForm: React.FC<{ initialPrice: number }> = ({ initialPrice }) => {
               required: 'Buy amount is required',
               min: {
                 value: 1,
-                message: 'Buy amount must be at least 1'
-              }
+                message: 'Buy amount must be at least 1',
+              },
             }}
             render={({ field }) => (
               <>
-                <InputTag {...field} type="number" placeholder="Enter buy amount" />
+                <InputTag
+                  {...field}
+                  type="number"
+                  placeholder="Enter buy amount"
+                />
                 {errors.amount && (
                   <p style={{ color: 'red' }}>{errors.amount.message}</p>
                 )}
@@ -139,21 +170,45 @@ const BuyForm: React.FC<{ initialPrice: number }> = ({ initialPrice }) => {
   );
 };
 
-const SellForm: React.FC<{ initialPrice: number }> = ({ initialPrice }) => {
-  const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValues>({
+const SellForm: React.FC<TradeFormProps> = ({ initialPrice, stockCode }) => {
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormValues>({
     defaultValues: {
       price: initialPrice,
       amount: 0,
     },
   });
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = async (data: FormValues) => {
     const sellData = {
       price: data.price,
       amount: data.amount,
     };
     console.log('Sell Data:', sellData);
     // 매도 로직
+    try {
+      // 매도 API 요청
+      const response = await axios.post(
+        'http://newstock.info/api/stock/transaction/sell',
+        {
+          StockCode: stockCode, // 실제 주식 코드를 사용하세요
+          stockTransactionAmount: sellData.amount,
+          stockTransactionType: 'SELL',
+        },
+        {
+          headers: {
+            Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMTYxODI2NjI5MTU2MDk4MzY4MjAiLCJyb2xlIjoiUk9MRV9VU0VSIiwibWVtYmVySWQiOjEsImlhdCI6MTcyNjcyOTUwOCwiZXhwIjoxNzI5MzIxNTA4fQ.Pbt8vCn7uiV5KIZAX0XpIEN8Ysi2dTlch0Ty_gWpB8t-STtELADpBcw-oGBfeFoPr1PfbmKX8nI5gjguSJAYmQ`, // 실제 인증 토큰을 사용하세요
+          },
+        }
+      );
+      console.log('Sell Response:', response.data);
+    } catch (error) {
+      console.error('Sell Error:', error);
+    }
     reset({ price: initialPrice, amount: 0 }); // 폼 리셋
   };
 
@@ -186,12 +241,16 @@ const SellForm: React.FC<{ initialPrice: number }> = ({ initialPrice }) => {
               required: 'Sell amount is required',
               min: {
                 value: 1,
-                message: 'Sell amount must be at least 1'
-              }
+                message: 'Sell amount must be at least 1',
+              },
             }}
             render={({ field }) => (
               <>
-                <InputTag {...field} type="number" placeholder="Enter sell amount" />
+                <InputTag
+                  {...field}
+                  type="number"
+                  placeholder="Enter sell amount"
+                />
                 {errors.amount && (
                   <p style={{ color: 'red' }}>{errors.amount.message}</p>
                 )}
@@ -209,11 +268,11 @@ const SellForm: React.FC<{ initialPrice: number }> = ({ initialPrice }) => {
   );
 };
 
-const TradeForm: React.FC<TradeFormProps> = ({ initialPrice }) => {
+const TradeForm: React.FC<TradeFormProps> = ({ initialPrice, stockCode }) => {
   return (
     <FormWrapper>
-      <BuyForm initialPrice={initialPrice} />
-      <SellForm initialPrice={initialPrice} />
+      <BuyForm initialPrice={initialPrice} stockCode={stockCode} />
+      <SellForm initialPrice={initialPrice} stockCode={stockCode} />
     </FormWrapper>
   );
 };
