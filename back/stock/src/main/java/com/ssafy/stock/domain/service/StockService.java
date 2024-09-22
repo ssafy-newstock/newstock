@@ -4,11 +4,11 @@ import com.ssafy.stock.domain.entity.Stocks;
 import com.ssafy.stock.domain.entity.Redis.StocksPriceLiveRedis;
 import com.ssafy.stock.domain.entity.Redis.StocksPriceRedis;
 import com.ssafy.stock.domain.entity.Redis.StocksRedis;
-import com.ssafy.stock.domain.repository.StocksPriceLiveRedisRepository;
-import com.ssafy.stock.domain.repository.StocksPriceRedisRepository;
-import com.ssafy.stock.domain.repository.StocksRedisRepository;
-import com.ssafy.stock.domain.repository.StocksRepository;
+import com.ssafy.stock.domain.entity.StocksCandle;
+import com.ssafy.stock.domain.error.custom.StockNotFoundException;
+import com.ssafy.stock.domain.repository.*;
 import com.ssafy.stock.domain.service.helper.StockConverter;
+import com.ssafy.stock.domain.service.response.StockCandleDto;
 import com.ssafy.stock.domain.service.response.StockPricesKisResponseDto;
 import com.ssafy.stock.domain.service.response.StockPricesOutputKisResponseDto;
 import com.ssafy.stock.domain.service.response.StockPricesResponseDto;
@@ -56,6 +56,7 @@ public class StockService {
     private final StocksRedisRepository stocksRedisRepository;
     private final StocksPriceLiveRedisRepository stocksPriceLiveRedisRepository;
     private final StocksPriceRedisRepository stocksPriceRedisRepository;
+    private final StocksCandleRepository stocksCandleRepository;
     private final SimpMessageSendingOperations simpMessageSendingOperations;
     private final StockConverter stockConverter;
     private final KISTokenService kisTokenService;
@@ -176,4 +177,22 @@ public class StockService {
     public Iterable<StocksPriceLiveRedis> getStocksPriceLiveRedis() {
         return stocksPriceLiveRedisRepository.findAll();
     }
+
+
+    /**
+     * 주식 상세 페이지 조회 시 일봉데이터 조회
+     * @param stockCode
+     * @return
+     */
+    public List<StockCandleDto> getStockCandle(String stockCode){
+        Stocks stock = stocksRepository.findByStockCodeWithCandles(stockCode)
+                .orElseThrow(() -> new StockNotFoundException());
+
+        List<StocksCandle> stocksCandles = stock.getStocksCandles();
+
+        return stocksCandles.stream()
+                .map(stocksCandle -> new StockCandleDto(stock, stocksCandle))
+                .toList();
+    }
+
 }
