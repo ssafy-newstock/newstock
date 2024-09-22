@@ -39,7 +39,8 @@ const Auth = () => {
       setIsLoading(true);
       try {
         const response = await axios.post(
-          'http://newstock.info/api/member/login',
+          // 'http://newstock.info/api/member/login',
+          'http://140.245.32.255:8080/api/member/login',
           {
             registrationId: registrationId,
             authorization: code,
