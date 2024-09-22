@@ -1,13 +1,10 @@
 package com.ssafy.auth.domain.controller.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
+@ToString
 @NoArgsConstructor
-@Setter
 @AllArgsConstructor
 public class MemberLoginResponse {
     private Long memberId;
