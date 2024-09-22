@@ -3,7 +3,7 @@ package com.ssafy.stock.domain.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.stock.domain.entity.Redis.StockIndustryRedis;
-import com.ssafy.stock.domain.repository.StockIndustryRedisRepository;
+import com.ssafy.stock.domain.repository.redis.StockIndustryRedisRepository;
 import com.ssafy.stock.domain.service.response.StockIndustryResponse;
 import com.ssafy.stock.global.token.KISTokenService;
 import lombok.RequiredArgsConstructor;

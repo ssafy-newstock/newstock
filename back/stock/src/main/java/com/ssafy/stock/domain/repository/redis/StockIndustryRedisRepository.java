@@ -1,4 +1,4 @@
-package com.ssafy.stock.domain.repository;
+package com.ssafy.stock.domain.repository.redis;
 
 import com.ssafy.stock.domain.entity.Redis.StockIndustryRedis;
 import org.springframework.data.repository.CrudRepository;

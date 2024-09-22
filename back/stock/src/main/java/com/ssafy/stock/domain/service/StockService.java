@@ -5,13 +5,14 @@ import com.ssafy.stock.domain.entity.Redis.StocksPriceLiveRedis;
 import com.ssafy.stock.domain.entity.Redis.StocksPriceRedis;
 import com.ssafy.stock.domain.entity.Redis.StocksRedis;
 import com.ssafy.stock.domain.entity.StocksCandle;
+import com.ssafy.stock.domain.entity.StocksHoldings;
+import com.ssafy.stock.domain.entity.StocksTransactions;
 import com.ssafy.stock.domain.error.custom.StockNotFoundException;
 import com.ssafy.stock.domain.repository.*;
+import com.ssafy.stock.domain.repository.redis.StocksPriceRedisRepository;
+import com.ssafy.stock.domain.repository.redis.StocksRedisRepository;
 import com.ssafy.stock.domain.service.helper.StockConverter;
-import com.ssafy.stock.domain.service.response.StockCandleDto;
-import com.ssafy.stock.domain.service.response.StockPricesKisResponseDto;
-import com.ssafy.stock.domain.service.response.StockPricesOutputKisResponseDto;
-import com.ssafy.stock.domain.service.response.StockPricesResponseDto;
+import com.ssafy.stock.domain.service.response.*;
 import com.ssafy.stock.global.token.KISTokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,7 +57,8 @@ public class StockService {
     private final StocksRedisRepository stocksRedisRepository;
     private final StocksPriceLiveRedisRepository stocksPriceLiveRedisRepository;
     private final StocksPriceRedisRepository stocksPriceRedisRepository;
-    private final StocksCandleRepository stocksCandleRepository;
+    private final StockTransactionRepository stockTransactionRepository;
+    private final StockHoldingRepository stockHoldingRepository;
     private final SimpMessageSendingOperations simpMessageSendingOperations;
     private final StockConverter stockConverter;
     private final KISTokenService kisTokenService;
@@ -181,10 +183,11 @@ public class StockService {
 
     /**
      * 주식 상세 페이지 조회 시 일봉데이터 조회
+     *
      * @param stockCode
      * @return
      */
-    public List<StockCandleDto> getStockCandle(String stockCode){
+    public List<StockCandleDto> getStockCandle(String stockCode) {
         Stocks stock = stocksRepository.findByStockCodeWithCandles(stockCode)
                 .orElseThrow(() -> new StockNotFoundException());
 
@@ -193,6 +196,81 @@ public class StockService {
         return stocksCandles.stream()
                 .map(stocksCandle -> new StockCandleDto(stock, stocksCandle))
                 .toList();
+    }
+
+
+    /**
+     * 주식 마이페이지 조회 메소드
+     * @param memberId
+     * @return
+     */
+    public StockMyPageDto getStockMyPage(Long memberId) {
+        List<StocksTransactions> myStockTransactions = stockTransactionRepository.findAllByMemberId(memberId);
+
+        List<StocksHoldings> myStockHoldings = stockHoldingRepository.findAllByMemberId(memberId);
+        List<StockMyPageHoldingDto> stockMyPageHoldingDtoList = getStockMyPageHoldingDtoList(myStockHoldings);
+
+
+        List<StockMyPageTransactionDto> stockMyPageTransactionDtoList = getStockMyPageTransactionDtoList(myStockTransactions);
+
+        log.info("{}님이 주식 마이페이지 조회를 했습니다.", memberId);
+        return new StockMyPageDto(stockMyPageHoldingDtoList, stockMyPageTransactionDtoList);
+    }
+
+    /**
+     * 보유 주식 조회 메소드
+     * @param myStockHoldings
+     * @return
+     */
+    private List<StockMyPageHoldingDto> getStockMyPageHoldingDtoList(List<StocksHoldings> myStockHoldings) {
+        List<StockMyPageHoldingDto> stockMyPageHoldingDtoList = myStockHoldings.stream()
+                .map(myStockHolding -> {
+                    Stocks stock = myStockHolding.getStock();
+
+                    StocksPriceLiveRedis stocksPriceLiveRedis = stocksPriceLiveRedisRepository.findById(stock.getStockCode())
+                            .orElseThrow(StockNotFoundException::new);
+
+                    Long currentPrice = stocksPriceLiveRedis.getStckPrpr(); // 현재 주가
+                    Long buyPrice = myStockHolding.getStockHoldingBuyPrice(); // 평단가
+                    Long changeAmount = currentPrice - buyPrice; // 등락 가격
+                    Double changeRate = (buyPrice != 0) ? (double) changeAmount / buyPrice * 100 : 0.0; // 등락률 계산 (0으로 나누기 방지)
+
+                    return new StockMyPageHoldingDto(
+                            stock.getId(),
+                            stock.getStockCode(),
+                            stock.getStockName(),
+                            myStockHolding.getStockHoldingBuyAmount(),
+                            buyPrice,
+                            changeAmount,
+                            changeRate
+                    );
+                }).toList();
+
+        return stockMyPageHoldingDtoList;
+    }
+
+    /**
+     * 주식 거래 내역 조회 메소드
+     * @param myStockTransactions
+     * @return
+     */
+    private static List<StockMyPageTransactionDto> getStockMyPageTransactionDtoList(List<StocksTransactions> myStockTransactions) {
+        List<StockMyPageTransactionDto> stockMyPageTransactionDtoList = myStockTransactions.stream()
+                .map(myStockTransaction -> {
+                    Stocks stock = myStockTransaction.getStock();
+
+                    return new StockMyPageTransactionDto(
+                            stock.getId(),
+                            stock.getStockCode(),
+                            stock.getStockName(),
+                            myStockTransaction.getStockTransactionAmount(),
+                            myStockTransaction.getStockTransactionPrice(),
+                            myStockTransaction.getStockTransactionPrice() * myStockTransaction.getStockTransactionAmount(),
+                            myStockTransaction.getStockTransactionType(),
+                            myStockTransaction.getStockTransactionDate());
+                }).toList();
+
+        return stockMyPageTransactionDtoList;
     }
 
 }
