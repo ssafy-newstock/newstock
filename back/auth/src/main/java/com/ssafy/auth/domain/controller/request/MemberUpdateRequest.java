@@ -1,9 +1,13 @@
 package com.ssafy.auth.domain.controller.request;
 
 import com.ssafy.auth.domain.dto.OAuthAttributesDto;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class MemberUpdateRequest {
     private String memberName;
     private String memberProvider;

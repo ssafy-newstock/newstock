@@ -153,8 +153,8 @@ public class OAuth2Service {
         MemberFindResponse findResponse = null;
 
         // 회원을 찾는 로직
-        MemberExistResponse memberExistResponse = memberClient.existMember(providerEmail, memberName);
-
+        MemberExistResponse memberExistResponse = memberClient.existMember(memberName, providerEmail);
+        log.info("memberExistResponse = {}", memberExistResponse);
         if (memberExistResponse.isExists()) {
             Long existMemberId = memberExistResponse.getMemberId();
             findResponse = new MemberFindResponse(existMemberId, memberName, providerEmail);
