@@ -87,7 +87,7 @@ const BuyForm: React.FC<TradeFormProps> = ({ initialPrice, stockCode }) => {
   const onSubmit = async (data: FormValues) => {
     const buyData = {
       price: data.price,
-      amount: data.amount,
+      amount: Number(data.amount),
     };
     console.log('Buy Data:', buyData);
     // 매수 로직
@@ -96,7 +96,7 @@ const BuyForm: React.FC<TradeFormProps> = ({ initialPrice, stockCode }) => {
       const response = await axios.post(
         'http://newstock.info/api/stock/transaction/buy',
         {
-          StockCode: stockCode, // 실제 주식 코드를 사용하세요
+          StockCode: stockCode,
           stockTransactionAmount: buyData.amount,
           stockTransactionType: 'BUY',
         },
@@ -186,7 +186,7 @@ const SellForm: React.FC<TradeFormProps> = ({ initialPrice, stockCode }) => {
   const onSubmit = async (data: FormValues) => {
     const sellData = {
       price: data.price,
-      amount: data.amount,
+      amount: Number(data.amount),
     };
     console.log('Sell Data:', sellData);
     // 매도 로직
