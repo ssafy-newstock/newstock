@@ -14,11 +14,11 @@ import { useState } from 'react';
 import { ButtonWrapper, SortButton } from '@features/Stock/styledComponent';
 import styled from 'styled-components';
 
-const Underline = styled.div<{ sortBy: string }>`
+const Underline = styled.div<{ $sortBy: string }>`
   position: absolute;
   bottom: -0.5rem;
-  left: ${({ sortBy }) => {
-    switch (sortBy) {
+  left: ${({ $sortBy }) => {
+    switch ($sortBy) {
       case 'stckPrpr':
         return '0.9rem'; // 첫 번째 버튼
       case 'prdyCtrt':
@@ -83,7 +83,7 @@ const AllStockPage: React.FC = () => {
           <SortButton onClick={() => setSortBy('prdyCtrt')}>등락률</SortButton>
           <SortButton onClick={() => setSortBy('acmlTrPbmn')}>거래금</SortButton>
           <SortButton onClick={() => setSortBy('acmlVol')}>거래량</SortButton>
-          <Underline sortBy={sortBy} />
+          <Underline $sortBy={sortBy} />
         </ButtonWrapper>
 
         <StockGridRow>
