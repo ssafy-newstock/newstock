@@ -95,7 +95,7 @@ const ButtonText = styled.p`
 `;
 
 interface NewsSummaryProps {
-  onClose: () => void;
+  onClose: (event: React.MouseEvent) => void;
 }
 
 const NewsSummary: React.FC<NewsSummaryProps> = ({ onClose }) => {
