@@ -116,7 +116,7 @@ const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
       <ModalContent onClick={(e) => e.stopPropagation()}>
         {category && (
           <div
-            style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
+            style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}
           >
             <CategoryImgWrapper $bgColor={imageUrl.bgColor}>
               <img src={imageUrl.url} alt="" />
@@ -149,7 +149,7 @@ const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
               </CategoryData>
               <Text>{formatNumber(category.acmlTrPbmn)}</Text>
             </CategoryCardRow>
-            <Text style={{ textAlign: 'center' }}>해당 카테고리의 종목들</Text>
+            <Text style={{ textAlign: 'center', marginTop: '1rem', marginBottom: '0.5rem' }}>해당 카테고리의 종목들</Text>
             <StockCardRow style={{ cursor: 'default' }}>
               <TextLeft>종목명</TextLeft>
               <Text>현재가</Text>
