@@ -51,5 +51,5 @@ export interface IcategoryImage {
 }
 
 export interface ICategoryImgWrapper {
-  backgroundColor?: string;
+  bgColor?: string;
 }

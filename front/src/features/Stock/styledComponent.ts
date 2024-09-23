@@ -142,13 +142,13 @@ export const CategoryCardColumn = styled.div`
   gap: 1rem; /* 이미지와 텍스트 사이의 간격 */
 `;
 
-export const CategoryImgWrapper = styled.div<ICategoryImgWrapper>`
+export const CategoryImgWrapper = styled.div<{$bgColor:string}>`
   flex-shrink: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 1rem;
-  background-color: ${({ backgroundColor }) => backgroundColor || 'white'};
+  background-color: ${({ $bgColor }) => $bgColor};
 `;
 
 export const CategoryImgMain = styled.img`
