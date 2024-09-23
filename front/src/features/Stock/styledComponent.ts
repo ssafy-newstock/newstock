@@ -1,43 +1,51 @@
 import styled from 'styled-components';
-import { ICategoryImgWrapper } from '@features/Stock/types';
 
 export const StockHeader = styled.div`
   font-size: 1.5rem;
   font-weight: bold;
-  margin: 1.25rem;
-  padding: 0rem 0.625rem;
+  /* margin: 1.25rem; */
+  /* padding: 0rem 0.625rem; */
 `;
 
-export const StockHeaderMore = styled(StockHeader)`
-  margin: 1.25rem 1.25rem 0rem;
+// export const StockHeaderMore = styled(StockHeader)`
+//   /* margin: 1.25rem 1.25rem 0rem; */
+// `;
+
+export const StockHeaderWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  `
+
+export const DividedSection = styled.div`
+  margin: 1rem 0rem;
 `;
 
 export const HrTag = styled.hr`
-  width: 95%;
+  width: 100%;
 `;
 
 export const StockGridColumn = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1.25rem;
-  margin: 1.25rem;
-  padding: 0rem 1.125rem;
+  /* margin: 1.25rem; */
+  /* padding: 0rem 1.125rem; */
 `;
 
 export const CategoryGridColumn = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.25rem;
-  margin: 1.25rem;
-  padding: 0rem 1.125rem;
+  /* margin: 1.25rem; */
+  /* padding: 0rem 1.125rem; */
 `;
 
 export const StockGridRow = styled.div`
   display: grid;
   grid-template-rows: repeat(auto-fill, minmax(50px, 1fr));
   gap: 0.25rem;
-  margin: 1.25rem;
-  padding: 0rem 1.125rem;
+  /* margin: 1.25rem; */
+  /* padding: 0rem 1.125rem; */
 `;
 
 export const StockCardColumn = styled.div`
@@ -177,8 +185,8 @@ export const CategoryData = styled(StockPrev)`
 export const ButtonWrapper = styled.div`
   display: flex;
   gap: 1rem;
-  margin: 1.25rem;
-  padding: 0rem 0.625rem;
+  /* margin: 1.25rem; */
+  /* padding: 0rem 0.625rem; */
   position: relative; /* 밑줄이 이 영역 안에서 움직이도록 */
 `;
 

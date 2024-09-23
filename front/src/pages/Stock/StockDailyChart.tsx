@@ -62,8 +62,8 @@ const StockDailyChart = () => {
     plotOptions: {
       candlestick: {
         colors: {
-          upward: "#00E396", // 양봉 색상 (파란색)
-          downward: "#FF4560", // 음봉 색상 (빨간색)
+          upward: "#FF0000", // 양봉 색상 (빨간색)
+          downward: "#0000FF", // 음봉 색상 (파란색)
         },
       },
     },

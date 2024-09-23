@@ -7,6 +7,7 @@ import {
   StockHeader,
   ButtonWrapper,
   SortButton,
+  DividedSection,
 } from '@features/Stock/styledComponent';
 import { categoryImage } from '@features/Stock/category';
 import AllCategoryStock, {
@@ -23,12 +24,13 @@ import styled from 'styled-components';
 const Underline = styled.div<{ activeIndex: number }>`
   position: absolute;
   bottom: -0.5rem; /* 밑줄 위치 조정 */
-  left: ${({ activeIndex }) => activeIndex * 5.2 + 0.9}rem; /* 각 버튼의 위치에 따라 조정 */
-  width: 4rem; /* 버튼 너비에 맞춰 조정 */
+  left: ${({ activeIndex }) =>
+    activeIndex * 4.7 + 0.25}rem; /* 각 버튼의 위치에 따라 조정 */
+  width: 3.5rem; /* 버튼 너비에 맞춰 조정 */
   height: 0.2rem;
   background-color: black;
   transition: left 0.3s ease-in-out; /* 부드러운 애니메이션 */
-  background-color: ${({theme})=>theme.textColor};
+  background-color: ${({ theme }) => theme.textColor};
 `;
 
 const SectionStockPage = () => {
@@ -99,25 +101,18 @@ const SectionStockPage = () => {
   return (
     <>
       <LeftStock />
-      <Center>
+      <Center style={{ padding: '1rem' }}>
         <StockHeader>전체 카테고리</StockHeader>
         <HrTag />
-
         {/* 정렬 버튼들 */}
         <ButtonWrapper>
-          <SortButton
-            onClick={() => sortData('bstpNmixPrpr', false, 0)}
-          >
+          <SortButton onClick={() => sortData('bstpNmixPrpr', false, 0)}>
             지수 현재
           </SortButton>
-          <SortButton
-            onClick={() => sortData('bstpNmixPrdyCtrt', false, 1)}
-          >
+          <SortButton onClick={() => sortData('bstpNmixPrdyCtrt', false, 1)}>
             지수 등락
           </SortButton>
-          <SortButton
-            onClick={() => sortData('acmlTrPbmn', false, 2)}
-          >
+          <SortButton onClick={() => sortData('acmlTrPbmn', false, 2)}>
             거래 대금
           </SortButton>
 
@@ -125,33 +120,35 @@ const SectionStockPage = () => {
           <Underline activeIndex={activeButtonIndex} />
         </ButtonWrapper>
 
-        <StockGridRow>
-          <AllCategoryFirstRow />
-          {dataToRender?.map((category: ICategoryStock, index: number) => {
-            // 기본 이미지 객체
-            const defaultImage = {
-              url: 'default-image-url',
-              bgColor: 'default-bg-color',
-            };
-            // 카테고리 이미지 객체를 찾고, 없으면 기본 이미지 사용
-            const imageUrl =
-              category.industryName in categoryImage
-                ? categoryImage[
-                    category.industryName as keyof typeof categoryImage
-                  ]
-                : defaultImage; // 기본 이미지 객체로 처리
+        <DividedSection>
+          <StockGridRow>
+            <AllCategoryFirstRow />
+            {dataToRender?.map((category: ICategoryStock, index: number) => {
+              // 기본 이미지 객체
+              const defaultImage = {
+                url: 'default-image-url',
+                bgColor: 'default-bg-color',
+              };
+              // 카테고리 이미지 객체를 찾고, 없으면 기본 이미지 사용
+              const imageUrl =
+                category.industryName in categoryImage
+                  ? categoryImage[
+                      category.industryName as keyof typeof categoryImage
+                    ]
+                  : defaultImage; // 기본 이미지 객체로 처리
 
-            return (
-              <AllCategoryStock
-                key={index}
-                category={category}
-                imageUrl={imageUrl.url}
-                imageBgColor={imageUrl.bgColor}
-                onClick={() => openModal(category)}
-              />
-            );
-          })}
-        </StockGridRow>
+              return (
+                <AllCategoryStock
+                  key={index}
+                  category={category}
+                  imageUrl={imageUrl.url}
+                  imageBgColor={imageUrl.bgColor}
+                  onClick={() => openModal(category)}
+                />
+              );
+            })}
+          </StockGridRow>
+        </DividedSection>
       </Center>
       <RightVacant />
       {isModalOpen && selectedCategory && (

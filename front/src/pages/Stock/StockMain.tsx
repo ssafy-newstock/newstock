@@ -12,7 +12,8 @@ import {
   StockGridRow,
   CategoryGridColumn,
   StockHeader,
-  StockHeaderMore,
+  StockHeaderWrapper,
+  DividedSection,
 } from '@features/Stock/styledComponent';
 import FavoriteStock from '@features/Stock/StockMain/FavoriteStock';
 import RealTimeStock, {
@@ -144,7 +145,7 @@ const StockMainPage = () => {
   return (
     <>
       <LeftStock />
-      <Center>
+      <Center style={{ padding: '1rem' }}>
         <StockHeader>관심 종목</StockHeader>
         <HrTag />
         <StockGridColumn>
@@ -153,18 +154,24 @@ const StockMainPage = () => {
           ))}
         </StockGridColumn>
 
-        <StockHeaderMore>실시간 차트</StockHeaderMore>
-        <More handlClick={allStockNavigate} />
-        <HrTag />
-        <StockGridRow>
-          <RealTimeStockFirstRow />
-          {top10StockData?.map((stock: IStock, index: number) => (
-            <RealTimeStock key={index} stock={stock} />
-          ))}
-        </StockGridRow>
-
-        <StockHeaderMore>카테고리</StockHeaderMore>
-        <More handlClick={categoryNavigate} />
+        <DividedSection>
+          <StockHeaderWrapper>
+            <StockHeader>실시간 차트</StockHeader>
+            <More handlClick={allStockNavigate} />
+          </StockHeaderWrapper>
+          <HrTag />
+          <StockGridRow>
+            <RealTimeStockFirstRow />
+            {top10StockData?.map((stock: IStock, index: number) => (
+              <RealTimeStock key={index} stock={stock} />
+            ))}
+          </StockGridRow>
+        </DividedSection>
+        
+        <StockHeaderWrapper>
+          <StockHeader>카테고리</StockHeader>
+          <More handlClick={categoryNavigate} />
+        </StockHeaderWrapper>
         <HrTag />
         <CategoryGridColumn>
           {industryData

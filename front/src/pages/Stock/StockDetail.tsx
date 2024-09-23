@@ -1,7 +1,7 @@
 import { Center } from '@components/Center';
 import LeftStock from '@components/LeftStock';
-import { Right } from '@components/Right';
 import {
+  DividedSection,
   HrTag,
   SpanTag,
   StckPrice,
@@ -17,6 +17,7 @@ import blueLogo from '@assets/Stock/blueLogo.png';
 import styled from 'styled-components';
 import TradeForm from '@features/Stock/StockDetail/TradeForm';
 import { Heart } from '@features/Stock/Heart';
+import { RightVacant } from '@components/RightVacant';
 
 const Button = styled.div`
   background-color: ${({ theme }) => theme.profileBackgroundColor};
@@ -40,60 +41,59 @@ const StockDetailPage = () => {
   return (
     <>
       <LeftStock />
-      <Center style={{ padding: '0rem 1rem' }}>
+      <Center style={{ padding: '1rem' }}>
         <div
-          style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'end',
+          }}
         >
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'end',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <StockTitle>
-                <StockImage
-                  src={getStockImageUrl()}
-                  onError={(e) => (e.currentTarget.src = blueLogo)} // 기본 이미지 설정
-                  alt=""
-                />
-                {stock.stockName}
-              </StockTitle>
-              <StckPrice>
-                {formatChange(formatNumber(stock.stckPrpr))}원
-              </StckPrice>
-              <StockPrev $isPositive={stock.prdyVrss.toString().startsWith('-')}>
-                <SpanTag>어제보다</SpanTag>{' '}
-                {formatChange(formatNumber(stock.prdyVrss))}원 ({stock.prdyCtrt}
-                %)
-              </StockPrev>
-            </div>
-            <div style={{ display: 'flex', gap: '1rem' }}>
-              <Heart />
-              {showButton && <Button>유사도 분석</Button>}
-            </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <StockTitle>
+              <StockImage
+                src={getStockImageUrl()}
+                onError={(e) => (e.currentTarget.src = blueLogo)} // 기본 이미지 설정
+                alt=""
+              />
+              {stock.stockName}
+            </StockTitle>
+            <StckPrice>
+              {formatChange(formatNumber(stock.stckPrpr))}원
+            </StckPrice>
+            <StockPrev $isPositive={stock.prdyVrss.toString().startsWith('-')}>
+              <SpanTag>어제보다</SpanTag>{' '}
+              {formatChange(formatNumber(stock.prdyVrss))}원 ({stock.prdyCtrt}
+              %)
+            </StockPrev>
           </div>
-          <HrTag style={{ width: '100%' }} />
           <div style={{ display: 'flex', gap: '1rem' }}>
-            <Link
-              to={`/stock-detail/${stock.stockCode}/daily-chart`}
-              state={{ stock }}
-            >
-              <Button>일봉</Button>
-            </Link>
-            <Link
-              to={`/stock-detail/${stock.stockCode}/live-updates`}
-              state={{ stock }}
-            >
-              <Button>실시간</Button>
-            </Link>
+            <Heart />
+            {showButton && <Button>유사도 분석</Button>}
           </div>
-          <Outlet />
-          <TradeForm initialPrice={initialPrice} stockCode={stock.stockCode} />
         </div>
+
+        <HrTag style={{ width: '100%' }} />
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          <Link
+            to={`/stock-detail/${stock.stockCode}/daily-chart`}
+            state={{ stock }}
+          >
+            <Button>일봉</Button>
+          </Link>
+          <Link
+            to={`/stock-detail/${stock.stockCode}/live-updates`}
+            state={{ stock }}
+          >
+            <Button>실시간</Button>
+          </Link>
+        </div>
+        <DividedSection>
+          <Outlet />
+        </DividedSection>
+        <TradeForm initialPrice={initialPrice} stockCode={stock.stockCode} />
       </Center>
-      <Right />
+      <RightVacant />
     </>
   );
 };

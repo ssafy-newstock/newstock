@@ -122,7 +122,7 @@ const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
           <div
             style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
           >
-            <CategoryImgWrapper backgroundColor={imageUrl.bgColor}>
+            <CategoryImgWrapper $bgColor={imageUrl.bgColor}>
               <img src={imageUrl.url} alt="" />
             </CategoryImgWrapper>
             <CategoryCardRow style={{ cursor: 'default' }}>
