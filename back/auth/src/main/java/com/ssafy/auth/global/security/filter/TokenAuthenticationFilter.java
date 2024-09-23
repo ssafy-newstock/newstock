@@ -32,13 +32,13 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         String requestURI = request.getRequestURI();
 
+        log.info("requestURI: {}", requestURI);
         if (requestURI.startsWith("/api/auth/login")
                 || requestURI.startsWith("/api/auth/token-info") || requestURI.startsWith("/api/stock")) {
             log.info("auth 스킵, requestURI: {}", requestURI);
             filterChain.doFilter(request, response);
             return;
         }
-        log.info("requestURI: {}", requestURI);
 
         // 회원 존재 여부 체크와 회원가입은 스킵함
         if (requestURI.startsWith("/api/member/join") || requestURI.startsWith("/api/member/exist")) {
