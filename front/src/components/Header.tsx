@@ -89,6 +89,7 @@ const ThemeIcon = styled.div`
 `;
 
 const Header = () => {
+  const { memberName } = useAuthStore();
   const { theme, toggleTheme } = useThemeStore();
   const isDarkMode = theme === 'dark';
   // 로그인 모달 상태 추가
@@ -102,20 +103,25 @@ const Header = () => {
 
   const { isLogin, logout } = useAuthStore();
 
-  const handleLogout = async () => {
-    try {
-      await axios.post('https://newstock.info/api/member/logout', {
-        withCredentials: true,
-      });
-      // 세션 스토리지에서 액세스 토큰 삭제
-      sessionStorage.removeItem('accessToken');
+  const handleLogout = () => {
+    logout();
+    sessionStorage.removeItem('accessToken');
+  }
+  // API 생성 후 대체
+  // const handleLogout = async () => {
+  //   try {
+  //     await axios.post('https://newstock.info/api/auth/logout', {
+  //       withCredentials: true,
+  //     });
+  //     // 세션 스토리지에서 액세스 토큰 삭제
+  //     sessionStorage.removeItem('accessToken');
 
-      // 로그아웃 상태 업데이트(AuthStore)
-      logout();
-    } catch (err) {
-      console.error('Error during logout:', err);
-    }
-  };
+  //     // 로그아웃 상태 업데이트(AuthStore)
+  //     logout();
+  //   } catch (err) {
+  //     console.error('Error during logout:', err);
+  //   }
+  // };
 
   return (
     <>
@@ -186,7 +192,7 @@ const Header = () => {
                     fill="currentColor"
                   />
                 </Icon>
-                <UserName>사용자</UserName>
+                <UserName>{memberName}</UserName>
                 <Icon
                   xmlns="http://www.w3.org/2000/svg"
                   width="30"

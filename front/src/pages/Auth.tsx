@@ -40,7 +40,7 @@ const Auth = () => {
       try {
         const response = await axios.post(
           // 'http://newstock.info/api/member/login',
-          'http://140.245.32.255:8080/api/member/login',
+          'http://140.245.32.255:8080/api/auth/login',
           {
             registrationId: registrationId,
             authorization: code,
@@ -57,9 +57,8 @@ const Auth = () => {
         const result = response.data;
 
         // zustand store에 사용자 이름 저장 및 로그인 상태 변경(true)
-        console.log('loginData', result.data);
-        // login(result.data);
-        login();
+        console.log('loginData', result);
+        login(result);
 
         const headerData = response.headers;
         console.log(

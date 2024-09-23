@@ -3,19 +3,18 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 
 // 스토어의 상태 타입 정의
 interface AuthState {
-  memberId: string | null;
+  memberId: Number | null;
   memberName: string | null;
   isLogin: boolean;
-  // login: (params: { memberId: string; memberName: string }) => void;
-  login: () => void;
+  login: (params: LoginParams) => void;
   logout: () => void;
 }
 
 // 로그인 함수의 파라미터 타입 정의
-// interface LoginParams {
-//   memberId: string;
-//   memberName: string;
-// }
+interface LoginParams {
+  memberId: Number;
+  memberName: string;
+}
 
 const useAuthStore = create<AuthState>()(
   persist(
@@ -23,9 +22,9 @@ const useAuthStore = create<AuthState>()(
       memberId: null,
       memberName: null,
       isLogin: false,
-      // login: ({ memberId, memberName }: LoginParams) =>
-      //   set({ memberId, memberName, isLogin: true }),
-      login: () => set({ isLogin: true }),
+      login: ({ memberId, memberName }: LoginParams) =>
+        set({ memberId, memberName, isLogin: true }),
+      // login: () => set({ isLogin: true }),
       logout: () => set({ memberId: null, memberName: null, isLogin: false }),
     }),
     {
