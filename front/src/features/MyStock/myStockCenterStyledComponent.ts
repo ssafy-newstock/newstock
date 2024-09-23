@@ -1,3 +1,4 @@
+import { StockCardRow, StockGridRow } from '@features/Stock/styledComponent';
 import styled from 'styled-components';
 
 export const CenterContentDiv = styled.div`
@@ -12,7 +13,7 @@ export const CenterContentDiv = styled.div`
 
 export const CenterContentBottomiv = styled.div`
   display: flex;
-  padding: 25px 100px;
+  padding: 25px 0px;
   justify-content: space-between;
   align-items: center;
   align-self: stretch;
@@ -47,4 +48,13 @@ export const MetricItem = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+`;
+
+export const MyStockCardRow = styled(StockCardRow)`
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr; /* 각 열의 너비를 설정 */
+`;
+
+export const MyStockGridRow = styled(StockGridRow)`
+  width: 100%;
+  margin: 1.25rem 0rem;
 `;
