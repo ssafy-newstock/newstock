@@ -29,7 +29,6 @@ const EconomicNewsTitle = styled.div`
 `;
 
 const EconomicNewsTitleText = styled.p`
-  /* color: #0448a5; */
   color: ${({ theme }) => theme.highlightColor};
   font-family: Inter;
   font-size: 2rem;

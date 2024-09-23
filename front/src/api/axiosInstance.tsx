@@ -5,7 +5,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from 'axios';
 
-const baseUrl = 'https://i11c207.p.ssafy.io/api';
+const baseUrl = 'http://newstock.info';
 
 // getJWTHeader 함수 : JWT 토큰(accessToken)을 받아 Authorization 헤더 객체를 생성
 // 파라미터 : jwt토큰(accessToken) 넣어줘야함
@@ -32,7 +32,7 @@ export const axiosInstance = axios.create(config);
 const refreshToken = async (): Promise<string> => {
   try {
     const response: AxiosResponse = await axios.post(
-      'https://i11c207.p.ssafy.io/api/oauth/reissue-tokens',
+      'http://newstock.info/api/oauth/reissue-tokens',
       null,
       {
         withCredentials: true, // 쿠키를 포함하여 요청

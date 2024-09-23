@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import newsData from '@api/dummyData/20240907.json';
@@ -28,6 +29,14 @@ const StockNewsOuterWrapper = styled.div`
   background-color: ${({ theme }) => theme.newsBackgroundColor};
   border-radius: 2rem;
   align-self: stretch;
+  cursor: pointer;
+
+  transition: transform 0.3s ease; /* 부드러운 전환 효과 */
+
+  /* hover 시 확대 */
+  &:hover {
+    transform: scale(1.05); /* 5% 확대 */
+  }
 `;
 
 const StockNewsWrapper = styled.div`
@@ -81,6 +90,7 @@ interface NewsItem {
   uploadDatetime: string;
   thumbnail: string;
   keywords: string[];
+  stockId: string;
 }
 const StockNewsPage: React.FC = () => {
   const [newsList, setNewsList] = useState<NewsItem[]>(
@@ -89,6 +99,7 @@ const StockNewsPage: React.FC = () => {
   const [displayedItems, setDisplayedItems] = useState<number>(10); // 처음에 표시할 데이터 개수
   const [loading, setLoading] = useState<boolean>(false); // 로딩 상태
   const observerRef = useRef<HTMLDivElement | null>(null);
+  const navigate = useNavigate();
 
   const loadMoreNews = useCallback(() => {
     if (displayedItems < newsData.data.length) {
@@ -122,11 +133,19 @@ const StockNewsPage: React.FC = () => {
       }
     };
   }, [loadMoreNews, loading]);
+
+  const handleNewsClick = (stockId: string) => {
+    navigate(`/subnews-main/stock-news/${stockId}`);
+  };
+
   return (
     <>
       <SubCenter>
         {newsList.map((news, index) => (
-          <StockNewsOuterWrapper key={index}>
+          <StockNewsOuterWrapper
+            key={index}
+            onClick={() => handleNewsClick(news.stockId)}
+          >
             <StockNewsHeader />
             <StockNewsWrapper>
               <StockNewsBody
