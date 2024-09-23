@@ -131,7 +131,7 @@ const SectionStockPage = () => {
             // 기본 이미지 객체
             const defaultImage = {
               url: 'default-image-url',
-              backgroundColor: 'default-bg-color',
+              bgColor: 'default-bg-color',
             };
             // 카테고리 이미지 객체를 찾고, 없으면 기본 이미지 사용
             const imageUrl =
@@ -146,7 +146,7 @@ const SectionStockPage = () => {
                 key={index}
                 category={category}
                 imageUrl={imageUrl.url}
-                imageBgColor={imageUrl.backgroundColor}
+                imageBgColor={imageUrl.bgColor}
                 onClick={() => openModal(category)}
               />
             );

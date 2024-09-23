@@ -63,7 +63,7 @@ const CloseButton = styled.button`
 const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
   const defaultImage = {
     url: 'default-image-url',
-    backgroundColor: 'default-bg-color',
+    bgColor: 'default-bg-color',
   };
   const imageUrl =
     category.industryName in categoryImage
@@ -122,7 +122,7 @@ const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
           <div
             style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
           >
-            <CategoryImgWrapper backgroundColor={imageUrl.backgroundColor}>
+            <CategoryImgWrapper backgroundColor={imageUrl.bgColor}>
               <img src={imageUrl.url} alt="" />
             </CategoryImgWrapper>
             <CategoryCardRow style={{ cursor: 'default' }}>
@@ -138,14 +138,14 @@ const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
               <TextLarge>{category.industryName}</TextLarge>
               <Text>{category.bstpNmixPrpr}</Text>
               <CategoryData
-                isPositive={category.bstpNmixPrdyVrss
+                $isPositive={category.bstpNmixPrdyVrss
                   .toString()
                   .startsWith('-')}
               >
                 {formatChange(category.bstpNmixPrdyVrss.toString())}
               </CategoryData>
               <CategoryData
-                isPositive={category.bstpNmixPrdyCtrt
+                $isPositive={category.bstpNmixPrdyCtrt
                   .toString()
                   .startsWith('-')}
               >
@@ -173,7 +173,7 @@ const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
                   </StockTitle>
                   <StckPrice>{formatNumber(stock.stckPrpr)}원</StckPrice>
                   <StockPrev
-                    isPositive={stock.prdyVrss.toString().startsWith('-')}
+                    $isPositive={stock.prdyVrss.toString().startsWith('-')}
                   >
                     {formatChange(formatNumber(stock.prdyVrss))}원 (
                     {stock.prdyCtrt}
