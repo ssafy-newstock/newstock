@@ -27,7 +27,7 @@ const CategoryStock: React.FC<ICategory> = ({
         {' '}
         <TextLarge>{category.industryName}</TextLarge>
         <CategoryData
-          isPositive={category.bstpNmixPrdyCtrt.toString().startsWith('-')}
+          $isPositive={category.bstpNmixPrdyCtrt.toString().startsWith('-')}
         >
           {formatChange(category.bstpNmixPrdyCtrt)}%
         </CategoryData>

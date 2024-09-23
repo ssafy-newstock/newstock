@@ -85,10 +85,10 @@ export const StckPrice = styled.div`
   font-size: 1rem;
 `;
 
-export const StockPrev = styled.div<{ isPositive: boolean }>`
+export const StockPrev = styled.div<{ $isPositive: boolean }>`
   font-size: 0.8rem;
-  color: ${({ isPositive, theme }) =>
-    isPositive ? theme.stockBlue : theme.stockRed};
+  color: ${({ $isPositive, theme }) =>
+    $isPositive ? theme.stockBlue : theme.stockRed};
 `;
 
 export const SpanTag = styled.span`
@@ -169,8 +169,8 @@ export const CategoryInfo = styled.div`
 
 export const CategoryData = styled(StockPrev)`
   font-size: 1rem;
-  color: ${({ isPositive, theme }) =>
-    isPositive ? theme.stockBlue : theme.stockRed};
+  color: ${({ $isPositive, theme }) =>
+    $isPositive ? theme.stockBlue : theme.stockRed};
 `;
 
 // 버튼 컨테이너 스타일

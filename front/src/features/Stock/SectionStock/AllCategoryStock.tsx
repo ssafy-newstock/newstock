@@ -38,10 +38,10 @@ const AllCategoryStock: React.FC<ICategory> = ({
         <Text>{category.industryName}</Text>
       </div>
       <Text>{category.bstpNmixPrpr}</Text>
-      <CategoryData isPositive={category.bstpNmixPrdyVrss.toString().startsWith('-')}>
+      <CategoryData $isPositive={category.bstpNmixPrdyVrss.toString().startsWith('-')}>
         {formatChange(category.bstpNmixPrdyVrss)}
       </CategoryData>
-      <CategoryData isPositive={category.bstpNmixPrdyCtrt.toString().startsWith('-')}>
+      <CategoryData $isPositive={category.bstpNmixPrdyCtrt.toString().startsWith('-')}>
         {formatChange(category.bstpNmixPrdyCtrt)}%
       </CategoryData>
       <Text>{formatNumber(category.acmlTrPbmn)}</Text>
