@@ -18,10 +18,16 @@ import { useMyStockData } from '@hooks/useStockHoldings';
 import StockHoldingList, {
   StockHoldingsFirstRow,
 } from '@features/MyStock/StockHoldingList';
-import { MyStockGridRow } from '@features/MyStock/myStockCenterStyledComponent';
+import {
+  CenterWrapper,
+  MyStockGridRow,
+  RightVacantWrapper,
+  RightWrapper,
+} from '@features/MyStock/myStockCenterStyledComponent';
 import TradingHistoryList, {
   TradingHistoryFirstRow,
 } from '@features/MyStock/TradingHistoryList';
+import { RightVacant } from '@components/RightVacant';
 
 interface StockHolding {
   stockId: number;
@@ -35,7 +41,7 @@ interface StockHolding {
 
 interface TransactionDto {
   stockId: number;
-  stockCode: number;
+  stockCode: string;
   stockName: string;
   stockTransactionAmount: number;
   stockTransactionPrice: number;
@@ -50,56 +56,70 @@ const MyStock: React.FC = () => {
   const { data } = useMyStockData();
   const stockData = data?.stockMyPageHoldingDtoList || [];
   const TradingData = data?.stockMyPageTransactionDtoList || [];
+
   // 핸들러 함수: 섹션 타이틀 클릭 시 상태 업데이트
   const handleMoreClick = (section: string) => {
     setActiveSection((prevSection) =>
       prevSection === section ? null : section
     );
   };
+
   return (
     <>
       <LeftStock />
-      <Center>
+      <CenterWrapper $isActive={activeSection !== null}>
         <CenterDiv>
           <CenterTitle />
           <MyStockHr />
           <CenterContent />
           <SectionTitle
-            title={'주식 보유 내역'}
+            title="주식 보유 내역"
             onMoreClick={() => handleMoreClick('StockHoldings')}
           />
           <MyStockHr />
           <MyStockGridRow>
             <StockHoldingsFirstRow />
-            {stockData.map((stock: StockHolding, index: number) => (
-              <StockHoldingList key={index} stock={stock} />
+            {stockData.map((stock: StockHolding) => (
+              <StockHoldingList key={stock.stockId} stock={stock} />
             ))}
           </MyStockGridRow>
           <SectionTitle
-            title={'주식 거래 내역'}
+            title="주식 거래 내역"
             onMoreClick={() => handleMoreClick('TradingHistory')}
           />
           <MyStockHr />
           <MyStockGridRow>
             <TradingHistoryFirstRow />
-            {TradingData.map((stock: TransactionDto, index: number) => (
-              <TradingHistoryList key={index} stock={stock} />
+            {TradingData.map((stock: TransactionDto) => (
+              <TradingHistoryList
+                key={stock.stockTransactionDate}
+                stock={stock}
+              />
             ))}
           </MyStockGridRow>
           <SectionTitle
-            title={'관심 종목'}
+            title="관심 종목"
             onMoreClick={() => handleMoreClick('FavoriteStock')}
           />
           <MyStockHr />
         </CenterDiv>
-      </Center>
-      <Right>
-        <RightDiv>
-          {activeSection === 'StockHoldings' && <StockHoldings />}
-          {activeSection === 'TradingHistory' && <TradingHistory />}
-          {activeSection === 'FavoriteStock' && <FavoriteStock />}
-        </RightDiv>
-      </Right>
+      </CenterWrapper>
+      {!activeSection ? (
+        <RightVacantWrapper>
+          <RightVacant />
+        </RightVacantWrapper>
+      ) : (
+        <RightWrapper>
+          <Right>
+            <RightDiv>
+              {activeSection === 'StockHoldings' && <StockHoldings />}
+              {activeSection === 'TradingHistory' && <TradingHistory />}
+              {activeSection === 'FavoriteStock' && <FavoriteStock />}
+            </RightDiv>
+          </Right>
+        </RightWrapper>
+      )}
+      {/* 추가된 부분 */}
     </>
   );
 };
