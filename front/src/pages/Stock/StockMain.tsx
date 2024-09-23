@@ -55,7 +55,7 @@ const StockMainPage = () => {
 
   // 웹소켓 초기화 및 구독 설정
   useEffect(() => {
-    const socket = new SockJS('http://newstock.info/api/stock/websocket');
+    const socket = new SockJS('https://newstock.info/api/stock/websocket');
     const stompClient = Stomp.over(socket);
 
     stompClient.connect({}, () => {
@@ -106,7 +106,7 @@ const StockMainPage = () => {
     queryKey: ['top10StockData'],
     queryFn: async () => {
       const response = await axios.get(
-        'http://newstock.info/api/stock/price-list/live'
+        'https://newstock.info/api/stock/price-list/live'
       );
       console.log('top10StockData', response.data.data);
       return response.data.data;
@@ -117,7 +117,7 @@ const StockMainPage = () => {
     queryKey: ['industryData'],
     queryFn: async () => {
       const response = await axios.get(
-        'http://newstock.info/api/stock/industry-list'
+        'https://newstock.info/api/stock/industry-list'
       );
       console.log('industryData', response.data.data);
 
@@ -129,7 +129,7 @@ const StockMainPage = () => {
     queryKey: ['allStockData'],
     queryFn: async () => {
       const response = await axios.get(
-        'http://newstock.info/api/stock/price-list'
+        'https://newstock.info/api/stock/price-list'
       );
       console.log('allStockData', response.data.data);
       console.log('allStockData', allStockData);

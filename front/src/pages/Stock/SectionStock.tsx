@@ -59,7 +59,7 @@ const SectionStockPage = () => {
     queryKey: ['industryData'],
     queryFn: async () => {
       const response = await axios.get(
-        'http://newstock.info/api/stock/industry-list'
+        'https://newstock.info/api/stock/industry-list'
       );
       console.log(response.data);
 

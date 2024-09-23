@@ -71,9 +71,8 @@ const kakao_client_id = import.meta.env.VITE_KAKAO_CLIENT_ID;
 const kakao_client_secret = import.meta.env.VITE_KAKAO_CLIENT_SECRET;
 const google_client_id = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
-const KAKAO_REDIRECT_URI = `${REDIRECT_URI}/login/oauth2/code/google`;
+const KAKAO_REDIRECT_URI = `${REDIRECT_URI}/login/oauth2/code/kakao`;
 const GOOGLE_REDIRECT_URI = `${REDIRECT_URI}/login/oauth2/code/google`;
-
 
 const Login: React.FC<ILoginProps> = ({ closeLogin }) => {
   const navigate = useNavigate();

@@ -94,7 +94,7 @@ const BuyForm: React.FC<TradeFormProps> = ({ initialPrice, stockCode }) => {
     try {
       // 매수 API 요청
       const response = await axios.post(
-        'http://newstock.info/api/stock/transaction/buy',
+        'https://newstock.info/api/stock/transaction/buy',
         {
           StockCode: stockCode,
           stockTransactionAmount: buyData.amount,
@@ -194,7 +194,7 @@ const SellForm: React.FC<TradeFormProps> = ({ initialPrice, stockCode }) => {
     try {
       // 매도 API 요청
       const response = await axios.post(
-        'http://newstock.info/api/stock/transaction/sell',
+        'https://newstock.info/api/stock/transaction/sell',
         {
           StockCode: stockCode, // 실제 주식 코드를 사용하세요
           stockTransactionAmount: sellData.amount,
