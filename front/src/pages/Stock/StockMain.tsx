@@ -1,8 +1,4 @@
-import { useEffect, useState } from 'react';
-import SockJS from 'sockjs-client';
-import Stomp from 'stompjs';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import { useState } from 'react';
 import { Center } from '@components/Center';
 import LeftStock from '@components/LeftStock';
 import { categoryImage } from '@features/Stock/category';
@@ -26,14 +22,12 @@ import { RightVacant } from '@components/RightVacant';
 import { stockData } from '@features/Stock/stock';
 import { useNavigate } from 'react-router-dom';
 import Modal from '@features/Stock/SectionStock/Modal';
-import useAllStockStore from '@store/useAllStockStore';
 import useCategoryStockStore from '@store/useCategoryStockStore';
 import useTop10StockStore from '@store/useTop10StockStore';
 
 const StockMainPage = () => {
-  const { setAllStock } = useAllStockStore();
-  const { categoryStock, setCategoryStock } = useCategoryStockStore();
-  const { top10Stock, setTop10Stock, updateStock } = useTop10StockStore();
+  const { categoryStock } = useCategoryStockStore();
+  const { top10Stock } = useTop10StockStore();
 
   const navigate = useNavigate();
   const allStockNavigate = () => {
@@ -57,80 +51,6 @@ const StockMainPage = () => {
     setSelectedCategory(null);
     setIsModalOpen(false);
   };
-
-  // 웹소켓 초기화 및 구독 설정
-  useEffect(() => {
-    const socket = new SockJS('https://newstock.info/api/stock/websocket');
-    const stompClient = Stomp.over(socket);
-
-    stompClient.connect({}, () => {
-      // Top 10 종목 정보 구독
-      stompClient.subscribe('/api/sub/stock/info/live', (message) => {
-        const newStockPrice = JSON.parse(message.body);
-
-        // 도착한 주식 데이터로 상태 업데이트
-        updateStock(newStockPrice);
-      });
-
-      // 산업군 정보 구독 (10분 단위 갱신)
-      stompClient.subscribe('/api/sub/stock/industry/info', (message) => {
-        const updatedIndustryData = JSON.parse(message.body);
-        setCategoryStock(updatedIndustryData);
-      });
-
-      // 코스피 전 종목 정보 구독 (30~40초 단위 갱신)
-      stompClient.subscribe('/api/sub/stock/info', (message) => {
-        const updatedStockData = JSON.parse(message.body);
-        setAllStock(updatedStockData);
-      });
-    });
-
-    return () => {
-      if (stompClient && stompClient.connected) {
-        stompClient.disconnect(() => {
-          console.log('Disconnected');
-        });
-      }
-    };
-  }, [setTop10Stock, setCategoryStock, setAllStock]);
-
-  // 최초 데이터 조회 - React Query 사용
-  const { isLoading: isTop10StockLoading } = useQuery({
-    queryKey: ['top10StockData'],
-    queryFn: async () => {
-      const response = await axios.get(
-        'https://newstock.info/api/stock/price-list/live'
-      );
-      setTop10Stock(response.data.data);
-      return response.data.data;
-    },
-  });
-
-  const { isLoading: isIndustryLoading } = useQuery({
-    queryKey: ['industryData'],
-    queryFn: async () => {
-      const response = await axios.get(
-        'https://newstock.info/api/stock/industry-list'
-      );
-      setCategoryStock(response.data.data);
-      return response.data.data;
-    },
-  });
-
-  const { isLoading: isAllStockLoading } = useQuery({
-    queryKey: ['allStockData'],
-    queryFn: async () => {
-      const response = await axios.get(
-        'https://newstock.info/api/stock/price-list'
-      );
-      setAllStock(response.data.data);
-      return response.data.data;
-    },
-  });
-
-  if (isTop10StockLoading || isIndustryLoading || isAllStockLoading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <>
