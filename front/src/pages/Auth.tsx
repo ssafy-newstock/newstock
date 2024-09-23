@@ -15,8 +15,7 @@ const Auth = () => {
   const [error, setError] = useState<ErrorType>(null);
   const { login } = useAuthStore();
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
-
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
 
   // URLSearchParams를 사용하여 인가코드를 가져옴
   useEffect(() => {
@@ -65,12 +64,11 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
         const headerData = response.headers;
         console.log(
           'accessToken',
-          headerData['authorization'].replace(/^Bearer\s/, '')
+          headerData['authorization'].replace(/^Bearer\s/, '').trim()
         );
-        const accessToken = headerData['authorization'].replace(
-          /^Bearer\s/,
-          ''
-        );
+        const accessToken = headerData['authorization']
+          .replace(/^Bearer\s/, '')
+          .trim();
         // 토큰을 cessionStorage에 저장
         sessionStorage.setItem('accessToken', accessToken);
         navigate('/');
