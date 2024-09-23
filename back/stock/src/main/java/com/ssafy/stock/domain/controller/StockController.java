@@ -21,7 +21,7 @@ import static com.ssafy.stock.global.common.CommonResponse.success;
 @RequiredArgsConstructor
 @RequestMapping("/api/stock")
 @Slf4j
-public class StockController {
+public class StockController implements StockControllerSwagger{
 
     private final ModelMapper modelMapper;
     private final StockService stockService;
