@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
@@ -15,7 +15,7 @@ public class StockCandleDto { ;
     private Long stockId;
     private String stockCode;
     private Long stockCandleId;
-    private LocalDateTime stockCandleDay;
+    private LocalDate stockCandleDay;
     private Long stockCandleOpen;
     private Long stockCandleClose;
     private Long stockCandleHigh;
@@ -25,6 +25,7 @@ public class StockCandleDto { ;
         this.stockId = stock.getId();
         this.stockCode = stock.getStockCode();
         this.stockCandleId = stockCandle.getId();
+        this.stockCandleDay = stockCandle.getStockCandleDay();
         this.stockCandleOpen = stockCandle.getStockCandleOpen();
         this.stockCandleClose = stockCandle.getStockCandleClose();
         this.stockCandleHigh = stockCandle.getStockCandleHigh();
