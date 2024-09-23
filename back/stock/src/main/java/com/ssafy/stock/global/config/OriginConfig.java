@@ -15,6 +15,10 @@ public class OriginConfig implements WebMvcConfigurer {
     public void addCorsMappings(final CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("http://newstock.info",
+                        "http://newstock.info:8000",
+                        "http://newstock.info:8001",
+                        "http://newstock.info:8002",
+                        "http://newstock.info:8003",
                         "http://localhost:8000",
                         "http://localhost:8001",
                         "http://localhost:8002",
