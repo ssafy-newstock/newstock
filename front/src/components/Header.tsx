@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import useAuthStore from '@store/useAuthStore';
 import Login from '@components/Login';
-import axios from 'axios';
+// import axios from 'axios';
 
 const HeaderContainer = styled.div`
   width: 100%;

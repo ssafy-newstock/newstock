@@ -15,6 +15,9 @@ const Auth = () => {
   const [error, setError] = useState<ErrorType>(null);
   const { login } = useAuthStore();
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+
   // URLSearchParams를 사용하여 인가코드를 가져옴
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -39,8 +42,7 @@ const Auth = () => {
       setIsLoading(true);
       try {
         const response = await axios.post(
-          // 'http://newstock.info/api/member/login',
-          'http://140.245.32.255:8080/api/auth/login',
+          `${BASE_URL}/api/auth/login`,
           {
             registrationId: registrationId,
             authorization: code,
