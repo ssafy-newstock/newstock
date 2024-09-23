@@ -40,7 +40,7 @@ const AllStockPage: React.FC = () => {
   const { data: allStockData, isLoading: isAllStockLoading } = useQuery({
     queryKey: ['allStockData'],
     queryFn: async () => {
-      const response = await axios.get('http://newstock.info/api/stock/price-list');
+      const response = await axios.get('https://newstock.info/api/stock/price-list');
       return response.data.data;
     },
   });
