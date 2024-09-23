@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
-// 주식 보유 내역 데이터 타입 정의
 interface StockHolding {
   stockId: number;
   stockCode: string;
@@ -12,86 +11,101 @@ interface StockHolding {
   stockHoldingChangeRate: number;
 }
 
+interface TransactionDto {
+  stockId: number;
+  stockCode: string;
+  stockName: string;
+  stockTransactionAmount: number;
+  stockTransactionPrice: number;
+  stockTransactionTotalPrice: number;
+  stockTransactionType: string;
+  stockTransactionDate: string;
+}
+
 // API 응답 데이터 타입 정의
 interface ApiResponse {
   success: boolean;
   data: {
     stockMyPageHoldingDtoList: StockHolding[];
-    stockMyPageTransactionDtoList: any[]; // 필요에 따라 타입 정의
+    stockMyPageTransactionDtoList: TransactionDto[]; // 필요에 따라 타입 정의
   };
 }
 
 // 주식 보유 내역 데이터를 가져오는 함수
-const fetchStockHoldings = async (): Promise<StockHolding[]> => {
-  // 실제 API 엔드포인트로 교체하세요
-  // const response = await axios.get<ApiResponse>('https://api.example.com/your-endpoint');
-  // return response.data.data.stockMyPageHoldingDtoList;
-
-  // 예제용 정적 데이터
-  return [
+const fetchMyStockData = async (): Promise<ApiResponse['data']> => {
+  const accessToken =
+    'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMTYxODI2NjI5MTU2MDk4MzY4MjAiLCJyb2xlIjoiUk9MRV9VU0VSIiwibWVtYmVySWQiOjEsImlhdCI6MTcyNjcyOTUwOCwiZXhwIjoxNzI5MzIxNTA4fQ.Pbt8vCn7uiV5KIZAX0XpIEN8Ysi2dTlch0Ty_gWpB8t-STtELADpBcw-oGBfeFoPr1PfbmKX8nI5gjguSJAYmQ';
+  const response = await axios.get<ApiResponse>(
+    'https://newstock.info/api/stock/mypage',
     {
-      stockId: 294,
-      stockCode: '005930',
-      stockName: '삼성전자',
-      stockHoldingBuyAmount: 2,
-      stockHoldingBuyPrice: 63700,
-      stockHoldingChange: -100,
-      stockHoldingChangeRate: -0.15698587127158556,
-    },
-    {
-      stockId: 610,
-      stockCode: '035720',
-      stockName: '카카오',
-      stockHoldingBuyAmount: 3,
-      stockHoldingBuyPrice: 35350,
-      stockHoldingChange: -150,
-      stockHoldingChangeRate: -0.4243281471004243,
-    },
-    {
-      stockId: 662,
-      stockCode: '035725',
-      stockName: '삼성화재',
-      stockHoldingBuyAmount: 5,
-      stockHoldingBuyPrice: 72160,
-      stockHoldingChange: -150,
-      stockHoldingChangeRate: -0.4243281471004243,
-    },
-    {
-      stockId: 456,
-      stockCode: '035722',
-      stockName: '셀트리온',
-      stockHoldingBuyAmount: 6,
-      stockHoldingBuyPrice: 123450,
-      stockHoldingChange: -150,
-      stockHoldingChangeRate: -0.4243281471004243,
-    },
-    {
-      stockId: 643,
-      stockCode: '035723',
-      stockName: '현대자동차',
-      stockHoldingBuyAmount: 7,
-      stockHoldingBuyPrice: 243240,
-      stockHoldingChange: 3000,
-      stockHoldingChangeRate: 3.32131252,
-    },
-    {
-      stockId: 123,
-      stockCode: '035721',
-      stockName: 'SK 하이닉스',
-      stockHoldingBuyAmount: 7,
-      stockHoldingBuyPrice: 12450,
-      stockHoldingChange: -150,
-      stockHoldingChangeRate: -0.4243281471004243,
-    },
-  ];
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+  return response.data.data;
 };
 
+// 예제용 정적 데이터
+//   return {
+//     stockMyPageHoldingDtoList: [
+//       {
+//         stockId: 294,
+//         stockCode: '005930',
+//         stockName: '삼성전자',
+//         stockHoldingBuyAmount: 2,
+//         stockHoldingBuyPrice: 63700,
+//         stockHoldingChange: -100,
+//         stockHoldingChangeRate: -0.15698587127158556,
+//       },
+//       {
+//         stockId: 610,
+//         stockCode: '035720',
+//         stockName: '카카오',
+//         stockHoldingBuyAmount: 3,
+//         stockHoldingBuyPrice: 35350,
+//         stockHoldingChange: -150,
+//         stockHoldingChangeRate: -0.4243281471004243,
+//       },
+//     ],
+//     stockMyPageTransactionDtoList: [
+//       {
+//         stockId: 294,
+//         stockCode: '005930',
+//         stockName: '삼성전자',
+//         stockTransactionAmount: 1,
+//         stockTransactionPrice: 63700,
+//         stockTransactionTotalPrice: 63700,
+//         stockTransactionType: 'BUY',
+//         stockTransactionDate: '2024-09-20T11:27:27.24405',
+//       },
+//       {
+//         stockId: 294,
+//         stockCode: '005930',
+//         stockName: '삼성전자',
+//         stockTransactionAmount: 1,
+//         stockTransactionPrice: 63800,
+//         stockTransactionTotalPrice: 63800,
+//         stockTransactionType: 'SELL',
+//         stockTransactionDate: '2024-09-20T11:32:11.38858',
+//       },
+//       {
+//         stockId: 610,
+//         stockCode: '035720',
+//         stockName: '카카오',
+//         stockTransactionAmount: 3,
+//         stockTransactionPrice: 35350,
+//         stockTransactionTotalPrice: 106050,
+//         stockTransactionType: 'BUY',
+//         stockTransactionDate: '2024-09-20T11:38:31.451143',
+//       },
+//     ],
+//   };
+
 // 커스텀 훅
-export const useStockHoldings = () => {
-  return useQuery<StockHolding[], Error>({
-    queryKey: ['stockHoldings'],
-    queryFn: fetchStockHoldings,
-    refetchInterval: 60000, // 60초마다 데이터 다시 가져오기 (필요에 따라 조정)
-    // 기타 옵션 추가 가능
+export const useMyStockData = () => {
+  return useQuery<ApiResponse['data'], Error>({
+    queryKey: ['data'],
+    queryFn: fetchMyStockData,
   });
 };

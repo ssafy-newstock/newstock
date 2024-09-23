@@ -2,7 +2,7 @@
 
 import styled, { useTheme } from 'styled-components';
 import ReactApexChart from 'react-apexcharts';
-import { useStockHoldings } from '@hooks/useStockHoldings';
+import { useMyStockData } from '@hooks/useStockHoldings';
 import { ApexOptions } from 'apexcharts';
 import { groupTopItems } from '@utils/groupTopItems';
 
@@ -27,15 +27,19 @@ const TotalAmount = styled.div`
 `;
 
 interface DonutChartProps {
-  type: 'valuation' | 'count'; // 차트 타입을 지정하는 prop
+  type: 'valuation' | 'count';
 }
 
 const DonutChart: React.FC<DonutChartProps> = ({ type }) => {
-  const { data } = useStockHoldings();
+  const { data } = useMyStockData();
   const theme = useTheme();
 
   // 데이터 그룹화 (상위 5개 항목)
-  const { labels, series } = groupTopItems(data || [], 5, type);
+  const { labels, series } = groupTopItems(
+    data?.stockMyPageHoldingDtoList || [],
+    5,
+    type
+  );
 
   let titleText = '';
   let totalAmountDisplay = '';
@@ -45,9 +49,9 @@ const DonutChart: React.FC<DonutChartProps> = ({ type }) => {
     const totalValuation = series.reduce((acc, curr) => acc + curr, 0);
     totalAmountDisplay = `${totalValuation.toLocaleString()}원`;
   } else if (type === 'count') {
-    titleText = '주식 개수';
+    titleText = '보유량';
     const totalCount = series.reduce((acc, curr) => acc + curr, 0);
-    totalAmountDisplay = `${totalCount.toLocaleString()}개`;
+    totalAmountDisplay = `${totalCount.toLocaleString()}주(호)`;
   }
 
   const options: ApexOptions = {
@@ -92,7 +96,7 @@ const DonutChart: React.FC<DonutChartProps> = ({ type }) => {
         formatter: function (val: number) {
           return type === 'valuation'
             ? `${val.toLocaleString()}원`
-            : `${val.toLocaleString()}개`;
+            : `${val.toLocaleString()}주`;
         },
       },
     },

@@ -1,8 +1,7 @@
 // src/features/MyStock/CenterContent.tsx
 
-import React from 'react';
 import DonutChart from '@features/MyStock/DonutChart';
-import { useStockHoldings } from '../../hooks/useStockHoldings';
+import { useMyStockData } from '@hooks/useStockHoldings';
 import {
   CenterContentBottomiv,
   CenterContentDiv,
@@ -13,10 +12,10 @@ import {
 import { TextP_22 } from '@features/MyStock/myStockStyledComponent';
 
 const CenterContent: React.FC = () => {
-  const { data } = useStockHoldings();
+  const { data } = useMyStockData();
 
   // 데이터가 없을 경우 대비 기본값 설정
-  const stockData = data || [];
+  const stockData = data?.stockMyPageHoldingDtoList || [];
 
   // 메트릭 계산
   const totalPurchase =
