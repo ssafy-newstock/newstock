@@ -1,3 +1,6 @@
+import { Center } from '@components/Center';
+import { Right } from '@components/Right';
+import { RightVacant } from '@components/RightVacant';
 import { StockCardRow, StockGridRow } from '@features/Stock/styledComponent';
 import styled from 'styled-components';
 
@@ -11,7 +14,7 @@ export const CenterContentDiv = styled.div`
   align-self: stretch;
 `;
 
-export const CenterContentBottomiv = styled.div`
+export const CenterContentBottomDiv = styled.div`
   display: flex;
   padding: 25px 0px;
   justify-content: space-between;
@@ -57,4 +60,20 @@ export const MyStockCardRow = styled(StockCardRow)`
 export const MyStockGridRow = styled(StockGridRow)`
   width: 100%;
   margin: 1.25rem 0rem;
+`;
+
+export const CenterWrapper = styled(Center)<{ $isActive: boolean }>`
+  flex: ${({ $isActive }) => ($isActive ? '0 0 70%' : '0 0 80%')};
+  transition: flex 0.3s ease;
+  /* Center 컴포넌트의 기존 스타일 포함 */
+`;
+
+export const RightWrapper = styled(Right)`
+  flex: 0 0 30%;
+  transition: flex 0.3s ease;
+`;
+
+export const RightVacantWrapper = styled(RightVacant)`
+  flex: 0 0 20%;
+  transition: flex 0.3s ease;
 `;
