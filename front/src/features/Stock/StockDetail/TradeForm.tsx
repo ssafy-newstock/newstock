@@ -104,6 +104,7 @@ const BuyForm: React.FC<TradeFormProps> = ({ initialPrice, stockCode }) => {
           headers: {
             Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMTYxODI2NjI5MTU2MDk4MzY4MjAiLCJyb2xlIjoiUk9MRV9VU0VSIiwibWVtYmVySWQiOjEsImlhdCI6MTcyNjcyOTUwOCwiZXhwIjoxNzI5MzIxNTA4fQ.Pbt8vCn7uiV5KIZAX0XpIEN8Ysi2dTlch0Ty_gWpB8t-STtELADpBcw-oGBfeFoPr1PfbmKX8nI5gjguSJAYmQ`, // 실제 인증 토큰을 사용하세요
           },
+          withCredentials: true,
         }
       );
 
@@ -203,6 +204,7 @@ const SellForm: React.FC<TradeFormProps> = ({ initialPrice, stockCode }) => {
           headers: {
             Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMTYxODI2NjI5MTU2MDk4MzY4MjAiLCJyb2xlIjoiUk9MRV9VU0VSIiwibWVtYmVySWQiOjEsImlhdCI6MTcyNjcyOTUwOCwiZXhwIjoxNzI5MzIxNTA4fQ.Pbt8vCn7uiV5KIZAX0XpIEN8Ysi2dTlch0Ty_gWpB8t-STtELADpBcw-oGBfeFoPr1PfbmKX8nI5gjguSJAYmQ`, // 실제 인증 토큰을 사용하세요
           },
+          withCredentials: true,
         }
       );
       console.log('Sell Response:', response.data);
