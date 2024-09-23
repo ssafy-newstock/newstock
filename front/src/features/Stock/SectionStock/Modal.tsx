@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { ICategoryStock, IStock } from '@features/Stock/types';
+import { ICategoryStock } from '@features/Stock/types';
 import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
 import { categoryImage } from '@features/Stock/category';
@@ -16,9 +16,9 @@ import {
   TextLarge,
   TextLeft,
 } from '@features/Stock/styledComponent';
-import { useQueryClient } from '@tanstack/react-query';
 import { formatUnit } from '@utils/formatUnit';
 import blueLogo from '@assets/Stock/blueLogo.png';
+import useAllStockStore from '@store/useAllStockStore';
 
 interface ModalProps {
   onClose: () => void;
@@ -70,11 +70,7 @@ const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
       ? categoryImage[category.industryName as keyof typeof categoryImage]
       : defaultImage;
 
-  const queryClient = useQueryClient();
-
-  // 캐시된 allStock 데이터를 가져옴
-  const allStock = queryClient.getQueryData<IStock[]>(['allStockData']);
-  console.log('allStock', allStock);
+  const { allStock } = useAllStockStore();
 
   const mapIndustryNames: { [key: string]: string | string[] } = {
     음식료품: '음식료품',

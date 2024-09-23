@@ -13,12 +13,11 @@ import { categoryImage } from '@features/Stock/category';
 import AllCategoryStock, {
   AllCategoryFirstRow,
 } from '@features/Stock/SectionStock/AllCategoryStock';
-import axios from 'axios';
-import { useQuery } from '@tanstack/react-query';
 import { ICategoryStock } from '@features/Stock/types';
 import Modal from '@features/Stock/SectionStock/Modal';
 import { useState } from 'react';
 import styled from 'styled-components';
+import useCategoryStockStore from '@store/useCategoryStockStore';
 
 // 밑줄 스타일
 const Underline = styled.div<{ activeIndex: number }>`
@@ -34,13 +33,14 @@ const Underline = styled.div<{ activeIndex: number }>`
 `;
 
 const SectionStockPage = () => {
+  const { categoryStock } = useCategoryStockStore();
   // 모달 관련
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] =
     useState<ICategoryStock | null>(null);
 
   // 정렬 상태 관리 (asc, desc를 구분하거나, 기본 정렬 방식으로 변경 가능)
-  const [sortedIndustryData, setSortedIndustryData] = useState<
+  const [sortedCategoryStock, setSortedCategoryStock] = useState<
     ICategoryStock[] | null
   >(null);
 
@@ -57,18 +57,6 @@ const SectionStockPage = () => {
     setIsModalOpen(false);
   };
 
-  const { data: industryData, isLoading: isIndustryLoading } = useQuery({
-    queryKey: ['industryData'],
-    queryFn: async () => {
-      const response = await axios.get(
-        'https://newstock.info/api/stock/industry-list'
-      );
-      console.log(response.data);
-
-      return response.data.data;
-    },
-  });
-
   // 정렬 함수: 문자열을 숫자로 변환한 후 정렬
   const sortData = (
     key: keyof ICategoryStock,
@@ -77,8 +65,8 @@ const SectionStockPage = () => {
   ) => {
     setActiveButtonIndex(index); // 선택된 버튼 인덱스 저장
 
-    if (industryData) {
-      const sortedData = [...industryData].sort((a, b) => {
+    if (categoryStock) {
+      const sortedData = [...categoryStock].sort((a, b) => {
         const valueA = parseFloat(a[key]);
         const valueB = parseFloat(b[key]);
 
@@ -87,16 +75,12 @@ const SectionStockPage = () => {
         }
         return 0; // 숫자가 아닌 값은 무시
       });
-      setSortedIndustryData(sortedData);
+      setSortedCategoryStock(sortedData);
     }
   };
 
-  if (isIndustryLoading) {
-    return <div>Loading...</div>;
-  }
-
   // 렌더링할 데이터 선택
-  const dataToRender = sortedIndustryData || industryData;
+  const dataToRender = sortedCategoryStock || categoryStock;
 
   return (
     <>

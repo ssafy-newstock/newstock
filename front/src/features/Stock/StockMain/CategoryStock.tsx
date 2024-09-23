@@ -20,7 +20,7 @@ const CategoryStock: React.FC<ICategory> = ({
 }) => {
   return (
     <CategoryCardColumn onClick={onClick}>
-      <CategoryImgWrapper backgroundColor={imageBgColor.toString()}>
+      <CategoryImgWrapper $bgColor={imageBgColor.toString()}>
         <CategoryImgMain src={imageUrl.toString()} alt={blueLogo} />
       </CategoryImgWrapper>
       <CategoryInfo>

@@ -9,11 +9,10 @@ import {
 } from '@features/Stock/styledComponent';
 import { IStock } from '@features/Stock/types';
 import { RightVacant } from '@components/RightVacant';
-import axios from 'axios';
-import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ButtonWrapper, SortButton } from '@features/Stock/styledComponent';
 import styled from 'styled-components';
+import useAllStockStore from '@store/useAllStockStore';
 
 const Underline = styled.div<{ $sortBy: string }>`
   position: absolute;
@@ -38,23 +37,14 @@ const Underline = styled.div<{ $sortBy: string }>`
   transition: left 0.3s ease; /* 애니메이션 효과 */
 `;
 const AllStockPage: React.FC = () => {
-  const { data: allStockData, isLoading: isAllStockLoading } = useQuery({
-    queryKey: ['allStockData'],
-    queryFn: async () => {
-      const response = await axios.get(
-        'https://newstock.info/api/stock/price-list'
-      );
-      return response.data.data;
-    },
-  });
-
+  const { allStock } = useAllStockStore();
   const [sortBy, setSortBy] = useState<
     'stckPrpr' | 'prdyCtrt' | 'acmlTrPbmn' | 'acmlVol'
   >('stckPrpr');
 
-  if (isAllStockLoading) {
-    return <div>Loading...</div>;
-  }
+  // if (isAllStockLoading) {
+  //   return <div>Loading...</div>;
+  // }
 
   const sortData = (data: IStock[]) => {
     return data.sort((a, b) => {
@@ -73,7 +63,7 @@ const AllStockPage: React.FC = () => {
     });
   };
 
-  const sortedStockData = sortData([...allStockData]);
+  const sortedStockData = sortData([...allStock]);
 
   return (
     <>
