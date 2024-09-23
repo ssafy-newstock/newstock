@@ -61,7 +61,18 @@ public class StockController {
                 .body(response);
     }
 
-    @PostMapping("{stockCode}")
+    @GetMapping("/favorite")
+    public ResponseEntity<?> getLikeStore(@RequestHeader("authorization") String token){
+        Long memberId = stockTransactionService.getMemberId(token);
+        List<StockFavoriteDto> stockMyPageFavoriteDtoList = stockService.getStockMyPageFavoriteDtoList(memberId);
+
+        List<StockFavoriteResponse> response = stockMyPageFavoriteDtoList.stream()
+                .map(stockFavoriteDto -> modelMapper.map(stockFavoriteDto, StockFavoriteResponse.class))
+                .toList();
+        return ResponseEntity.ok(success(response));
+    }
+
+    @PostMapping("/favorite/{stockCode}")
     public ResponseEntity<?> likeStore(@RequestHeader("authorization") String token,
                                         @PathVariable String stockCode){
         Long memberId = stockTransactionService.getMemberId(token);
@@ -72,7 +83,7 @@ public class StockController {
         return ResponseEntity.ok(success(response));
     }
 
-    @DeleteMapping("{stockCode}")
+    @DeleteMapping("/favorite/{stockCode}")
     public ResponseEntity<?> unlikeStore(@RequestHeader("authorization") String token,
                                         @PathVariable String stockCode){
         Long memberId = stockTransactionService.getMemberId(token);

@@ -204,14 +204,9 @@ public class StockService {
      * @return
      */
     public StockMyPageDto getStockMyPage(Long memberId) {
-        List<StocksTransactions> myStockTransactions = stockTransactionRepository.findAllByMemberIdWithStock(memberId);
-        List<StocksHoldings> myStockHoldings = stockHoldingRepository.findAllByMemberIdWithStock(memberId);
-        List<StocksFavorite> myStockFavorites = stockFavoriteRepository.findAllByMemberIdWithStock(memberId);
-
-
-        List<StockMyPageHoldingDto> stockMyPageHoldingDtoList = getStockMyPageHoldingDtoList(myStockHoldings);
-        List<StockMyPageTransactionDto> stockMyPageTransactionDtoList = getStockMyPageTransactionDtoList(myStockTransactions);
-        List<StockFavoriteDto> stockMyPageFavoriteDtoList = getStockMyPageFavoriteDtoList(myStockFavorites);
+        List<StockMyPageHoldingDto> stockMyPageHoldingDtoList = getStockMyPageHoldingDtoList(memberId);
+        List<StockMyPageTransactionDto> stockMyPageTransactionDtoList = getStockMyPageTransactionDtoList(memberId);
+        List<StockFavoriteDto> stockMyPageFavoriteDtoList = getStockMyPageFavoriteDtoList(memberId);
 
         log.info("{}님이 주식 마이페이지 조회를 했습니다.", memberId);
         return new StockMyPageDto(stockMyPageHoldingDtoList, stockMyPageTransactionDtoList, stockMyPageFavoriteDtoList);
@@ -222,8 +217,10 @@ public class StockService {
      * @param myStockHoldings
      * @return
      */
-    private List<StockMyPageHoldingDto> getStockMyPageHoldingDtoList(List<StocksHoldings> myStockHoldings) {
-        List<StockMyPageHoldingDto> stockMyPageHoldingDtoList = myStockHoldings.stream()
+    private List<StockMyPageHoldingDto> getStockMyPageHoldingDtoList(Long memberId) {
+        List<StocksHoldings> myStockHoldings = stockHoldingRepository.findAllByMemberIdWithStock(memberId);
+
+        return myStockHoldings.stream()
                 .map(myStockHolding -> {
                     Stocks stock = myStockHolding.getStock();
 
@@ -245,8 +242,6 @@ public class StockService {
                             changeRate
                     );
                 }).toList();
-
-        return stockMyPageHoldingDtoList;
     }
 
     /**
@@ -254,8 +249,10 @@ public class StockService {
      * @param myStockTransactions
      * @return
      */
-    private static List<StockMyPageTransactionDto> getStockMyPageTransactionDtoList(List<StocksTransactions> myStockTransactions) {
-        List<StockMyPageTransactionDto> stockMyPageTransactionDtoList = myStockTransactions.stream()
+    private List<StockMyPageTransactionDto> getStockMyPageTransactionDtoList(Long memberId) {
+        List<StocksTransactions> myStockTransactions = stockTransactionRepository.findAllByMemberIdWithStock(memberId);
+
+        return myStockTransactions.stream()
                 .map(myStockTransaction -> {
                     Stocks stock = myStockTransaction.getStock();
 
@@ -269,8 +266,6 @@ public class StockService {
                             myStockTransaction.getStockTransactionType(),
                             myStockTransaction.getStockTransactionDate());
                 }).toList();
-
-        return stockMyPageTransactionDtoList;
     }
 
     /**
@@ -278,8 +273,10 @@ public class StockService {
      * @param myStockFavorites
      * @return
      */
-    private List<StockFavoriteDto> getStockMyPageFavoriteDtoList(List<StocksFavorite> myStockFavorites) {
-        List<StockFavoriteDto> stockFavoriteDtoList = myStockFavorites.stream()
+    public List<StockFavoriteDto> getStockMyPageFavoriteDtoList(Long memberId) {
+        List<StocksFavorite> myStockFavorites = stockFavoriteRepository.findAllByMemberIdWithStock(memberId);
+
+        return myStockFavorites.stream()
                 .map(myStockFavorite -> {
                     Stocks stock = myStockFavorite.getStock();
 
@@ -288,7 +285,6 @@ public class StockService {
                             stock.getStockCode(),
                             stock.getStockName());
                 }).toList();
-        return stockFavoriteDtoList;
     }
 
     /**
