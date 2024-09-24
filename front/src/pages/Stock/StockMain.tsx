@@ -27,6 +27,7 @@ import useTop10StockStore from '@store/useTop10StockStore';
 import { useQuery } from '@tanstack/react-query';
 import { axiosInstance } from '@api/axiosInstance';
 import useAllStockStore from '@store/useAllStockStore';
+import useAuthStore from '@store/useAuthStore';
 
 interface favoriteStock {
   stockFavoriteId: number;
@@ -39,6 +40,7 @@ const StockMainPage = () => {
   const { categoryStock } = useCategoryStockStore();
   const { top10Stock } = useTop10StockStore();
   const { allStock } = useAllStockStore();
+  const { isLogin } = useAuthStore();
 
   const navigate = useNavigate();
   const allStockNavigate = () => {
@@ -63,39 +65,43 @@ const StockMainPage = () => {
     setIsModalOpen(false);
   };
 
-  const { data: favoriteStockList, isLoading: isFavoriteStockLoading } = useQuery({
-    queryKey: ['favoriteStockList'],
-    queryFn: async () => {
-      const response = await axiosInstance.get('/api/stock/favorite');
-      return response.data.data;
-    },
-  });
+  // 관심 주식 목록 조회
+  const { data: favoriteStockList, isLoading: isFavoriteStockLoading } =
+    useQuery({
+      queryKey: ['favoriteStockList'],
+      queryFn: async () => {
+        const response = await axiosInstance.get('/api/stock/favorite');
+        return response.data.data;
+      },
+      enabled: isLogin,
+    });
 
   // favoriteStock의 stockId를 Set으로 만들어 빠른 검색을 가능하게 합니다.
-  const favoriteStockCode = new Set(
-    favoriteStockList?.map((stock: favoriteStock) => stock.stockCode)
-  );
+  const favoriteStockCode = isLogin
+    ? new Set(favoriteStockList?.map((stock: favoriteStock) => stock.stockCode))
+    : new Set();
 
-  console.log(favoriteStockCode);
-  console.log(allStock);
-  // allStock.forEach(stock => {
-  //   console.log(`Checking stock: ${stock.stockCode}, in favorite: ${favoriteStockCode.has(stock.stockCode)}`);
-  // });
+  // console.log(favoriteStockCode);
+  // console.log(allStock);
 
-  const favoriteAllStock = allStock?.filter((stock) => {
-    return favoriteStockCode.has(stock.stockCode);
-  });
+  const favoriteAllStock = isLogin
+    ? allStock?.filter((stock) => {
+        return favoriteStockCode.has(stock.stockCode);
+      })
+    : [];
 
-  const favoriteTop10Stock = top10Stock?.filter((stock) => {
-    return favoriteStockCode.has(stock.stockCode);
-  });
+  const favoriteTop10Stock = isLogin
+    ? top10Stock?.filter((stock) => {
+        return favoriteStockCode.has(stock.stockCode);
+      })
+    : [];
 
-  console.log('favoriteAllStock', favoriteAllStock);
-  console.log('favoriteTop10Stock', favoriteTop10Stock);
+  // console.log('favoriteAllStock', favoriteAllStock);
+  // console.log('favoriteTop10Stock', favoriteTop10Stock);
 
-  const favoriteStock = favoriteAllStock?.concat(favoriteTop10Stock);
+  const favoriteStock = isLogin ? favoriteAllStock?.concat(favoriteTop10Stock) : [];
 
-  if (isFavoriteStockLoading) {
+  if (isFavoriteStockLoading && isLogin) {
     return <div>Loading...</div>; // 또는 로딩 컴포넌트
   }
 
@@ -103,15 +109,22 @@ const StockMainPage = () => {
     <>
       <LeftStock />
       <Center style={{ padding: '1rem' }}>
-        <StockHeader>관심 종목</StockHeader>
-        <HrTag />
-        <StockGridColumn>
-          {favoriteStock?.map((stock: IStock, index: number) => (
-            <FavoriteStock key={index} stock={stock} />
-          ))}
-        </StockGridColumn>
+        {isLogin ? (
+          <>
+            {' '}
+            <StockHeader>관심 종목</StockHeader>
+            <HrTag />
+            <StockGridColumn>
+              {favoriteStock?.map((stock: IStock, index: number) => (
+                <FavoriteStock key={index} stock={stock} />
+              ))}
+            </StockGridColumn>
+          </>
+        ) : (
+          <></>
+        )}
 
-        <DividedSection>
+        <DividedSection style={{marginTop: isLogin? '1.5rem':'0rem'}}>
           <StockHeaderWrapper>
             <StockHeader>실시간 차트</StockHeader>
             <More handlClick={allStockNavigate} />
