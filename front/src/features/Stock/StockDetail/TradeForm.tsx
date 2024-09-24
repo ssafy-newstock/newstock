@@ -58,14 +58,14 @@ const ButtonWrapper = styled.div`
   gap: 1rem;
 `;
 
-const Button = styled.button<{ variant: 'buy' | 'sell' }>`
+const Button = styled.button<{ $variant: 'buy' | 'sell' }>`
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 1rem;
   color: #fff;
   cursor: pointer;
   background-color: ${(props) =>
-    props.variant === 'buy' ? '#4caf50' : '#f44336'};
+    props.$variant === 'buy' ? '#4caf50' : '#f44336'};
   &:hover {
     opacity: 0.8;
   }
@@ -155,7 +155,7 @@ const BuyForm: React.FC<TradeFormProps> = ({ initialPrice, stockCode }) => {
         </InputRow>
       </InputWrapper>
       <ButtonWrapper>
-        <Button type="button" variant="buy" onClick={handleSubmit(onSubmit)}>
+        <Button type="button" $variant="buy" onClick={handleSubmit(onSubmit)}>
           Buy
         </Button>
       </ButtonWrapper>
@@ -246,7 +246,7 @@ const SellForm: React.FC<TradeFormProps> = ({ initialPrice, stockCode }) => {
         </InputRow>
       </InputWrapper>
       <ButtonWrapper>
-        <Button type="button" variant="sell" onClick={handleSubmit(onSubmit)}>
+        <Button type="button" $variant="sell" onClick={handleSubmit(onSubmit)}>
           Sell
         </Button>
       </ButtonWrapper>
