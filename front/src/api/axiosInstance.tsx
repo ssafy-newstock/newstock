@@ -53,12 +53,12 @@ const refreshToken = async (): Promise<string> => {
 // 요청 인터셉터 설정: 모든 요청에 대해 헤더에 accessToken을 추가
 axiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig<{ headers: string }>) => {
-    const access_token = sessionStorage.getItem('authorization');
+    const accessToken = sessionStorage.getItem('accessToken');
 
     // config.headers 초기화
     config.headers = config.headers || {};
-    if (access_token !== null) {
-      config.headers['Authorization'] = `${access_token}`;
+    if (accessToken !== null) {
+      config.headers['Authorization'] = `Bearer ${accessToken}`;
     }
     return config;
   },

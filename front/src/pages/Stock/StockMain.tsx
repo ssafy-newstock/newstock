@@ -1,8 +1,4 @@
-import { useEffect, useState } from 'react';
-import SockJS from 'sockjs-client';
-import Stomp from 'stompjs';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import { useState } from 'react';
 import { Center } from '@components/Center';
 import LeftStock from '@components/LeftStock';
 import { categoryImage } from '@features/Stock/category';
@@ -12,7 +8,8 @@ import {
   StockGridRow,
   CategoryGridColumn,
   StockHeader,
-  StockHeaderMore,
+  StockHeaderWrapper,
+  DividedSection,
 } from '@features/Stock/styledComponent';
 import FavoriteStock from '@features/Stock/StockMain/FavoriteStock';
 import RealTimeStock, {
@@ -22,11 +19,27 @@ import CategoryStock from '@features/Stock/StockMain/CategoryStock';
 import More from '@features/Stock/More';
 import { ICategoryStock, IStock } from '@features/Stock/types';
 import { RightVacant } from '@components/RightVacant';
-import { stockData } from '@features/Stock/stock';
+// import { stockData } from '@features/Stock/stock';
 import { useNavigate } from 'react-router-dom';
 import Modal from '@features/Stock/SectionStock/Modal';
+import useCategoryStockStore from '@store/useCategoryStockStore';
+import useTop10StockStore from '@store/useTop10StockStore';
+import { useQuery } from '@tanstack/react-query';
+import { axiosInstance } from '@api/axiosInstance';
+import useAllStockStore from '@store/useAllStockStore';
+
+interface favoriteStock {
+  stockFavoriteId: number;
+  stockId: number;
+  stockCode: string;
+  stockName: string;
+}
 
 const StockMainPage = () => {
+  const { categoryStock } = useCategoryStockStore();
+  const { top10Stock } = useTop10StockStore();
+  const { allStock } = useAllStockStore();
+
   const navigate = useNavigate();
   const allStockNavigate = () => {
     navigate('/all-stock');
@@ -50,124 +63,75 @@ const StockMainPage = () => {
     setIsModalOpen(false);
   };
 
-  const queryClient = useQueryClient();
-  // const [isWebSocketConnected, setIsWebSocketConnected] = useState(false);
-
-  // 웹소켓 초기화 및 구독 설정
-  useEffect(() => {
-    const socket = new SockJS('https://newstock.info/api/stock/websocket');
-    const stompClient = Stomp.over(socket);
-
-    stompClient.connect({}, () => {
-      // setIsWebSocketConnected(true);
-      // Top 10 종목 정보 구독
-      stompClient.subscribe('/api/sub/stock/info/live', (message) => {
-        const newStockPrice = JSON.parse(message.body);
-
-        queryClient.setQueryData(
-          ['top10StockData'],
-          (prevStockPrices: IStock[]) => {
-            return prevStockPrices.map((stock) =>
-              stock.stockCode === newStockPrice.stockCode
-                ? newStockPrice
-                : stock
-            );
-          }
-        );
-      });
-
-      // 산업군 정보 구독 (10분 단위 갱신)
-      stompClient.subscribe('/api/sub/stock/industry/info', (message) => {
-        const updatedIndustryData = JSON.parse(message.body);
-        console.log('updatedIndustryData', updatedIndustryData);
-        queryClient.setQueryData(['industryData'], updatedIndustryData);
-      });
-
-      // 코스피 전 종목 정보 구독 (30~40초 단위 갱신)
-      stompClient.subscribe('/api/sub/stock/info', (message) => {
-        const updatedStockData = JSON.parse(message.body);
-        console.log('updatedStockData', updatedStockData);
-        queryClient.setQueryData(['allStockData'], updatedStockData);
-      });
-    });
-
-    return () => {
-      if (stompClient && stompClient.connected) {
-        stompClient.disconnect(() => {
-          console.log('WebSocket disconnected');
-          // setIsWebSocketConnected(false); // 연결 상태를 업데이트
-        });
-      }
-    };
-  }, [queryClient]);
-
-  // 최초 데이터 조회 - axios 사용
-  const { data: top10StockData, isLoading: isTop10StockLoading } = useQuery({
-    queryKey: ['top10StockData'],
+  const { data: favoriteStockList, isLoading: isFavoriteStockLoading } = useQuery({
+    queryKey: ['favoriteStockList'],
     queryFn: async () => {
-      const response = await axios.get(
-        'https://newstock.info/api/stock/price-list/live'
-      );
-      console.log('top10StockData', response.data.data);
+      const response = await axiosInstance.get('/api/stock/favorite');
       return response.data.data;
     },
   });
 
-  const { data: industryData, isLoading: isIndustryLoading } = useQuery({
-    queryKey: ['industryData'],
-    queryFn: async () => {
-      const response = await axios.get(
-        'https://newstock.info/api/stock/industry-list'
-      );
-      console.log('industryData', response.data.data);
+  // favoriteStock의 stockId를 Set으로 만들어 빠른 검색을 가능하게 합니다.
+  const favoriteStockCode = new Set(
+    favoriteStockList?.map((stock: favoriteStock) => stock.stockCode)
+  );
 
-      return response.data.data;
-    },
+  console.log(favoriteStockCode);
+  console.log(allStock);
+  // allStock.forEach(stock => {
+  //   console.log(`Checking stock: ${stock.stockCode}, in favorite: ${favoriteStockCode.has(stock.stockCode)}`);
+  // });
+
+  const favoriteAllStock = allStock?.filter((stock) => {
+    return favoriteStockCode.has(stock.stockCode);
   });
 
-  const { data: allStockData, isLoading: isAllStockLoading } = useQuery({
-    queryKey: ['allStockData'],
-    queryFn: async () => {
-      const response = await axios.get(
-        'https://newstock.info/api/stock/price-list'
-      );
-      console.log('allStockData', response.data.data);
-      console.log('allStockData', allStockData);
-      return response.data.data;
-    },
+  const favoriteTop10Stock = top10Stock?.filter((stock) => {
+    return favoriteStockCode.has(stock.stockCode);
   });
 
-  if (isTop10StockLoading || isIndustryLoading || isAllStockLoading) {
-    return <div>Loading...</div>;
+  console.log('favoriteAllStock', favoriteAllStock);
+  console.log('favoriteTop10Stock', favoriteTop10Stock);
+
+  const favoriteStock = favoriteAllStock?.concat(favoriteTop10Stock);
+
+  if (isFavoriteStockLoading) {
+    return <div>Loading...</div>; // 또는 로딩 컴포넌트
   }
 
   return (
     <>
       <LeftStock />
-      <Center>
+      <Center style={{ padding: '1rem' }}>
         <StockHeader>관심 종목</StockHeader>
         <HrTag />
         <StockGridColumn>
-          {stockData?.map((stock: IStock, index: number) => (
+          {favoriteStock?.map((stock: IStock, index: number) => (
             <FavoriteStock key={index} stock={stock} />
           ))}
         </StockGridColumn>
 
-        <StockHeaderMore>실시간 차트</StockHeaderMore>
-        <More handlClick={allStockNavigate} />
-        <HrTag />
-        <StockGridRow>
-          <RealTimeStockFirstRow />
-          {top10StockData?.map((stock: IStock, index: number) => (
-            <RealTimeStock key={index} stock={stock} />
-          ))}
-        </StockGridRow>
+        <DividedSection>
+          <StockHeaderWrapper>
+            <StockHeader>실시간 차트</StockHeader>
+            <More handlClick={allStockNavigate} />
+          </StockHeaderWrapper>
+          <HrTag />
+          <StockGridRow>
+            <RealTimeStockFirstRow />
+            {top10Stock?.map((stock: IStock, index: number) => (
+              <RealTimeStock key={index} stock={stock} />
+            ))}
+          </StockGridRow>
+        </DividedSection>
 
-        <StockHeaderMore>카테고리</StockHeaderMore>
-        <More handlClick={categoryNavigate} />
+        <StockHeaderWrapper>
+          <StockHeader>카테고리</StockHeader>
+          <More handlClick={categoryNavigate} />
+        </StockHeaderWrapper>
         <HrTag />
         <CategoryGridColumn>
-          {industryData
+          {categoryStock
             ?.sort(
               (a: ICategoryStock, b: ICategoryStock) =>
                 Math.abs(parseFloat(b.bstpNmixPrdyCtrt)) -
@@ -178,7 +142,7 @@ const StockMainPage = () => {
               // 기본 이미지 객체
               const defaultImage = {
                 url: 'default-image-url',
-                backgroundColor: 'default-bg-color',
+                bgColor: 'default-bg-color',
               };
               // 카테고리 이미지 객체를 찾고, 없으면 기본 이미지 사용
               const imageUrl =
@@ -192,7 +156,7 @@ const StockMainPage = () => {
                   key={index}
                   category={category}
                   imageUrl={imageUrl.url}
-                  imageBgColor={imageUrl.backgroundColor}
+                  imageBgColor={imageUrl.bgColor}
                   onClick={() => openModal(category)}
                 />
               );

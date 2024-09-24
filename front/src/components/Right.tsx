@@ -5,4 +5,8 @@ export const Right = styled.div`
   /* flex-shrink: 0; */
   height: 100%;
   overflow: auto;
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
 `;
