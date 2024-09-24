@@ -73,9 +73,7 @@ public class KISSocketHandler extends TextWebSocketHandler {
     @Transactional
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
-        // log.info("message : {}", message);
         String payload = message.getPayload().toString();
-        log.info("payload : {}", payload);
 
         // 파이프(|)로 구분된 값들로 분리
         String[] values = payload.split("\\|");
