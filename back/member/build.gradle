@@ -37,6 +37,9 @@ dependencies {
     // 모델매퍼
     implementation 'org.modelmapper:modelmapper:3.2.0'
 
+    // WebSocket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket:3.3.0'
+
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
