@@ -22,6 +22,7 @@ import { axiosInstance } from '@api/axiosInstance';
 import { HeartFill } from '@features/Stock/HeartFill';
 import { Heart } from '@features/Stock/Heart';
 import useAuthStore from '@store/useAuthStore';
+import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 const Button = styled.div`
   background-color: ${({ theme }) => theme.profileBackgroundColor};
@@ -30,52 +31,92 @@ const Button = styled.div`
   padding: 0.5rem 1rem;
 `;
 
+interface favoriteStock {
+  stockFavoriteId: number;
+  stockId: number;
+  stockCode: string;
+  stockName: string;
+}
+
 const StockDetailPage = () => {
   const location = useLocation();
   const { stock } = location.state as { stock: IStock };
   const initialPrice = Number(stock.stckPrpr);
   const { isLogin } = useAuthStore();
 
-  // 즐겨찾기 상태
-  const [isFavorite, setIsFavorite] = useState(false);
+  // // 즐겨찾기 상태
+  // const [isFavorite, setIsFavorite] = useState(false);
 
-  // 즐겨찾기 데이터를 불러와서 해당 주식이 즐겨찾기 상태인지 확인
-  useEffect(() => {
-    const fetchFavorites = async () => {
-      try {
-        const response = await axiosInstance.get('/api/stock/favorite');
-        const favorites = response.data.data;
+  // // 즐겨찾기 데이터를 불러와서 해당 주식이 즐겨찾기 상태인지 확인
+  // useEffect(() => {
+  //   const fetchFavorites = async () => {
+  //     try {
+  //       const response = await axiosInstance.get('/api/stock/favorite');
+  //       const favorites = response.data.data;
 
-        // 현재 주식이 즐겨찾기 목록에 있는지 확인
-        const isFav = favorites.some(
-          (fav: { stockCode: string }) => fav.stockCode === stock.stockCode
-        );
-        setIsFavorite(isFav);
-      } catch (error) {
-        console.error('즐겨찾기 데이터를 가져오는 중 오류 발생', error);
+  //       // 현재 주식이 즐겨찾기 목록에 있는지 확인
+  //       const isFav = favorites.some(
+  //         (fav: { stockCode: string }) => fav.stockCode === stock.stockCode
+  //       );
+  //       setIsFavorite(isFav);
+  //     } catch (error) {
+  //       console.error('즐겨찾기 데이터를 가져오는 중 오류 발생', error);
+  //     }
+  //   };
+
+  //   fetchFavorites();
+  // }, [stock.stockCode]);
+
+  // const favoriteStock = async () => {
+  //   try {
+  //     await axiosInstance.post(`/api/stock/favorite/${stock.stockCode}`);
+  //     setIsFavorite(true);
+  //   } catch (error) {
+  //     console.error('즐겨찾기 추가 중 오류 발생', error);
+  //   }
+  // };
+
+  // const cancleFavoriteStock = async () => {
+  //   try {
+  //     await axiosInstance.delete(`/api/stock/favorite/${stock.stockCode}`);
+  //     setIsFavorite(false);
+  //   } catch (error) {
+  //     console.error('즐겨찾기 취소 중 오류 발생', error);
+  //   }
+  // };
+
+  const { data: favoriteStockList, isLoading } = useQuery<favoriteStock[]>({
+    queryKey: ['favoriteStockList'],
+    queryFn: async () => {
+      const response = await axiosInstance.get('/api/stock/favorite');
+      return response.data.data;
+    },
+    enabled: isLogin,
+  });
+
+  const isFavorite = favoriteStockList?.some((fav) => fav.stockCode === stock.stockCode);
+
+  const queryClient = useQueryClient();
+  const code = stock.stockCode;
+  
+  const addFavoriteStock = useMutation(
+      (code:string) => axiosInstance.post<void>(`/api/stock/favorite/${code}`),
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ['favoriteStockList'] });
+        },
       }
-    };
+    );
 
-    fetchFavorites();
-  }, [stock.stockCode]);
-
-  const favoriteStock = async () => {
-    try {
-      await axiosInstance.post(`/api/stock/favorite/${stock.stockCode}`);
-      setIsFavorite(true);
-    } catch (error) {
-      console.error('즐겨찾기 추가 중 오류 발생', error);
+  const deleteFavoriteStock = useMutation(
+    (code:string) => axiosInstance.delete<void>(`/api/stock/favorite/${code}`),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['favoriteStockList'] });
+      },
     }
-  };
+  );
 
-  const cancleFavoriteStock = async () => {
-    try {
-      await axiosInstance.delete(`/api/stock/favorite/${stock.stockCode}`);
-      setIsFavorite(false);
-    } catch (error) {
-      console.error('즐겨찾기 취소 중 오류 발생', error);
-    }
-  };
 
   const showButton = location.pathname.includes('daily-chart');
 
