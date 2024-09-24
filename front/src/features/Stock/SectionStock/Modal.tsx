@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { ICategoryStock, IStock } from '@features/Stock/types';
+import { ICategoryStock } from '@features/Stock/types';
 import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
 import { categoryImage } from '@features/Stock/category';
@@ -16,9 +16,9 @@ import {
   TextLarge,
   TextLeft,
 } from '@features/Stock/styledComponent';
-import { useQueryClient } from '@tanstack/react-query';
 import { formatUnit } from '@utils/formatUnit';
 import blueLogo from '@assets/Stock/blueLogo.png';
+import useAllStockStore from '@store/useAllStockStore';
 
 interface ModalProps {
   onClose: () => void;
@@ -63,18 +63,14 @@ const CloseButton = styled.button`
 const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
   const defaultImage = {
     url: 'default-image-url',
-    backgroundColor: 'default-bg-color',
+    bgColor: 'default-bg-color',
   };
   const imageUrl =
     category.industryName in categoryImage
       ? categoryImage[category.industryName as keyof typeof categoryImage]
       : defaultImage;
 
-  const queryClient = useQueryClient();
-
-  // 캐시된 allStock 데이터를 가져옴
-  const allStock = queryClient.getQueryData<IStock[]>(['allStockData']);
-  console.log('allStock', allStock);
+  const { allStock } = useAllStockStore();
 
   const mapIndustryNames: { [key: string]: string | string[] } = {
     음식료품: '음식료품',
@@ -120,9 +116,9 @@ const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
       <ModalContent onClick={(e) => e.stopPropagation()}>
         {category && (
           <div
-            style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
+            style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}
           >
-            <CategoryImgWrapper backgroundColor={imageUrl.backgroundColor}>
+            <CategoryImgWrapper $bgColor={imageUrl.bgColor}>
               <img src={imageUrl.url} alt="" />
             </CategoryImgWrapper>
             <CategoryCardRow style={{ cursor: 'default' }}>
@@ -138,14 +134,14 @@ const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
               <TextLarge>{category.industryName}</TextLarge>
               <Text>{category.bstpNmixPrpr}</Text>
               <CategoryData
-                isPositive={category.bstpNmixPrdyVrss
+                $isPositive={category.bstpNmixPrdyVrss
                   .toString()
                   .startsWith('-')}
               >
                 {formatChange(category.bstpNmixPrdyVrss.toString())}
               </CategoryData>
               <CategoryData
-                isPositive={category.bstpNmixPrdyCtrt
+                $isPositive={category.bstpNmixPrdyCtrt
                   .toString()
                   .startsWith('-')}
               >
@@ -153,7 +149,7 @@ const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
               </CategoryData>
               <Text>{formatNumber(category.acmlTrPbmn)}</Text>
             </CategoryCardRow>
-            <Text style={{ textAlign: 'center' }}>해당 카테고리의 종목들</Text>
+            <Text style={{ textAlign: 'center', marginTop: '1rem', marginBottom: '0.5rem' }}>해당 카테고리의 종목들</Text>
             <StockCardRow style={{ cursor: 'default' }}>
               <TextLeft>종목명</TextLeft>
               <Text>현재가</Text>
@@ -173,7 +169,7 @@ const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
                   </StockTitle>
                   <StckPrice>{formatNumber(stock.stckPrpr)}원</StckPrice>
                   <StockPrev
-                    isPositive={stock.prdyVrss.toString().startsWith('-')}
+                    $isPositive={stock.prdyVrss.toString().startsWith('-')}
                   >
                     {formatChange(formatNumber(stock.prdyVrss))}원 (
                     {stock.prdyCtrt}

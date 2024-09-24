@@ -32,16 +32,16 @@ const AllCategoryStock: React.FC<ICategory> = ({
     <CategoryCardRow onClick={onClick} >
       <Text></Text>
       <div style={{display:'flex', gap:'1rem', justifyContent:'start', alignItems:'center'}}>
-        <CategoryImgWrapper backgroundColor={String(imageBgColor)}>
+        <CategoryImgWrapper $bgColor={imageBgColor}>
           <CategoryImg src={String(imageUrl)} alt="Category Image" />
         </CategoryImgWrapper>
         <Text>{category.industryName}</Text>
       </div>
       <Text>{category.bstpNmixPrpr}</Text>
-      <CategoryData isPositive={category.bstpNmixPrdyVrss.toString().startsWith('-')}>
+      <CategoryData $isPositive={category.bstpNmixPrdyVrss.toString().startsWith('-')}>
         {formatChange(category.bstpNmixPrdyVrss)}
       </CategoryData>
-      <CategoryData isPositive={category.bstpNmixPrdyCtrt.toString().startsWith('-')}>
+      <CategoryData $isPositive={category.bstpNmixPrdyCtrt.toString().startsWith('-')}>
         {formatChange(category.bstpNmixPrdyCtrt)}%
       </CategoryData>
       <Text>{formatNumber(category.acmlTrPbmn)}</Text>

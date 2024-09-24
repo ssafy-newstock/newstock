@@ -20,14 +20,14 @@ const CategoryStock: React.FC<ICategory> = ({
 }) => {
   return (
     <CategoryCardColumn onClick={onClick}>
-      <CategoryImgWrapper backgroundColor={imageBgColor.toString()}>
+      <CategoryImgWrapper $bgColor={imageBgColor.toString()}>
         <CategoryImgMain src={imageUrl.toString()} alt={blueLogo} />
       </CategoryImgWrapper>
       <CategoryInfo>
         {' '}
         <TextLarge>{category.industryName}</TextLarge>
         <CategoryData
-          isPositive={category.bstpNmixPrdyCtrt.toString().startsWith('-')}
+          $isPositive={category.bstpNmixPrdyCtrt.toString().startsWith('-')}
         >
           {formatChange(category.bstpNmixPrdyCtrt)}%
         </CategoryData>

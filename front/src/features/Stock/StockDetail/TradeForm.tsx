@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useForm, Controller } from 'react-hook-form';
-import axios from 'axios';
+import { axiosInstance } from '@api/axiosInstance';
 
 interface FormValues {
   price: number;
@@ -58,14 +58,14 @@ const ButtonWrapper = styled.div`
   gap: 1rem;
 `;
 
-const Button = styled.button<{ variant: 'buy' | 'sell' }>`
+const Button = styled.button<{ $variant: 'buy' | 'sell' }>`
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 1rem;
   color: #fff;
   cursor: pointer;
   background-color: ${(props) =>
-    props.variant === 'buy' ? '#4caf50' : '#f44336'};
+    props.$variant === 'buy' ? '#4caf50' : '#f44336'};
   &:hover {
     opacity: 0.8;
   }
@@ -85,6 +85,8 @@ const BuyForm: React.FC<TradeFormProps> = ({ initialPrice, stockCode }) => {
   });
 
   const onSubmit = async (data: FormValues) => {
+    // const accessToken = sessionStorage.getItem('accessToken');
+    // console.log('accessToken:', accessToken);
     const buyData = {
       price: data.price,
       amount: Number(data.amount),
@@ -93,21 +95,11 @@ const BuyForm: React.FC<TradeFormProps> = ({ initialPrice, stockCode }) => {
     // 매수 로직
     try {
       // 매수 API 요청
-      const response = await axios.post(
-        'https://newstock.info/api/stock/transaction/buy',
-        {
-          StockCode: stockCode,
-          stockTransactionAmount: buyData.amount,
-          stockTransactionType: 'BUY',
-        },
-        {
-          headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMTYxODI2NjI5MTU2MDk4MzY4MjAiLCJyb2xlIjoiUk9MRV9VU0VSIiwibWVtYmVySWQiOjEsImlhdCI6MTcyNjcyOTUwOCwiZXhwIjoxNzI5MzIxNTA4fQ.Pbt8vCn7uiV5KIZAX0XpIEN8Ysi2dTlch0Ty_gWpB8t-STtELADpBcw-oGBfeFoPr1PfbmKX8nI5gjguSJAYmQ`, // 실제 인증 토큰을 사용하세요
-          },
-          withCredentials: true,
-        }
-      );
-
+      const response = await axiosInstance.post('/api/stock/transaction/buy', {
+        stockCode: stockCode,
+        stockTransactionAmount: buyData.amount,
+        stockTransactionType: 'BUY',
+      });
       console.log('Buy Response:', response.data);
     } catch (error) {
       console.error('Buy Error:', error);
@@ -163,7 +155,7 @@ const BuyForm: React.FC<TradeFormProps> = ({ initialPrice, stockCode }) => {
         </InputRow>
       </InputWrapper>
       <ButtonWrapper>
-        <Button type="button" variant="buy" onClick={handleSubmit(onSubmit)}>
+        <Button type="button" $variant="buy" onClick={handleSubmit(onSubmit)}>
           Buy
         </Button>
       </ButtonWrapper>
@@ -185,6 +177,7 @@ const SellForm: React.FC<TradeFormProps> = ({ initialPrice, stockCode }) => {
   });
 
   const onSubmit = async (data: FormValues) => {
+    // const accessToken = sessionStorage.getItem('accessToken');
     const sellData = {
       price: data.price,
       amount: Number(data.amount),
@@ -193,20 +186,11 @@ const SellForm: React.FC<TradeFormProps> = ({ initialPrice, stockCode }) => {
     // 매도 로직
     try {
       // 매도 API 요청
-      const response = await axios.post(
-        'https://newstock.info/api/stock/transaction/sell',
-        {
-          StockCode: stockCode, // 실제 주식 코드를 사용하세요
-          stockTransactionAmount: sellData.amount,
-          stockTransactionType: 'SELL',
-        },
-        {
-          headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMTYxODI2NjI5MTU2MDk4MzY4MjAiLCJyb2xlIjoiUk9MRV9VU0VSIiwibWVtYmVySWQiOjEsImlhdCI6MTcyNjcyOTUwOCwiZXhwIjoxNzI5MzIxNTA4fQ.Pbt8vCn7uiV5KIZAX0XpIEN8Ysi2dTlch0Ty_gWpB8t-STtELADpBcw-oGBfeFoPr1PfbmKX8nI5gjguSJAYmQ`, // 실제 인증 토큰을 사용하세요
-          },
-          withCredentials: true,
-        }
-      );
+      const response = await axiosInstance.post('/api/stock/transaction/sell', {
+        stockCode: stockCode,
+        stockTransactionAmount: sellData.amount,
+        stockTransactionType: 'SELL',
+      });
       console.log('Sell Response:', response.data);
     } catch (error) {
       console.error('Sell Error:', error);
@@ -262,7 +246,7 @@ const SellForm: React.FC<TradeFormProps> = ({ initialPrice, stockCode }) => {
         </InputRow>
       </InputWrapper>
       <ButtonWrapper>
-        <Button type="button" variant="sell" onClick={handleSubmit(onSubmit)}>
+        <Button type="button" $variant="sell" onClick={handleSubmit(onSubmit)}>
           Sell
         </Button>
       </ButtonWrapper>
