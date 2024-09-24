@@ -1,58 +1,82 @@
-import Chart from "react-apexcharts";
+import Chart from 'react-apexcharts';
 import { ApexOptions } from 'apexcharts';
+import { useQuery } from '@tanstack/react-query';
+import { useLocation } from 'react-router-dom';
+import { IStock } from '@features/Stock/types';
+import axios from 'axios';
 
+interface IStockDailyChart {
+  stockId: number;
+  stockCode: string;
+  stockCandleId: number;
+  stockCandleDay: string;
+  stockCandleOpen: number;
+  stockCandleClose: number;
+  stockCandleHigh: number;
+  stockCandleLow: number;
+}
+
+// interface IStockDailyChartData {
+//   [key: string]: IStockDailyChart;
+// }
 
 const StockDailyChart = () => {
-  const series = [
-    {
-      data: [
-        // 음봉 (종가가 시가보다 낮음)
-        { x: new Date("2024-09-01").getTime(), y: [7000, 7200, 6800, 6900] },
-        // 양봉 (종가가 시가보다 높음)
-        { x: new Date("2024-09-02").getTime(), y: [7100, 7300, 6900, 7250] },
-        // 양봉
-        { x: new Date("2024-09-03").getTime(), y: [7200, 7400, 7000, 7350] },
-        // 음봉
-        { x: new Date("2024-09-04").getTime(), y: [7300, 7500, 7200, 7250] },
-        // 양봉
-        { x: new Date("2024-09-05").getTime(), y: [7400, 7600, 7300, 7550] },
-        // 음봉
-        { x: new Date("2024-09-06").getTime(), y: [7500, 7700, 7400, 7450] },
-        // 양봉
-        { x: new Date("2024-09-07").getTime(), y: [7600, 7800, 7500, 7700] },
-        // 음봉
-        { x: new Date("2024-09-08").getTime(), y: [7700, 7900, 7600, 7650] },
-        // 양봉
-        { x: new Date("2024-09-09").getTime(), y: [7800, 8000, 7700, 7950] },
-        // 음봉
-        { x: new Date("2024-09-10").getTime(), y: [7900, 8100, 7800, 7850] },
-        // 양봉
-        { x: new Date("2024-09-11").getTime(), y: [8000, 8200, 7900, 8150] },
-        // 음봉
-        { x: new Date("2024-09-12").getTime(), y: [8100, 8300, 8000, 8050] },
-        // 양봉
-        { x: new Date("2024-09-13").getTime(), y: [8200, 8400, 8100, 8350] },
-        // 음봉
-        { x: new Date("2024-09-14").getTime(), y: [8300, 8500, 8200, 8250] },
-        // 양봉
-        { x: new Date("2024-09-15").getTime(), y: [8400, 8600, 8300, 8550] },
-        // 음봉
-        { x: new Date("2024-09-16").getTime(), y: [8500, 8700, 8400, 8450] },
-      ],
+  // 구조분해할당 활용
+  // const { state } = useLocation() as { state: { stock: IStock } };
+  // const { stock } = state;
+
+  const location = useLocation();
+  const { stock } = location.state as { stock: IStock };
+
+  const { data: stockDailyChart, isLoading } = useQuery<IStockDailyChart[]>({
+    queryKey: [`stockDailyChart-${stock.stockCode}`],
+    queryFn: async () => {
+      const response = await axios.get(
+        `https://newstock.info/api/stock/${stock.stockCode}`
+      );
+      return response.data.data;
     },
-  ];
+  });
+
+  if (isLoading) {
+    return <div>로딩 중...</div>;
+  }
+
+  // stockDailyChart가 undefined가 아닌 경우에만 데이터 생성
+  const series = stockDailyChart
+    ? [
+        {
+          data: stockDailyChart.map((item) => ({
+            x: new Date(item.stockCandleDay).getTime(),
+            y: [
+              item.stockCandleOpen,
+              item.stockCandleHigh,
+              item.stockCandleLow,
+              item.stockCandleClose,
+            ],
+          })),
+        },
+      ]
+    : [];
 
   const options: ApexOptions = {
+    dataLabels: {
+      enabled: false, // 데이터 레이블 비활성화
+    },
     chart: {
-      type: "candlestick",
+      type: 'candlestick',
       height: 350,
+      zoom: {
+        enabled: true, // 줌 기능 활성화
+        autoScaleYaxis: true, // 줌에 따라 Y축 자동 조정
+      },
     },
     title: {
-      text: "월별 주식 차트",
-      align: "left",
+      text: '월별 주식 차트',
+      align: 'left',
     },
     xaxis: {
-      type: "datetime",
+      type: 'datetime',
     },
     yaxis: {
       tooltip: {
@@ -62,8 +86,8 @@ const StockDailyChart = () => {
     plotOptions: {
       candlestick: {
         colors: {
-          upward: "#FF0000", // 양봉 색상 (빨간색)
-          downward: "#0000FF", // 음봉 색상 (파란색)
+          upward: '#FF0000', // 양봉 색상 (빨간색)
+          downward: '#0000FF', // 음봉 색상 (파란색)
         },
       },
     },
