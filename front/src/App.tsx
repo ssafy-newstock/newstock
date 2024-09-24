@@ -13,6 +13,7 @@ import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import LoadingPage from '@components/LodingPage';
 
 const Container = styled.div`
   display: flex;
@@ -141,7 +142,7 @@ const App = () => {
   });
   
   if (isTop10StockLoading || isIndustryLoading || isAllStockLoading) {
-    return <div>Loading...</div>;
+    return <LoadingPage />;
   }
   return (
     <ThemeProvider theme={currentTheme}>
