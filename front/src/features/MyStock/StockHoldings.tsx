@@ -14,7 +14,7 @@ import {
   StockImage,
 } from '@features/MyStock/myStockRightStyledComponent';
 import styled, { useTheme } from 'styled-components';
-import { Navigate } from 'react-router-dom';
+// import { Navigate } from 'react-router-dom';
 
 interface StockHolding {
   stockId: number;
