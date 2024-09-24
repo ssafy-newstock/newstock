@@ -13,6 +13,7 @@ export const HeartFill = ({cancleFavoriteStock}:IHeartFill) => {
         height="1.5rem"
         viewBox="0 0 30 30"
         fill="none"
+        style={{ cursor: cancleFavoriteStock ? 'pointer' : 'default' }}
         onClick={cancleFavoriteStock}
       >
         <path

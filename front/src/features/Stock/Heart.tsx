@@ -13,6 +13,7 @@ export const Heart = ({favoriteStock}:IHeart) => {
         height="1.5rem"
         viewBox="0 0 30 30"
         fill="none"
+        style={{ cursor: favoriteStock ? 'pointer' : 'default' }}
         onClick={favoriteStock}
       >
         <path
