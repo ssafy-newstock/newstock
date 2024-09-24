@@ -5,7 +5,6 @@ import { useMyStockData } from '@hooks/useStockHoldings';
 import {
   CenterContentDiv,
   MetricsContainer,
-  MetricsRow,
   MetricItem,
   CenterContentBottomDiv,
 } from '@features/MyStock/myStockCenterStyledComponent';
@@ -42,9 +41,8 @@ const CenterContent: React.FC = () => {
 
   return (
     <CenterContentDiv>
-      {/* 메트릭 섹션 */}
-      <MetricsContainer>
-        <MetricsRow>
+      <CenterContentBottomDiv>
+        <MetricsContainer>
           <MetricItem>
             <TextP_22>총 매수 {totalPurchase.toLocaleString()}원</TextP_22>
           </MetricItem>
@@ -54,8 +52,6 @@ const CenterContent: React.FC = () => {
               평가손익 {totalPnl.toLocaleString()}원
             </ColoredText>
           </MetricItem>
-        </MetricsRow>
-        <MetricsRow>
           <MetricItem>
             <TextP_22>총 평가 {totalValuation.toLocaleString()}원</TextP_22>
           </MetricItem>
@@ -65,11 +61,7 @@ const CenterContent: React.FC = () => {
               수익률 {roi.toFixed(2)}%
             </ColoredText>
           </MetricItem>
-        </MetricsRow>
-      </MetricsContainer>
-
-      {/* 차트 섹션 */}
-      <CenterContentBottomDiv>
+        </MetricsContainer>
         {/* 총 평가를 위한 도넛 차트 */}
         <DonutChart type="valuation" />
 
