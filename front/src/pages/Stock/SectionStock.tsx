@@ -20,11 +20,11 @@ import styled from 'styled-components';
 import useCategoryStockStore from '@store/useCategoryStockStore';
 
 // 밑줄 스타일
-const Underline = styled.div<{ activeIndex: number }>`
+const Underline = styled.div<{ $activeIndex: number }>`
   position: absolute;
   bottom: -0.5rem; /* 밑줄 위치 조정 */
-  left: ${({ activeIndex }) =>
-    activeIndex * 4.7 + 0.25}rem; /* 각 버튼의 위치에 따라 조정 */
+  left: ${({ $activeIndex }) =>
+    $activeIndex * 5.2 + 0.5}rem; /* 각 버튼의 위치에 따라 조정 */
   width: 3.5rem; /* 버튼 너비에 맞춰 조정 */
   height: 0.2rem;
   background-color: black;
@@ -101,7 +101,7 @@ const SectionStockPage = () => {
           </SortButton>
 
           {/* 밑줄 요소 */}
-          <Underline activeIndex={activeButtonIndex} />
+          <Underline $activeIndex={activeButtonIndex} />
         </ButtonWrapper>
 
         <DividedSection>

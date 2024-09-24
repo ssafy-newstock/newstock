@@ -20,15 +20,15 @@ const Underline = styled.div<{ $sortBy: string }>`
   left: ${({ $sortBy }) => {
     switch ($sortBy) {
       case 'stckPrpr':
-        return '0.1rem'; // 첫 번째 버튼
+        return '0.3rem'; // 첫 번째 버튼
       case 'prdyCtrt':
-        return '3.7rem'; // 두 번째 버튼 위치 (각 버튼의 너비와 여백에 맞춰 조정)
+        return '4.3rem'; // 두 번째 버튼 위치 (각 버튼의 너비와 여백에 맞춰 조정)
       case 'acmlTrPbmn':
-        return '7.3rem'; // 세 번째 버튼 위치
+        return '8.3rem'; // 세 번째 버튼 위치
       case 'acmlVol':
-        return '10.9rem'; // 네 번째 버튼 위치
+        return '12.3rem'; // 네 번째 버튼 위치
       default:
-        return '0.1rem';
+        return '0.3rem';
     }
   }};
   height: 0.2rem;
