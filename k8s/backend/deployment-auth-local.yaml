@@ -85,6 +85,8 @@ spec:
             secretKeyRef:
               name: secret-stock
               key: KIS_STOCK_PRICE_TR_ID
+        - name: SERVER_PORT
+          value: "8080"
         - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID
           value: "671542778017-5b4uo71sutvq6qm72ic0g7do9igd2vg0.apps.googleusercontent.com"
         - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET
