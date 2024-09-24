@@ -17,7 +17,7 @@ export const StockHeaderWrapper = styled.div`
   `
 
 export const DividedSection = styled.div`
-  margin: 1rem 0rem;
+  margin: 1.5rem 0rem;
 `;
 
 export const HrTag = styled.hr`
