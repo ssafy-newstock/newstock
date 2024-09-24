@@ -16,8 +16,11 @@ import { Link, Outlet, useLocation } from 'react-router-dom';
 import blueLogo from '@assets/Stock/blueLogo.png';
 import styled from 'styled-components';
 import TradeForm from '@features/Stock/StockDetail/TradeForm';
-import { Heart } from '@features/Stock/Heart';
 import { RightVacant } from '@components/RightVacant';
+import { useEffect, useState } from 'react';
+import { axiosInstance } from '@api/axiosInstance';
+import { HeartFill } from '@features/Stock/HeartFill';
+import { Heart } from '@features/Stock/Heart';
 
 const Button = styled.div`
   background-color: ${({ theme }) => theme.profileBackgroundColor};
@@ -30,6 +33,47 @@ const StockDetailPage = () => {
   const location = useLocation();
   const { stock } = location.state as { stock: IStock };
   const initialPrice = Number(stock.stckPrpr);
+
+  // 즐겨찾기 상태
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  // 즐겨찾기 데이터를 불러와서 해당 주식이 즐겨찾기 상태인지 확인
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      try {
+        const response = await axiosInstance.get('/api/stock/favorite');
+        const favorites = response.data.data;
+
+        // 현재 주식이 즐겨찾기 목록에 있는지 확인
+        const isFav = favorites.some(
+          (fav: { stockCode: string }) => fav.stockCode === stock.stockCode
+        );
+        setIsFavorite(isFav);
+      } catch (error) {
+        console.error('즐겨찾기 데이터를 가져오는 중 오류 발생', error);
+      }
+    };
+
+    fetchFavorites();
+  }, [stock.stockCode]);
+
+  const favoriteStock = async () => {
+    try {
+      await axiosInstance.post(`/api/stock/favorite/${stock.stockCode}`);
+      setIsFavorite(true);
+    } catch (error) {
+      console.error('즐겨찾기 추가 중 오류 발생', error);
+    }
+  };
+
+  const cancleFavoriteStock = async () => {
+    try {
+      await axiosInstance.delete(`/api/stock/favorite/${stock.stockCode}`);
+      setIsFavorite(false);
+    } catch (error) {
+      console.error('즐겨찾기 취소 중 오류 발생', error);
+    }
+  };
 
   const showButton = location.pathname.includes('daily-chart');
 
@@ -68,7 +112,7 @@ const StockDetailPage = () => {
             </StockPrev>
           </div>
           <div style={{ display: 'flex', gap: '1rem' }}>
-            <Heart />
+            {isFavorite ? <HeartFill cancleFavoriteStock={cancleFavoriteStock}/> : <Heart favoriteStock={favoriteStock} />}
             {showButton && <Button>유사도 분석</Button>}
           </div>
         </div>
