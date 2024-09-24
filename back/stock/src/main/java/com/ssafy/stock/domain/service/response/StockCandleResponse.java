@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
@@ -13,7 +13,7 @@ public class StockCandleResponse { ;
     private Long stockId;
     private String stockCode;
     private Long stockCandleId;
-    private LocalDateTime stockCandleDay;
+    private LocalDate stockCandleDay;
     private Long stockCandleOpen;
     private Long stockCandleClose;
     private Long stockCandleHigh;

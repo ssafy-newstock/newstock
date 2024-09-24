@@ -6,9 +6,7 @@ import com.ssafy.stock.domain.entity.Redis.StocksPriceRedis;
 import com.ssafy.stock.domain.service.StockIndustryService;
 import com.ssafy.stock.domain.service.StockService;
 import com.ssafy.stock.domain.service.StockTransactionService;
-import com.ssafy.stock.domain.service.response.StockCandleDto;
-import com.ssafy.stock.domain.service.response.StockCandleResponse;
-import com.ssafy.stock.domain.service.response.StockMyPageDto;
+import com.ssafy.stock.domain.service.response.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -23,12 +21,19 @@ import static com.ssafy.stock.global.common.CommonResponse.success;
 @RequiredArgsConstructor
 @RequestMapping("/api/stock")
 @Slf4j
-public class StockController {
+public class StockController implements StockControllerSwagger{
 
     private final ModelMapper modelMapper;
     private final StockService stockService;
     private final StockIndustryService stockIndustryService;
     private final StockTransactionService stockTransactionService;
+
+    @GetMapping("/search")
+    public ResponseEntity<?> autocompleteStockName(@RequestParam String stockName) {
+        log.info("stockName : {}", stockName);
+        List<StocksPriceRedis> suggestions = stockService.autocompleteStockName(stockName);
+        return ResponseEntity.ok(suggestions);
+    }
 
     @GetMapping("/price-list")
     public ResponseEntity<?> getStockPriceList(){
@@ -61,6 +66,38 @@ public class StockController {
 
         return ResponseEntity.ok()
                 .body(response);
+    }
+
+    @GetMapping("/favorite")
+    public ResponseEntity<?> getLikeStore(@RequestHeader("authorization") String token){
+        Long memberId = stockTransactionService.getMemberId(token);
+        List<StockFavoriteDto> stockMyPageFavoriteDtoList = stockService.getStockMyPageFavoriteDtoList(memberId);
+
+        List<StockFavoriteResponse> response = stockMyPageFavoriteDtoList.stream()
+                .map(stockFavoriteDto -> modelMapper.map(stockFavoriteDto, StockFavoriteResponse.class))
+                .toList();
+        return ResponseEntity.ok(success(response));
+    }
+
+    @PostMapping("/favorite/{stockCode}")
+    public ResponseEntity<?> likeStore(@RequestHeader("authorization") String token,
+                                        @PathVariable String stockCode){
+        Long memberId = stockTransactionService.getMemberId(token);
+        StockFavoriteDto stockFavoriteDto = stockService.likeStore(memberId, stockCode);
+
+        StockFavoriteResponse response = modelMapper.map(stockFavoriteDto, StockFavoriteResponse.class);
+
+        return ResponseEntity.ok(success(response));
+    }
+
+    @DeleteMapping("/favorite/{stockCode}")
+    public ResponseEntity<?> unlikeStore(@RequestHeader("authorization") String token,
+                                        @PathVariable String stockCode){
+        Long memberId = stockTransactionService.getMemberId(token);
+        stockService.unlikeStore(memberId, stockCode);
+
+        return ResponseEntity.noContent()
+                .build();
     }
 
     @GetMapping("/mypage")

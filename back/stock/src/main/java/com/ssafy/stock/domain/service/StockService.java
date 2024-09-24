@@ -1,12 +1,11 @@
 package com.ssafy.stock.domain.service;
 
-import com.ssafy.stock.domain.entity.Stocks;
 import com.ssafy.stock.domain.entity.Redis.StocksPriceLiveRedis;
 import com.ssafy.stock.domain.entity.Redis.StocksPriceRedis;
 import com.ssafy.stock.domain.entity.Redis.StocksRedis;
-import com.ssafy.stock.domain.entity.StocksCandle;
-import com.ssafy.stock.domain.entity.StocksHoldings;
-import com.ssafy.stock.domain.entity.StocksTransactions;
+import com.ssafy.stock.domain.entity.*;
+import com.ssafy.stock.domain.error.custom.StockAlreadyFavoriteException;
+import com.ssafy.stock.domain.error.custom.StockFavoriteNotFoundException;
 import com.ssafy.stock.domain.error.custom.StockNotFoundException;
 import com.ssafy.stock.domain.repository.*;
 import com.ssafy.stock.domain.repository.redis.StocksPriceRedisRepository;
@@ -31,6 +30,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import static com.ssafy.stock.global.handler.KISSocketHandler.stockNameMap;
 
@@ -59,6 +59,7 @@ public class StockService {
     private final StocksPriceRedisRepository stocksPriceRedisRepository;
     private final StockTransactionRepository stockTransactionRepository;
     private final StockHoldingRepository stockHoldingRepository;
+    private final StockFavoriteRepository stockFavoriteRepository;
     private final SimpMessageSendingOperations simpMessageSendingOperations;
     private final StockConverter stockConverter;
     private final KISTokenService kisTokenService;
@@ -180,6 +181,17 @@ public class StockService {
         return stocksPriceLiveRedisRepository.findAll();
     }
 
+    /**
+     * 검색 자동 완성 메소드
+     * @param prefix
+     * @return
+     */
+    public List<StocksPriceRedis> autocompleteStockName(String prefix) {
+        Iterable<StocksPriceRedis> allStocks = stocksPriceRedisRepository.findAll();
+        return StreamSupport.stream(allStocks.spliterator(), false)
+                .filter(stock -> stock.getStockName().startsWith(prefix))
+                .collect(Collectors.toList());
+    }
 
     /**
      * 주식 상세 페이지 조회 시 일봉데이터 조회
@@ -205,16 +217,12 @@ public class StockService {
      * @return
      */
     public StockMyPageDto getStockMyPage(Long memberId) {
-        List<StocksTransactions> myStockTransactions = stockTransactionRepository.findAllByMemberId(memberId);
-
-        List<StocksHoldings> myStockHoldings = stockHoldingRepository.findAllByMemberId(memberId);
-        List<StockMyPageHoldingDto> stockMyPageHoldingDtoList = getStockMyPageHoldingDtoList(myStockHoldings);
-
-
-        List<StockMyPageTransactionDto> stockMyPageTransactionDtoList = getStockMyPageTransactionDtoList(myStockTransactions);
+        List<StockMyPageHoldingDto> stockMyPageHoldingDtoList = getStockMyPageHoldingDtoList(memberId);
+        List<StockMyPageTransactionDto> stockMyPageTransactionDtoList = getStockMyPageTransactionDtoList(memberId);
+        List<StockFavoriteDto> stockMyPageFavoriteDtoList = getStockMyPageFavoriteDtoList(memberId);
 
         log.info("{}님이 주식 마이페이지 조회를 했습니다.", memberId);
-        return new StockMyPageDto(stockMyPageHoldingDtoList, stockMyPageTransactionDtoList);
+        return new StockMyPageDto(stockMyPageHoldingDtoList, stockMyPageTransactionDtoList, stockMyPageFavoriteDtoList);
     }
 
     /**
@@ -222,8 +230,10 @@ public class StockService {
      * @param myStockHoldings
      * @return
      */
-    private List<StockMyPageHoldingDto> getStockMyPageHoldingDtoList(List<StocksHoldings> myStockHoldings) {
-        List<StockMyPageHoldingDto> stockMyPageHoldingDtoList = myStockHoldings.stream()
+    private List<StockMyPageHoldingDto> getStockMyPageHoldingDtoList(Long memberId) {
+        List<StocksHoldings> myStockHoldings = stockHoldingRepository.findAllByMemberIdWithStock(memberId);
+
+        return myStockHoldings.stream()
                 .map(myStockHolding -> {
                     Stocks stock = myStockHolding.getStock();
 
@@ -245,8 +255,6 @@ public class StockService {
                             changeRate
                     );
                 }).toList();
-
-        return stockMyPageHoldingDtoList;
     }
 
     /**
@@ -254,8 +262,10 @@ public class StockService {
      * @param myStockTransactions
      * @return
      */
-    private static List<StockMyPageTransactionDto> getStockMyPageTransactionDtoList(List<StocksTransactions> myStockTransactions) {
-        List<StockMyPageTransactionDto> stockMyPageTransactionDtoList = myStockTransactions.stream()
+    private List<StockMyPageTransactionDto> getStockMyPageTransactionDtoList(Long memberId) {
+        List<StocksTransactions> myStockTransactions = stockTransactionRepository.findAllByMemberIdWithStock(memberId);
+
+        return myStockTransactions.stream()
                 .map(myStockTransaction -> {
                     Stocks stock = myStockTransaction.getStock();
 
@@ -269,8 +279,65 @@ public class StockService {
                             myStockTransaction.getStockTransactionType(),
                             myStockTransaction.getStockTransactionDate());
                 }).toList();
+    }
 
-        return stockMyPageTransactionDtoList;
+    /**
+     * 찜한 주식 조회 메소드
+     * @param myStockFavorites
+     * @return
+     */
+    public List<StockFavoriteDto> getStockMyPageFavoriteDtoList(Long memberId) {
+        List<StocksFavorite> myStockFavorites = stockFavoriteRepository.findAllByMemberIdWithStock(memberId);
+
+        return myStockFavorites.stream()
+                .map(myStockFavorite -> {
+                    Stocks stock = myStockFavorite.getStock();
+
+                    return new StockFavoriteDto(myStockFavorite.getId(),
+                            stock.getId(),
+                            stock.getStockCode(),
+                            stock.getStockName());
+                }).toList();
+    }
+
+    /**
+     * 주식 찜 메소드
+     * @param memberId
+     * @param stockCode
+     * @return
+     */
+    public StockFavoriteDto likeStore(Long memberId, String stockCode){
+        Stocks stock = stocksRepository.findByStockCode(stockCode)
+                .orElseThrow(() -> new StockNotFoundException());
+
+        // 이미 찜한 주식인지 확인
+        if (stockFavoriteRepository.findByMemberIdAndStockId(memberId, stock.getId()).isPresent()) {
+            throw new StockAlreadyFavoriteException();
+        }
+
+        StocksFavorite stocksFavorite = stockFavoriteRepository.save(new StocksFavorite(memberId, stock));
+        log.info("{}번 회원이 {} 주식을 찜 했습니다.", memberId, stock.getStockName());
+
+        return new StockFavoriteDto(stocksFavorite.getId(),
+                stock.getId(),
+                stockCode,
+                stock.getStockName());
+    }
+
+    /**
+     * 주식 찜 해제 메소드
+     * @param memberId
+     * @param stockCode
+     */
+    public void unlikeStore(Long memberId, String stockCode){
+        Stocks stock = stocksRepository.findByStockCode(stockCode)
+                .orElseThrow(() -> new StockNotFoundException());
+
+        StocksFavorite stocksFavorite = stockFavoriteRepository.findByMemberIdAndStockId(memberId, stock.getId())
+                .orElseThrow(() -> new StockFavoriteNotFoundException());
+
+        stockFavoriteRepository.delete(stocksFavorite);
+        log.info("{}번 회원이 {} 주식을 찜 해제했습니다.", memberId, stock.getStockName());
     }
 
 }

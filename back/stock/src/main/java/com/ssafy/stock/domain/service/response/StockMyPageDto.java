@@ -12,4 +12,5 @@ import java.util.List;
 public class StockMyPageDto {
     List<StockMyPageHoldingDto> stockMyPageHoldingDtoList;
     List<StockMyPageTransactionDto> stockMyPageTransactionDtoList;
+    List<StockFavoriteDto> stockFavoriteDtoList;
 }
