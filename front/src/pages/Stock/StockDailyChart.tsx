@@ -47,7 +47,8 @@ const StockDailyChart = () => {
     ? [
         {
           data: stockDailyChart.map((item) => ({
-            x: new Date(item.stockCandleDay).getTime(),
+            // x: new Date(item.stockCandleDay).getTime(),
+            x: item.stockCandleDay,
             y: [
               item.stockCandleOpen,
               item.stockCandleHigh,
@@ -76,7 +77,8 @@ const StockDailyChart = () => {
       align: 'left',
     },
     xaxis: {
-      type: 'datetime',
+      // type: 'datetime',
+      type: 'category',
     },
     yaxis: {
       tooltip: {
