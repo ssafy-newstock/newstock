@@ -22,12 +22,19 @@ interface TransactionDto {
   stockTransactionDate: string;
 }
 
+interface stockFavoriteDto {
+  stockFavoriteId: number;
+  stockId: number;
+  stockCode: string;
+  stockName: string;
+}
 // API 응답 데이터 타입 정의
 interface ApiResponse {
   success: boolean;
   data: {
     stockMyPageHoldingDtoList: StockHolding[];
     stockMyPageTransactionDtoList: TransactionDto[]; // 필요에 따라 타입 정의
+    stockFavoriteDtoList: stockFavoriteDto[];
   };
 }
 

@@ -18,12 +18,7 @@ import { useMyStockData } from '@hooks/useStockHoldings';
 import StockHoldingList, {
   StockHoldingsFirstRow,
 } from '@features/MyStock/StockHoldingList';
-import {
-  CenterWrapper,
-  MyStockGridRow,
-  RightVacantWrapper,
-  RightWrapper,
-} from '@features/MyStock/myStockCenterStyledComponent';
+import { MyStockGridRow } from '@features/MyStock/myStockCenterStyledComponent';
 import TradingHistoryList, {
   TradingHistoryFirstRow,
 } from '@features/MyStock/TradingHistoryList';
@@ -56,6 +51,31 @@ const MyStock: React.FC = () => {
   const { data } = useMyStockData();
   const stockData = data?.stockMyPageHoldingDtoList || [];
   const TradingData = data?.stockMyPageTransactionDtoList || [];
+  const FavoriteData = data?.stockFavoriteDtoList || [];
+  console.log(FavoriteData);
+  // 보유 내역 총액 계산 함수
+  const calculateTotalAmount = (stock: StockHolding) => {
+    const currentPrice = stock.stockHoldingBuyPrice + stock.stockHoldingChange;
+    return currentPrice * stock.stockHoldingBuyAmount;
+  };
+
+  // 보유 내역을 총액 기준으로 내림차순 정렬 후 상위 5개 추출
+  const stockDataTop5 =
+    data?.stockMyPageHoldingDtoList
+      .slice()
+      .sort((a, b) => calculateTotalAmount(b) - calculateTotalAmount(a))
+      .slice(0, 5) || [];
+
+  // 거래 내역을 날짜 기준으로 내림차순 정렬 후 상위 5개 추출
+  const TradingDataTop5 =
+    data?.stockMyPageTransactionDtoList
+      .slice()
+      .sort(
+        (a, b) =>
+          new Date(b.stockTransactionDate).getTime() -
+          new Date(a.stockTransactionDate).getTime()
+      )
+      .slice(0, 5) || [];
 
   // 핸들러 함수: 섹션 타이틀 클릭 시 상태 업데이트
   const handleMoreClick = (section: string) => {
@@ -67,8 +87,13 @@ const MyStock: React.FC = () => {
   return (
     <>
       <LeftStock />
-      <CenterWrapper $isActive={activeSection !== null}>
+      <Center>
         <CenterDiv>
+          <SectionTitle
+            title="관심 종목"
+            onMoreClick={() => handleMoreClick('FavoriteStock')}
+          />
+          <MyStockHr />
           <CenterTitle />
           <MyStockHr />
           <CenterContent />
@@ -79,7 +104,7 @@ const MyStock: React.FC = () => {
           <MyStockHr />
           <MyStockGridRow>
             <StockHoldingsFirstRow />
-            {stockData.map((stock: StockHolding) => (
+            {stockDataTop5.map((stock: StockHolding) => (
               <StockHoldingList key={stock.stockId} stock={stock} />
             ))}
           </MyStockGridRow>
@@ -90,36 +115,32 @@ const MyStock: React.FC = () => {
           <MyStockHr />
           <MyStockGridRow>
             <TradingHistoryFirstRow />
-            {TradingData.map((stock: TransactionDto) => (
+            {TradingDataTop5.map((stock: TransactionDto) => (
               <TradingHistoryList
                 key={stock.stockTransactionDate}
                 stock={stock}
               />
             ))}
           </MyStockGridRow>
-          <SectionTitle
-            title="관심 종목"
-            onMoreClick={() => handleMoreClick('FavoriteStock')}
-          />
-          <MyStockHr />
         </CenterDiv>
-      </CenterWrapper>
+      </Center>
       {!activeSection ? (
-        <RightVacantWrapper>
+        <RightVacant>
           <RightVacant />
-        </RightVacantWrapper>
+        </RightVacant>
       ) : (
-        <RightWrapper>
-          <Right>
-            <RightDiv>
-              {activeSection === 'StockHoldings' && <StockHoldings />}
-              {activeSection === 'TradingHistory' && <TradingHistory />}
-              {activeSection === 'FavoriteStock' && <FavoriteStock />}
-            </RightDiv>
-          </Right>
-        </RightWrapper>
+        <Right>
+          <RightDiv>
+            {activeSection === 'StockHoldings' && (
+              <StockHoldings stocks={stockData} />
+            )}
+            {activeSection === 'TradingHistory' && (
+              <TradingHistory histories={TradingData} />
+            )}
+            {activeSection === 'FavoriteStock' && <FavoriteStock />}
+          </RightDiv>
+        </Right>
       )}
-      {/* 추가된 부분 */}
     </>
   );
 };
