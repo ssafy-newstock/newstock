@@ -21,6 +21,7 @@ import { useEffect, useState } from 'react';
 import { axiosInstance } from '@api/axiosInstance';
 import { HeartFill } from '@features/Stock/HeartFill';
 import { Heart } from '@features/Stock/Heart';
+import useAuthStore from '@store/useAuthStore';
 
 const Button = styled.div`
   background-color: ${({ theme }) => theme.profileBackgroundColor};
@@ -33,6 +34,7 @@ const StockDetailPage = () => {
   const location = useLocation();
   const { stock } = location.state as { stock: IStock };
   const initialPrice = Number(stock.stckPrpr);
+  const { isLogin } = useAuthStore();
 
   // 즐겨찾기 상태
   const [isFavorite, setIsFavorite] = useState(false);
@@ -112,7 +114,7 @@ const StockDetailPage = () => {
             </StockPrev>
           </div>
           <div style={{ display: 'flex', gap: '1rem' }}>
-            {isFavorite ? <HeartFill cancleFavoriteStock={cancleFavoriteStock}/> : <Heart favoriteStock={favoriteStock} />}
+            {isLogin && (isFavorite ? <HeartFill cancleFavoriteStock={cancleFavoriteStock}/> : <Heart favoriteStock={favoriteStock} />)}
             {showButton && <Button>유사도 분석</Button>}
           </div>
         </div>
