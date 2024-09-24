@@ -18,7 +18,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -43,6 +43,10 @@ public class KISSocketHandler extends TextWebSocketHandler {
             "068270", List.of("셀트리온", "의약품")
     );
 
+    private final Map<String, Boolean> subscribeSuccessMap = new ConcurrentHashMap<>();
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private static final int RECONNECT_INTERVAL = 5;  // 5초 간격으로 재연결 시도
+
     /**
      * 국내주식 실시간체결가 웹소켓 통신 요청 메소드
      * @param session
@@ -54,12 +58,27 @@ public class KISSocketHandler extends TextWebSocketHandler {
 
         for (String stockCode : stockNameMap.keySet()) {
             Map<String, Object> request = stockConverter.setKisWebSocketRequest(stockCode);
-
             ObjectMapper objectMapper = new ObjectMapper();
             String requestJson = objectMapper.writeValueAsString(request);
 
             session.sendMessage(new TextMessage(requestJson));
             log.info("구독 요청 메시지 전송 (종목 코드: {}): {}", stockCode, requestJson);
+
+            // 구독 성공 여부를 초기화
+            subscribeSuccessMap.put(stockCode, false);
+
+            // 5초 후 구독 성공 여부를 확인하고 실패한 종목에 대해 재연결 시도
+            scheduler.schedule(() -> {
+                if (!subscribeSuccessMap.get(stockCode)) {
+                    log.warn("구독 실패, 종목 코드: {} - 재연결 시도", stockCode);
+                    try {
+                        session.sendMessage(new TextMessage(requestJson));
+                        log.info("구독 재요청 전송 (종목 코드: {})", stockCode);
+                    } catch (Exception e) {
+                        log.error("구독 재시도 실패, 종목 코드: {}", stockCode, e);
+                    }
+                }
+            }, RECONNECT_INTERVAL, TimeUnit.SECONDS);
         }
     }
 
@@ -78,11 +97,23 @@ public class KISSocketHandler extends TextWebSocketHandler {
         // 파이프(|)로 구분된 값들로 분리
         String[] values = payload.split("\\|");
 
-        if (values.length > 3) {
+        // payload 길이가 3 이하일 때
+        if (values.length <= 3) {
+            log.info("Top10 응답 payload : {}", payload);
+
+            // 만약 "SUCCESS"가 없다면 재연결 시도
+            if (!payload.contains("SUCCESS")) {
+                log.warn("구독 실패 - 재연결 시도");
+                sessions.remove(session);
+                afterConnectionEstablished(session);  // 재연결
+            }
+        }
+        // payload 길이가 3보다 클 때 (정상적인 데이터 처리)
+        else {
             String dataSection = values[3];
             String[] subValues = dataSection.split("\\^");
 
-            String stockCode = subValues[0];// 종목 코드
+            String stockCode = subValues[0]; // 종목 코드
             List<String> stockInfo = stockNameMap.get(stockCode);
             String stockName = stockInfo.get(0);    // 종목 이름
             String stockIndustry = stockInfo.get(1);    // 종목 카테고리
@@ -92,21 +123,22 @@ public class KISSocketHandler extends TextWebSocketHandler {
             Long acmlVol = Long.parseLong(subValues[13]); // 누적 거래량
             Long acmlTrPbmn = Long.parseLong(subValues[14]); // 누적 거래 대금
 
+            // Redis에 저장
             Optional<StocksPriceLiveRedis> stocksPriceLiveRedis = stocksPriceLiveRedisRepository.findById(stockCode);
             if (stocksPriceLiveRedis.isPresent()) {
                 StocksPriceLiveRedis stock = stocksPriceLiveRedis.get();
                 stock.update(stockCode, stockName, stockIndustry, stckPrpr, prdyVrss, prdyCtrt, acmlTrPbmn, acmlVol);
                 stocksPriceLiveRedisRepository.save(stock);
-
             } else {
                 stocksPriceLiveRedisRepository.save(new StocksPriceLiveRedis(stockCode, stockName, stockIndustry, stckPrpr, prdyVrss, prdyCtrt, acmlTrPbmn, acmlVol));
             }
 
+            // 성공한 경우 구독 성공 상태 업데이트
+            subscribeSuccessMap.put(stockCode, true);
+
             StockPricesResponseDto stockPricesResponseDto = stockConverter.convertToStockPriceResponseDto(stockCode, stockName, stockIndustry, stckPrpr, prdyVrss, prdyCtrt, acmlTrPbmn, acmlVol);
-            // log.info("{}", stockPricesResponseDto);
+            // log.info("실시간 체결가 : {}", stockPricesResponseDto);
             simpMessageSendingOperations.convertAndSend("/api/sub/stock/info/live", stockPricesResponseDto);
-        } else {
-            log.info("Top10 응답 payload : {}", payload);
         }
     }
 
