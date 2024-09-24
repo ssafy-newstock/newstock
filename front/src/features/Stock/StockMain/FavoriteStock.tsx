@@ -18,8 +18,9 @@ import { useNavigate } from 'react-router-dom';
 const FavoriteStock = ({ stock }: { stock: IStock }) => {
   const navigate = useNavigate();
 
+    // 주식 상세 페이지 + 월봉 차트 조회
   const handleNavigate = () => {
-    navigate(`/stock-detail/${stock.stockCode}`, { state: { stock } });
+    navigate(`/stock-detail/${stock.stockCode}/daily-chart`, { state: { stock } });
   };
   return (
     <StockCardColumn onClick={handleNavigate}>
