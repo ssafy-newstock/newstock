@@ -8,9 +8,9 @@ import { Outlet } from 'react-router-dom';
 import useAllStockStore from '@store/useAllStockStore';
 import useCategoryStockStore from '@store/useCategoryStockStore';
 import useTop10StockStore from '@store/useTop10StockStore';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import SockJS from 'sockjs-client';
-import Stomp from 'stompjs';
+import Stomp, { Client } from 'stompjs';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import LoadingPage from '@components/LodingPage';
@@ -43,69 +43,76 @@ const App = () => {
   const { setCategoryStock } = useCategoryStockStore();
   const { setTop10Stock, updateStock } = useTop10StockStore();
 
+  // 재연결 타이머 관리
+  const stompClientRef = useRef<Client | null>(null);
+  const reconnectTimeoutRef = useRef<number | null>(null);
+
   // 웹소켓 초기화 및 구독 설정
-  useEffect(() => {
-    const connectWebSocket = () => {
-      const socket = new SockJS('https://newstock.info/api/stock/websocket');
-      const stompClient = Stomp.over(socket);
-  
-      // 재연결 시도를 위한 변수를 선언합니다.
-      let isConnected = false;
-      let reconnectAttempts = 0;
-      const maxReconnectAttempts = 5; // 최대 재연결 시도 횟수
-  
-      // 웹소켓 연결
-      const onConnect = () => {
-        isConnected = true;
-        reconnectAttempts = 0;
-  
-        // Top 10 종목 정보 구독
-        stompClient.subscribe('/api/sub/stock/info/live', (message) => {
-          const newStockPrice = JSON.parse(message.body);
-  
-          // 도착한 주식 데이터로 상태 업데이트
-          updateStock(newStockPrice);
-        });
-  
-        // 산업군 정보 구독 (10분 단위 갱신)
-        stompClient.subscribe('/api/sub/stock/industry/info', (message) => {
-          const updatedIndustryData = JSON.parse(message.body);
-          setCategoryStock(updatedIndustryData);
-        });
-  
-        // 코스피 전 종목 정보 구독 (30~40초 단위 갱신)
-        stompClient.subscribe('/api/sub/stock/info', (message) => {
-          const updatedStockData = JSON.parse(message.body);
-          setAllStock(updatedStockData);
-        });
-      };
-  
-      // 웹소켓 연결 실패 시 재연결 시도
-      const onError = (error: any) => {
-        console.error('WebSocket connection error:', error);
-        if (!isConnected && reconnectAttempts < maxReconnectAttempts) {
-          reconnectAttempts += 1;
-          setTimeout(connectWebSocket, 5000); // 5초 후 재연결 시도
-        }
-      };
-  
-      // 웹소켓 연결 시도
-      stompClient.connect({}, onConnect, onError);
-  
-      return stompClient;
+  const connectWebSocket = (): Client => {
+    const socket = new SockJS('https://newstock.info/api/stock/websocket');
+    const stompClient = Stomp.over(socket);
+
+    // 웹소켓 연결
+    const onConnect = () => {
+      console.log('WebSocket Connected');
+
+      // 실시간 top 10 주식 정보 구독
+      stompClient.subscribe('/api/sub/stock/info/live', (message) => {
+        const newStockPrice = JSON.parse(message.body);
+        updateStock(newStockPrice);
+      });
+
+      // 산업군 정보 구독 (10분 단위 갱신)
+      stompClient.subscribe('/api/sub/stock/industry/info', (message) => {
+        const updatedIndustryData = JSON.parse(message.body);
+        setCategoryStock(updatedIndustryData);
+      });
+      // 코스피 전 종목 정보 구독 (30~40초 단위 갱신)
+      stompClient.subscribe('/api/sub/stock/info', (message) => {
+        const updatedStockData = JSON.parse(message.body);
+        setAllStock(updatedStockData);
+      });
     };
-  
-    let stompClient = connectWebSocket();
-  
-    // 컴포넌트 언마운트 시 연결 해제
+
+    // 웹소켓 연결 에러
+    const onError = (error: any) => {
+      console.error('WebSocket connection error:', error);
+      reconnect();
+    };
+    stompClient.connect({}, onConnect, onError);
+    return stompClient;
+  };
+  // 재연결 함수
+  const reconnect = () => {
+    if (reconnectTimeoutRef.current !== null) {
+      clearTimeout(reconnectTimeoutRef.current);
+    }
+
+    reconnectTimeoutRef.current = window.setTimeout(() => {
+      console.log('Attempting to reconnect...');
+      if (stompClientRef.current) {
+        stompClientRef.current.disconnect(() => {
+          console.log('Disconnected before reconnecting');
+        });
+      }
+      stompClientRef.current = connectWebSocket();
+    }, 5000);
+  };
+
+  useEffect(() => {
+    stompClientRef.current = connectWebSocket();
+
     return () => {
-      if (stompClient && stompClient.connected) {
-        stompClient.disconnect(() => {
-          console.log('Disconnected');
+      if (reconnectTimeoutRef.current !== null) {
+        clearTimeout(reconnectTimeoutRef.current);
+      }
+      if (stompClientRef.current) {
+        stompClientRef.current.disconnect(() => {
+          console.log('Disconnected on cleanup');
         });
       }
     };
-  }, [setTop10Stock, setCategoryStock, setAllStock]);
+  }, []);
   
   // 최초 데이터 조회 - React Query 사용
   const { isLoading: isTop10StockLoading } = useQuery({
