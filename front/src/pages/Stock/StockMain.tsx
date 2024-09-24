@@ -19,15 +19,26 @@ import CategoryStock from '@features/Stock/StockMain/CategoryStock';
 import More from '@features/Stock/More';
 import { ICategoryStock, IStock } from '@features/Stock/types';
 import { RightVacant } from '@components/RightVacant';
-import { stockData } from '@features/Stock/stock';
+// import { stockData } from '@features/Stock/stock';
 import { useNavigate } from 'react-router-dom';
 import Modal from '@features/Stock/SectionStock/Modal';
 import useCategoryStockStore from '@store/useCategoryStockStore';
 import useTop10StockStore from '@store/useTop10StockStore';
+import { useQuery } from '@tanstack/react-query';
+import { axiosInstance } from '@api/axiosInstance';
+import useAllStockStore from '@store/useAllStockStore';
+
+interface favoriteStock {
+  stockFavoriteId: number;
+  stockId: number;
+  stockCode: string;
+  stockName: string;
+}
 
 const StockMainPage = () => {
   const { categoryStock } = useCategoryStockStore();
   const { top10Stock } = useTop10StockStore();
+  const { allStock } = useAllStockStore();
 
   const navigate = useNavigate();
   const allStockNavigate = () => {
@@ -52,6 +63,42 @@ const StockMainPage = () => {
     setIsModalOpen(false);
   };
 
+  const { data: favoriteStockList, isLoading: isFavoriteStockLoading } = useQuery({
+    queryKey: ['favoriteStockList'],
+    queryFn: async () => {
+      const response = await axiosInstance.get('/api/stock/favorite');
+      return response.data.data;
+    },
+  });
+
+  // favoriteStock의 stockId를 Set으로 만들어 빠른 검색을 가능하게 합니다.
+  const favoriteStockCode = new Set(
+    favoriteStockList?.map((stock: favoriteStock) => stock.stockCode)
+  );
+
+  console.log(favoriteStockCode);
+  console.log(allStock);
+  // allStock.forEach(stock => {
+  //   console.log(`Checking stock: ${stock.stockCode}, in favorite: ${favoriteStockCode.has(stock.stockCode)}`);
+  // });
+
+  const favoriteAllStock = allStock?.filter((stock) => {
+    return favoriteStockCode.has(stock.stockCode);
+  });
+
+  const favoriteTop10Stock = top10Stock?.filter((stock) => {
+    return favoriteStockCode.has(stock.stockCode);
+  });
+
+  console.log('favoriteAllStock', favoriteAllStock);
+  console.log('favoriteTop10Stock', favoriteTop10Stock);
+
+  const favoriteStock = favoriteAllStock?.concat(favoriteTop10Stock);
+
+  if (isFavoriteStockLoading) {
+    return <div>Loading...</div>; // 또는 로딩 컴포넌트
+  }
+
   return (
     <>
       <LeftStock />
@@ -59,7 +106,7 @@ const StockMainPage = () => {
         <StockHeader>관심 종목</StockHeader>
         <HrTag />
         <StockGridColumn>
-          {stockData?.map((stock: IStock, index: number) => (
+          {favoriteStock?.map((stock: IStock, index: number) => (
             <FavoriteStock key={index} stock={stock} />
           ))}
         </StockGridColumn>
