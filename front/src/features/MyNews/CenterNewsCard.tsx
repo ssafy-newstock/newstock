@@ -10,36 +10,42 @@ import {
   IconWrapper,
 } from './styledComponent';
 
-interface Data {
-  Title: string;
-  Media: string;
-  Date: string;
-  keyword?: string;
-  category?: string;
+interface NewsData {
+  title: string;
+  subtitle: string;
+  media: string;
+  description: string;
+  thumbnail: string;
+  uploadDatetime: string;
+  article: string;
+  newsId: string;
+  industry?: string;
+  stockCodes?: string[];
+  keywords?: string[];
 }
 
 interface CenterCardProps {
-  data: Data;
+  data: NewsData;
 }
 
 const CenterNewsCard: React.FC<CenterCardProps> = ({ data }) => {
   return (
     <CardContainer>
-      <CardTitleFontStyle>{data.Title}</CardTitleFontStyle>
+      <CardTitleFontStyle>{data.title}</CardTitleFontStyle>
       <CardContextDiv>
-        <FontStyle>{data.Media}</FontStyle>
+        <FontStyle>{data.media}</FontStyle>
         <p>|</p>
-        <FontStyle>{data.Date}</FontStyle>
+        <FontStyle>{data.uploadDatetime}</FontStyle>
       </CardContextDiv>
-      <CardBottomContainer hasKeyword={!!data.keyword}>
-        {data.keyword && (
+      <CardBottomContainer hasKeyword={!!data.keywords}>
+        {data.keywords && (
           <CardKeywordDiv>
-            <CardKeywordFontStyle>{data.keyword}</CardKeywordFontStyle>
+            <CardKeywordFontStyle>{data.keywords[0]}</CardKeywordFontStyle>
           </CardKeywordDiv>
         )}
-        {data.category && (
+        {data.industry && (
           <CardKeywordDiv>
-            <CardKeywordFontStyle>{data.category}</CardKeywordFontStyle>
+            <CardKeywordFontStyle>{data.industry}</CardKeywordFontStyle>
           </CardKeywordDiv>
         )}
         <IconWrapper>
