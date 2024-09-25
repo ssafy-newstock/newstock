@@ -80,7 +80,7 @@ public class StockController implements StockControllerSwagger{
      */
     @GetMapping("/{stockCode}")
     public ResponseEntity<?> getStockInfo(@PathVariable String stockCode){
-        StockDetailDto stockDetailDto = stockService.getStockCandle(stockCode);
+        StockDetailDto stockDetailDto = stockService.getStockDetail(stockCode);
 
         // TODO : ModelMapper로 DTO -> 응답객체로 바꾸기!
 
