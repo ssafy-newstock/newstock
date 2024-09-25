@@ -10,6 +10,7 @@ import {
   StockHeader,
   StockHeaderWrapper,
   DividedSection,
+  TextCenter,
 } from '@features/Stock/styledComponent';
 import FavoriteStock from '@features/Stock/StockMain/FavoriteStock';
 import RealTimeStock, {
@@ -76,13 +77,10 @@ const StockMainPage = () => {
       enabled: isLogin,
     });
 
-  // favoriteStock의 stockId를 Set으로 만들어 빠른 검색을 가능하게 합니다.
+  // favoriteStock의 stockId를 Set으로 만들어 빠른 검색 가능
   const favoriteStockCode = isLogin
     ? new Set(favoriteStockList?.map((stock: favoriteStock) => stock.stockCode))
     : new Set();
-
-  // console.log(favoriteStockCode);
-  // console.log(allStock);
 
   const favoriteAllStock = isLogin
     ? allStock?.filter((stock) => {
@@ -96,10 +94,9 @@ const StockMainPage = () => {
       })
     : [];
 
-  // console.log('favoriteAllStock', favoriteAllStock);
-  // console.log('favoriteTop10Stock', favoriteTop10Stock);
-
-  const favoriteStock = isLogin ? favoriteAllStock?.concat(favoriteTop10Stock) : [];
+  const favoriteStock = isLogin
+    ? favoriteAllStock?.concat(favoriteTop10Stock)
+    : [];
 
   if (isFavoriteStockLoading && isLogin) {
     return <div>Loading...</div>; // 또는 로딩 컴포넌트
@@ -114,6 +111,8 @@ const StockMainPage = () => {
             {' '}
             <StockHeader>관심 종목</StockHeader>
             <HrTag />
+            {/* 관심 종목이 없을 경우 */}
+            {favoriteStock?.length === 0 && <TextCenter>상세 페이지에서 관심 종목을 추가해 보세요.</TextCenter>}
             <StockGridColumn>
               {favoriteStock?.map((stock: IStock, index: number) => (
                 <FavoriteStock key={index} stock={stock} />
@@ -124,7 +123,7 @@ const StockMainPage = () => {
           <></>
         )}
 
-        <DividedSection style={{marginTop: isLogin? '1.5rem':'0rem'}}>
+        <DividedSection style={{ marginTop: isLogin ? '1.5rem' : '0rem' }}>
           <StockHeaderWrapper>
             <StockHeader>실시간 차트</StockHeader>
             <More handlClick={allStockNavigate} />

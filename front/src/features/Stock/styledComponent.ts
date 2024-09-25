@@ -140,6 +140,14 @@ export const TextLeft = styled(Text)`
   text-align: left;
 `;
 
+export const TextRight = styled(Text)`
+  text-align: right;
+`;
+
+export const TextCenter = styled(Text)`
+  text-align: center;
+`;
+
 export const CategoryCardColumn = styled.div`
   display: flex;
   align-items: center;
