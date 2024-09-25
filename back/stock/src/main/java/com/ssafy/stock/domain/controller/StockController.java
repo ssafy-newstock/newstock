@@ -58,14 +58,12 @@ public class StockController implements StockControllerSwagger{
 
     @GetMapping("/{stockCode}")
     public ResponseEntity<?> getStockInfo(@PathVariable String stockCode){
-        List<StockCandleDto> stockCandleList = stockService.getStockCandle(stockCode);
+        StockDetailDto stockDetailDto = stockService.getStockCandle(stockCode);
 
-        List<StockCandleResponse> response = stockCandleList.stream()
-                .map(stockCandleDto -> modelMapper.map(stockCandleDto, StockCandleResponse.class))
-                .toList();
+        // TODO : ModelMapper로 DTO -> 응답객체로 바꾸기!
 
         return ResponseEntity.ok()
-                .body(response);
+                .body(success(stockDetailDto));
     }
 
     @GetMapping("/favorite")

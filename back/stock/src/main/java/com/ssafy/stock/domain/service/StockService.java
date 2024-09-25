@@ -1,5 +1,7 @@
 package com.ssafy.stock.domain.service;
 
+import com.ssafy.stock.domain.entity.*;
+import com.ssafy.stock.domain.entity.Redis.StocksPriceLiveDailyChartRedis;
 import com.ssafy.stock.domain.entity.Redis.StocksPriceLiveRedis;
 import com.ssafy.stock.domain.entity.Redis.StocksPriceRedis;
 import com.ssafy.stock.domain.entity.Redis.StocksRedis;
@@ -8,6 +10,7 @@ import com.ssafy.stock.domain.error.custom.StockAlreadyFavoriteException;
 import com.ssafy.stock.domain.error.custom.StockFavoriteNotFoundException;
 import com.ssafy.stock.domain.error.custom.StockNotFoundException;
 import com.ssafy.stock.domain.repository.*;
+import com.ssafy.stock.domain.repository.redis.StocksPriceLiveDailyChartRedisRepository;
 import com.ssafy.stock.domain.repository.redis.StocksPriceRedisRepository;
 import com.ssafy.stock.domain.repository.redis.StocksRedisRepository;
 import com.ssafy.stock.domain.service.helper.StockConverter;
@@ -21,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +39,7 @@ import java.util.stream.StreamSupport;
 import static com.ssafy.stock.global.handler.KISSocketHandler.stockNameMap;
 
 @Slf4j
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class StockService {
@@ -60,6 +65,7 @@ public class StockService {
     private final StockTransactionRepository stockTransactionRepository;
     private final StockHoldingRepository stockHoldingRepository;
     private final StockFavoriteRepository stockFavoriteRepository;
+    private final StocksPriceLiveDailyChartRedisRepository stocksPriceLiveDailyChartRedisRepository;
     private final SimpMessageSendingOperations simpMessageSendingOperations;
     private final StockConverter stockConverter;
     private final KISTokenService kisTokenService;
@@ -199,15 +205,25 @@ public class StockService {
      * @param stockCode
      * @return
      */
-    public List<StockCandleDto> getStockCandle(String stockCode) {
+    public StockDetailDto getStockCandle(String stockCode) {
         Stocks stock = stocksRepository.findByStockCodeWithCandles(stockCode)
                 .orElseThrow(() -> new StockNotFoundException());
 
+        // 일봉 차트 데이터
         List<StocksCandle> stocksCandles = stock.getStocksCandles();
 
-        return stocksCandles.stream()
+        // 데일리 차트 데이터
+        List<StocksPriceLiveDailyChartRedis> LiveDailyChartRedisList = stocksPriceLiveDailyChartRedisRepository.findAllByStockCode(stockCode);
+
+        List<StockCandleDto> stockCandleDtoList = stocksCandles.stream()
                 .map(stocksCandle -> new StockCandleDto(stock, stocksCandle))
                 .toList();
+
+        List<StocksPriceLiveDailyChartRedisDto> stocksPriceLiveDailyChartRedisDtoList = LiveDailyChartRedisList.stream()
+                .map(stocksPriceLiveDailyChartRedis -> new StocksPriceLiveDailyChartRedisDto(stocksPriceLiveDailyChartRedis))
+                .toList();
+
+        return new StockDetailDto(stockCandleDtoList, stocksPriceLiveDailyChartRedisDtoList);
     }
 
 
@@ -306,6 +322,7 @@ public class StockService {
      * @param stockCode
      * @return
      */
+    @Transactional
     public StockFavoriteDto likeStore(Long memberId, String stockCode){
         Stocks stock = stocksRepository.findByStockCode(stockCode)
                 .orElseThrow(() -> new StockNotFoundException());
@@ -329,6 +346,7 @@ public class StockService {
      * @param memberId
      * @param stockCode
      */
+    @Transactional
     public void unlikeStore(Long memberId, String stockCode){
         Stocks stock = stocksRepository.findByStockCode(stockCode)
                 .orElseThrow(() -> new StockNotFoundException());
