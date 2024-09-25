@@ -9,7 +9,11 @@ import {
   StockPrev,
   StockTitle,
 } from '@features/Stock/styledComponent';
-import { IStock } from '@features/Stock/types';
+import {
+  IFavoriteStock,
+  IMutationContext,
+  IStock,
+} from '@features/Stock/types';
 import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
 import { Link, Outlet, useLocation } from 'react-router-dom';
@@ -17,10 +21,14 @@ import blueLogo from '@assets/Stock/blueLogo.png';
 import styled from 'styled-components';
 import TradeForm from '@features/Stock/StockDetail/TradeForm';
 import { RightVacant } from '@components/RightVacant';
-import { useEffect, useState } from 'react';
 import { axiosInstance } from '@api/axiosInstance';
 import { HeartFill } from '@features/Stock/HeartFill';
 import { Heart } from '@features/Stock/Heart';
+import useAuthStore from '@store/useAuthStore';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import useAllStockStore from '@store/useAllStockStore';
+import useTop10StockStore from '@store/useTop10StockStore';
+import LoadingPage from '@components/LodingPage';
 
 const Button = styled.div`
   background-color: ${({ theme }) => theme.profileBackgroundColor};
@@ -32,56 +40,136 @@ const Button = styled.div`
 const StockDetailPage = () => {
   const location = useLocation();
   const { stock } = location.state as { stock: IStock };
-  const initialPrice = Number(stock.stckPrpr);
+  const { allStock } = useAllStockStore();
+  const { top10Stock } = useTop10StockStore();
 
-  // 즐겨찾기 상태
-  const [isFavorite, setIsFavorite] = useState(false);
+  // 주식 상세 정보
+  const stockDetail =
+    allStock?.find((s) => s.stockCode === stock.stockCode) ||
+    top10Stock?.find((s) => s.stockCode === stock.stockCode);
+  console.log('stockDetail', stockDetail);
 
-  // 즐겨찾기 데이터를 불러와서 해당 주식이 즐겨찾기 상태인지 확인
-  useEffect(() => {
-    const fetchFavorites = async () => {
-      try {
-        const response = await axiosInstance.get('/api/stock/favorite');
-        const favorites = response.data.data;
+  // 로그인 여부 확인
+  const { isLogin } = useAuthStore();
 
-        // 현재 주식이 즐겨찾기 목록에 있는지 확인
-        const isFav = favorites.some(
-          (fav: { stockCode: string }) => fav.stockCode === stock.stockCode
+  // 관심 종목 관련 API 호출
+  const {
+    data: favoriteStockList,
+    isLoading,
+    error,
+  } = useQuery<IFavoriteStock[]>({
+    queryKey: ['favoriteStockList'],
+    queryFn: async () => {
+      const response = await axiosInstance.get('/api/stock/favorite');
+      return response.data.data;
+    },
+    enabled: isLogin,
+  });
+
+  const isFavorite = favoriteStockList?.some(
+    (fav) => fav.stockCode === stock.stockCode
+  );
+
+  const queryClient = useQueryClient();
+
+  // 좋아요 주식 추가 mutation
+  const { mutate: addFavoriteStock } = useMutation<
+    void,
+    Error,
+    string,
+    IMutationContext
+  >({
+    mutationFn: async (stockCode: string) => {
+      await axiosInstance.post(`/api/stock/favorite/${stockCode}`);
+    },
+    onMutate: async (stockCode: string) => {
+      await queryClient.cancelQueries({ queryKey: ['favoriteStockList'] });
+
+      const previousFavoriteList = queryClient.getQueryData<IFavoriteStock[]>([
+        'favoriteStockList',
+      ]);
+
+      queryClient.setQueryData<IFavoriteStock[]>(
+        ['favoriteStockList'],
+        (old) => [
+          ...(old || []),
+          { stockCode, stockFavoriteId: 0, stockId: 0, stockName: '' },
+        ]
+      );
+
+      return { previousFavoriteList };
+    },
+    onError: (err, _stockCode, context) => {
+      console.log('주식 좋아요 에러', err);
+      if (context?.previousFavoriteList) {
+        queryClient.setQueryData<IFavoriteStock[]>(
+          ['favoriteStockList'],
+          context.previousFavoriteList
         );
-        setIsFavorite(isFav);
-      } catch (error) {
-        console.error('즐겨찾기 데이터를 가져오는 중 오류 발생', error);
       }
-    };
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['favoriteStockList'] });
+    },
+  });
 
-    fetchFavorites();
-  }, [stock.stockCode]);
+  // 좋아요 주식 제거 mutation
+  const { mutate: removeFavoriteStock } = useMutation<
+    void,
+    Error,
+    string,
+    IMutationContext
+  >({
+    mutationFn: async (stockCode: string) => {
+      await axiosInstance.delete(`/api/stock/favorite/${stockCode}`);
+    },
+    onMutate: async (stockCode: string) => {
+      await queryClient.cancelQueries({ queryKey: ['favoriteStockList'] });
 
-  const favoriteStock = async () => {
-    try {
-      await axiosInstance.post(`/api/stock/favorite/${stock.stockCode}`);
-      setIsFavorite(true);
-    } catch (error) {
-      console.error('즐겨찾기 추가 중 오류 발생', error);
-    }
-  };
+      const previousFavoriteList = queryClient.getQueryData<IFavoriteStock[]>([
+        'favoriteStockList',
+      ]);
 
-  const cancleFavoriteStock = async () => {
-    try {
-      await axiosInstance.delete(`/api/stock/favorite/${stock.stockCode}`);
-      setIsFavorite(false);
-    } catch (error) {
-      console.error('즐겨찾기 취소 중 오류 발생', error);
-    }
-  };
+      queryClient.setQueryData<IFavoriteStock[]>(
+        ['favoriteStockList'],
+        (old) => old?.filter((stock) => stock.stockCode !== stockCode) || []
+      );
 
+      return { previousFavoriteList };
+    },
+    onError: (err, _stockCode, context) => {
+      console.log('주식 좋아요 취소 에러', err);
+      if (context?.previousFavoriteList) {
+        queryClient.setQueryData<IFavoriteStock[]>(
+          ['favoriteStockList'],
+          context.previousFavoriteList
+        );
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['favoriteStockList'] });
+    },
+  });
+
+  // 유사도 버튼 버튼 표시 여부
   const showButton = location.pathname.includes('daily-chart');
 
+  // 주식 종목 이미지
   const getStockImageUrl = () => {
     // 이미지 URL 생성
     const url = `https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stock.stockCode}.png`;
     return url;
   };
+
+  // 에러 발생 시 콘솔 출력
+  if (error) {
+    console.error('관심 주식 조회 에러', error);
+  }
+
+  if (isLoading) {
+    return <LoadingPage />;
+  }
+
   return (
     <>
       <LeftStock />
@@ -100,19 +188,36 @@ const StockDetailPage = () => {
                 onError={(e) => (e.currentTarget.src = blueLogo)} // 기본 이미지 설정
                 alt=""
               />
-              {stock.stockName}
+              {stockDetail?.stockName}
             </StockTitle>
             <StckPrice>
-              {formatChange(formatNumber(stock.stckPrpr))}원
+              {stockDetail && formatChange(formatNumber(stockDetail.stckPrpr))}
+              원
             </StckPrice>
-            <StockPrev $isPositive={stock.prdyVrss.toString().startsWith('-')}>
+            <StockPrev
+              $isPositive={
+                stockDetail?.prdyVrss.toString().startsWith('-') ?? false
+              }
+            >
               <SpanTag>어제보다</SpanTag>{' '}
-              {formatChange(formatNumber(stock.prdyVrss))}원 ({stock.prdyCtrt}
+              {stockDetail && formatChange(formatNumber(stockDetail.prdyVrss))}
+              원 ({stockDetail?.prdyCtrt}
               %)
             </StockPrev>
           </div>
           <div style={{ display: 'flex', gap: '1rem' }}>
-            {isFavorite ? <HeartFill cancleFavoriteStock={cancleFavoriteStock}/> : <Heart favoriteStock={favoriteStock} />}
+            {isLogin &&
+              (isFavorite ? (
+                <HeartFill
+                  cancleFavoriteStock={() =>
+                    removeFavoriteStock(stock.stockCode)
+                  }
+                />
+              ) : (
+                <Heart
+                  favoriteStock={() => addFavoriteStock(stock.stockCode)}
+                />
+              ))}
             {showButton && <Button>유사도 분석</Button>}
           </div>
         </div>
@@ -135,7 +240,10 @@ const StockDetailPage = () => {
         <DividedSection>
           <Outlet />
         </DividedSection>
-        <TradeForm initialPrice={initialPrice} stockCode={stock.stockCode} />
+        <TradeForm
+          price={stockDetail?.stckPrpr ?? stock.stckPrpr}
+          stockCode={stock.stockCode}
+        />
       </Center>
       <RightVacant />
     </>

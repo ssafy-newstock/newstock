@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { useForm, Controller } from 'react-hook-form';
 import { axiosInstance } from '@api/axiosInstance';
@@ -9,7 +9,7 @@ interface FormValues {
 }
 
 interface TradeFormProps {
-  initialPrice: number;
+  price: number;
   stockCode: string;
 }
 
@@ -71,18 +71,24 @@ const Button = styled.button<{ $variant: 'buy' | 'sell' }>`
   }
 `;
 
-const BuyForm: React.FC<TradeFormProps> = ({ initialPrice, stockCode }) => {
+const BuyForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
+  
   const {
     control,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
-      price: initialPrice,
+      price: price,
       amount: 0,
     },
   });
+
+  useEffect(() => {
+    setValue('price', price);
+  }, [price, setValue]);
 
   const onSubmit = async (data: FormValues) => {
     // const accessToken = sessionStorage.getItem('accessToken');
@@ -104,7 +110,7 @@ const BuyForm: React.FC<TradeFormProps> = ({ initialPrice, stockCode }) => {
     } catch (error) {
       console.error('Buy Error:', error);
     }
-    reset({ price: initialPrice, amount: 0 }); // 폼 리셋
+    reset({ price: price, amount: 0 }); // 폼 리셋
   };
 
   return (
@@ -163,18 +169,23 @@ const BuyForm: React.FC<TradeFormProps> = ({ initialPrice, stockCode }) => {
   );
 };
 
-const SellForm: React.FC<TradeFormProps> = ({ initialPrice, stockCode }) => {
+const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
   const {
     control,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
-      price: initialPrice,
+      price: price,
       amount: 0,
     },
   });
+
+  useEffect(() => {
+    setValue('price', price);
+  },[price, setValue]);
 
   const onSubmit = async (data: FormValues) => {
     // const accessToken = sessionStorage.getItem('accessToken');
@@ -195,7 +206,7 @@ const SellForm: React.FC<TradeFormProps> = ({ initialPrice, stockCode }) => {
     } catch (error) {
       console.error('Sell Error:', error);
     }
-    reset({ price: initialPrice, amount: 0 }); // 폼 리셋
+    reset({ price: price, amount: 0 }); // 폼 리셋
   };
 
   return (
@@ -254,11 +265,11 @@ const SellForm: React.FC<TradeFormProps> = ({ initialPrice, stockCode }) => {
   );
 };
 
-const TradeForm: React.FC<TradeFormProps> = ({ initialPrice, stockCode }) => {
+const TradeForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
   return (
     <FormWrapper>
-      <BuyForm initialPrice={initialPrice} stockCode={stockCode} />
-      <SellForm initialPrice={initialPrice} stockCode={stockCode} />
+      <BuyForm price={price} stockCode={stockCode} />
+      <SellForm price={price} stockCode={stockCode} />
     </FormWrapper>
   );
 };
