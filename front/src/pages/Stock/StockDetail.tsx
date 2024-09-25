@@ -9,7 +9,11 @@ import {
   StockPrev,
   StockTitle,
 } from '@features/Stock/styledComponent';
-import { IChartData, IFavoriteStock, IMutationContext, IStock } from '@features/Stock/types';
+import {
+  IFavoriteStock,
+  IMutationContext,
+  IStock,
+} from '@features/Stock/types';
 import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
 import { Link, Outlet, useLocation } from 'react-router-dom';
@@ -24,7 +28,6 @@ import useAuthStore from '@store/useAuthStore';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import useAllStockStore from '@store/useAllStockStore';
 import useTop10StockStore from '@store/useTop10StockStore';
-import axios from 'axios';
 
 const Button = styled.div`
   background-color: ${({ theme }) => theme.profileBackgroundColor};
@@ -41,8 +44,8 @@ const StockDetailPage = () => {
 
   // 주식 상세 정보
   const stockDetail =
-    allStock.find((s) => s.stockCode === stock.stockCode) ||
-    top10Stock.find((s) => s.stockCode === stock.stockCode);
+    allStock?.find((s) => s.stockCode === stock.stockCode) ||
+    top10Stock?.find((s) => s.stockCode === stock.stockCode);
   console.log('stockDetail', stockDetail);
 
   // 로그인 여부 확인
@@ -141,17 +144,6 @@ const StockDetailPage = () => {
     },
   });
 
-  const { data: chartData, isLoading:chartLoading } = useQuery<IChartData>({
-    queryKey: [`chartData-${stock.stockCode}`],
-    queryFn: async () => {
-      const response = await axios.get(
-        `https://newstock.info/api/stock/${stock.stockCode}`
-      );
-      return response.data.data;
-    },
-    staleTime: 1000 * 60 * 10, // 5분 이내에는 캐시된 데이터 사용
-  });
-
   // 유사도 버튼 버튼 표시 여부
   const showButton = location.pathname.includes('daily-chart');
 
@@ -217,19 +209,19 @@ const StockDetailPage = () => {
         <div style={{ display: 'flex', gap: '1rem' }}>
           <Link
             to={`/stock-detail/${stock.stockCode}/daily-chart`}
-            state={{ stockDetail }}
+            state={{ stock }}
           >
             <Button>일봉</Button>
           </Link>
           <Link
             to={`/stock-detail/${stock.stockCode}/live-updates`}
-            state={{ stockDetail }}
+            state={{ stock }}
           >
             <Button>실시간</Button>
           </Link>
         </div>
         <DividedSection>
-          <Outlet context={{chartData}}/>
+          <Outlet />
         </DividedSection>
         <TradeForm
           price={stockDetail?.stckPrpr ?? stock.stckPrpr}
