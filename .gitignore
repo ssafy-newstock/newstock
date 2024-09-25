@@ -37,3 +37,8 @@ out/
 .vscode/
 
 k8s/base/secret-stock.yaml
+
+*.sha256
+*.md5
+
+.gradle/buildOutputCleanup/
