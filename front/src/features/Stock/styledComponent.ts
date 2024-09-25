@@ -61,7 +61,7 @@ export const StockCardTitle = styled.div`
 export const StockTitle = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.5rem;
   font-size: 1rem;
   font-weight: bold;
 
@@ -76,6 +76,11 @@ export const StockImage = styled.img`
   height: 1.5rem;
   border-radius: 50%;
 `;
+
+export const StockImageDetail = styled(StockImage)`
+  width: 3rem;
+  height: 3rem;
+`
 
 export const StckPrice = styled.div`
   font-size: 1rem;
