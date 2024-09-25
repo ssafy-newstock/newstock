@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useThemeStore } from '@store/themeStore';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useAuthStore from '@store/useAuthStore';
 import Login from '@components/Login';
 // import axios from 'axios';
@@ -87,13 +87,53 @@ const ThemeIcon = styled.div`
   color: ${({ theme }) => theme.switchIconColor};
   pointer-events: none; // 아이콘이 클릭 이벤트를 방해하지 않도록 설정
 `;
-
+import SockJS from 'sockjs-client';
+import Stomp from 'stompjs';
 const Header = () => {
   const { memberName } = useAuthStore();
   const { theme, toggleTheme } = useThemeStore();
   const isDarkMode = theme === 'dark';
   // 로그인 모달 상태 추가
   const [loginOpen, setLoginOpen] = useState<boolean>(false);
+
+  // const [stompClient, setStompClient] = useState(null);
+
+  useEffect(() => {
+    const socket = new SockJS('https://newstock.info/api/member/websocket');
+    const client = Stomp.over(socket);
+    client.debug = (msg) => {
+      console.log('msg ----------', msg);
+    };
+
+    client.connect({}, () => {
+      console.log('포인트 웹소켓 커넥트');
+
+      // 메시지 수신 구독
+      client.subscribe('/api/sub/member/info/point', (response) => {
+        console.log('Response body:', response.body);
+        const point = JSON.parse(response.body);
+        console.log('포인트: ', point);
+      });
+
+      // 메시지 전송
+      const memberId = 10;
+      client.send(
+        '/app/member/info/point',
+        {},
+        JSON.stringify({ memberId: memberId })
+      );
+    });
+
+    // 클린업 함수
+    return () => {
+      if (client && client.connected) {
+        client.disconnect(() => {
+          console.log('WebSocket disconnected');
+        });
+      }
+    };
+  }, []);
+
   const openLogin = () => {
     setLoginOpen(true);
   };
@@ -106,7 +146,7 @@ const Header = () => {
   const handleLogout = () => {
     logout();
     sessionStorage.removeItem('accessToken');
-  }
+  };
   // API 생성 후 대체
   // const handleLogout = async () => {
   //   try {
