@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import useAuthStore from '@store/useAuthStore';
+import LoadingPage from '@components/LodingPage';
 
 type AuthType = string | null;
 type ErrorType = string | null | unknown;
@@ -82,6 +83,10 @@ const Auth = () => {
 
     fetchCode();
   }, [code]);
+
+  if (isLoading) {
+    return <LoadingPage />;
+  }
 
   return (
     <div>
