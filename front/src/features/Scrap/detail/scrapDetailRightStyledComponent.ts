@@ -32,6 +32,7 @@ export const ScrapCardDiv = styled.div`
   border-radius: 1.25rem;
   background: ${({ theme }) => theme.newsBackgroundColor};
   box-shadow: 0rem 0.25rem 0.25rem 0rem rgba(0, 0, 0, 0.25);
+  cursor: pointer;
 `;
 
 export const ScrapCardLeftDiv = styled.div`

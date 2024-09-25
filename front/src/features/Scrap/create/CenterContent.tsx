@@ -1,10 +1,18 @@
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import ThemedButton from '@components/ThemedButton';
-import { PlusIcon } from './Icon';
+import { DragIcon } from '@features/Scrap/create/Icon';
 import { useState } from 'react';
 import { Editor } from 'react-draft-wysiwyg';
-import { EditorState, convertToRaw } from 'draft-js';
-import { TextP_16, TextP_20, TextP_24_NOTGRAY } from '../scrapStyledComponent';
+import { EditorState } from 'draft-js';
+import {
+  ScrapHr,
+  TextP_16,
+  TextP_16_NOTGRAY,
+  TextP_20,
+  TextP_24_NOTGRAY,
+  TitleDiv,
+  TitleP,
+} from '@features/Scrap/scrapStyledComponent';
 import {
   CenterContentDiv,
   CenterContentTopDiv,
@@ -17,8 +25,11 @@ import {
   CenterNewsRightDiv,
   CenterCotainer,
   CenterNewsLeftTopDiv,
-} from './scrapCreateCenterStyledComponent';
+  ConterTitleDiv,
+  CenterNewsRightImg,
+} from '@features/Scrap/create/scrapCreateCenterStyledComponent';
 import { createScrap } from '@api/scrapApi';
+import { stateToHTML } from 'draft-js-export-html';
 
 const CenterContent: React.FC = () => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -26,15 +37,15 @@ const CenterContent: React.FC = () => {
   const [droppedCard, setDroppedCard] = useState<any | null>(null); // 드롭된 뉴스 상태
 
   const handleCreateCompleteClick = async () => {
-    const contextState = editorState.getCurrentContent();
-    const contextAsRaw = JSON.stringify(convertToRaw(contextState)); // JSON 형식으로 변환
+    const contentState = editorState.getCurrentContent();
+    const contentAsHTML = stateToHTML(contentState);
     console.log('작성완료');
-    console.log('내용', contextAsRaw);
+    console.log('내용', contentAsHTML);
 
-    if (!setDroppedCard || !title || !contextAsRaw) {
+    if (!setDroppedCard || !title || !contentAsHTML) {
       alert('모든 필드를 입력하세요.');
     }
-    const scrapData = { title, context: contextAsRaw, droppedCard };
+    const scrapData = { title, context: contentAsHTML, droppedCard };
 
     // API 호출
     await createScrap(scrapData);
@@ -63,6 +74,15 @@ const CenterContent: React.FC = () => {
 
   return (
     <>
+      <TitleDiv>
+        <ConterTitleDiv>
+          <TitleP>스크랩 작성</TitleP>
+          <ThemedButton onClick={handleCreateCompleteClick}>
+            작성 완료
+          </ThemedButton>
+        </ConterTitleDiv>
+      </TitleDiv>
+      <ScrapHr />
       <CenterGlobalStyle />
       <CenterContentDiv>
         <CenterContentTopDiv>
@@ -71,9 +91,6 @@ const CenterContent: React.FC = () => {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
-          <ThemedButton onClick={handleCreateCompleteClick}>
-            작성 완료
-          </ThemedButton>
         </CenterContentTopDiv>
         <CenterCotainer
           onDrop={handleDrop}
@@ -83,24 +100,31 @@ const CenterContent: React.FC = () => {
           {droppedCard ? (
             <CenterNewsDiv>
               <CenterNewsLeftDiv>
+                <TextP_24_NOTGRAY>{droppedCard.title}</TextP_24_NOTGRAY>
+                <TextP_20>{droppedCard.description}</TextP_20>
                 <CenterNewsLeftTopDiv>
-                  <TextP_24_NOTGRAY>청년일보</TextP_24_NOTGRAY>
+                  <TextP_16>
+                    {droppedCard.media}{' '}
+                    {droppedCard.uploadDatetime
+                      ? droppedCard.uploadDatetime
+                          .split(' ')[0]
+                          .replace(/-/g, '.')
+                      : ''}
+                  </TextP_16>
                 </CenterNewsLeftTopDiv>
-                <TextP_24_NOTGRAY>
-                  [청년 디지털 인재] “AI부터 빅데이터까지” 산업계, 디지털
-                </TextP_24_NOTGRAY>
-                <TextP_20>
-                  영입하기 위해 각고의 노력을 기울이고 있다. 기업들, 디지털 인재
-                  육성 ‘안간힘’ 해외 지원도 삼성전자의 SW아카데미(이하 SSAFY,
-                  싸피)는 디지털 인재 양성에 앞장선 대표적인 사례다.
-                </TextP_20>
               </CenterNewsLeftDiv>
-              <CenterNewsRightDiv />
+              {droppedCard.thumbnail ? (
+                <CenterNewsRightImg src={droppedCard.thumbnail} />
+              ) : (
+                <CenterNewsRightDiv />
+              )}
             </CenterNewsDiv>
           ) : (
             <CenterContentNewsDiv>
-              <PlusIcon />
-              <TextP_16>스크랩 할 뉴스를 드래그하여 끌고 와주세요</TextP_16>
+              <DragIcon />
+              <TextP_16_NOTGRAY>
+                스크랩 할 뉴스를 드래그해 주세요
+              </TextP_16_NOTGRAY>
             </CenterContentNewsDiv>
           )}
         </CenterCotainer>

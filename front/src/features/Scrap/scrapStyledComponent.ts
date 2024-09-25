@@ -14,6 +14,12 @@ export const TextP_16 = styled.p`
   margin-bottom: auto;
 `;
 
+export const TextP_16_NOTGRAY = styled.p`
+  font-size: 1rem;
+  margin-top: auto;
+  margin-bottom: auto;
+`;
+
 export const TextP_20_bold = styled.p`
   font-size: 1.25rem;
   font-weight: 600;

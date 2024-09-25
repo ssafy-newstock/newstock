@@ -1,11 +1,15 @@
 import { useNavigate } from 'react-router-dom';
-import { TextP_16, TextP_20_bold, TitleDiv } from '../scrapStyledComponent';
-import { CalendarIcon, GoIcon } from './Icon';
+import {
+  TextP_16,
+  TextP_20_bold,
+  TitleDiv,
+} from '@features/Scrap/scrapStyledComponent';
+import { CalendarIcon, GoIcon } from '@features/Scrap/create/Icon';
 import {
   RightTitleBottomDiv,
   RightTitleBottomFilterDiv,
   RightTitleTopDiv,
-} from './scrapCreateRightStyledComponent';
+} from '@features/Scrap/create/scrapCreateRightStyledComponent';
 
 const RightTitle: React.FC = () => {
   const navigate = useNavigate();

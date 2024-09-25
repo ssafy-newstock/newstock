@@ -1,16 +1,17 @@
-import { TextP_16, TextP_22 } from '../scrapStyledComponent';
+import { TextP_16, TextP_22 } from '@features/Scrap/scrapStyledComponent';
 import {
   RightNewsCardBottomDiv,
   RightNewsCardDiv,
   RightNewsCardTagDiv,
   RightNewsCardTagP,
-} from './scrapCreateRightStyledComponent';
+} from '@features/Scrap/create/scrapCreateRightStyledComponent';
 
 interface Data {
-  Title: string;
-  Media: string;
-  Date: string;
-  keyword?: string;
+  title: string;
+  media: string;
+  uploadDatetime: string;
+  description: string;
+  keywords?: string[];
 }
 
 interface RightNewsProps {
@@ -35,14 +36,14 @@ const RightNewsCard: React.FC<RightNewsProps> = ({ data }) => {
       onDragEnd={handleDragEnd} // 드래그 끝난 후 커서 복구
       style={{ cursor: 'grab' }} // 기본적으로 'grab' 커서
     >
-      <TextP_22>{data.Title}</TextP_22>
+      <TextP_22>{data.title}</TextP_22>
       <RightNewsCardBottomDiv>
         <TextP_16>
-          {data.Media} | {data.Date}
+          {data.media} | {data.uploadDatetime}
         </TextP_16>
-        {data.keyword && (
+        {data.keywords && (
           <RightNewsCardTagDiv>
-            <RightNewsCardTagP>#{data.keyword}</RightNewsCardTagP>
+            <RightNewsCardTagP>{data.keywords[0]}</RightNewsCardTagP>
           </RightNewsCardTagDiv>
         )}
       </RightNewsCardBottomDiv>

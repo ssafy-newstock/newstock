@@ -1,6 +1,12 @@
 import styled from 'styled-components';
 import { createGlobalStyle } from 'styled-components';
 
+export const ConterTitleDiv = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+`;
+
 export const CenterContentDiv = styled.div`
   display: flex;
   width: 100%;
@@ -133,7 +139,7 @@ export const CenterGlobalStyle = createGlobalStyle`
 `;
 
 export const StyledInput = styled.input`
-  width: 90%;
+  width: 100%;
   padding: 10px;
   font-size: 1rem; /* 글자 크기 24px에 해당 */
   font-weight: bold;
@@ -184,6 +190,11 @@ export const CenterNewsLeftTopDiv = styled.div`
   padding: 0px 10px;
   align-items: center;
   gap: 30px;
+`;
+
+export const CenterNewsRightImg = styled.img`
+  width: 8.75rem;
+  height: 8.75rem;
 `;
 
 export const CenterNewsRightDiv = styled.div`
