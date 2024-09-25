@@ -1,8 +1,8 @@
-import CenterNewsCard from './CenterNewsCard';
+import CenterNewsCard from '@features/MyNews/CenterNewsCard';
 import {
   CenterContentSection,
   CenterContentSectionTitle,
-} from './styledComponent';
+} from '@features/MyNews/styledComponent';
 
 interface NewsSectionProps {
   title: string;

@@ -1,4 +1,4 @@
-import AshbhIcon from './AshbhIcon';
+import AshbhIcon from '@features/MyNews/AshbhIcon';
 import {
   CardBottomContainer,
   CardContainer,
@@ -6,7 +6,7 @@ import {
   CardTitleFontStyle,
   FontStyle,
   IconWrapper,
-} from './styledComponent';
+} from '@features/MyNews/styledComponent';
 
 interface Data {
   Title: string;
