@@ -82,13 +82,21 @@ export const CenterContentSectionBeforeDiv = styled.div`
 
 export const CenterContentSection = styled.div`
   display: flex;
+  width: 100%;
+  overflow-x: auto; /* 수평 스크롤을 활성화 */
   padding: 0.9375rem 0.625rem;
   margin: 0.625rem 0rem 1.875rem 0rem;
-  flex-direction: column;
+  flex-direction: row; /* 수평으로 자식 요소를 나열 */
   align-items: flex-start;
   border-radius: 1.25rem;
   background: ${({ theme }) => theme.centerContentSectionBackgroundColor};
-  overflow: auto;
+  white-space: nowrap; /* 자식 요소가 한 줄로 나열되도록 함 */
+  scroll-behavior: smooth; /* 부드러운 스크롤 */
+
+  /* 스크롤바를 숨기고 싶다면 아래를 추가 */
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 export const CenterContentSectionRowDiv = styled.div`
@@ -108,7 +116,7 @@ export const CenterContentSectionTitle = styled.p`
 export const CardContainer = styled.div`
   display: flex;
   padding: 0.375rem 0rem;
-  width: 20.4375rem;
+  width: 20rem;
   height: 9.375rem;
   flex-direction: column;
   align-items: flex-start;
@@ -117,12 +125,19 @@ export const CardContainer = styled.div`
   border-radius: 1.25rem;
   background: ${({ theme }) => theme.newsBackgroundColor};
   box-shadow: 0rem 0.25rem 0.25rem 0rem rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
 `;
 
 export const CardTitleFontStyle = styled.p`
   font-size: 1.375rem;
-  line-height: 1.5625rem; /* 113.636% */
+  line-height: 1.5625rem;
   margin: 0.625rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  width: calc(100% - 1.25rem); /* 부모 padding을 고려해 너비 조정 */
+  box-sizing: border-box;
 `;
 
 export const CardContextDiv = styled.div`
