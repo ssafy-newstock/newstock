@@ -1,0 +1,28 @@
+spring:
+  profiles:
+    include: oauth
+  datasource:
+    url: jdbc:mysql://svc.sel4.cloudtype.app:30947/newstockmember
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: ssafy
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+  data:
+    redis:
+      host: redis-service
+      port: 6379
+
+server:
+  port: 8000
+
+logging:
+  level:
+    com.ssafy.auth.domain.controller.client.MemberClient: DEBUG

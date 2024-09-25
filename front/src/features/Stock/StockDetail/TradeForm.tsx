@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useForm, Controller } from 'react-hook-form';
+import { axiosInstance } from '@api/axiosInstance';
 
 interface FormValues {
   price: number;
@@ -9,6 +10,7 @@ interface FormValues {
 
 interface TradeFormProps {
   initialPrice: number;
+  stockCode: string;
 }
 
 const FormWrapper = styled.div`
@@ -56,34 +58,52 @@ const ButtonWrapper = styled.div`
   gap: 1rem;
 `;
 
-const Button = styled.button<{ variant: 'buy' | 'sell' }>`
+const Button = styled.button<{ $variant: 'buy' | 'sell' }>`
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 1rem;
   color: #fff;
   cursor: pointer;
   background-color: ${(props) =>
-    props.variant === 'buy' ? '#4caf50' : '#f44336'};
+    props.$variant === 'buy' ? '#4caf50' : '#f44336'};
   &:hover {
     opacity: 0.8;
   }
 `;
 
-const BuyForm: React.FC<{ initialPrice: number }> = ({ initialPrice }) => {
-  const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValues>({
+const BuyForm: React.FC<TradeFormProps> = ({ initialPrice, stockCode }) => {
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormValues>({
     defaultValues: {
       price: initialPrice,
       amount: 0,
     },
   });
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = async (data: FormValues) => {
+    // const accessToken = sessionStorage.getItem('accessToken');
+    // console.log('accessToken:', accessToken);
     const buyData = {
       price: data.price,
-      amount: data.amount,
+      amount: Number(data.amount),
     };
     console.log('Buy Data:', buyData);
     // 매수 로직
+    try {
+      // 매수 API 요청
+      const response = await axiosInstance.post('/api/stock/transaction/buy', {
+        stockCode: stockCode,
+        stockTransactionAmount: buyData.amount,
+        stockTransactionType: 'BUY',
+      });
+      console.log('Buy Response:', response.data);
+    } catch (error) {
+      console.error('Buy Error:', error);
+    }
     reset({ price: initialPrice, amount: 0 }); // 폼 리셋
   };
 
@@ -116,12 +136,16 @@ const BuyForm: React.FC<{ initialPrice: number }> = ({ initialPrice }) => {
               required: 'Buy amount is required',
               min: {
                 value: 1,
-                message: 'Buy amount must be at least 1'
-              }
+                message: 'Buy amount must be at least 1',
+              },
             }}
             render={({ field }) => (
               <>
-                <InputTag {...field} type="number" placeholder="Enter buy amount" />
+                <InputTag
+                  {...field}
+                  type="number"
+                  placeholder="Enter buy amount"
+                />
                 {errors.amount && (
                   <p style={{ color: 'red' }}>{errors.amount.message}</p>
                 )}
@@ -131,7 +155,7 @@ const BuyForm: React.FC<{ initialPrice: number }> = ({ initialPrice }) => {
         </InputRow>
       </InputWrapper>
       <ButtonWrapper>
-        <Button type="button" variant="buy" onClick={handleSubmit(onSubmit)}>
+        <Button type="button" $variant="buy" onClick={handleSubmit(onSubmit)}>
           Buy
         </Button>
       </ButtonWrapper>
@@ -139,21 +163,38 @@ const BuyForm: React.FC<{ initialPrice: number }> = ({ initialPrice }) => {
   );
 };
 
-const SellForm: React.FC<{ initialPrice: number }> = ({ initialPrice }) => {
-  const { control, handleSubmit, reset, formState: { errors } } = useForm<FormValues>({
+const SellForm: React.FC<TradeFormProps> = ({ initialPrice, stockCode }) => {
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormValues>({
     defaultValues: {
       price: initialPrice,
       amount: 0,
     },
   });
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = async (data: FormValues) => {
+    // const accessToken = sessionStorage.getItem('accessToken');
     const sellData = {
       price: data.price,
-      amount: data.amount,
+      amount: Number(data.amount),
     };
     console.log('Sell Data:', sellData);
     // 매도 로직
+    try {
+      // 매도 API 요청
+      const response = await axiosInstance.post('/api/stock/transaction/sell', {
+        stockCode: stockCode,
+        stockTransactionAmount: sellData.amount,
+        stockTransactionType: 'SELL',
+      });
+      console.log('Sell Response:', response.data);
+    } catch (error) {
+      console.error('Sell Error:', error);
+    }
     reset({ price: initialPrice, amount: 0 }); // 폼 리셋
   };
 
@@ -186,12 +227,16 @@ const SellForm: React.FC<{ initialPrice: number }> = ({ initialPrice }) => {
               required: 'Sell amount is required',
               min: {
                 value: 1,
-                message: 'Sell amount must be at least 1'
-              }
+                message: 'Sell amount must be at least 1',
+              },
             }}
             render={({ field }) => (
               <>
-                <InputTag {...field} type="number" placeholder="Enter sell amount" />
+                <InputTag
+                  {...field}
+                  type="number"
+                  placeholder="Enter sell amount"
+                />
                 {errors.amount && (
                   <p style={{ color: 'red' }}>{errors.amount.message}</p>
                 )}
@@ -201,7 +246,7 @@ const SellForm: React.FC<{ initialPrice: number }> = ({ initialPrice }) => {
         </InputRow>
       </InputWrapper>
       <ButtonWrapper>
-        <Button type="button" variant="sell" onClick={handleSubmit(onSubmit)}>
+        <Button type="button" $variant="sell" onClick={handleSubmit(onSubmit)}>
           Sell
         </Button>
       </ButtonWrapper>
@@ -209,11 +254,11 @@ const SellForm: React.FC<{ initialPrice: number }> = ({ initialPrice }) => {
   );
 };
 
-const TradeForm: React.FC<TradeFormProps> = ({ initialPrice }) => {
+const TradeForm: React.FC<TradeFormProps> = ({ initialPrice, stockCode }) => {
   return (
     <FormWrapper>
-      <BuyForm initialPrice={initialPrice} />
-      <SellForm initialPrice={initialPrice} />
+      <BuyForm initialPrice={initialPrice} stockCode={stockCode} />
+      <SellForm initialPrice={initialPrice} stockCode={stockCode} />
     </FormWrapper>
   );
 };

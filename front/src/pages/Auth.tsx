@@ -15,6 +15,8 @@ const Auth = () => {
   const [error, setError] = useState<ErrorType>(null);
   const { login } = useAuthStore();
 
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
+
   // URLSearchParams를 사용하여 인가코드를 가져옴
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -39,7 +41,7 @@ const Auth = () => {
       setIsLoading(true);
       try {
         const response = await axios.post(
-          'http://withhim-jenkins.site/api/member/login',
+          `${BASE_URL}/api/auth/login`,
           {
             registrationId: registrationId,
             authorization: code,
@@ -56,19 +58,17 @@ const Auth = () => {
         const result = response.data;
 
         // zustand store에 사용자 이름 저장 및 로그인 상태 변경(true)
-        console.log('loginData', result.data);
-        // login(result.data);
-        login();
+        console.log('loginData', result);
+        login(result);
 
         const headerData = response.headers;
         console.log(
           'accessToken',
-          headerData['authorization'].replace(/^Bearer\s/, '')
+          headerData['authorization'].replace(/^Bearer\s/, '').trim()
         );
-        const accessToken = headerData['authorization'].replace(
-          /^Bearer\s/,
-          ''
-        );
+        const accessToken = headerData['authorization']
+          .replace(/^Bearer\s/, '')
+          .trim();
         // 토큰을 cessionStorage에 저장
         sessionStorage.setItem('accessToken', accessToken);
         navigate('/');

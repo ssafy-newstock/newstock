@@ -30,8 +30,9 @@ export const RealTimeStockFirstRow = () => {
 const RealTimeStock = ({stock}:{stock:IStock}) => {
   const navigate = useNavigate();
 
+    // 주식 상세 페이지 + 월봉 차트 조회
   const handleNavigate = () => {
-    navigate(`/stock-detail/${stock.stockCode}`, { state: { stock } });
+    navigate(`/stock-detail/${stock.stockCode}/daily-chart`, { state: { stock } });
   };
   return (
       <StockCardRow onClick={handleNavigate}>
@@ -43,11 +44,11 @@ const RealTimeStock = ({stock}:{stock:IStock}) => {
           {stock.stockName}
         </StockTitle>
         <StckPrice>{formatNumber(stock.stckPrpr)}원</StckPrice>
-        <StockPrev isPositive={stock.prdyVrss.toString().startsWith('-')}>
+        <StockPrev $isPositive={stock.prdyVrss.toString().startsWith('-')}>
           {formatChange(formatNumber(stock.prdyVrss))}원 ({stock.prdyCtrt}
           %)
         </StockPrev>
-        <Text>{formatUnit(stock.acmlTrPbmn)}</Text>
+        <Text>{formatUnit(stock.acmlTrPbmn)}원</Text>
         <Text>{formatNumber(stock.acmlVol)}주</Text>
       </StockCardRow>
   );

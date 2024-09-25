@@ -8,6 +8,7 @@ import com.ssafy.stock.domain.service.response.StockPricesResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketMessage;
@@ -69,6 +70,7 @@ public class KISSocketHandler extends TextWebSocketHandler {
      * @throws Exception
      * @pub("/sub/stock/info/live") 종목 코드, 종목 이름, 주식 현재가, 전일 대비, 전일 대비율 전송
      */
+    @Transactional
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
         String payload = message.getPayload().toString();
@@ -92,7 +94,10 @@ public class KISSocketHandler extends TextWebSocketHandler {
 
             Optional<StocksPriceLiveRedis> stocksPriceLiveRedis = stocksPriceLiveRedisRepository.findById(stockCode);
             if (stocksPriceLiveRedis.isPresent()) {
-                stocksPriceLiveRedis.get().update(stockCode, stockName, stockIndustry, stckPrpr, prdyVrss, prdyCtrt, acmlTrPbmn, acmlVol);
+                StocksPriceLiveRedis stock = stocksPriceLiveRedis.get();
+                stock.update(stockCode, stockName, stockIndustry, stckPrpr, prdyVrss, prdyCtrt, acmlTrPbmn, acmlVol);
+                stocksPriceLiveRedisRepository.save(stock);
+
             } else {
                 stocksPriceLiveRedisRepository.save(new StocksPriceLiveRedis(stockCode, stockName, stockIndustry, stckPrpr, prdyVrss, prdyCtrt, acmlTrPbmn, acmlVol));
             }

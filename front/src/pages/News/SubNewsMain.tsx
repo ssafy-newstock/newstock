@@ -3,50 +3,46 @@ import { Center } from '@components/Center';
 import { Right } from '@components/Right';
 import LeftNews from '@components/LeftNews';
 import { Outlet, useLocation, Link } from 'react-router-dom';
+import BookmarkedNews from '@features/News/BookmarkedNews';
 
 const SubNewsMainCenter = styled.div`
   display: flex;
-  padding: 20px;
+  padding: 1.25rem 1.5rem;
   flex-direction: column;
   align-items: flex-start;
   align-self: stretch;
-  gap: 25px;
+  max-width: 106rem;
+  /* min-width: 1024px; */
+  width: 64rem;
 `;
 
 const SubNewsHeaderWrapper = styled.div`
   display: flex;
-  padding: 25px 0px;
+  padding: 1.6rem 0;
   flex-direction: column;
   align-items: flex-start;
-  gap: 10px;
+  gap: 0.6rem;
   align-self: stretch;
 `;
 
-const SubNewsHeader = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-`;
-
-const SubNewsHeaderText = styled.div`
-  color: ${({ theme }) => theme.highlightColor};
+const SubNewsHeaderText = styled.p`
+  color: ${({ theme }) => theme.textColor};
   font-family: Inter;
-  font-size: 32px;
+  font-size: 2rem;
   font-style: normal;
-  font-weight: 400;
-  line-height: 30px; /* 93.75% */
+  font-weight: 600;
+  line-height: 1.9rem;
 `;
 
 const SubNewsBoarder = styled.div`
   display: flex;
-  margin: 10px 0px 3px 0px;
+  margin: 0.625rem 0 0.19rem 0;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  gap: 0.625rem;
   width: 100%;
-  height: 3px;
-  background: ${({ theme }) => theme.highlightColor};
+  height: 0.19rem;
+  background-color: ${({ theme }) => theme.textColor};
 `;
 
 const CategoryWrapper = styled.div`
@@ -54,28 +50,27 @@ const CategoryWrapper = styled.div`
   justify-content: space-evenly;
   align-items: center;
   width: 100%;
-  gap: 20px;
+  gap: 1.25rem;
   flex-wrap: nowrap;
   white-space: nowrap;
   overflow: hidden; /* 넘친 카테고리들을 가리도록 설정 */
 `;
 
 const AllCategoryText = styled.p`
-  color: #000;
+  color: ${({ theme }) => theme.textColor};
   font-family: Inter;
-  font-size: 16px;
+  font-size: 1rem;
   font-style: normal;
-  font-weight: 400;
-  line-height: 30px;
+  line-height: 1.9rem;
   font-weight: 600;
 `;
 
 const CategoryText = styled(Link)`
   font-family: Inter;
-  font-size: 16px;
+  font-size: 1rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 30px; /* 187.5% */
+  line-height: 1.9rem; /* 187.5% */
   color: #828282;
   text-decoration: none;
 
@@ -89,15 +84,19 @@ const SubNewsMainRight = styled.div`
   display: flex;
   width: 100%;
   height: 100%;
-  padding: 20px;
+  padding: 1.25rem;
   flex-direction: column;
   align-items: flex-start;
-  gap: 20px;
+  gap: 1.25rem;
   align-self: stretch;
-  background: #bbb;
 `;
 
-const categories = [
+interface Category {
+  label: string;
+  path: string;
+}
+
+const categories: Category[] = [
   { label: '전체 기사', path: '/newsMain' },
   { label: '금융', path: '/newsMain/finance' },
   { label: '산업', path: '/newsMain/industry' },
@@ -113,10 +112,11 @@ const categories = [
   { label: '벤처/스타트업', path: '/newsMain/startups' },
 ];
 
-const SubNewsMainPage = () => {
+const SubNewsMainPage: React.FC = () => {
   const location = useLocation();
 
-  const isEconomicNews = location.pathname.includes('economicNews');
+  const isEconomicNews = location.pathname.includes('economic-news');
+  // const isEconomicNews = location.pathname.includes(`stock-news`);
 
   return (
     <>
@@ -125,34 +125,35 @@ const SubNewsMainPage = () => {
       <Center>
         <SubNewsMainCenter>
           <SubNewsHeaderWrapper>
-            <SubNewsHeader>
-              <SubNewsHeaderText>
-                {isEconomicNews ? '시황 뉴스' : '종목 뉴스'}
-              </SubNewsHeaderText>
-            </SubNewsHeader>
+            <SubNewsHeaderText>
+              {isEconomicNews ? '시황 뉴스' : '종목 뉴스'}
+            </SubNewsHeaderText>
 
             <SubNewsBoarder />
-
-            <CategoryWrapper>
-              {categories.map((category, index) =>
-                category.label === '전체 기사' ? (
-                  <AllCategoryText key={index}>
-                    {category.label}
-                  </AllCategoryText>
-                ) : (
-                  <CategoryText key={index} to={category.path}>
-                    {category.label}
-                  </CategoryText>
-                )
-              )}
-            </CategoryWrapper>
+            {isEconomicNews ? (
+              <CategoryWrapper>
+                {categories.map((category, index) =>
+                  category.label === '전체 기사' ? (
+                    <AllCategoryText key={index}>
+                      {category.label}
+                    </AllCategoryText>
+                  ) : (
+                    <CategoryText key={index} to={category.path}>
+                      {category.label}
+                    </CategoryText>
+                  )
+                )}
+              </CategoryWrapper>
+            ) : null}
           </SubNewsHeaderWrapper>
         </SubNewsMainCenter>
         <Outlet />
       </Center>
 
       <Right>
-        <SubNewsMainRight></SubNewsMainRight>
+        <SubNewsMainRight>
+          <BookmarkedNews />
+        </SubNewsMainRight>
       </Right>
     </>
   );

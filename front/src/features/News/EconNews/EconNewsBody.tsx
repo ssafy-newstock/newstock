@@ -3,19 +3,19 @@ import { PositiveIcon, PositiveIconText } from '@features/News/PNSubicon';
 
 const EconomicNewsBody = styled.div`
   display: flex;
-  /* width: 761px; */
-  max-width: 72%;
-  margin-right: 20px;
+  /* max-width: 72%; */
+  width: 72%;
+  margin-right: 1.25rem;
   flex-direction: column;
   align-items: flex-start;
-  gap: 8px;
-  padding: 10px 0px;
+  gap: 0.8rem;
+  padding: 0.625rem 0;
 `;
 
 const EconomicNewsHeader = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
   align-self: stretch;
 `;
 
@@ -29,59 +29,47 @@ const EconomicNewsTitle = styled.div`
 `;
 
 const EconomicNewsTitleText = styled.p`
-  color: #0448a5;
+  color: ${({ theme }) => theme.highlightColor};
   font-family: Inter;
-  font-size: 32px;
+  font-size: 2rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 30px;
   line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 100%;
 `;
 
 const EconomicNewsContent = styled.p`
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* 최대 2줄까지만 표시 */
+  -webkit-line-clamp: 3; /* 최대 2줄까지만 표시 */
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis; /* 말줄임표 적용 */
   justify-content: center;
   align-items: center;
-  gap: 10px;
   align-self: stretch;
   color: #828282;
   font-family: Inter;
-  font-size: 20px;
+  font-size: 1.25rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 30px; /* 150% */
+  line-height: 2rem;
 `;
 
 const EconomicNewsFooter = styled.div`
   display: flex;
   align-items: center;
-  gap: 37px;
+  gap: 2rem;
 `;
 
-const NewsCompanyText = styled.p`
+const FooterText = styled.p`
   color: #828282;
   font-family: Inter;
-  font-size: 15px;
+  font-size: 1rem;
   font-style: normal;
   font-weight: 500;
-  line-height: 30px; /* 200% */
-`;
-
-const NewsDateText = styled.p`
-  color: #828282;
-  font-family: Inter;
-  font-size: 15px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 30px; /* 200% */
+  line-height: 1.9rem;
 `;
 
 interface EconNewsBodyProps {
@@ -97,7 +85,7 @@ const EconNewsBody: React.FC<EconNewsBodyProps> = ({
   media,
   date,
 }) => {
-  const formattedDate = date.split(' ')[0].replace(/-/g, '.');
+  const formattedDate = date?.split(' ')[0].replace(/-/g, '.') || '날짜 불명';
   return (
     <EconomicNewsBody>
       <EconomicNewsHeader>
@@ -108,10 +96,12 @@ const EconNewsBody: React.FC<EconNewsBodyProps> = ({
           <EconomicNewsTitleText>{title}</EconomicNewsTitleText>
         </EconomicNewsTitle>
       </EconomicNewsHeader>
+
       <EconomicNewsContent>{description}</EconomicNewsContent>
+
       <EconomicNewsFooter>
-        <NewsCompanyText>{media}</NewsCompanyText>
-        <NewsDateText>{formattedDate}</NewsDateText>
+        <FooterText>{media}</FooterText>
+        <FooterText>{formattedDate}</FooterText>
       </EconomicNewsFooter>
     </EconomicNewsBody>
   );

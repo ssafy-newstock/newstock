@@ -20,18 +20,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-
     // jwt
     implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
     implementation 'org.springframework.kafka:spring-kafka'
     testImplementation 'org.springframework.kafka:spring-kafka-test'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.3'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.3'
-
-    // redis
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
     // JSON
     implementation 'org.json:json:20240303'
@@ -43,7 +37,9 @@ dependencies {
     // 모델매퍼
     implementation 'org.modelmapper:modelmapper:3.2.0'
 
-    testImplementation 'org.springframework.security:spring-security-test'
+    // WebSocket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket:3.3.0'
+
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

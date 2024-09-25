@@ -10,7 +10,7 @@ import newsData from '@api/dummyData/20240907.json';
 const NewsMainCenter = styled.div`
   display: flex;
   width: 100%;
-  // 화면 퍼지는거 보기 싫어서 일단 픽셀로 박아둠.
+  // 화면 퍼지는거 보기 싫어서 일단 최댓값 박아둠.
   max-width: 106rem;
   padding: 1.25rem 3rem;
   flex-direction: column;
@@ -49,6 +49,7 @@ const NewsMainPage: React.FC = () => {
                 media={news.media}
                 date={news.uploadDatetime}
                 header="벤처/스타트업"
+                stockId={news.stockId}
               />
             ))}
           </NewsMainBodyWrapper>
@@ -63,6 +64,7 @@ const NewsMainPage: React.FC = () => {
                 media={news.media}
                 date={news.uploadDatetime}
                 header="삼성전자"
+                stockId={news.stockId}
               />
             ))}
           </NewsMainBodyWrapper>

@@ -1,80 +1,139 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 import summaryIcon from '@features/summaryIcon.png';
+import NewsSummary from '@features/News/NewsSummary';
+import { bookmarkedIcon, unbookmarkedIcon } from '@features/News/NewsIconTag';
+import { Overlay, Background, Modal } from '@components/ModalComponents';
 
 const EconomicSubNewsWrapper = styled.div`
-  width: 28%;
-  background-color: #f0f0f0; /* 배경색 설정 */
-  padding: 10px;
+  width: 25%;
+  height: 100%;
+  padding: 0.6rem;
 `;
 
 const EconomicSubNewsBody = styled.div`
   display: flex;
-  /* width: 135px; */
-  max-width: 20%;
-  padding-right: 10px;
+  max-width: 100%;
   flex-direction: column;
-  justify-content: center;
-  align-items: flex-end;
-  gap: 5px;
-  /* height: 100%; */
-  /* background-color: black; */
+  align-items: center;
+  gap: 0.3rem;
+  height: 100%;
 `;
 
 const EconomicSubNewsHeader = styled.div`
   display: flex;
   width: 100%;
-  padding: 0px 10px 10px 10px;
-  justify-content: space-between;
+  padding: 0 0.625rem 0.625rem 0.625rem;
+  justify-content: flex-end;
   align-items: center;
+  gap: 0.625rem;
 `;
 
 const EconomicSubNewsPNG = styled.img`
-  height: 30px;
-  width: auto;
-  border-radius: 5px;
+  height: 1.9rem;
+  width: 1.9rem;
+  border-radius: 0.3rem;
   color: #828282;
+  cursor: pointer; /* 클릭 가능한 커서 설정 */
+
+  &:hover {
+    opacity: 0.8;
+    transform: scale(1.1);
+    transition: transform 0.2s ease-in-out;
+  }
 `;
 
 const EconomicSubNewsThumbnail = styled.div`
-  width: 150px;
-  aspect-ratio: 16/12;
+  width: 100%;
+  height: 10rem;
   flex-shrink: 0;
   align-self: stretch;
-
+  background-color: white;
   img {
     width: 100%;
-    max-height: 100px;
-    object-fit: cover; /* 이미지가 부모 요소를 덮도록 설정 */
-    border-radius: 5px; /* 둥근 모서리 추가 */
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0.3rem; /* 둥근 모서리 추가 */
   }
 `;
+
+// const Overlay = styled.div`
+//   position: fixed;
+//   inset: 0;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   z-index: 9999;
+// `;
+
+// const Background = styled.div`
+//   position: fixed;
+//   inset: 0;
+//   background-color: rgba(0, 0, 0, 0.5); /* 반투명 검은 배경 */
+// `;
 
 interface EconSubNewsBodyProps {
   thumbnail: string;
 }
 
+// 요약창이 화면 중앙에 나타나도록 설정
+// const Modal = styled.div`
+//   background-color: ${({ theme }) => theme.backgroundColor};
+//   border-radius: 0.5rem;
+//   box-shadow: 0 0.25rem 0.375rem rgba(0, 0, 0, 0.1);
+//   padding: 1.25rem 1.5rem;
+//   z-index: 9999;
+//   width: 18.75rem;
+// `;
+
 const EconSubNewsBody: React.FC<EconSubNewsBodyProps> = ({ thumbnail }) => {
+  const [showSummary, setShowSummary] = useState<boolean>(false);
+  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
+
+  const handleIconClick = (event: React.MouseEvent) => {
+    event.stopPropagation(); // 상위 클릭 이벤트 중지
+    setIsBookmarked(!isBookmarked);
+  };
+
+  const handleSummaryClick = (event: React.MouseEvent) => {
+    event.stopPropagation(); // 상위 클릭 이벤트 중지
+    if (!showSummary) {
+      setShowSummary(true);
+    }
+  };
+
+  const handleCloseSummary = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    setShowSummary(false);
+  };
+
   return (
     <EconomicSubNewsWrapper>
       <EconomicSubNewsBody>
         <EconomicSubNewsHeader>
-          <EconomicSubNewsPNG src={summaryIcon} alt="summaryIcon" />
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="36"
-            height="36"
-            viewBox="0 0 36 36"
-            fill="none"
-          >
-            <path
-              d="M7.5 31.5V7.5C7.5 6.675 7.794 5.969 8.382 5.382C8.97 4.795 9.676 4.501 10.5 4.5H25.5C26.325 4.5 27.0315 4.794 27.6195 5.382C28.2075 5.97 28.501 6.676 28.5 7.5V31.5L18 27L7.5 31.5Z"
-              fill="#006DFF"
-            />
-          </svg>
+          <EconomicSubNewsPNG
+            src={summaryIcon}
+            alt="summaryIcon"
+            onClick={handleSummaryClick}
+          />
+          <div onClick={handleIconClick}>
+            {isBookmarked ? bookmarkedIcon : unbookmarkedIcon}
+          </div>
         </EconomicSubNewsHeader>
+
         <EconomicSubNewsThumbnail>
           <img src={thumbnail} alt="thumbnail" />
         </EconomicSubNewsThumbnail>
+
+        {showSummary && (
+          <Overlay>
+            <Background onClick={handleCloseSummary} />
+            <Modal>
+              {/* 빨간줄은 나오는데 기능상 문제도 없고 콘솔에도 이상이 없어서 그냥 둠 */}
+              <NewsSummary onClose={handleCloseSummary} />
+            </Modal>
+          </Overlay>
+        )}
       </EconomicSubNewsBody>
     </EconomicSubNewsWrapper>
   );

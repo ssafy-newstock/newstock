@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class StockTransactionRequest {
-    private final String StockCode;
+    private final String stockCode;
     private final Long stockTransactionAmount;
     private final TYPE stockTransactionType;
 }

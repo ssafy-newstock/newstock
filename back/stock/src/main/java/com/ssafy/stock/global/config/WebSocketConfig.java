@@ -1,7 +1,7 @@
 package com.ssafy.stock.global.config;
 
 import com.ssafy.stock.domain.repository.StocksPriceLiveRedisRepository;
-import com.ssafy.stock.domain.repository.StocksPriceRedisRepository;
+import com.ssafy.stock.domain.repository.redis.StocksPriceRedisRepository;
 import com.ssafy.stock.domain.service.helper.StockConverter;
 import com.ssafy.stock.global.handler.KISSocketHandler;
 import org.springframework.context.annotation.Bean;
@@ -35,8 +35,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(final MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/api/stock/sub");
-        registry.setApplicationDestinationPrefixes("/api/stock/pub");
+        registry.enableSimpleBroker("/api/sub/stock");
+        registry.setApplicationDestinationPrefixes("/api/pub/stock");
     }
 
     @Override
