@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -204,7 +205,7 @@ public class StockService {
      * @param stockCode
      * @return
      */
-    public StockDetailDto getStockCandle(String stockCode) {
+    public StockDetailDto getStockDetail(String stockCode) {
         Stocks stock = stocksRepository.findByStockCodeWithCandles(stockCode)
                 .orElseThrow(() -> new StockNotFoundException());
 
@@ -214,11 +215,16 @@ public class StockService {
         // 데일리 차트 데이터
         List<StocksPriceLiveDailyChartRedis> LiveDailyChartRedisList = stocksPriceLiveDailyChartRedisRepository.findAllByStockCode(stockCode);
 
+        // time을 기준으로 오름차순 정렬
+        List<StocksPriceLiveDailyChartRedis> sortedLiveDailyChartRedisList = LiveDailyChartRedisList.stream()
+                .sorted(Comparator.comparing(StocksPriceLiveDailyChartRedis::getTime))
+                .toList();
+
         List<StockCandleDto> stockCandleDtoList = stocksCandles.stream()
                 .map(stocksCandle -> new StockCandleDto(stock, stocksCandle))
                 .toList();
 
-        List<StocksPriceLiveDailyChartRedisDto> stocksPriceLiveDailyChartRedisDtoList = LiveDailyChartRedisList.stream()
+        List<StocksPriceLiveDailyChartRedisDto> stocksPriceLiveDailyChartRedisDtoList = sortedLiveDailyChartRedisList.stream()
                 .map(stocksPriceLiveDailyChartRedis -> new StocksPriceLiveDailyChartRedisDto(stocksPriceLiveDailyChartRedis))
                 .toList();
 
