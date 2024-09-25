@@ -49,12 +49,20 @@ export const CenterHr = styled.hr`
   background-color: #828282;
 `;
 
+export const CenterTitleHr = styled.hr`
+  width: 9%; /* 전체 너비로 설정 */
+  height: 0.1875rem; /* 높이는 동일하게 유지 */
+  background-color: #828282;
+  margin-left: 0; /* 왼쪽 정렬 */
+`;
+
 export const CenterContentDiv = styled.div`
-  display: flex;
-  flex-direction: row;
+  width: 100%;
+  flex-direction: column;
   padding: 0rem 0.125rem;
+  margin: 1rem 0rem;
   align-items: flex-start;
-  gap: 1.5rem;
+  gap: 2rem;
   align-self: stretch;
 `;
 
@@ -64,21 +72,37 @@ export const FontStyle = styled.p`
   line-height: 1.875rem;
 `;
 
+export const CenterContentSectionBeforeDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 0rem 1rem;
+  align-items: flex-start;
+  justify-content: flex-start;
+`;
+
 export const CenterContentSection = styled.div`
   display: flex;
   padding: 0.9375rem 0.625rem;
+  margin: 0.625rem 0rem 1.875rem 0rem;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1.25rem;
   border-radius: 1.25rem;
   background: ${({ theme }) => theme.centerContentSectionBackgroundColor};
+  overflow: auto;
+`;
+
+export const CenterContentSectionRowDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 0rem 1rem;
+  padding: 0.625rem 0.625rem;
 `;
 
 export const CenterContentSectionTitle = styled.p`
   color: ${({ theme }) => theme.textColor};
-  text-align: center;
-  font-size: 1.25rem;
-  line-height: 1.875rem; /* 150% */
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0rem 0.625rem;
 `;
 
 export const CardContainer = styled.div`
