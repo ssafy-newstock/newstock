@@ -1,7 +1,7 @@
-import { useNavigate } from 'react-router-dom';
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
-import newsData from '@api/dummyData/20240907.json';
+import { getNewsData, translateIndustry } from '@api/dummyData/DummyData';
 import EconNewsBody from '@features/News/EconNews/EconNewsBody';
 import EconSubNewsBody from '@features/News/EconNews/EconSubNewsBody';
 
@@ -18,7 +18,7 @@ const SubCenter = styled.div`
   width: 64rem;
 `;
 
-const EconomicNewsWrapper = styled.div`
+const EconomicNewsWrapper = styled.div<{ $showSummary: boolean }>`
   display: flex;
   padding: 1.6rem 1.5rem;
   margin: 1.25rem 0;
@@ -27,15 +27,16 @@ const EconomicNewsWrapper = styled.div`
   align-self: stretch;
   border-radius: 2rem;
   background-color: ${({ theme }) => theme.newsBackgroundColor};
-  box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.1);
   width: 100%;
   height: 18rem;
   cursor: pointer;
 
-  transition: transform 0.3s ease;
+  transition: ${({ $showSummary }) =>
+    $showSummary ? 'none' : 'transform 0.3s ease'};
 
   &:hover {
-    transform: scale(1.02);
+    transform: ${({ $showSummary }) => ($showSummary ? 'none' : 'scale(1.02)')};
   }
 `;
 
@@ -74,29 +75,80 @@ const LoadingSpinner = styled.div`
 
 interface NewsItem {
   title: string;
-  description: string;
+  article: string;
+  content: string;
   media: string;
   uploadDatetime: string;
-  thumbnail: string;
-  // 더미데이터에 뉴스를 구분할수 있는 필드가 마땅히 없어서 임시로 stockId로 구분함
-  stockId: string;
+  thumbnail?: string;
+  newsId: string;
+  industry: string;
+  imageUrl?: string;
+}
+
+const processArticle = (article: string) => {
+  const imageTagRegex = /<ImageTag>(.*?)<\/ImageTag>/;
+  const match = imageTagRegex.exec(article);
+
+  let imageUrl = '';
+  let content = article;
+
+  if (match && match[1]) {
+    imageUrl = match[1];
+    content = article.replace(imageTagRegex, '').trim();
+  }
+
+  return { imageUrl, content };
+};
+
+interface ContextProps {
+  selectedCategory: string;
 }
 
 const EconomicNewsPage: React.FC = () => {
-  const [newsList, setNewsList] = useState<NewsItem[]>(
-    newsData.data.slice(0, 10)
-  );
+  const { economic } = getNewsData();
+  const { selectedCategory } = useOutletContext<ContextProps>();
+  // const [newsList, setNewsList] = useState<NewsItem[]>(
+  //   economic.data.slice(0, 10) // ???
+  // );
+  const [newsList, setNewsList] = useState<NewsItem[]>([]);
   const [displayedItems, setDisplayedItems] = useState<number>(10); // 처음에 표시할 데이터 개수
   const [loading, setLoading] = useState<boolean>(false); // 로딩 상태
+  const [showSummary, setShowSummary] = useState<boolean>(false); // 모달 상태 관리
+
   const observerRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
 
+  // 선택된 카테고리로 뉴스 필터링
+  const filteredNewsList = useMemo(
+    () =>
+      economic.data
+        .filter(
+          (news) =>
+            selectedCategory === '전체 기사' ||
+            translateIndustry(news.industry) === selectedCategory
+        )
+        .map((news) => {
+          const { imageUrl, content } = processArticle(news.article);
+          return {
+            ...news,
+            content,
+            imageUrl,
+          };
+        }),
+    [economic.data, selectedCategory]
+  );
+
+  useEffect(() => {
+    setNewsList(filteredNewsList.slice(0, 10));
+    setDisplayedItems(10);
+  }, [selectedCategory, filteredNewsList]);
+
   // Intersection Observer가 작동할 때 추가로 10개의 데이터를 보여줌
   const loadMoreNews = useCallback(() => {
-    if (displayedItems < newsData.data.length) {
+    if (displayedItems < filteredNewsList.length) {
       setLoading(true); // 로딩 시작
       setTimeout(() => {
-        const moreNews = newsData.data.slice(
+        const moreNews = filteredNewsList.slice(
           displayedItems,
           displayedItems + 10
         );
@@ -105,7 +157,7 @@ const EconomicNewsPage: React.FC = () => {
         setLoading(false); // 로딩 완료
       }, 1000); // 데이터 로드 시간 시뮬레이션 (1초 대기)
     }
-  }, [displayedItems]);
+  }, [displayedItems, filteredNewsList]);
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -125,8 +177,12 @@ const EconomicNewsPage: React.FC = () => {
     };
   }, [loadMoreNews, loading]);
 
-  const handleNewsClick = (stockId: string) => {
-    navigate(`/subnews-main/economic-news/${stockId}`);
+  const handleNewsClick = (newsId: string) => {
+    navigate(`/subnews-main/economic-news/${newsId}`);
+  };
+
+  const handleShowSummaryChange = (newShowSummary: boolean) => {
+    setShowSummary(newShowSummary);
   };
 
   return (
@@ -135,15 +191,19 @@ const EconomicNewsPage: React.FC = () => {
         {newsList.map((news, index) => (
           <EconomicNewsWrapper
             key={index}
-            onClick={() => handleNewsClick(news.stockId)}
+            onClick={() => handleNewsClick(news.newsId)}
+            $showSummary={showSummary}
           >
             <EconNewsBody
               title={news.title}
-              description={news.description}
+              content={news.content}
               media={news.media}
               date={news.uploadDatetime}
             />
-            <EconSubNewsBody thumbnail={news.thumbnail} />
+            <EconSubNewsBody
+              thumbnail={news.thumbnail}
+              onShowSummaryChange={handleShowSummaryChange}
+            />
           </EconomicNewsWrapper>
         ))}
         {loading && (

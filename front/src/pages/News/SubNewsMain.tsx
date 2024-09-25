@@ -2,8 +2,10 @@ import styled from 'styled-components';
 import { Center } from '@components/Center';
 import { Right } from '@components/Right';
 import LeftNews from '@components/LeftNews';
-import { Outlet, useLocation, Link } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import BookmarkedNews from '@features/News/BookmarkedNews';
+import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const SubNewsMainCenter = styled.div`
   display: flex;
@@ -15,7 +17,6 @@ const SubNewsMainCenter = styled.div`
   /* min-width: 1024px; */
   width: 64rem;
 `;
-
 const SubNewsHeaderWrapper = styled.div`
   display: flex;
   padding: 1.6rem 0;
@@ -33,7 +34,6 @@ const SubNewsHeaderText = styled.p`
   font-weight: 600;
   line-height: 1.9rem;
 `;
-
 const SubNewsBoarder = styled.div`
   display: flex;
   margin: 0.625rem 0 0.19rem 0;
@@ -56,23 +56,14 @@ const CategoryWrapper = styled.div`
   overflow: hidden; /* 넘친 카테고리들을 가리도록 설정 */
 `;
 
-const AllCategoryText = styled.p`
-  color: ${({ theme }) => theme.textColor};
+const CategoryText = styled.p<{ $isSelected: boolean }>`
   font-family: Inter;
   font-size: 1rem;
-  font-style: normal;
-  line-height: 1.9rem;
-  font-weight: 600;
-`;
-
-const CategoryText = styled(Link)`
-  font-family: Inter;
-  font-size: 1rem;
-  font-style: normal;
-  font-weight: 400;
+  font-weight: ${({ $isSelected }) => ($isSelected ? '600' : '400')};
   line-height: 1.9rem; /* 187.5% */
-  color: #828282;
+  color: ${({ $isSelected }) => ($isSelected ? '#000' : '#828282')};
   text-decoration: none;
+  cursor: pointer;
 
   &:hover {
     color: #000;
@@ -93,30 +84,30 @@ const SubNewsMainRight = styled.div`
 
 interface Category {
   label: string;
-  path: string;
 }
 
 const categories: Category[] = [
-  { label: '전체 기사', path: '/newsMain' },
-  { label: '금융', path: '/newsMain/finance' },
-  { label: '산업', path: '/newsMain/industry' },
-  { label: '취업/고용', path: '/newsMain/employment' },
-  { label: '자동차', path: '/newsMain/automobile' },
-  { label: '주식', path: '/newsMain/stock' },
-  { label: '부동산', path: '/newsMain/realEstate' },
-  { label: '소비자', path: '/newsMain/consumer' },
-  { label: '국제경제', path: '/newsMain/internationalEconomy' },
-  { label: '가상자산', path: '/newsMain/virtualAssets' },
-  { label: '연금/노후', path: '/newsMain/pension' },
-  { label: '경제정책', path: '/newsMain/economicPolicy' },
-  { label: '벤처/스타트업', path: '/newsMain/startups' },
+  { label: '전체 기사' },
+  { label: '금융' },
+  { label: '산업' },
+  { label: '취업/고용' },
+  { label: '자동차' },
+  { label: '주식' },
+  { label: '부동산' },
+  { label: '소비자' },
+  { label: '국제경제' },
+  { label: '가상자산' },
+  { label: '연금/노후' },
+  { label: '경제정책' },
+  { label: '벤처/스타트업' },
 ];
 
 const SubNewsMainPage: React.FC = () => {
   const location = useLocation();
+  const [selectedCategory, setSelectedCategory] = useState<string>('전체 기사');
 
   const isEconomicNews = location.pathname.includes('economic-news');
-  // const isEconomicNews = location.pathname.includes(`stock-news`);
+  // const isEconomicNews = location.pathname.includes(stock-news);
 
   return (
     <>
@@ -132,22 +123,20 @@ const SubNewsMainPage: React.FC = () => {
             <SubNewsBoarder />
             {isEconomicNews ? (
               <CategoryWrapper>
-                {categories.map((category, index) =>
-                  category.label === '전체 기사' ? (
-                    <AllCategoryText key={index}>
-                      {category.label}
-                    </AllCategoryText>
-                  ) : (
-                    <CategoryText key={index} to={category.path}>
-                      {category.label}
-                    </CategoryText>
-                  )
-                )}
+                {categories.map((category, index) => (
+                  <CategoryText
+                    key={index}
+                    $isSelected={selectedCategory === category.label}
+                    onClick={() => setSelectedCategory(category.label)}
+                  >
+                    {category.label}
+                  </CategoryText>
+                ))}
               </CategoryWrapper>
             ) : null}
           </SubNewsHeaderWrapper>
         </SubNewsMainCenter>
-        <Outlet />
+        <Outlet context={{ selectedCategory }} />
       </Center>
 
       <Right>
