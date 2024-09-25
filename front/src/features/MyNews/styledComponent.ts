@@ -92,7 +92,7 @@ export const CardContainer = styled.div`
   align-self: stretch;
   border-radius: 1.25rem;
   background: ${({ theme }) => theme.newsBackgroundColor};
-  box-shadow: 0rem 0.25rem 0.25rem 0rem rgba(0, 0, 0, 0.25);
+  box-shadow: 0rem 0.25rem 0.25rem 0rem rgba(0, 0, 0, 0.1);
 `;
 
 export const CardTitleFontStyle = styled.p`
@@ -129,12 +129,12 @@ export const IconWrapper = styled.div`
 export const CardKeywordDiv = styled.div`
   display: flex;
   padding: 0.3125rem;
+  margin-left: 0.625rem;
   justify-content: center;
   align-items: center;
   gap: 0.625rem;
   border-radius: 0.625rem;
-  background: #81b5fc;
-  margin-left: 0.625rem;
+  background: ${({ theme }) => theme.buttonBackgroundColor};
 `;
 
 export const CardKeywordFontStyle = styled.p`

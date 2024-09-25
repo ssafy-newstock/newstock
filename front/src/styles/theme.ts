@@ -25,6 +25,10 @@ export const lightTheme: DefaultTheme = {
   stockBlue: '#0000FF',
   // 주호꺼(저장한 뉴스 센터컨텐츠요소 중 중간 박스)
   centerContentSectionBackgroundColor: '#F7F7F7',
+  // 채팅 말풍선
+  chatBalloonColor: '#F4F4F4',
+  // 전송 아이콘
+  sendIconColor: '#453DE0',
 
   activeOptionBackgroundColor: '#D3D3D3', // 드롭다운 활성화 옵션 배경색
   activeOptionTextColor: '#000000', // 드롭다운 활성화 옵션 텍스트 색상
@@ -59,6 +63,10 @@ export const darkTheme: DefaultTheme = {
   stockBlue: '#87CEFA',
   // 주호꺼(저장한 뉴스 센터컨텐츠요소 중 중간 박스)
   centerContentSectionBackgroundColor: '#4C506B',
+  // 채팅 말풍선
+  chatBalloonColor: '#2F2F2F',
+  // 전송 아이콘
+  sendIconColor: '#A9ACBB',
 
   activeOptionBackgroundColor: '#333333', // 드롭다운 활성화 옵션 배경색
   activeOptionTextColor: '#FFFFFF', // 드롭다운 활성화 옵션 텍스트 색상

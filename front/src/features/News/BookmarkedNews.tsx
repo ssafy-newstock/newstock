@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import bookmarkedNewsData from '@api/dummyData/bookmarkedData.json';
 import { useNavigate } from 'react-router-dom';
 import { ArrowIcon, bookmarkedIcon, NewsTag } from './NewsIconTag';
+import { getNewsData } from '@api/dummyData/DummyData';
 
 const BookmarkedNewsHeader = styled.div`
   display: flex;
@@ -41,7 +41,7 @@ const BookmarkedNewsWrapper = styled.div`
   gap: 0.625rem;
   background-color: ${({ theme }) => theme.newsBackgroundColor};
   border-radius: 1.25rem;
-  box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.1);
   cursor: pointer;
 
   transition: transform 0.3s ease;
@@ -94,16 +94,11 @@ const BookmarkedNewsFooter = styled.div`
   align-items: stretch;
 `;
 
-interface BookmarkedNewsItem {
-  title: string;
-  media: string;
-  uploadDatetime: string;
-  stockId: string;
-}
-
 const BookmarkedNews: React.FC = () => {
   const navigate = useNavigate();
-  const bookmarkedNews: BookmarkedNewsItem[] = bookmarkedNewsData.data;
+  const { economic } = getNewsData();
+  const bookmarkedNews = economic.data.slice(0, 3);
+  // const bookmarkedNews: BookmarkedNewsItem[] = bookmarkedNewsData.data;
 
   const handleInterestNewsClick = () => {
     navigate(`/my-news`);
@@ -126,7 +121,7 @@ const BookmarkedNews: React.FC = () => {
       </BookmarkedNewsHeader>
       {bookmarkedNews.map((news, index) => (
         <BookmarkedNewsMain key={index}>
-          <BookmarkedNewsWrapper onClick={() => handleNewsClick(news.stockId)}>
+          <BookmarkedNewsWrapper onClick={() => handleNewsClick(news.newsId)}>
             <BookmarkedNewsTitle>{news.title}</BookmarkedNewsTitle>
             <BookmarkedNewsMiddle>
               <BookmarkedNewsMiddleText>{news.media}</BookmarkedNewsMiddleText>

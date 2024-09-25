@@ -1,53 +1,38 @@
 import Chart from 'react-apexcharts';
 import { ApexOptions } from 'apexcharts';
-import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'react-router-dom';
-import { IStock } from '@features/Stock/types';
+import { IChartData, IStock } from '@features/Stock/types';
+import LoadingPage from '@components/LodingPage';
 import axios from 'axios';
-
-interface IStockDailyChart {
-  stockId: number;
-  stockCode: string;
-  stockCandleId: number;
-  stockCandleDay: string;
-  stockCandleOpen: number;
-  stockCandleClose: number;
-  stockCandleHigh: number;
-  stockCandleLow: number;
-}
-
-// interface IStockDailyChartData {
-//   [key: string]: IStockDailyChart;
-// }
+import { useQuery } from '@tanstack/react-query';
 
 const StockDailyChart = () => {
   // 구조분해할당 활용
-  // const { state } = useLocation() as { state: { stock: IStock } };
-  // const { stock } = state;
+  const { state } = useLocation() as { state: { stock: IStock } };
+  const { stock } = state;
 
-  const location = useLocation();
-  const { stock } = location.state as { stock: IStock };
-
-  const { data: stockDailyChart, isLoading } = useQuery<IStockDailyChart[]>({
-    queryKey: [`stockDailyChart-${stock.stockCode}`],
+  const { data: chartData, isLoading: chartLoading } = useQuery<IChartData>({
+    queryKey: [`chartData-${stock.stockCode}`],
     queryFn: async () => {
       const response = await axios.get(
         `https://newstock.info/api/stock/${stock.stockCode}`
       );
       return response.data.data;
     },
+    staleTime: 1000 * 60 * 5, // 5분 이내에는 캐시된 데이터 사용
   });
 
-  if (isLoading) {
-    return <div>로딩 중...</div>;
+  const stockDailyChart = chartData?.stockCandleDtoList;
+  if (chartLoading) {
+    return <LoadingPage />;
   }
-
   // stockDailyChart가 undefined가 아닌 경우에만 데이터 생성
   const series = stockDailyChart
     ? [
         {
           data: stockDailyChart.map((item) => ({
-            x: new Date(item.stockCandleDay).getTime(),
+            // x: new Date(item.stockCandleDay).getTime(),
+            x: item.stockCandleDay,
             y: [
               item.stockCandleOpen,
               item.stockCandleHigh,
@@ -76,7 +61,8 @@ const StockDailyChart = () => {
       align: 'left',
     },
     xaxis: {
-      type: 'datetime',
+      // type: 'datetime',
+      type: 'category',
     },
     yaxis: {
       tooltip: {

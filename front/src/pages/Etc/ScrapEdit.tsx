@@ -4,7 +4,7 @@ import { Right } from '@components/Right';
 import CenterTitle from '@features/Scrap/edit/CenterTitle';
 import CenterContent from '@features/Scrap/edit/CenterContent';
 import RightTitle from '@features/Scrap/edit/RightTitle';
-import RightContent from '@features/Scrap/edit/RightContent';
+// import RightContent from '@features/Scrap/edit/RightContent';
 import {
   CenterDiv,
   RightDiv,
@@ -26,7 +26,7 @@ const ScrapEditPage = () => {
         <RightDiv>
           <RightTitle />
           <ScrapHr />
-          <RightContent />
+          {/* <RightContent /> */}
         </RightDiv>
       </Right>
     </>

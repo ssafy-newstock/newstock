@@ -82,7 +82,7 @@ const BookmarkedNewsTagWrapper = styled.div`
 
 interface StockNewsBodyProps {
   title: string;
-  description: string;
+  content: string;
   media: string;
   date: string;
   keywords: string[];
@@ -90,7 +90,7 @@ interface StockNewsBodyProps {
 
 const StockNewsBody: React.FC<StockNewsBodyProps> = ({
   title,
-  description,
+  content,
   media,
   date,
   keywords,
@@ -107,7 +107,7 @@ const StockNewsBody: React.FC<StockNewsBodyProps> = ({
         </StockNewsTitle>
       </StockNewsTitleWrapper>
 
-      <StockNewsContent>{description}</StockNewsContent>
+      <StockNewsContent>{content}</StockNewsContent>
 
       <StockNewsFooter>
         <FooterText>{media}</FooterText>

@@ -74,14 +74,14 @@ const FooterText = styled.p`
 
 interface EconNewsBodyProps {
   title: string;
-  description: string;
+  content: string;
   media: string;
   date: string;
 }
 
 const EconNewsBody: React.FC<EconNewsBodyProps> = ({
   title,
-  description,
+  content,
   media,
   date,
 }) => {
@@ -97,7 +97,7 @@ const EconNewsBody: React.FC<EconNewsBodyProps> = ({
         </EconomicNewsTitle>
       </EconomicNewsHeader>
 
-      <EconomicNewsContent>{description}</EconomicNewsContent>
+      <EconomicNewsContent>{content}</EconomicNewsContent>
 
       <EconomicNewsFooter>
         <FooterText>{media}</FooterText>

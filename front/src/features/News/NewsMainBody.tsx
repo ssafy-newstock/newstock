@@ -15,7 +15,7 @@ const NewsBodyInnerWrapper = styled.div`
   align-items: center;
   border-radius: 1.25rem;
   background-color: ${({ theme }) => theme.newsBackgroundColor};
-  box-shadow: 0px 0.25rem 0.25rem 0rem rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 0.25rem 0.25rem 0rem rgba(0, 0, 0, 0.1);
   cursor: pointer;
 
   transition: transform 0.3s ease;
@@ -41,7 +41,7 @@ interface NewsMainBodyProps {
   date: string;
   header: string;
   newsType: string;
-  stockId: string;
+  newsId: string;
 }
 
 const NewsMainBody: React.FC<NewsMainBodyProps> = ({
@@ -51,17 +51,21 @@ const NewsMainBody: React.FC<NewsMainBodyProps> = ({
   date,
   header,
   newsType,
-  stockId,
+  newsId,
 }) => {
   const isEconomicNews = newsType === '시황';
   const navigate = useNavigate();
 
-  const handleNewsClick = (stockId: string) => {
-    navigate(`/subnews-main/economic-news/${stockId}`);
+  const handleNewsClick = (newsId: string, newsType: string) => {
+    if (newsType.trim() === '시황') {
+      navigate(`/subnews-main/economic-news/${newsId}`);
+    } else {
+      navigate(`/subnews-main/stock-news/${newsId}`);
+    }
   };
 
   return (
-    <NewsBodyInnerWrapper onClick={() => handleNewsClick(stockId)}>
+    <NewsBodyInnerWrapper onClick={() => handleNewsClick(newsId, newsType)}>
       <NewsBody>
         {isEconomicNews ? (
           <EconNewsMainBodyHeader header={header} />

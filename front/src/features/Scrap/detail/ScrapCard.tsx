@@ -1,15 +1,22 @@
 import { AkarIcon } from './Icon';
-import { TextP_24_NOTGRAY, TextP_16 } from '../scrapStyledComponent';
+import {
+  TextP_24_NOTGRAY,
+  TextP_16,
+} from '@features/Scrap/scrapStyledComponent';
 import {
   ScrapCardDiv,
   ScrapCardLeftDiv,
   ScrapCardRightBottomDiv,
   ScrapCardRightDiv,
-} from './scrapDetailRightStyledComponent';
+} from '@features/Scrap/detail/scrapDetailRightStyledComponent';
+
+interface NewsItem {
+  title: string;
+}
 
 interface Data {
   Title: string;
-  NewsTitle: string;
+  NewsItem: NewsItem;
   Date: string;
 }
 
@@ -27,7 +34,7 @@ const ScrapCard: React.FC<ScrapCardProps> = ({ data, onClick }) => {
       <ScrapCardRightDiv>
         <TextP_24_NOTGRAY>{data.Title}</TextP_24_NOTGRAY>
         <ScrapCardRightBottomDiv>
-          <TextP_16>{data.NewsTitle}</TextP_16>
+          <TextP_16>{data.NewsItem.title}</TextP_16>
           <TextP_16>{data.Date}</TextP_16>
         </ScrapCardRightBottomDiv>
       </ScrapCardRightDiv>

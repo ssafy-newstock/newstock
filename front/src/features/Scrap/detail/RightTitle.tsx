@@ -1,12 +1,16 @@
 import ThemedButton from '@components/ThemedButton';
-import { CalendarIcon } from './Icon';
+import { CalendarIcon } from '@features/Scrap/detail/Icon';
 import {
   RightTitleBottomDiv,
   RightTitleBottomFilterDiv,
   RightTitleTopDiv,
-} from './scrapDetailRightStyledComponent';
+} from '@features/Scrap/detail/scrapDetailRightStyledComponent';
 import { useNavigate } from 'react-router-dom';
-import { TextP_16, TitleDiv, TitleP } from '../scrapStyledComponent';
+import {
+  TextP_16,
+  TitleDiv,
+  TitleP,
+} from '@features/Scrap/scrapStyledComponent';
 
 const RightTitle: React.FC = () => {
   const navigate = useNavigate();

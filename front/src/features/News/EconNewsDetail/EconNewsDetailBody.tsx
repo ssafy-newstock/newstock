@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
-import newsData from '@api/dummyData/20240907.json';
+import { getNewsData } from '@api/dummyData/DummyData';
 
 const EconNewsDetailBodyWrapper = styled.div`
   display: flex;
@@ -37,6 +37,13 @@ const NewsThumbnailWrapper = styled.div`
   justify-content: center;
   margin: 1.25rem 0rem 3.75rem 0rem;
 `;
+
+const ThumbnailImage = styled.img`
+  width: 100%; /* 너비에 맞게 꽉 차도록 설정 */
+  height: auto; /* 이미지의 원래 비율을 유지 */
+  object-fit: cover; /* 비율을 유지하면서 컨테이너에 맞추되, 넘치는 부분은 잘라냄 */
+`;
+
 const NewsContentText = styled.p`
   display: flex;
   justify-content: center;
@@ -46,13 +53,41 @@ const NewsContentText = styled.p`
   line-height: 1.875rem;
 `;
 
+// 이미지 URL과 나머지 기사 내용을 분리하는 함수
+const processArticle = (article: string) => {
+  const imageTagRegex = /<ImageTag>(.*?)<\/ImageTag>/;
+  const match = imageTagRegex.exec(article);
+
+  let imageUrl = '';
+  let content = article;
+
+  if (match && match[1]) {
+    imageUrl = match[1]; // 이미지 URL 추출
+    content = article.replace(imageTagRegex, '').trim(); // 이미지 태그 제거 후 남은 기사 내용
+  }
+
+  return { imageUrl, content };
+};
+
 const EconNewsDetailBody: React.FC = () => {
   const { newsId } = useParams();
+  const { economic } = getNewsData();
 
-  const news = newsData.data.find((newsItem) => newsItem.stockId === newsId);
+  const news = economic.data.find((newsItem) => newsItem.newsId === newsId);
+
+  const { imageUrl, content } = news
+    ? processArticle(news.article)
+    : { imageUrl: '이미지 없음', content: '내용 없음' };
   const subtitle = news ? news.subtitle : '제목 없음';
-  const thumbnail = news ? news.thumbnail : '이미지 없음';
-  const content = news ? news.description : '내용 없음';
+
+  const paragraphs = content.split('\n\n').map((paragraph) =>
+    paragraph.split('\n').map((line, index) => (
+      <span key={index}>
+        {line}
+        <br />
+      </span>
+    ))
+  );
 
   return (
     <>
@@ -62,9 +97,12 @@ const EconNewsDetailBody: React.FC = () => {
           <NewsSubTitleText>{subtitle}</NewsSubTitleText>
         </NewsSubTitleWrapper>
         <NewsThumbnailWrapper>
-          <img src={thumbnail} alt="thumbnail" />
+          <ThumbnailImage src={imageUrl} alt="imageUrl" />
         </NewsThumbnailWrapper>
-        <NewsContentText>{content}</NewsContentText>
+        {paragraphs.map((paragraph, index) => (
+          <NewsContentText key={index}>{paragraph}</NewsContentText>
+        ))}
+        {/* <NewsContentText>{content}</NewsContentText> */}
       </EconNewsDetailBodyWrapper>
     </>
   );

@@ -120,7 +120,7 @@ const NewsSummary: React.FC<NewsSummaryProps> = ({ onClose }) => {
           <NewsSummaryBodyText>3. 일해라 박선홍</NewsSummaryBodyText>
         </NewsSummaryBody>
         <CloseButtonWrapper>
-          <CloseButton onClick={onClose}>
+          <CloseButton type="button" onClick={onClose}>
             <ButtonText>닫기</ButtonText>
           </CloseButton>
         </CloseButtonWrapper>

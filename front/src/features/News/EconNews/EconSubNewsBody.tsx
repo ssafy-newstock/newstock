@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import summaryIcon from '@features/summaryIcon.png';
+import summaryIcon from '@assets/Chat/summaryIcon.png';
 import NewsSummary from '@features/News/NewsSummary';
 import { bookmarkedIcon, unbookmarkedIcon } from '@features/News/NewsIconTag';
 import { Overlay, Background, Modal } from '@components/ModalComponents';
@@ -73,7 +73,8 @@ const EconomicSubNewsThumbnail = styled.div`
 // `;
 
 interface EconSubNewsBodyProps {
-  thumbnail: string;
+  thumbnail?: string;
+  onShowSummaryChange: (showSummary: boolean) => void;
 }
 
 // 요약창이 화면 중앙에 나타나도록 설정
@@ -86,7 +87,10 @@ interface EconSubNewsBodyProps {
 //   width: 18.75rem;
 // `;
 
-const EconSubNewsBody: React.FC<EconSubNewsBodyProps> = ({ thumbnail }) => {
+const EconSubNewsBody: React.FC<EconSubNewsBodyProps> = ({
+  thumbnail,
+  onShowSummaryChange,
+}) => {
   const [showSummary, setShowSummary] = useState<boolean>(false);
   const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
 
@@ -99,12 +103,18 @@ const EconSubNewsBody: React.FC<EconSubNewsBodyProps> = ({ thumbnail }) => {
     event.stopPropagation(); // 상위 클릭 이벤트 중지
     if (!showSummary) {
       setShowSummary(true);
+      onShowSummaryChange(true);
     }
   };
 
   const handleCloseSummary = (event: React.MouseEvent) => {
-    event.stopPropagation();
+    event.stopPropagation(); // 이벤트 전파 중지
     setShowSummary(false);
+    onShowSummaryChange(false);
+  };
+
+  const handleModalClick = (event: React.MouseEvent) => {
+    event.stopPropagation(); // 이벤트 전파 중지
   };
 
   return (
@@ -128,8 +138,7 @@ const EconSubNewsBody: React.FC<EconSubNewsBodyProps> = ({ thumbnail }) => {
         {showSummary && (
           <Overlay>
             <Background onClick={handleCloseSummary} />
-            <Modal>
-              {/* 빨간줄은 나오는데 기능상 문제도 없고 콘솔에도 이상이 없어서 그냥 둠 */}
+            <Modal onClick={handleModalClick}>
               <NewsSummary onClose={handleCloseSummary} />
             </Modal>
           </Overlay>
