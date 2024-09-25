@@ -94,7 +94,7 @@ const StockDetailPage = () => {
 
       return { previousFavoriteList };
     },
-    onError: (err, stockCode, context) => {
+    onError: (_err, _stockCode, context) => {
       if (context?.previousFavoriteList) {
         queryClient.setQueryData<IFavoriteStock[]>(
           ['favoriteStockList'],
@@ -131,7 +131,7 @@ const StockDetailPage = () => {
 
       return { previousFavoriteList };
     },
-    onError: (err, stockCode, context) => {
+    onError: (_err, _stockCode, context) => {
       if (context?.previousFavoriteList) {
         queryClient.setQueryData<IFavoriteStock[]>(
           ['favoriteStockList'],
