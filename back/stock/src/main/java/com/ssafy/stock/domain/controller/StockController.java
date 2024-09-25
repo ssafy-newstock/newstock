@@ -28,6 +28,11 @@ public class StockController implements StockControllerSwagger{
     private final StockIndustryService stockIndustryService;
     private final StockTransactionService stockTransactionService;
 
+    /**
+     * 주식 이름 검색
+     * @param stockName
+     * @return
+     */
     @GetMapping("/search")
     public ResponseEntity<?> autocompleteStockName(@RequestParam String stockName) {
         log.info("stockName : {}", stockName);
@@ -35,6 +40,10 @@ public class StockController implements StockControllerSwagger{
         return ResponseEntity.ok(suggestions);
     }
 
+    /**
+     * 주식 전 종목 정보 조회
+     * @return
+     */
     @GetMapping("/price-list")
     public ResponseEntity<?> getStockPriceList(){
         Iterable<StocksPriceRedis> stocksPriceRedis = stockService.getStocksPriceRedis();
@@ -42,6 +51,10 @@ public class StockController implements StockControllerSwagger{
                 .body(stocksPriceRedis);
     }
 
+    /**
+     * 주식 TOP10 정보 조회
+     * @return
+     */
     @GetMapping("/price-list/live")
     public ResponseEntity<?> getStockPriceLiveList(){
         Iterable<StocksPriceLiveRedis> stocksPriceLiveRedis = stockService.getStocksPriceLiveRedis();
@@ -49,6 +62,10 @@ public class StockController implements StockControllerSwagger{
                 .body(stocksPriceLiveRedis);
     }
 
+    /**
+     * 주식 카테고리 정보 조회
+     * @return
+     */
     @GetMapping("/industry-list")
     public ResponseEntity<?> getStockIndustryList(){
         Iterable<StockIndustryRedis> stockIndustryRedisList = stockIndustryService.getStockIndustryRedisList();
@@ -56,6 +73,11 @@ public class StockController implements StockControllerSwagger{
                 .body(stockIndustryRedisList);
     }
 
+    /**
+     * 주식 상세페이지 조회
+     * @param stockCode
+     * @return
+     */
     @GetMapping("/{stockCode}")
     public ResponseEntity<?> getStockInfo(@PathVariable String stockCode){
         StockDetailDto stockDetailDto = stockService.getStockCandle(stockCode);
@@ -66,6 +88,11 @@ public class StockController implements StockControllerSwagger{
                 .body(success(stockDetailDto));
     }
 
+    /**
+     * 주식 찜 목록 조회
+     * @param token
+     * @return
+     */
     @GetMapping("/favorite")
     public ResponseEntity<?> getLikeStore(@RequestHeader("authorization") String token){
         Long memberId = stockTransactionService.getMemberId(token);
@@ -77,6 +104,12 @@ public class StockController implements StockControllerSwagger{
         return ResponseEntity.ok(success(response));
     }
 
+    /**
+     * 주식 찜하기
+     * @param token
+     * @param stockCode
+     * @return
+     */
     @PostMapping("/favorite/{stockCode}")
     public ResponseEntity<?> likeStore(@RequestHeader("authorization") String token,
                                         @PathVariable String stockCode){
@@ -88,6 +121,12 @@ public class StockController implements StockControllerSwagger{
         return ResponseEntity.ok(success(response));
     }
 
+    /**
+     * 주식 찜 해제하기
+     * @param token
+     * @param stockCode
+     * @return
+     */
     @DeleteMapping("/favorite/{stockCode}")
     public ResponseEntity<?> unlikeStore(@RequestHeader("authorization") String token,
                                         @PathVariable String stockCode){
@@ -98,6 +137,11 @@ public class StockController implements StockControllerSwagger{
                 .build();
     }
 
+    /**
+     * 주식 마이페이지 조회
+     * @param token
+     * @return
+     */
     @GetMapping("/mypage")
     public ResponseEntity<?> getStockMyPage(@RequestHeader("authorization") String token){
         Long memberId = stockTransactionService.getMemberId(token);
