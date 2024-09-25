@@ -1,43 +1,21 @@
 import Chart from 'react-apexcharts';
 import { ApexOptions } from 'apexcharts';
-import { useQuery } from '@tanstack/react-query';
-import { useLocation } from 'react-router-dom';
-import { IStock } from '@features/Stock/types';
-import axios from 'axios';
-
-interface IStockDailyChart {
-  stockId: number;
-  stockCode: string;
-  stockCandleId: number;
-  stockCandleDay: string;
-  stockCandleOpen: number;
-  stockCandleClose: number;
-  stockCandleHigh: number;
-  stockCandleLow: number;
-}
+import { useOutletContext } from 'react-router-dom';
+import { OutletContext } from '@features/Stock/types';
+import LoadingPage from '@components/LodingPage';
 
 const StockDailyChart = () => {
   // 구조분해할당 활용
   // const { state } = useLocation() as { state: { stock: IStock } };
   // const { stock } = state;
 
-  const location = useLocation();
-  const { stock } = location.state as { stock: IStock };
+  const { chartData } = useOutletContext<OutletContext>();
+  // console.log('chartData', chartData);
 
-  const { data: stockDailyChart, isLoading } = useQuery<IStockDailyChart[]>({
-    queryKey: [`stockDailyChart-${stock.stockCode}`],
-    queryFn: async () => {
-      const response = await axios.get(
-        `https://newstock.info/api/stock/${stock.stockCode}`
-      );
-      return response.data.data.stockCandleDtoList;
-    },
-  });
-
-  if (isLoading) {
-    return <div>로딩 중...</div>;
+  const stockDailyChart = chartData?.stockCandleDtoList;
+  if ( !chartData ) {
+    return <LoadingPage/>
   }
-
   // stockDailyChart가 undefined가 아닌 경우에만 데이터 생성
   const series = stockDailyChart
     ? [
