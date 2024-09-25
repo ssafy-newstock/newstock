@@ -11,7 +11,7 @@ const MoreWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  padding: 0rem 2.5rem;
+  /* padding: 0rem 2.5rem; */
   gap: 0.5rem;
   font-size: 1rem;
   color: ${({ theme }) => theme.textColor};

@@ -8,6 +8,7 @@ import com.ssafy.member.global.exception.MemberNotFoundException;
 import com.ssafy.member.global.exception.NotEnoughPointsException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final SimpMessageSendingOperations simpMessageSendingOperations;
 
     /*
         member 찾는 부분 메소드화
@@ -77,6 +79,7 @@ public class MemberService {
     public void updateMyPoint(Long memberId, Long point) {
         Member member = findMember(memberId);
         member.updateMemberPoint(point);
+        simpMessageSendingOperations.convertAndSend("/api/sub/member/info/point", point);
     }
 
     /**
@@ -100,6 +103,7 @@ public class MemberService {
         // 주문이 가능한 경우 포인트를 차감함
         long remainPoint = nowPoint - orderTotalPrice;
         member.updateMemberPoint(remainPoint);
+        simpMessageSendingOperations.convertAndSend("/api/sub/member/info/point", remainPoint);
         return member;
     }
 
@@ -119,6 +123,7 @@ public class MemberService {
         // 매도가 성공한 경우 포인트를 업데이트 함
         long totalPoint = nowPoint + orderTotalPrice;
         member.updateMemberPoint(totalPoint);
+        simpMessageSendingOperations.convertAndSend("/api/sub/member/info/point", totalPoint);
         return member;
     }
 

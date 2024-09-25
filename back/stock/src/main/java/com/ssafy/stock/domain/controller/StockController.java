@@ -28,6 +28,13 @@ public class StockController implements StockControllerSwagger{
     private final StockIndustryService stockIndustryService;
     private final StockTransactionService stockTransactionService;
 
+    @GetMapping("/search")
+    public ResponseEntity<?> autocompleteStockName(@RequestParam String stockName) {
+        log.info("stockName : {}", stockName);
+        List<StocksPriceRedis> suggestions = stockService.autocompleteStockName(stockName);
+        return ResponseEntity.ok(suggestions);
+    }
+
     @GetMapping("/price-list")
     public ResponseEntity<?> getStockPriceList(){
         Iterable<StocksPriceRedis> stocksPriceRedis = stockService.getStocksPriceRedis();
