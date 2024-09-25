@@ -32,6 +32,6 @@ public class StocksPriceLiveDailyChartRedis {
         this.stockName = stockName;
         this.stockIndustry = stockIndustry;
         this.stckPrpr = stckPrpr;
-        this.time = time;
+        this.time = time.plusHours(9);
     }
 }
