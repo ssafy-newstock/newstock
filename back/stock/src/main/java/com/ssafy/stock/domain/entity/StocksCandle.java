@@ -10,7 +10,9 @@ import java.time.LocalDate;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "stocks_candle")
+@Table(name = "stocks_candle", indexes = {
+        @Index(name = "idx_stock_id", columnList = "stock_id") // stock_id에 대한 단일 인덱스
+})
 public class StocksCandle extends BaseEntity{
 
     @Id
