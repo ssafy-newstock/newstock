@@ -34,7 +34,7 @@ const StockDailyChart = () => {
       const response = await axios.get(
         `https://newstock.info/api/stock/${stock.stockCode}`
       );
-      return response.data.data;
+      return response.data.data.stockCandleDtoList;
     },
   });
 
