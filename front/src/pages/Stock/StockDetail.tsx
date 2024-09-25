@@ -17,12 +17,15 @@ import blueLogo from '@assets/Stock/blueLogo.png';
 import styled from 'styled-components';
 import TradeForm from '@features/Stock/StockDetail/TradeForm';
 import { RightVacant } from '@components/RightVacant';
-import { useEffect, useState } from 'react';
 import { axiosInstance } from '@api/axiosInstance';
 import { HeartFill } from '@features/Stock/HeartFill';
 import { Heart } from '@features/Stock/Heart';
 import useAuthStore from '@store/useAuthStore';
-import { QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 
 const Button = styled.div`
   background-color: ${({ theme }) => theme.profileBackgroundColor};
@@ -31,11 +34,15 @@ const Button = styled.div`
   padding: 0.5rem 1rem;
 `;
 
-interface favoriteStock {
+interface IFavoriteStock {
   stockFavoriteId: number;
   stockId: number;
   stockCode: string;
   stockName: string;
+}
+
+interface IMutationContext {
+  previousFavoriteList: IFavoriteStock[] | undefined;
 }
 
 const StockDetailPage = () => {
@@ -44,48 +51,7 @@ const StockDetailPage = () => {
   const initialPrice = Number(stock.stckPrpr);
   const { isLogin } = useAuthStore();
 
-  // // 즐겨찾기 상태
-  // const [isFavorite, setIsFavorite] = useState(false);
-
-  // // 즐겨찾기 데이터를 불러와서 해당 주식이 즐겨찾기 상태인지 확인
-  // useEffect(() => {
-  //   const fetchFavorites = async () => {
-  //     try {
-  //       const response = await axiosInstance.get('/api/stock/favorite');
-  //       const favorites = response.data.data;
-
-  //       // 현재 주식이 즐겨찾기 목록에 있는지 확인
-  //       const isFav = favorites.some(
-  //         (fav: { stockCode: string }) => fav.stockCode === stock.stockCode
-  //       );
-  //       setIsFavorite(isFav);
-  //     } catch (error) {
-  //       console.error('즐겨찾기 데이터를 가져오는 중 오류 발생', error);
-  //     }
-  //   };
-
-  //   fetchFavorites();
-  // }, [stock.stockCode]);
-
-  // const favoriteStock = async () => {
-  //   try {
-  //     await axiosInstance.post(`/api/stock/favorite/${stock.stockCode}`);
-  //     setIsFavorite(true);
-  //   } catch (error) {
-  //     console.error('즐겨찾기 추가 중 오류 발생', error);
-  //   }
-  // };
-
-  // const cancleFavoriteStock = async () => {
-  //   try {
-  //     await axiosInstance.delete(`/api/stock/favorite/${stock.stockCode}`);
-  //     setIsFavorite(false);
-  //   } catch (error) {
-  //     console.error('즐겨찾기 취소 중 오류 발생', error);
-  //   }
-  // };
-
-  const { data: favoriteStockList, isLoading } = useQuery<favoriteStock[]>({
+  const { data: favoriteStockList, isLoading } = useQuery<IFavoriteStock[]>({
     queryKey: ['favoriteStockList'],
     queryFn: async () => {
       const response = await axiosInstance.get('/api/stock/favorite');
@@ -94,30 +60,78 @@ const StockDetailPage = () => {
     enabled: isLogin,
   });
 
-  const isFavorite = favoriteStockList?.some((fav) => fav.stockCode === stock.stockCode);
-
-  const queryClient = useQueryClient();
-  const code = stock.stockCode;
-  
-  const addFavoriteStock = useMutation(
-      (code:string) => axiosInstance.post<void>(`/api/stock/favorite/${code}`),
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ['favoriteStockList'] });
-        },
-      }
-    );
-
-  const deleteFavoriteStock = useMutation(
-    (code:string) => axiosInstance.delete<void>(`/api/stock/favorite/${code}`),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['favoriteStockList'] });
-      },
-    }
+  const isFavorite = favoriteStockList?.some(
+    (fav) => fav.stockCode === stock.stockCode
   );
 
+  const queryClient = useQueryClient();
 
+  // 좋아요 주식 추가 mutation
+  const { mutate: addFavoriteStock } = useMutation<void, Error, string, IMutationContext>({
+    mutationFn: async (stockCode: string) => {
+      await axiosInstance.post(`/api/stock/favorite/${stockCode}`);
+    },
+    onMutate: async (stockCode: string) => {
+      await queryClient.cancelQueries({queryKey:['favoriteStockList']});
+
+      const previousFavoriteList = queryClient.getQueryData<IFavoriteStock[]>([
+        'favoriteStockList',
+      ]);
+
+      queryClient.setQueryData<IFavoriteStock[]>(
+        ['favoriteStockList'],
+        (old) => [
+          ...(old || []),
+          { stockCode, stockFavoriteId: 0, stockId: 0, stockName: '' },
+        ]
+      );
+
+      return { previousFavoriteList };
+    },
+    onError: (err, stockCode, context) => {
+      if (context?.previousFavoriteList) {
+        queryClient.setQueryData<IFavoriteStock[]>(
+          ['favoriteStockList'],
+          context.previousFavoriteList
+        );
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({queryKey:['favoriteStockList']});
+    },
+  });
+
+  // 좋아요 주식 제거 mutation
+  const { mutate: removeFavoriteStock } = useMutation<void, Error, string, IMutationContext>({
+    mutationFn: async (stockCode: string) => {
+      await axiosInstance.delete(`/api/stock/favorite/${stockCode}`);
+    },
+    onMutate: async (stockCode: string) => {
+      await queryClient.cancelQueries({queryKey:['favoriteStockList']});
+
+      const previousFavoriteList = queryClient.getQueryData<IFavoriteStock[]>([
+        'favoriteStockList',
+      ]);
+
+      queryClient.setQueryData<IFavoriteStock[]>(
+        ['favoriteStockList'],
+        (old) => old?.filter((stock) => stock.stockCode !== stockCode) || []
+      );
+
+      return { previousFavoriteList };
+    },
+    onError: (err, stockCode, context) => {
+      if (context?.previousFavoriteList) {
+        queryClient.setQueryData<IFavoriteStock[]>(
+          ['favoriteStockList'],
+          context.previousFavoriteList
+        );
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({queryKey:['favoriteStockList']});
+    },
+  });
   const showButton = location.pathname.includes('daily-chart');
 
   const getStockImageUrl = () => {
@@ -155,7 +169,12 @@ const StockDetailPage = () => {
             </StockPrev>
           </div>
           <div style={{ display: 'flex', gap: '1rem' }}>
-            {isLogin && (isFavorite ? <HeartFill cancleFavoriteStock={cancleFavoriteStock}/> : <Heart favoriteStock={favoriteStock} />)}
+            {isLogin &&
+              (isFavorite ? (
+                <HeartFill cancleFavoriteStock={() => removeFavoriteStock(stock.stockCode)} />
+              ) : (
+                <Heart favoriteStock={() => addFavoriteStock(stock.stockCode)} />
+              ))}
             {showButton && <Button>유사도 분석</Button>}
           </div>
         </div>
