@@ -6,7 +6,7 @@ import {
 } from '@features/News/PNSubicon';
 import { NewsTag, bookmarkedIcon } from '../NewsIconTag';
 import { useParams } from 'react-router-dom';
-import newsData from '@api/dummyData/20240907.json';
+import { getNewsData } from '@api/dummyData/DummyData';
 
 const EconNewsDetailHeaderWrapper = styled.div`
   display: flex;
@@ -79,8 +79,9 @@ const PositiveIcon = styled(BasePositiveIcon)`
 
 const EconNewsDetailHeader: React.FC = () => {
   const { newsId } = useParams();
+  const { economic } = getNewsData();
 
-  const news = newsData.data.find((newsItem) => newsItem.stockId === newsId);
+  const news = economic.data.find((newsItem) => newsItem.newsId === newsId);
   const title = news ? news.title : '제목 없음';
   const media = news ? news.media : '미디어 없음';
   const date = news
