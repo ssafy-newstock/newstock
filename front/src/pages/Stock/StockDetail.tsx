@@ -28,6 +28,7 @@ import useAuthStore from '@store/useAuthStore';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import useAllStockStore from '@store/useAllStockStore';
 import useTop10StockStore from '@store/useTop10StockStore';
+import LoadingPage from '@components/LodingPage';
 
 const Button = styled.div`
   background-color: ${({ theme }) => theme.profileBackgroundColor};
@@ -52,7 +53,11 @@ const StockDetailPage = () => {
   const { isLogin } = useAuthStore();
 
   // 관심 종목 관련 API 호출
-  const { data: favoriteStockList } = useQuery<IFavoriteStock[]>({
+  const {
+    data: favoriteStockList,
+    isLoading,
+    error,
+  } = useQuery<IFavoriteStock[]>({
     queryKey: ['favoriteStockList'],
     queryFn: async () => {
       const response = await axiosInstance.get('/api/stock/favorite');
@@ -94,7 +99,8 @@ const StockDetailPage = () => {
 
       return { previousFavoriteList };
     },
-    onError: (_err, _stockCode, context) => {
+    onError: (err, _stockCode, context) => {
+      console.log('주식 좋아요 에러', err);
       if (context?.previousFavoriteList) {
         queryClient.setQueryData<IFavoriteStock[]>(
           ['favoriteStockList'],
@@ -131,7 +137,8 @@ const StockDetailPage = () => {
 
       return { previousFavoriteList };
     },
-    onError: (_err, _stockCode, context) => {
+    onError: (err, _stockCode, context) => {
+      console.log('주식 좋아요 취소 에러', err);
       if (context?.previousFavoriteList) {
         queryClient.setQueryData<IFavoriteStock[]>(
           ['favoriteStockList'],
@@ -153,6 +160,16 @@ const StockDetailPage = () => {
     const url = `https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stock.stockCode}.png`;
     return url;
   };
+
+  // 에러 발생 시 콘솔 출력
+  if (error) {
+    console.error('관심 주식 조회 에러', error);
+  }
+
+  if (isLoading) {
+    return <LoadingPage />;
+  }
+
   return (
     <>
       <LeftStock />
