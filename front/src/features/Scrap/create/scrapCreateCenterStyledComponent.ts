@@ -192,6 +192,11 @@ export const CenterNewsLeftTopDiv = styled.div`
   gap: 30px;
 `;
 
+export const CenterNewsRightImg = styled.img`
+  width: 8.75rem;
+  height: 8.75rem;
+`;
+
 export const CenterNewsRightDiv = styled.div`
   display: flex;
   width: 8.75rem;

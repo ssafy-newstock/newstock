@@ -13,10 +13,20 @@ import {
   ScrapHr,
 } from '@features/Scrap/scrapStyledComponent';
 
+interface NewsItem {
+  title: string;
+  description: string;
+  media: string;
+  uploadDatetime: string;
+  thumbnail?: string;
+  stockId: string;
+}
+
 interface CardData {
   Title: string;
-  NewsTitle: string;
+  NewsItem: NewsItem;
   Date: string;
+  context: string;
 }
 
 const ScrapDetailPage: React.FC = () => {
@@ -30,7 +40,7 @@ const ScrapDetailPage: React.FC = () => {
           <CenterDiv>
             <CenterTitle selectedCard={selectedCard} />
             <ScrapHr />
-            <CenterContent />
+            <CenterContent selectedCard={selectedCard} />
           </CenterDiv>
         ) : (
           <NoMessageP>조회할 스크랩을 선택해주세요.</NoMessageP>
