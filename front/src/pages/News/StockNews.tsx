@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import newsData from '@api/dummyData/20240907.json';
+import { getNewsData } from '@api/dummyData/DummyData';
 import StockNewsBody from '@features/News/StockNews/StockNewsBody';
 import StockNewsHeader from '@features/News/StockNews/StockNewsHeader';
 import EconSubNewsBody from '@features/News/EconNews/EconSubNewsBody';
@@ -19,7 +19,7 @@ const SubCenter = styled.div`
   width: 64rem;
 `;
 
-const StockNewsOuterWrapper = styled.div`
+const StockNewsOuterWrapper = styled.div<{ $showSummary: boolean }>`
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -31,11 +31,11 @@ const StockNewsOuterWrapper = styled.div`
   align-self: stretch;
   cursor: pointer;
 
-  transition: transform 0.3s ease; /* 부드러운 전환 효과 */
+  transition: ${({ $showSummary }) =>
+    $showSummary ? 'none' : 'transform 0.3s ease'};
 
-  /* hover 시 확대 */
   &:hover {
-    transform: scale(1.05); /* 5% 확대 */
+    transform: ${({ $showSummary }) => ($showSummary ? 'none' : 'scale(1.02)')};
   }
 `;
 
@@ -85,36 +85,66 @@ const LoadingSpinner = styled.div`
 
 interface NewsItem {
   title: string;
-  description: string;
+  article: string;
+  content: string;
   media: string;
   uploadDatetime: string;
-  thumbnail: string;
+  thumbnail?: string;
   keywords: string[];
-  stockId: string;
+  newsId: string;
+  imageUrl?: string;
 }
+
+// 이미지 URL과 나머지 기사 내용을 분리하는 함수
+const processArticle = (
+  article: string
+): { imageUrl: string; content: string } => {
+  const imageTagRegex = /<ImageTag>(.*?)<\/ImageTag>/;
+  const match = imageTagRegex.exec(article);
+
+  let imageUrl = '';
+  let content = article;
+
+  if (match && match[1]) {
+    imageUrl = match[1]; // 이미지 URL 추출
+    content = article.replace(imageTagRegex, '').trim(); // 이미지 태그 제거 후 남은 기사 내용
+  }
+
+  return { imageUrl, content };
+};
+
 const StockNewsPage: React.FC = () => {
-  const [newsList, setNewsList] = useState<NewsItem[]>(
-    newsData.data.slice(0, 10)
-  );
+  const { stock } = getNewsData();
+
+  const [newsList, setNewsList] = useState<NewsItem[]>([]);
   const [displayedItems, setDisplayedItems] = useState<number>(10); // 처음에 표시할 데이터 개수
   const [loading, setLoading] = useState<boolean>(false); // 로딩 상태
+  const [showSummary, setShowSummary] = useState<boolean>(false); // 모달 상태 관리
+
   const observerRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
 
   const loadMoreNews = useCallback(() => {
-    if (displayedItems < newsData.data.length) {
+    if (displayedItems < stock.data.length) {
       setLoading(true); // 로딩 시작
       setTimeout(() => {
-        const moreNews = newsData.data.slice(
-          displayedItems,
-          displayedItems + 10
-        );
+        const moreNews = stock.data
+          .slice(displayedItems, displayedItems + 10)
+          .map((newsItem) => {
+            const { imageUrl, content } = processArticle(newsItem.article); // article에서 imageUrl과 content 추출
+            return {
+              ...newsItem,
+              content, // content 추가
+              imageUrl, // imageUrl 추가
+            };
+          });
+
         setNewsList((prevNewsList) => [...prevNewsList, ...moreNews]);
         setDisplayedItems(displayedItems + 10);
         setLoading(false); // 로딩 완료
       }, 1000); // 데이터 로드 시간 시뮬레이션 (1초 대기)
     }
-  }, [displayedItems]);
+  }, [displayedItems, stock.data]);
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -134,8 +164,12 @@ const StockNewsPage: React.FC = () => {
     };
   }, [loadMoreNews, loading]);
 
-  const handleNewsClick = (stockId: string) => {
-    navigate(`/subnews-main/stock-news/${stockId}`);
+  const handleNewsClick = (newsId: string) => {
+    navigate(`/subnews-main/stock-news/${newsId}`);
+  };
+
+  const handleShowSummaryChange = (newShowSummary: boolean) => {
+    setShowSummary(newShowSummary);
   };
 
   return (
@@ -144,18 +178,22 @@ const StockNewsPage: React.FC = () => {
         {newsList.map((news, index) => (
           <StockNewsOuterWrapper
             key={index}
-            onClick={() => handleNewsClick(news.stockId)}
+            onClick={() => handleNewsClick(news.newsId)}
+            $showSummary={showSummary}
           >
             <StockNewsHeader />
             <StockNewsWrapper>
               <StockNewsBody
                 title={news.title}
-                description={news.description}
+                content={news.content}
                 media={news.media}
                 date={news.uploadDatetime}
                 keywords={news.keywords}
               />
-              <EconSubNewsBody thumbnail={news.thumbnail} />
+              <EconSubNewsBody
+                thumbnail={news.thumbnail}
+                onShowSummaryChange={handleShowSummaryChange}
+              />
             </StockNewsWrapper>
           </StockNewsOuterWrapper>
         ))}

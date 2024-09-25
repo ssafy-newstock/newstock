@@ -4,7 +4,9 @@ import { Center } from '@components/Center';
 import LeftNews from '@components/LeftNews';
 import NewsMainHeader from '@features/News/NewsMainHeader';
 import NewsMainBody from '@features/News/NewsMainBody';
-import newsData from '@api/dummyData/20240907.json';
+// import newsData from '@api/dummyData/20240907.json';
+import { getNewsData, translateIndustry } from '@api/dummyData/DummyData';
+
 
 // 스타일드 컴포넌트 정의
 const NewsMainCenter = styled.div`
@@ -30,7 +32,9 @@ const NewsMainBodyWrapper = styled.div`
 `;
 
 const NewsMainPage: React.FC = () => {
-  const top4News = newsData.data.slice(0, 4);
+  const { economic, stock } = getNewsData();
+  const economic4News = economic.data.slice(0, 4);
+  const stock4News = stock.data.slice(0, 4);
 
   return (
     <>
@@ -40,7 +44,7 @@ const NewsMainPage: React.FC = () => {
           {/* 시황 뉴스 헤더 텍스트 */}
           <NewsMainHeader newsType="시황" />
           <NewsMainBodyWrapper>
-            {top4News.map((news, index) => (
+            {economic4News.map((news, index) => (
               <NewsMainBody
                 key={index}
                 newsType="시황"
@@ -48,14 +52,14 @@ const NewsMainPage: React.FC = () => {
                 description={news.description}
                 media={news.media}
                 date={news.uploadDatetime}
-                header="벤처/스타트업"
-                stockId={news.stockId}
+                header={translateIndustry(news.industry)}
+                newsId={news.newsId}
               />
             ))}
           </NewsMainBodyWrapper>
           <NewsMainHeader newsType="종목" />
           <NewsMainBodyWrapper>
-            {top4News.map((news, index) => (
+            {stock4News.map((news, index) => (
               <NewsMainBody
                 key={index}
                 newsType="종목"
@@ -64,7 +68,7 @@ const NewsMainPage: React.FC = () => {
                 media={news.media}
                 date={news.uploadDatetime}
                 header="삼성전자"
-                stockId={news.stockId}
+                newsId={news.newsId}
               />
             ))}
           </NewsMainBodyWrapper>
