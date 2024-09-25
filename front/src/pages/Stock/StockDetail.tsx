@@ -21,11 +21,9 @@ import { axiosInstance } from '@api/axiosInstance';
 import { HeartFill } from '@features/Stock/HeartFill';
 import { Heart } from '@features/Stock/Heart';
 import useAuthStore from '@store/useAuthStore';
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import useAllStockStore from '@store/useAllStockStore';
+import useTop10StockStore from '@store/useTop10StockStore';
 
 const Button = styled.div`
   background-color: ${({ theme }) => theme.profileBackgroundColor};
@@ -48,7 +46,15 @@ interface IMutationContext {
 const StockDetailPage = () => {
   const location = useLocation();
   const { stock } = location.state as { stock: IStock };
-  const initialPrice = Number(stock.stckPrpr);
+  const { allStock } = useAllStockStore();
+  const { top10Stock } = useTop10StockStore();
+
+  const stockDetail =
+    allStock.find((s) => s.stockCode === stock.stockCode) ||
+    top10Stock.find((s) => s.stockCode === stock.stockCode);
+  console.log('stockDetail', stockDetail);
+
+  // const initialPrice = Number(stockDetail?.stckPrpr);
   const { isLogin } = useAuthStore();
 
   const { data: favoriteStockList, isLoading } = useQuery<IFavoriteStock[]>({
@@ -67,12 +73,17 @@ const StockDetailPage = () => {
   const queryClient = useQueryClient();
 
   // 좋아요 주식 추가 mutation
-  const { mutate: addFavoriteStock } = useMutation<void, Error, string, IMutationContext>({
+  const { mutate: addFavoriteStock } = useMutation<
+    void,
+    Error,
+    string,
+    IMutationContext
+  >({
     mutationFn: async (stockCode: string) => {
       await axiosInstance.post(`/api/stock/favorite/${stockCode}`);
     },
     onMutate: async (stockCode: string) => {
-      await queryClient.cancelQueries({queryKey:['favoriteStockList']});
+      await queryClient.cancelQueries({ queryKey: ['favoriteStockList'] });
 
       const previousFavoriteList = queryClient.getQueryData<IFavoriteStock[]>([
         'favoriteStockList',
@@ -97,17 +108,22 @@ const StockDetailPage = () => {
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({queryKey:['favoriteStockList']});
+      queryClient.invalidateQueries({ queryKey: ['favoriteStockList'] });
     },
   });
 
   // 좋아요 주식 제거 mutation
-  const { mutate: removeFavoriteStock } = useMutation<void, Error, string, IMutationContext>({
+  const { mutate: removeFavoriteStock } = useMutation<
+    void,
+    Error,
+    string,
+    IMutationContext
+  >({
     mutationFn: async (stockCode: string) => {
       await axiosInstance.delete(`/api/stock/favorite/${stockCode}`);
     },
     onMutate: async (stockCode: string) => {
-      await queryClient.cancelQueries({queryKey:['favoriteStockList']});
+      await queryClient.cancelQueries({ queryKey: ['favoriteStockList'] });
 
       const previousFavoriteList = queryClient.getQueryData<IFavoriteStock[]>([
         'favoriteStockList',
@@ -129,7 +145,7 @@ const StockDetailPage = () => {
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({queryKey:['favoriteStockList']});
+      queryClient.invalidateQueries({ queryKey: ['favoriteStockList'] });
     },
   });
   const showButton = location.pathname.includes('daily-chart');
@@ -157,23 +173,35 @@ const StockDetailPage = () => {
                 onError={(e) => (e.currentTarget.src = blueLogo)} // 기본 이미지 설정
                 alt=""
               />
-              {stock.stockName}
+              {stockDetail?.stockName}
             </StockTitle>
             <StckPrice>
-              {formatChange(formatNumber(stock.stckPrpr))}원
+              {stockDetail && formatChange(formatNumber(stockDetail.stckPrpr))}
+              원
             </StckPrice>
-            <StockPrev $isPositive={stock.prdyVrss.toString().startsWith('-')}>
+            <StockPrev
+              $isPositive={
+                stockDetail?.prdyVrss.toString().startsWith('-') ?? false
+              }
+            >
               <SpanTag>어제보다</SpanTag>{' '}
-              {formatChange(formatNumber(stock.prdyVrss))}원 ({stock.prdyCtrt}
+              {stockDetail && formatChange(formatNumber(stockDetail.prdyVrss))}
+              원 ({stockDetail?.prdyCtrt}
               %)
             </StockPrev>
           </div>
           <div style={{ display: 'flex', gap: '1rem' }}>
             {isLogin &&
               (isFavorite ? (
-                <HeartFill cancleFavoriteStock={() => removeFavoriteStock(stock.stockCode)} />
+                <HeartFill
+                  cancleFavoriteStock={() =>
+                    removeFavoriteStock(stock.stockCode)
+                  }
+                />
               ) : (
-                <Heart favoriteStock={() => addFavoriteStock(stock.stockCode)} />
+                <Heart
+                  favoriteStock={() => addFavoriteStock(stock.stockCode)}
+                />
               ))}
             {showButton && <Button>유사도 분석</Button>}
           </div>
@@ -197,7 +225,10 @@ const StockDetailPage = () => {
         <DividedSection>
           <Outlet />
         </DividedSection>
-        <TradeForm initialPrice={initialPrice} stockCode={stock.stockCode} />
+        <TradeForm
+          price={stockDetail?.stckPrpr ?? stock.stckPrpr}
+          stockCode={stock.stockCode}
+        />
       </Center>
       <RightVacant />
     </>
