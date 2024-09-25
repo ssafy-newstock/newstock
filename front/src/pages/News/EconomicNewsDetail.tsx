@@ -23,7 +23,7 @@ const NewsWrapper = styled.div`
   align-self: stretch;
   border-radius: 2rem;
   background-color: ${({ theme }) => theme.newsBackgroundColor};
-  box-shadow: 0rem 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
+  box-shadow: 0rem 0.25rem 0.25rem rgba(0, 0, 0, 0.1);
 `;
 
 const EconomicNewsDetailPage: React.FC = () => {
