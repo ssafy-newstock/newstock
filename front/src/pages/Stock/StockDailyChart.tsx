@@ -16,10 +16,6 @@ interface IStockDailyChart {
   stockCandleLow: number;
 }
 
-// interface IStockDailyChartData {
-//   [key: string]: IStockDailyChart;
-// }
-
 const StockDailyChart = () => {
   // 구조분해할당 활용
   // const { state } = useLocation() as { state: { stock: IStock } };

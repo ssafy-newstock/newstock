@@ -49,14 +49,16 @@ const StockDetailPage = () => {
   const { allStock } = useAllStockStore();
   const { top10Stock } = useTop10StockStore();
 
+  // 주식 상세 정보
   const stockDetail =
     allStock.find((s) => s.stockCode === stock.stockCode) ||
     top10Stock.find((s) => s.stockCode === stock.stockCode);
   console.log('stockDetail', stockDetail);
 
-  // const initialPrice = Number(stockDetail?.stckPrpr);
+  // 로그인 여부 확인
   const { isLogin } = useAuthStore();
 
+  // 관심 종목 관련 API 호출
   const { data: favoriteStockList, isLoading } = useQuery<IFavoriteStock[]>({
     queryKey: ['favoriteStockList'],
     queryFn: async () => {
@@ -148,8 +150,11 @@ const StockDetailPage = () => {
       queryClient.invalidateQueries({ queryKey: ['favoriteStockList'] });
     },
   });
+
+  // 유사도 버튼 버튼 표시 여부
   const showButton = location.pathname.includes('daily-chart');
 
+  // 주식 종목 이미지
   const getStockImageUrl = () => {
     // 이미지 URL 생성
     const url = `https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stock.stockCode}.png`;
