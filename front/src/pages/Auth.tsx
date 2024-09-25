@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import useAuthStore from '@store/useAuthStore';
-import LoadingPage from '@components/LodingPage';
+import LoadingSpinner from '@components/LoadingSpinner';
 
 type AuthType = string | null;
 type ErrorType = string | null | unknown;
@@ -85,11 +85,11 @@ const Auth = () => {
   }, [code]);
 
   if (isLoading) {
-    return <LoadingPage />;
+    return <LoadingSpinner />;
   }
 
   return (
-    <div>
+    <>
       {isLoading ? (
         <p>로그인 중...</p>
       ) : error ? (
@@ -97,7 +97,7 @@ const Auth = () => {
       ) : (
         <p>로그인 성공! 리다이렉트 중...</p>
       )}
-    </div>
+    </>
   );
 };
 

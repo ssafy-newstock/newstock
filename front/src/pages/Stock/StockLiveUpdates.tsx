@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { IChartData, IStock } from '@features/Stock/types';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import LoadingPage from '@components/LodingPage';
+import LoadingSpinner from '@components/LoadingSpinner';
 
 const StockLiveUpdates: React.FC = () => {
   const { state } = useLocation() as { state: { stock: IStock } };
@@ -25,7 +25,7 @@ const StockLiveUpdates: React.FC = () => {
   console.log('StockLiveChart', StockLiveChart);
 
   if (chartLoading) {
-    return <LoadingPage />;
+    return <LoadingSpinner />;
   }
 
   const series = [
