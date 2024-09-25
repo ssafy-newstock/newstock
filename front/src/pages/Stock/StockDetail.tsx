@@ -5,11 +5,9 @@ import {
   HrTag,
   SpanTag,
   StckPrice,
-  StockImage,
   StockImageDetail,
   StockPrev,
   StockTitle,
-  Text,
   TextLarge,
 } from '@features/Stock/styledComponent';
 import {
