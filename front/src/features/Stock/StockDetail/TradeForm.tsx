@@ -78,12 +78,14 @@ const BuyForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
   const [isSuccess, setIsSuccess] = useState(true);
   const [modalAmount, setModalAmount] = useState(0); // 모달로 보낼 amount 상태 추가
   const [modalPrice, setModalPrice] = useState(0); // 모달로 보낼 price 상태 추가
+  const [totalPrice, setTotalPrice] = useState(0); // 구매 금액 상태 추가
 
   const {
     control,
     handleSubmit,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
@@ -92,9 +94,15 @@ const BuyForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
     },
   });
 
+  const amount = watch('amount'); // amount 값 가져오기(실시간)
+
   useEffect(() => {
     setValue('price', price);
   }, [price, setValue]);
+
+  useEffect(() => {
+    setTotalPrice(Number(price) * Number(amount));
+  }, [amount, price]);
 
   const onSubmit = async (data: FormValues) => {
     // const accessToken = sessionStorage.getItem('accessToken');
@@ -173,6 +181,12 @@ const BuyForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
           />
         </InputRow>
       </InputWrapper>
+      <InputWrapper>
+        <InputRow>
+          <InputLabel>Total Price: </InputLabel>
+          <InputTag type="text" value={totalPrice} disabled />
+        </InputRow>
+      </InputWrapper>
       <ButtonWrapper>
         <Button type="button" $variant="buy" onClick={handleSubmit(onSubmit)}>
           Buy
@@ -196,12 +210,14 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
   const [isSuccess, setIsSuccess] = useState(true);
   const [modalAmount, setModalAmount] = useState(0); // 모달로 보낼 amount 상태 추가
   const [modalPrice, setModalPrice] = useState(0); // 모달로 보낼 price 상태 추가
+  const [totalPrice, setTotalPrice] = useState(0); // 구매 금액 상태 추가
 
   const {
     control,
     handleSubmit,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
@@ -210,9 +226,15 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
     },
   });
 
+  const amount = watch('amount'); // amount 값 가져오기(실시간)
+
   useEffect(() => {
     setValue('price', price);
   }, [price, setValue]);
+
+  useEffect(() => {
+    setTotalPrice(Number(price) * Number(amount));
+  }, [amount, price]);
 
   const onSubmit = async (data: FormValues) => {
     // const accessToken = sessionStorage.getItem('accessToken');
@@ -288,6 +310,12 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
               </>
             )}
           />
+        </InputRow>
+      </InputWrapper>
+      <InputWrapper>
+        <InputRow>
+          <InputLabel>Total Price: </InputLabel>
+          <InputTag type="text" value={totalPrice} disabled />
         </InputRow>
       </InputWrapper>
       <ButtonWrapper>
