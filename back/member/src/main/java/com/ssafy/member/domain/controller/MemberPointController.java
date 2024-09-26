@@ -22,6 +22,8 @@ public class MemberPointController {
         // request에서 memberId로 포인트 조회
         Long memberId = request.getMemberId();
         Long point = findMemberPointById(memberId); // 포인트 조회 로직
+        messagingTemplate.convertAndSend("/api/sub/member/info/point", point);
+
         return point;  // 클라이언트에게 포인트 정보 전송
     }
 
