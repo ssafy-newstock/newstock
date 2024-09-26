@@ -54,6 +54,24 @@ const LeftStock: React.FC = () => {
           <TextTitle>주식</TextTitle>
         </TextDiv>
         <TextDiv
+          onClick={() => navigate('/stock-main')}
+          style={{ cursor: 'pointer' }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <path
+              d="M6 19H9V13H15V19H18V10L12 5.5L6 10V19ZM4 21V9L12 3L20 9V21H13V15H11V21H4Z"
+              fill="#828282"
+            />
+          </svg>
+          <TextP>주식 메인</TextP>
+        </TextDiv>
+        <TextDiv
           onClick={() => navigate('/all-stock')}
           style={{ cursor: 'pointer' }}
         >
@@ -71,25 +89,7 @@ const LeftStock: React.FC = () => {
               fill="#828282"
             />
           </svg>
-          <TextP>전체 종목 조회</TextP>
-        </TextDiv>
-        <TextDiv
-          onClick={() => navigate('/favorite-stock')}
-          style={{ cursor: 'pointer' }}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
-            <path
-              d="M12 15.39L8.24 17.66L9.23 13.38L5.91 10.5L10.29 10.13L12 6.09L13.71 10.13L18.09 10.5L14.77 13.38L15.76 17.66M22 9.24L14.81 8.63L12 2L9.19 8.63L2 9.24L7.45 13.97L5.82 21L12 17.27L18.18 21L16.54 13.97L22 9.24Z"
-              fill="#828282"
-            />
-          </svg>
-          <TextP>관심 종목 조회</TextP>
+          <TextP>전체 종목</TextP>
         </TextDiv>
         <TextDiv
           onClick={() => navigate('/section-stock')}
@@ -107,7 +107,7 @@ const LeftStock: React.FC = () => {
               fill="#828282"
             />
           </svg>
-          <TextP>분야별 주식 조회</TextP>
+          <TextP>분야별 주식</TextP>
         </TextDiv>
         <TextDiv
           onClick={() => navigate('/my-stock')}
@@ -135,7 +135,7 @@ const LeftStock: React.FC = () => {
               strokeLinejoin="round"
             />
           </svg>
-          <TextP>내 주식 조회</TextP>
+          <TextP>나의 주식</TextP>
         </TextDiv>
       </SubNav>
       <Lefthr />
