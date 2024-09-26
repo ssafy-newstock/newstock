@@ -79,7 +79,7 @@ public class MemberService {
     public void updateMyPoint(Long memberId, Long point) {
         Member member = findMember(memberId);
         member.updateMemberPoint(point);
-        simpMessageSendingOperations.convertAndSend("/api/sub/member/info/point", point);
+        simpMessageSendingOperations.convertAndSend("/api/sub/member/info/point/" + memberId, point);
     }
 
     /**
@@ -103,7 +103,7 @@ public class MemberService {
         // 주문이 가능한 경우 포인트를 차감함
         long remainPoint = nowPoint - orderTotalPrice;
         member.updateMemberPoint(remainPoint);
-        simpMessageSendingOperations.convertAndSend("/api/sub/member/info/point", remainPoint);
+        simpMessageSendingOperations.convertAndSend("/api/sub/member/info/point/" + memberId, remainPoint);
         return member;
     }
 
