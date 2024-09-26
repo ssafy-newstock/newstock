@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useThemeStore } from '@store/themeStore';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useAuthStore from '@store/useAuthStore';
 import Login from '@components/Login';
 // import axios from 'axios';
@@ -88,12 +88,27 @@ const ThemeIcon = styled.div`
   pointer-events: none; // 아이콘이 클릭 이벤트를 방해하지 않도록 설정
 `;
 
+const StyledIcon = styled.svg`
+  width: 30px;
+  height: 30px;
+  fill: none;
+  color: ${({ theme }) => theme.profileColor};
+  stroke-width: 1.05;
+`;
+
+import SockJS from 'sockjs-client';
+import Stomp from 'stompjs';
+import { axiosInstance } from '@api/axiosInstance';
+import { formatUnit } from '@utils/formatUnit';
 const Header = () => {
   const { memberName } = useAuthStore();
   const { theme, toggleTheme } = useThemeStore();
   const isDarkMode = theme === 'dark';
   // 로그인 모달 상태 추가
   const [loginOpen, setLoginOpen] = useState<boolean>(false);
+  // 유저 포인트 상태
+  const [userPoint, setUserPoint] = useState<string>('');
+
   const openLogin = () => {
     setLoginOpen(true);
   };
@@ -101,12 +116,65 @@ const Header = () => {
     setLoginOpen(false);
   };
 
-  const { isLogin, logout } = useAuthStore();
+  const { isLogin, logout, memberId } = useAuthStore();
 
   const handleLogout = () => {
     logout();
     sessionStorage.removeItem('accessToken');
-  }
+  };
+  useEffect(() => {
+    const fetchUserPoint = async (): Promise<void> => {
+      const response = await axiosInstance.get(`/api/member/${memberId}/point`);
+      setUserPoint(formatUnit(response.data.point));
+    };
+
+    // 로그인 상태가 true일 때만 포인트 가져오기
+    if (isLogin && memberId) {
+      fetchUserPoint();
+    }
+  }, [isLogin, memberId]);
+
+  useEffect(() => {
+    const socket = new SockJS('https://newstock.info/api/member/websocket');
+
+    const client = Stomp.over(socket);
+
+    client.debug = (msg) => {
+      console.log('STOMP debug:', msg);
+    };
+
+    client.connect(
+      {},
+      () => {
+        console.log('WebSocket connected');
+
+        client.subscribe(
+          `/api/sub/member/info/point/${memberId}`,
+          (response) => {
+            console.log('Received message:', response);
+          }
+        );
+
+        client.send(
+          '/api/sub/member/info/point',
+          {},
+          JSON.stringify({ memberId })
+        );
+      },
+      (error) => {
+        console.error('WebSocket connection error:', error);
+      }
+    );
+
+    return () => {
+      if (client && client.connected) {
+        client.disconnect(() => {
+          console.log('WebSocket disconnected');
+        });
+      }
+    };
+  }, [isLogin, memberId]);
+
   // API 생성 후 대체
   // const handleLogout = async () => {
   //   try {
@@ -177,6 +245,32 @@ const Header = () => {
             />
           </Slider>
 
+          {isLogin && (
+            <User style={{ gap: '0.5rem' }}>
+              <StyledIcon
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+              >
+                <g fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <ellipse
+                    cx="9.5"
+                    cy="9.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    rx="9.5"
+                    ry="9.5"
+                    transform="matrix(-1 0 0 1 20 2)"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M13 8.8a3.58 3.58 0 0 0-2.25-.8C8.679 8 7 9.79 7 12s1.679 4 3.75 4c.844 0 1.623-.298 2.25-.8"
+                  />
+                </g>
+              </StyledIcon>
+              <UserName>{userPoint}원</UserName>
+            </User>
+          )}
           <User>
             {isLogin ? (
               <>
