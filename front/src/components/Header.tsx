@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import useAuthStore from '@store/useAuthStore';
 import Login from '@components/Login';
-// import axios from 'axios';
 
 const HeaderContainer = styled.div`
   width: 100%;
@@ -122,7 +121,7 @@ const Header = () => {
   // 로그인 모달 상태 추가
   const [loginOpen, setLoginOpen] = useState<boolean>(false);
   // 유저 포인트 상태
-  const { point, allpoint, setPoint, setAllPoint } = usePointStore();
+  const { point, setPoint } = usePointStore();
   const [isHovering, setIsHovering] = useState(false);
 
   const handleMouseOver = () => {
@@ -149,8 +148,7 @@ const Header = () => {
   useEffect(() => {
     const fetchUserPoint = async (): Promise<void> => {
       const response = await axiosInstance.get(`/api/member/${memberId}/point`);
-      setPoint(formatUnit(response.data.point));
-      setAllPoint(response.data.point);
+      setPoint(response.data.point);
     };
 
     // 로그인 상태가 true일 때만 포인트 가져오기
@@ -178,8 +176,7 @@ const Header = () => {
           (response) => {
             console.log('Received message:', response);
             const newPoint = response.body; // 서버에서 전달받은 포인트
-            setAllPoint(Number(newPoint));
-            setPoint(formatUnit(newPoint)); // Zustand 스토어에 업데이트
+            setPoint(Number(newPoint));
           }
         );
 
@@ -300,11 +297,11 @@ const Header = () => {
                       />
                     </g>
                   </StyledIcon>
-                  <UserName>{point}원</UserName>
+                  <UserName>{formatUnit(point)}원</UserName>
                 </User>
               ) : (
                 <User>
-                  <UserName>{allpoint.toLocaleString()}원</UserName>
+                  <UserName>{point.toLocaleString()}원</UserName>
                 </User>
               )}
             </PointWrapper>
