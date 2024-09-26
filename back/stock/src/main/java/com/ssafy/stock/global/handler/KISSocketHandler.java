@@ -57,6 +57,7 @@ public class KISSocketHandler extends TextWebSocketHandler {
 
             session.sendMessage(new TextMessage(requestJson));
             log.info("구독 요청 메시지 전송 (종목 코드: {}): {}", stockCode, requestJson);
+            Thread.sleep(500);
         }
     }
 
