@@ -31,7 +31,7 @@ const ModalContent = styled.div`
   background-color: white;
   padding: 1rem;
   border-radius: 1rem;
-  /* width: 300px; */
+  min-width: 15rem;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -90,7 +90,7 @@ const TradeModal: React.FC<TradeModalProps> = ({
                 <Text>주문 금액 : {formatNumber((price ?? 0) * (amount ?? 0))}원</Text>
               </>
             ) : (
-              <></>
+              <>{message}</>
             )}
           </>
         )}
@@ -121,14 +121,10 @@ const TradeModal: React.FC<TradeModalProps> = ({
                 <Text>판매 금액 : {formatNumber((price ?? 0) * (amount ?? 0))}원</Text>
               </>
             ) : (
-              <></>
+              <>{message}</>
             )}
           </>
         )}
-
-        {/* 메시지 */}
-        <p>{message}</p>
-
         {/* 닫기 버튼 */}
         <CloseButton onClick={onClose}>닫기</CloseButton>
       </ModalContent>
