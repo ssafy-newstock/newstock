@@ -19,9 +19,36 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.kafka:spring-kafka'
-    testImplementation 'org.springframework.kafka:spring-kafka-test'
+    // kafka
+//    implementation 'org.springframework.kafka:spring-kafka'
+//    testImplementation 'org.springframework.kafka:spring-kafka-test'
+
+    // devtool
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+//    // jpa
+//    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+//
+//    // mysql
+//    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // hbase
+//    implementation 'org.apache.hbase:hbase-client:3.0.0-beta-1'
+//    // HBase 의존성에서 log4j 및 reload4j 충돌 방지
+//    configurations.all {
+//        exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j-impl'
+//        exclude group: 'org.slf4j', module: 'slf4j-reload4j'
+//    }
+//    implementation 'org.apache.hbase:hbase-common:3.0.0-beta-1'
+
+
+    // 롬복
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+
+    implementation 'commons-codec:commons-codec:1.17.1'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
