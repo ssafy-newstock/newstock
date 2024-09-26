@@ -146,7 +146,7 @@ public class StockTransactionService {
      * @param stockCode
      * @return
      */
-    private Long checkTopTenStock(String stockCode) {
+    public Long checkTopTenStock(String stockCode) {
         Long currentPrice;
         // TOP10 주식
         if (KISSocketHandler.stockNameMap.containsKey(stockCode)) {
