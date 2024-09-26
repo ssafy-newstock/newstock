@@ -238,7 +238,7 @@ const StockDetailPage = () => {
             to={`/stock-detail/${stock.stockCode}/live-updates`}
             state={{ stock }}
           >
-            <Button>실시간</Button>
+            <Button>1일</Button>
           </Link>
         </div>
         <DividedSection>
