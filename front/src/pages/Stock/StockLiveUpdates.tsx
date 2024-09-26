@@ -71,10 +71,6 @@ const StockLiveUpdates: React.FC = () => {
         text: '주가 (KRW)',
       },
     },
-    title: {
-      text: '주식 1일 차트',
-      align: 'left',
-    },
   };
 
   return (
