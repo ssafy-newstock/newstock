@@ -123,7 +123,7 @@ public class MemberService {
         // 매도가 성공한 경우 포인트를 업데이트 함
         long totalPoint = nowPoint + orderTotalPrice;
         member.updateMemberPoint(totalPoint);
-        simpMessageSendingOperations.convertAndSend("/api/sub/member/info/point", totalPoint);
+        simpMessageSendingOperations.convertAndSend("/api/sub/member/info/point/" + memberId, totalPoint);
         return member;
     }
 
