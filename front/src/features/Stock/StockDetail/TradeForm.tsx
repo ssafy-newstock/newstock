@@ -77,6 +77,7 @@ const BuyForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
   const [modalMessage, setModalMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(true);
   const [modalAmount, setModalAmount] = useState(0); // 모달로 보낼 amount 상태 추가
+  const [modalPrice, setModalPrice] = useState(0); // 모달로 보낼 price 상태 추가
 
   const {
     control,
@@ -120,6 +121,7 @@ const BuyForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
       setIsSuccess(false);
     }
     setModalAmount(buyData.amount); // 입력한 amount 값을 설정
+    setModalPrice(buyData.price); // 입력한 price 값을 설정
     setModalOpen(true); // 모달을 띄움
     reset({ price: price, amount: 0 }); // 폼 리셋
   };
@@ -181,7 +183,7 @@ const BuyForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
         onClose={() => setModalOpen(false)}
         message={modalMessage}
         buySuccess={isSuccess}
-        price={price}
+        price={modalPrice}
         amount={modalAmount}
       />
     </ColumnWrapper>
@@ -193,6 +195,7 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
   const [modalMessage, setModalMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(true);
   const [modalAmount, setModalAmount] = useState(0); // 모달로 보낼 amount 상태 추가
+  const [modalPrice, setModalPrice] = useState(0); // 모달로 보낼 price 상태 추가
 
   const {
     control,
@@ -235,6 +238,7 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
       setIsSuccess(false);
     }
     setModalAmount(sellData.amount); // 입력한 amount 값을 설정
+    setModalPrice(sellData.price); // 입력한 price 값을 설정
     setModalOpen(true);
     reset({ price: price, amount: 0 }); // 폼 리셋
   };
@@ -296,7 +300,7 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
         onClose={() => setModalOpen(false)}
         message={modalMessage}
         sellSuccess={isSuccess}
-        price={price}
+        price={modalPrice}
         amount={modalAmount}
       />
     </ColumnWrapper>
