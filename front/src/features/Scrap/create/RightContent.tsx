@@ -5,8 +5,8 @@ interface CardData {
   title: string;
   media: string;
   description: string;
-  thumbnail?: string;
   uploadDatetime: string;
+  thumbnail?: string;
   keywords?: string[];
 }
 

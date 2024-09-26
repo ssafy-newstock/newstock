@@ -49,12 +49,20 @@ export const CenterHr = styled.hr`
   background-color: #828282;
 `;
 
+export const CenterTitleHr = styled.hr`
+  width: 9%; /* 전체 너비로 설정 */
+  height: 0.1875rem; /* 높이는 동일하게 유지 */
+  background-color: #828282;
+  margin-left: 0; /* 왼쪽 정렬 */
+`;
+
 export const CenterContentDiv = styled.div`
-  display: flex;
-  flex-direction: row;
+  width: 100%;
+  flex-direction: column;
   padding: 0rem 0.125rem;
+  margin: 1rem 0rem;
   align-items: flex-start;
-  gap: 1.5rem;
+  gap: 2rem;
   align-self: stretch;
 `;
 
@@ -64,27 +72,51 @@ export const FontStyle = styled.p`
   line-height: 1.875rem;
 `;
 
+export const CenterContentSectionBeforeDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 0rem 1rem;
+  align-items: flex-start;
+  justify-content: flex-start;
+`;
+
 export const CenterContentSection = styled.div`
   display: flex;
+  width: 100%;
+  overflow-x: auto; /* 수평 스크롤을 활성화 */
   padding: 0.9375rem 0.625rem;
-  flex-direction: column;
+  margin: 0.625rem 0rem 1.875rem 0rem;
+  flex-direction: row; /* 수평으로 자식 요소를 나열 */
   align-items: flex-start;
-  gap: 1.25rem;
   border-radius: 1.25rem;
   background: ${({ theme }) => theme.centerContentSectionBackgroundColor};
+  white-space: nowrap; /* 자식 요소가 한 줄로 나열되도록 함 */
+  scroll-behavior: smooth; /* 부드러운 스크롤 */
+
+  /* 스크롤바를 숨기고 싶다면 아래를 추가 */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+export const CenterContentSectionRowDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 0rem 1rem;
+  padding: 0.625rem 0.625rem;
 `;
 
 export const CenterContentSectionTitle = styled.p`
   color: ${({ theme }) => theme.textColor};
-  text-align: center;
-  font-size: 1.25rem;
-  line-height: 1.875rem; /* 150% */
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0rem 0.625rem;
 `;
 
 export const CardContainer = styled.div`
   display: flex;
   padding: 0.375rem 0rem;
-  width: 20.4375rem;
+  width: 20rem;
   height: 9.375rem;
   flex-direction: column;
   align-items: flex-start;
@@ -93,12 +125,19 @@ export const CardContainer = styled.div`
   border-radius: 1.25rem;
   background: ${({ theme }) => theme.newsBackgroundColor};
   box-shadow: 0rem 0.25rem 0.25rem 0rem rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
 `;
 
 export const CardTitleFontStyle = styled.p`
   font-size: 1.375rem;
-  line-height: 1.5625rem; /* 113.636% */
+  line-height: 1.5625rem;
   margin: 0.625rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  width: calc(100% - 1.25rem); /* 부모 padding을 고려해 너비 조정 */
+  box-sizing: border-box;
 `;
 
 export const CardContextDiv = styled.div`

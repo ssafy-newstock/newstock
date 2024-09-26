@@ -11,6 +11,7 @@ interface Data {
   media: string;
   uploadDatetime: string;
   description: string;
+  thumbnail?: string;
   keywords?: string[];
 }
 
