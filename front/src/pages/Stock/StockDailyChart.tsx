@@ -2,9 +2,9 @@ import Chart from 'react-apexcharts';
 import { ApexOptions } from 'apexcharts';
 import { useLocation } from 'react-router-dom';
 import { IChartData, IStock } from '@features/Stock/types';
-import LoadingPage from '@components/LodingPage';
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
+import LoadingSpinner from '@components/LoadingSpinner';
 
 const StockDailyChart = () => {
   // 구조분해할당 활용
@@ -24,7 +24,7 @@ const StockDailyChart = () => {
 
   const stockDailyChart = chartData?.stockCandleDtoList;
   if (chartLoading) {
-    return <LoadingPage />;
+    return <LoadingSpinner />;
   }
   // stockDailyChart가 undefined가 아닌 경우에만 데이터 생성
   const series = stockDailyChart

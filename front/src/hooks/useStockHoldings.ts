@@ -47,7 +47,7 @@ const fetchMyStockData = async (): Promise<ApiResponse['data']> => {
 // 커스텀 훅
 export const useMyStockData = () => {
   return useQuery<ApiResponse['data'], Error>({
-    queryKey: ['data'],
+    queryKey: ['myStockData'],
     queryFn: fetchMyStockData,
   });
 };

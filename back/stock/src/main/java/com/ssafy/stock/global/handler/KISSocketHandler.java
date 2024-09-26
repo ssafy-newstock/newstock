@@ -9,10 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.socket.CloseStatus;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketMessage;
-import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.util.List;
@@ -60,6 +57,7 @@ public class KISSocketHandler extends TextWebSocketHandler {
 
             session.sendMessage(new TextMessage(requestJson));
             log.info("구독 요청 메시지 전송 (종목 코드: {}): {}", stockCode, requestJson);
+            Thread.sleep(500);
         }
     }
 
@@ -112,8 +110,18 @@ public class KISSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+        // 상태 코드 확인
+        int statusCode = status.getCode();
+
+        if (statusCode == CloseStatus.NORMAL.getCode()) {
+            log.info("정상적으로 웹소켓 연결이 종료되었습니다.");
+        } else if (statusCode == CloseStatus.SESSION_NOT_RELIABLE.getCode()) {
+            log.warn("웹소켓 세션이 안정적이지 않아 연결이 종료되었습니다.");
+        } else {
+            log.error("웹소켓 연결이 비정상적으로 종료되었습니다. 상태 코드: {}, 이유: {}", statusCode, status.getReason());
+        }
         // 연결 종료 시 처리
-        sessions.remove(session);
+        // sessions.remove(session);
         log.info("한국투자 증권 웹소켓 연결 종료 : {}", status.getReason());
     }
 }

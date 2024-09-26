@@ -92,7 +92,7 @@ const TradingHistoryList = ({ stock }: { stock: TransactionDto }) => {
       </StyledTransactionType>
       <Text>{formattedDate}</Text>
       <Text>{stock.stockTransactionPrice.toLocaleString()}원</Text>
-      <Text>{stock.stockTransactionAmount.toLocaleString()}주(호)</Text>
+      <Text>{stock.stockTransactionAmount.toLocaleString()}주</Text>
       <Text>{stock.stockTransactionTotalPrice.toLocaleString()}원</Text>
     </MyStockCardRow>
   );

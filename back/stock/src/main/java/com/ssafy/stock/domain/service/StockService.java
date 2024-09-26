@@ -69,6 +69,7 @@ public class StockService {
     private final SimpMessageSendingOperations simpMessageSendingOperations;
     private final StockConverter stockConverter;
     private final KISTokenService kisTokenService;
+    private final StockTransactionService stockTransactionService;
 
     // 종목 정보 조회 전략 : Redis 캐시메모리 사용
     @Cacheable(cacheNames = "stocksInfo", cacheManager = "cacheManager")
@@ -258,10 +259,7 @@ public class StockService {
                 .map(myStockHolding -> {
                     Stocks stock = myStockHolding.getStock();
 
-                    StocksPriceLiveRedis stocksPriceLiveRedis = stocksPriceLiveRedisRepository.findById(stock.getStockCode())
-                            .orElseThrow(StockNotFoundException::new);
-
-                    Long currentPrice = stocksPriceLiveRedis.getStckPrpr(); // 현재 주가
+                    Long currentPrice = stockTransactionService.checkTopTenStock(stock.getStockCode()); // 현재 주가
                     Long buyPrice = myStockHolding.getStockHoldingBuyPrice(); // 평단가
                     Long changeAmount = currentPrice - buyPrice; // 등락 가격
                     Double changeRate = (buyPrice != 0) ? (double) changeAmount / buyPrice * 100 : 0.0; // 등락률 계산 (0으로 나누기 방지)

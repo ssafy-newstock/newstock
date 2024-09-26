@@ -9,7 +9,9 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
     nginx.ingress.kubernetes.io/proxy-set-headers: |
       Upgrade $http_upgrade;
-      Connection "upgrade";
+      Connection $connection_upgrade;
+
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
 spec:
   ingressClassName: nginx
   rules:
@@ -23,10 +25,3 @@ spec:
             name: newstock-stock-member-service
             port:
               number: 8001
-      - path: /api/stock/websocket
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: newstock-stock-stock-service
-            port:
-              number: 8003

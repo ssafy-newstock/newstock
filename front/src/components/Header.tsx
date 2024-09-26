@@ -247,8 +247,7 @@ const Header = () => {
               transition={{ type: 'spring', stiffness: 300, damping: 20 }} // 스프링 애니메이션 적용
             />
           </Slider>
-
-          {point && (
+          {isLogin && point && (
             <User style={{ gap: '0.5rem' }}>
               <StyledIcon
                 xmlns="http://www.w3.org/2000/svg"
@@ -275,7 +274,7 @@ const Header = () => {
             </User>
           )}
           <User>
-            {isLogin ? (
+            {isLogin && point ? (
               <>
                 <Icon
                   xmlns="http://www.w3.org/2000/svg"

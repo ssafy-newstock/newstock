@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useForm, Controller } from 'react-hook-form';
 import { axiosInstance } from '@api/axiosInstance';
+import TradeModal from '@features/Stock/StockDetail/TradeModal';
 
 interface FormValues {
   price: number;
@@ -72,7 +73,11 @@ const Button = styled.button<{ $variant: 'buy' | 'sell' }>`
 `;
 
 const BuyForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
-  
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [isSuccess, setIsSuccess] = useState(true);
+  const [modalAmount, setModalAmount] = useState(0); // 모달로 보낼 amount 상태 추가
+
   const {
     control,
     handleSubmit,
@@ -107,9 +112,15 @@ const BuyForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
         stockTransactionType: 'BUY',
       });
       console.log('Buy Response:', response.data);
+      setModalMessage('주식을 성공적으로 매수했습니다.');
+      setIsSuccess(true);
     } catch (error) {
       console.error('Buy Error:', error);
+      setModalMessage('보유 금액이 부족합니다.');
+      setIsSuccess(false);
     }
+    setModalAmount(buyData.amount); // 입력한 amount 값을 설정
+    setModalOpen(true); // 모달을 띄움
     reset({ price: price, amount: 0 }); // 폼 리셋
   };
 
@@ -165,11 +176,24 @@ const BuyForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
           Buy
         </Button>
       </ButtonWrapper>
+      <TradeModal
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        message={modalMessage}
+        buySuccess={isSuccess}
+        price={price}
+        amount={modalAmount}
+      />
     </ColumnWrapper>
   );
 };
 
 const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [isSuccess, setIsSuccess] = useState(true);
+  const [modalAmount, setModalAmount] = useState(0); // 모달로 보낼 amount 상태 추가
+
   const {
     control,
     handleSubmit,
@@ -185,7 +209,7 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
 
   useEffect(() => {
     setValue('price', price);
-  },[price, setValue]);
+  }, [price, setValue]);
 
   const onSubmit = async (data: FormValues) => {
     // const accessToken = sessionStorage.getItem('accessToken');
@@ -203,9 +227,15 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
         stockTransactionType: 'SELL',
       });
       console.log('Sell Response:', response.data);
+      setModalMessage('주식을 성공적으로 매도했습니다.');
+      setIsSuccess(true);
     } catch (error) {
       console.error('Sell Error:', error);
+      setModalMessage('보유 주식이 부족합니다.');
+      setIsSuccess(false);
     }
+    setModalAmount(sellData.amount); // 입력한 amount 값을 설정
+    setModalOpen(true);
     reset({ price: price, amount: 0 }); // 폼 리셋
   };
 
@@ -261,6 +291,14 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
           Sell
         </Button>
       </ButtonWrapper>
+      <TradeModal
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
+        message={modalMessage}
+        sellSuccess={isSuccess}
+        price={price}
+        amount={modalAmount}
+      />
     </ColumnWrapper>
   );
 };
