@@ -149,6 +149,7 @@ export const CategoryCardColumn = styled.div`
   background-color: ${({ theme }) => theme.stockBackgroundColor};
   box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
   gap: 1rem; /* 이미지와 텍스트 사이의 간격 */
+  cursor: pointer;
 `;
 
 export const CategoryImgWrapper = styled.div<{$bgColor:string}>`
