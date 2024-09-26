@@ -68,12 +68,12 @@ public class StockTransactionService {
                 .ifPresentOrElse(
                         // StocksHolding 객체가 존재하는 경우 (해당 주식을 보유하고 있음)
                         existingStockHolding -> {
-                            existingStockHolding.update(buyAmount, totalPrice, stockTransactionRequest.getStockTransactionType());
+                            existingStockHolding.update(buyAmount, currentPrice, stockTransactionRequest.getStockTransactionType());
                             log.info("주식 보유 정보 매수 업데이트: Member ID = {}, Stock Code = {}, 구매 수량 = {}, 현재 가격 = {}", memberId, stock.getStockCode(), buyAmount, currentPrice);
                         },
                         // StocksHolding 객체가 존재하지 않는 경우 (해당 주식을 보유하고 있지 않음)
                         () -> {
-                            StocksHoldings newStockHolding = new StocksHoldings(memberId, stock, buyAmount, totalPrice / buyAmount);
+                            StocksHoldings newStockHolding = new StocksHoldings(memberId, stock, buyAmount, currentPrice);
                             stockHoldingRepository.save(newStockHolding);
                             log.info("새 주식 보유 정보 생성: Member ID = {}, Stock Code = {}, 구매 수량 = {}, 현재 가격 = {}", memberId, stock.getStockCode(), buyAmount, currentPrice);
                         }
