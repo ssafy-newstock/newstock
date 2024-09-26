@@ -100,6 +100,7 @@ import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { axiosInstance } from '@api/axiosInstance';
 import { formatUnit } from '@utils/formatUnit';
+import usePointStore from '@store/usePointStore';
 const Header = () => {
   const { memberName } = useAuthStore();
   const { theme, toggleTheme } = useThemeStore();
@@ -107,7 +108,7 @@ const Header = () => {
   // 로그인 모달 상태 추가
   const [loginOpen, setLoginOpen] = useState<boolean>(false);
   // 유저 포인트 상태
-  const [userPoint, setUserPoint] = useState<string>('');
+  const { point, setPoint } = usePointStore();
 
   const openLogin = () => {
     setLoginOpen(true);
@@ -125,7 +126,7 @@ const Header = () => {
   useEffect(() => {
     const fetchUserPoint = async (): Promise<void> => {
       const response = await axiosInstance.get(`/api/member/${memberId}/point`);
-      setUserPoint(formatUnit(response.data.point));
+      setPoint(formatUnit(response.data.point));
     };
 
     // 로그인 상태가 true일 때만 포인트 가져오기
@@ -152,6 +153,8 @@ const Header = () => {
           `/api/sub/member/info/point/${memberId}`,
           (response) => {
             console.log('Received message:', response);
+            const newPoint = response.body; // 서버에서 전달받은 포인트
+            setPoint(formatUnit(newPoint)); // Zustand 스토어에 업데이트
           }
         );
 
@@ -245,7 +248,7 @@ const Header = () => {
             />
           </Slider>
 
-          {isLogin && (
+          {point && (
             <User style={{ gap: '0.5rem' }}>
               <StyledIcon
                 xmlns="http://www.w3.org/2000/svg"
@@ -268,7 +271,7 @@ const Header = () => {
                   />
                 </g>
               </StyledIcon>
-              <UserName>{userPoint}원</UserName>
+              <UserName>{point}원</UserName>
             </User>
           )}
           <User>
