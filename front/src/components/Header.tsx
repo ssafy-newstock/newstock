@@ -96,6 +96,20 @@ const StyledIcon = styled.svg`
   stroke-width: 1.05;
 `;
 
+const PointWrapper = styled(motion.div)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease-in-out; // 애니메이션 적용
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.1); // 확대 효과 */
+  }
+`;
+
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { axiosInstance } from '@api/axiosInstance';
@@ -108,7 +122,16 @@ const Header = () => {
   // 로그인 모달 상태 추가
   const [loginOpen, setLoginOpen] = useState<boolean>(false);
   // 유저 포인트 상태
-  const { point, setPoint } = usePointStore();
+  const { point, allpoint, setPoint, setAllPoint } = usePointStore();
+  const [isHovering, setIsHovering] = useState(false);
+
+  const handleMouseOver = () => {
+    setIsHovering(true);
+  };
+
+  const handleMouseOut = () => {
+    setIsHovering(false);
+  };
 
   const openLogin = () => {
     setLoginOpen(true);
@@ -127,6 +150,7 @@ const Header = () => {
     const fetchUserPoint = async (): Promise<void> => {
       const response = await axiosInstance.get(`/api/member/${memberId}/point`);
       setPoint(formatUnit(response.data.point));
+      setAllPoint(response.data.point);
     };
 
     // 로그인 상태가 true일 때만 포인트 가져오기
@@ -154,6 +178,7 @@ const Header = () => {
           (response) => {
             console.log('Received message:', response);
             const newPoint = response.body; // 서버에서 전달받은 포인트
+            setAllPoint(Number(newPoint));
             setPoint(formatUnit(newPoint)); // Zustand 스토어에 업데이트
           }
         );
@@ -248,30 +273,41 @@ const Header = () => {
             />
           </Slider>
           {isLogin && point && (
-            <User style={{ gap: '0.5rem' }}>
-              <StyledIcon
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-              >
-                <g fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <ellipse
-                    cx="9.5"
-                    cy="9.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    rx="9.5"
-                    ry="9.5"
-                    transform="matrix(-1 0 0 1 20 2)"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M13 8.8a3.58 3.58 0 0 0-2.25-.8C8.679 8 7 9.79 7 12s1.679 4 3.75 4c.844 0 1.623-.298 2.25-.8"
-                  />
-                </g>
-              </StyledIcon>
-              <UserName>{point}원</UserName>
-            </User>
+            <PointWrapper
+              onMouseOver={handleMouseOver}
+              onMouseOut={handleMouseOut}
+            >
+              {!isHovering ? (
+                <User>
+                  <StyledIcon
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                  >
+                    <g fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <ellipse
+                        cx="9.5"
+                        cy="9.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        rx="9.5"
+                        ry="9.5"
+                        transform="matrix(-1 0 0 1 20 2)"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M13 8.8a3.58 3.58 0 0 0-2.25-.8C8.679 8 7 9.79 7 12s1.679 4 3.75 4c.844 0 1.623-.298 2.25-.8"
+                      />
+                    </g>
+                  </StyledIcon>
+                  <UserName>{point}원</UserName>
+                </User>
+              ) : (
+                <User>
+                  <UserName>{allpoint.toLocaleString()}원</UserName>
+                </User>
+              )}
+            </PointWrapper>
           )}
           <User>
             {isLogin && point ? (
