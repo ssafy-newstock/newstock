@@ -1,35 +1,26 @@
 package com.ssafy.member.domain.controller;
 
 import com.ssafy.member.domain.controller.request.MemberPointRequest;
-import com.ssafy.member.domain.entity.Member;
-import com.ssafy.member.domain.repository.MemberRepository;
-import com.ssafy.member.global.exception.MemberNotFoundException;
+import com.ssafy.member.domain.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 
 @Controller
 @RequiredArgsConstructor
 public class MemberPointController {
-    private final SimpMessageSendingOperations messagingTemplate;
-    private final MemberRepository memberRepository;
+    private final SimpMessageSendingOperations simpMessageSendingOperations;
+    private final MemberService memberService;
 
     @MessageMapping("/api/pub/member/info/point")
-    @SendTo("/api/sub/member/info/point")
-    public Long sendMemberPoint(MemberPointRequest request) {
+    public void sendMemberPoint(@Payload MemberPointRequest request) {
         // request에서 memberId로 포인트 조회
         Long memberId = request.getMemberId();
-        Long point = findMemberPointById(memberId); // 포인트 조회 로직
-        messagingTemplate.convertAndSend("/api/sub/member/info/point", point);
-
-        return point;  // 클라이언트에게 포인트 정보 전송
+        Long point = memberService.getMyPoint(memberId); // 포인트 조회 로직
+        simpMessageSendingOperations.convertAndSend("/api/sub/member/info/point/" + memberId, point);
     }
 
-    private Long findMemberPointById(Long memberId) {
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberNotFoundException(memberId));
-        return member.getPoint();
-    }
 }
 
