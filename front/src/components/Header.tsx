@@ -133,6 +133,8 @@ const Header = () => {
   };
 
   const openLogin = () => {
+    // 현재 경로를 로컬 스토리지에 저장
+    localStorage.setItem('pathname', window.location.pathname);
     setLoginOpen(true);
   };
   const closeLogin = () => {
