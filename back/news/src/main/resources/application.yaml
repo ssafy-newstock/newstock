@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: news
+server:
+  port: 8002
+
+hbase:
+  url: http://j11c207a.p.ssafy.io:9090

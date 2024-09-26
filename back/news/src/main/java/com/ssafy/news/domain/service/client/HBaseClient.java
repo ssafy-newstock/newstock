@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.news.global.util.DateTimeUtil;
 import com.ssafy.news.global.util.SaltUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -19,12 +20,14 @@ import static com.ssafy.news.global.util.EncryptUtil.decodeBase64;
 @Component
 @RequiredArgsConstructor
 public class HBaseClient {
-    private static final String HBASE_URL = "http://j11c207a.p.ssafy.io:9090";
-    private final RestTemplate restTemplate = new RestTemplate();
+    @Value("${hbase.url}")
+    private String hbaseUrl;
+
+    private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
     public Long getTimestampByKey(String rowKey) {
-        String url = HBASE_URL + "/industry_news_keys/" + rowKey;
+        String url = hbaseUrl + "/industry_news_keys/" + rowKey;
         HttpHeaders headers = new HttpHeaders();
         headers.set("Accept", "application/json");
 
@@ -66,7 +69,7 @@ public class HBaseClient {
             String rowKey = salt + newsType + timestamps + newsIdHash;
 
             // HBase API 호출 URL
-            String url = HBASE_URL + "/industry_news/" + rowKey;
+            String url = hbaseUrl + "/industry_news/" + rowKey;
             HttpHeaders headers = new HttpHeaders();
             headers.set("Accept", "application/json");
 
