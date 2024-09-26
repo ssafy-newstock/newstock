@@ -76,7 +76,7 @@ const StockHoldingList = ({ stock }: { stock: StockHolding }) => {
         {stock.stockName}
       </StockTitle>
       <StckPrice>
-        {stock.stockHoldingBuyAmount.toLocaleString()}주(호)
+        {stock.stockHoldingBuyAmount.toLocaleString()}주
       </StckPrice>
       <Text>{stock.stockHoldingBuyPrice.toLocaleString()}원</Text>
       {/* 현재가에 색상 적용 */}
