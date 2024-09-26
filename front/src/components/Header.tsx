@@ -107,8 +107,7 @@ const Header = () => {
   // 로그인 모달 상태 추가
   const [loginOpen, setLoginOpen] = useState<boolean>(false);
   // 유저 포인트 상태
-  const [userPoint, setUserPoint] = useState<number>(0);
-  const [formattedUserPoint, setFormattedUserPoint] = useState<string>('');
+  const [userPoint, setUserPoint] = useState<string>('');
 
   const openLogin = () => {
     setLoginOpen(true);
@@ -126,8 +125,7 @@ const Header = () => {
   useEffect(() => {
     const fetchUserPoint = async (): Promise<void> => {
       const response = await axiosInstance.get(`/api/member/${memberId}/point`);
-      setUserPoint(response.data.point);
-      setFormattedUserPoint(formatUnit(userPoint));
+      setUserPoint(formatUnit(response.data.point));
     };
 
     // 로그인 상태가 true일 때만 포인트 가져오기
@@ -248,19 +246,19 @@ const Header = () => {
           </Slider>
 
           {isLogin && (
-            <User>
+            <User style={{ gap: '0.5rem' }}>
               <StyledIcon
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
               >
-                <g fill="none" stroke="currentColor" strokeWidth="1.05">
+                <g fill="none" stroke="currentColor" strokeWidth="1.5">
                   <ellipse
                     cx="9.5"
-                    cy="10"
+                    cy="9.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     rx="9.5"
-                    ry="10"
+                    ry="9.5"
                     transform="matrix(-1 0 0 1 20 2)"
                   />
                   <path
@@ -268,10 +266,9 @@ const Header = () => {
                     strokeLinejoin="round"
                     d="M13 8.8a3.58 3.58 0 0 0-2.25-.8C8.679 8 7 9.79 7 12s1.679 4 3.75 4c.844 0 1.623-.298 2.25-.8"
                   />
-                  <path d="M10 2c4.333 0 13 1 13 10s-8.667 10-13 10" />
                 </g>
               </StyledIcon>
-              <UserName>{formattedUserPoint}원</UserName>
+              <UserName>{userPoint}원</UserName>
             </User>
           )}
           <User>
