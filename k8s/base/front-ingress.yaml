@@ -43,3 +43,10 @@ spec:
                 name: newstock-stock-stock-service
                 port:
                   number: 8003
+          - path: /api/member/websocket
+            pathType: Prefix
+            backend:
+              service:
+                name: newstock-stock-member-service
+                port:
+                  number: 8001
