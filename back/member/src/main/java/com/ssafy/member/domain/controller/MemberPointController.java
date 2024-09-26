@@ -16,7 +16,7 @@ public class MemberPointController {
     private final SimpMessageSendingOperations messagingTemplate;
     private final MemberRepository memberRepository;
 
-    @MessageMapping("/member/info/point")
+    @MessageMapping("/api/pub/member/info/point")
     @SendTo("/api/sub/member/info/point")
     public Long sendMemberPoint(MemberPointRequest request) {
         // request에서 memberId로 포인트 조회
