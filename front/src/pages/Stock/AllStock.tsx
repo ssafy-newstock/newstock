@@ -13,6 +13,7 @@ import { useState } from 'react';
 import { ButtonWrapper, SortButton } from '@features/Stock/styledComponent';
 import styled from 'styled-components';
 import useAllStockStore from '@store/useAllStockStore';
+import SearchIcon from '@features/Stock/AllStock/SearchIcon';
 
 const Underline = styled.div<{ $sortBy: string }>`
   position: absolute;
@@ -20,31 +21,69 @@ const Underline = styled.div<{ $sortBy: string }>`
   left: ${({ $sortBy }) => {
     switch ($sortBy) {
       case 'stckPrpr':
-        return '0.3rem'; // 첫 번째 버튼
+        return '0.3rem';
       case 'prdyCtrt':
-        return '4.3rem'; // 두 번째 버튼 위치 (각 버튼의 너비와 여백에 맞춰 조정)
+        return '4.3rem';
       case 'acmlTrPbmn':
-        return '8.3rem'; // 세 번째 버튼 위치
+        return '8.3rem';
       case 'acmlVol':
-        return '12.3rem'; // 네 번째 버튼 위치
+        return '12.3rem';
       default:
         return '0.3rem';
     }
   }};
   height: 0.2rem;
-  width: 2.4rem; /* 밑줄의 너비 */
-  background-color: ${({ theme }) => theme.textColor}; /* 밑줄 색상 */
-  transition: left 0.3s ease; /* 애니메이션 효과 */
+  width: 2.4rem;
+  background-color: ${({ theme }) => theme.textColor};
+  transition: left 0.3s ease;
 `;
+
+const SearchInputWrapper = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
+const SearchInput = styled.input`
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem 0.5rem 2.5rem;
+  width: 100%;
+  border-radius: 1rem;
+  border: none;
+  background-color: ${({ theme }) => theme.stockBackgroundColor};
+  color: ${({ theme }) => theme.textColor};
+  font-size: 1rem;
+`;
+
+const IconWrapper = styled.div`
+  position: absolute;
+  left: 1rem;
+  top: 1.5rem;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+`;
+
 const AllStockPage: React.FC = () => {
   const { allStock } = useAllStockStore();
   const [sortBy, setSortBy] = useState<
     'stckPrpr' | 'prdyCtrt' | 'acmlTrPbmn' | 'acmlVol'
   >('stckPrpr');
 
-  // if (isAllStockLoading) {
-  //   return <div>Loading...</div>;
-  // }
+  const [query, setQuery] = useState(''); // 검색어 상태
+  const [filteredStocks, setFilteredStocks] = useState<IStock[]>(allStock); // 필터링된 주식 목록
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setQuery(value);
+
+    // 검색어에 맞게 주식 목록 필터링
+    const filtered = allStock.filter((stock) =>
+      stock.stockName.includes(value)
+    );
+    setFilteredStocks(filtered);
+  };
 
   const sortData = (data: IStock[]) => {
     return data.sort((a, b) => {
@@ -63,7 +102,7 @@ const AllStockPage: React.FC = () => {
     });
   };
 
-  const sortedStockData = sortData([...allStock]);
+  const sortedStockData = sortData([...filteredStocks]);
 
   return (
     <>
@@ -71,6 +110,20 @@ const AllStockPage: React.FC = () => {
       <Center style={{ padding: '1rem' }}>
         <StockHeader>전체 종목</StockHeader>
         <HrTag />
+
+        {/* 검색창 추가 */}
+        <SearchInputWrapper>
+          <IconWrapper>
+            <SearchIcon />
+          </IconWrapper>
+          <SearchInput
+            type="text"
+            value={query}
+            onChange={handleInputChange}
+            placeholder="주식 종목 검색"
+          />
+        </SearchInputWrapper>
+
         {/* 정렬 버튼 추가 */}
         <ButtonWrapper>
           <SortButton onClick={() => setSortBy('stckPrpr')}>현재가</SortButton>
@@ -81,6 +134,7 @@ const AllStockPage: React.FC = () => {
           <SortButton onClick={() => setSortBy('acmlVol')}>거래량</SortButton>
           <Underline $sortBy={sortBy} />
         </ButtonWrapper>
+
         <DividedSection>
           <StockGridRow>
             <AllStockFirstRow />

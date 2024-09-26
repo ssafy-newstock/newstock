@@ -1,8 +1,4 @@
-import axios from 'axios';
-
-const axiosInstance = axios.create({
-  baseURL: 'https://i11c103.p.ssafy.io',
-});
+import { axiosInstance } from '@api/axiosInstance';
 
 interface ScrapData {
   title: string;

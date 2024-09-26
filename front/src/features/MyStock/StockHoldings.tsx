@@ -68,7 +68,7 @@ const StockHoldings: React.FC<StockHoldingsProps> = ({ stocks }) => {
                   <TextP_20_NOTGRAY>{stock.stockName}</TextP_20_NOTGRAY>
                   <TextP_20_NOTGRAY>
                     {stock.stockHoldingBuyPrice.toLocaleString()}원 /{' '}
-                    {stock.stockHoldingBuyAmount.toLocaleString()}주(호)
+                    {stock.stockHoldingBuyAmount.toLocaleString()}주
                   </TextP_20_NOTGRAY>
                 </StockHoldingCardLeftRightDiv>
               </StockHoldingCardLeftDiv>
