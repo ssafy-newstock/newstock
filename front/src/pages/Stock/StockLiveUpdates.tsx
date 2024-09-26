@@ -53,6 +53,7 @@ const StockLiveUpdates: React.FC = () => {
         enabled: true,
       },
     },
+    colors: ['#FF0000'],
     xaxis: {
       type: 'datetime', // 시간 데이터를 datetime으로 설정
       min: startTime.getTime(), // x축의 최소값 (9시)
@@ -71,7 +72,7 @@ const StockLiveUpdates: React.FC = () => {
       },
     },
     title: {
-      text: '주식 실시간 차트',
+      text: '주식 1일 차트',
       align: 'left',
     },
   };
