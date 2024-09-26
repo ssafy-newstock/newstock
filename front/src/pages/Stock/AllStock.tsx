@@ -45,6 +45,7 @@ const InputTag = styled.input`
   border: none;
   background-color: ${({ theme }) => theme.stockBackgroundColor};
   color: ${({ theme }) => theme.textColor};
+  font-size: 1rem;
 `;
 
 const AllStockPage: React.FC = () => {
