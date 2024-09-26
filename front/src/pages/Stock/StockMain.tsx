@@ -20,7 +20,6 @@ import CategoryStock from '@features/Stock/StockMain/CategoryStock';
 import More from '@features/Stock/More';
 import { ICategoryStock, IStock } from '@features/Stock/types';
 import { RightVacant } from '@components/RightVacant';
-// import { stockData } from '@features/Stock/stock';
 import { useNavigate } from 'react-router-dom';
 import Modal from '@features/Stock/SectionStock/Modal';
 import useCategoryStockStore from '@store/useCategoryStockStore';
@@ -29,6 +28,7 @@ import { useQuery } from '@tanstack/react-query';
 import { axiosInstance } from '@api/axiosInstance';
 import useAllStockStore from '@store/useAllStockStore';
 import useAuthStore from '@store/useAuthStore';
+import LoadingSpinner from '@components/LoadingSpinner';
 
 interface favoriteStock {
   stockFavoriteId: number;
@@ -99,7 +99,7 @@ const StockMainPage = () => {
     : [];
 
   if (isFavoriteStockLoading && isLogin) {
-    return <div>Loading...</div>; // 또는 로딩 컴포넌트
+    return <LoadingSpinner />; // 또는 로딩 컴포넌트
   }
 
   return (
@@ -112,7 +112,11 @@ const StockMainPage = () => {
             <StockHeader>관심 종목</StockHeader>
             <HrTag />
             {/* 관심 종목이 없을 경우 */}
-            {favoriteStock?.length === 0 && <TextCenter>상세 페이지에서 관심 종목을 추가해 보세요.</TextCenter>}
+            {favoriteStock?.length === 0 && (
+              <TextCenter>
+                상세 페이지에서 관심 종목을 추가해 보세요.
+              </TextCenter>
+            )}
             <StockGridColumn>
               {favoriteStock?.map((stock: IStock, index: number) => (
                 <FavoriteStock key={index} stock={stock} />
