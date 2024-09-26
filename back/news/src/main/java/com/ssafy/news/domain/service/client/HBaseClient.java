@@ -2,9 +2,11 @@ package com.ssafy.news.domain.service.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.news.global.exception.NewsNotFoundException;
 import com.ssafy.news.global.util.DateTimeUtil;
 import com.ssafy.news.global.util.SaltUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import static com.ssafy.news.global.util.EncryptUtil.decodeBase64;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class HBaseClient {
     @Value("${hbase.url}")
     private String hbaseUrl;
@@ -53,10 +56,9 @@ public class HBaseClient {
                 return null;
             }
 
-        } catch (IOException e) {
-            System.err.println("Error parsing the response for row key " + rowKey);
+        } catch (Exception e) {
             e.fillInStackTrace();
-            return null;
+            throw new NewsNotFoundException();
         }
     }
 
