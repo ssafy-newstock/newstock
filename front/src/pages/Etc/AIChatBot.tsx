@@ -29,7 +29,7 @@ const DateText = styled.p`
   color: #828282;
   font-family: Inter;
   font-size: 1rem;
-  line-height: 1.875rem; /* 187.5% */
+  line-height: 1.875rem;
 `;
 
 const ChatOuterWrapper = styled.div`
@@ -37,7 +37,7 @@ const ChatOuterWrapper = styled.div`
   max-width: 106rem;
   height: 95%;
   display: flex;
-  padding: 1rem 1.25rem;
+  padding: 0.94rem 1.25rem;
   margin: 1.25rem;
   flex-direction: column;
   justify-content: center;
@@ -66,7 +66,7 @@ const ChatMessageInnerWrapper = styled.div<{ $isMine: boolean }>`
   gap: 1.25rem;
   justify-content: ${({ $isMine }) => ($isMine ? 'flex-end' : 'flex-start')};
   align-items: center;
-  width: 2.5rem;
+  width: 100%;
 `;
 
 const ChatImage = styled.img`
@@ -77,7 +77,7 @@ const ChatImage = styled.img`
 `;
 
 const ChatMessage = styled.div<{ $isMine: boolean }>`
-  margin: 0.3rem 0;
+  margin: 0.31rem 0;
   padding: 0.625rem;
   background-color: ${({ $isMine, theme }) =>
     $isMine ? theme.chatBalloonColor : 'transparent'};
@@ -130,8 +130,8 @@ const SendIcon = styled.svg`
 const sendIcon = (
   <SendIcon
     xmlns="http://www.w3.org/2000/svg"
-    width="1.56rem"
-    height="1.56rem"
+    width="1.5625rem"
+    height="1.5625rem"
     viewBox="0 0 25 25"
   >
     <path d="M24.456 11.6076L2.45599 0.607565C2.28356 0.521332 2.08988 0.48678 1.89827 0.50807C1.70665 0.52936 1.52528 0.605584 1.37599 0.727565C1.23341 0.847058 1.12699 1.00395 1.0687 1.18061C1.0104 1.35727 1.00254 1.54668 1.04599 1.72756L4.00599 12.4976L1.00599 23.2376C0.965214 23.3886 0.960455 23.5471 0.992092 23.7004C1.02373 23.8536 1.09088 23.9973 1.18815 24.1198C1.28541 24.2424 1.41008 24.3404 1.55212 24.406C1.69416 24.4716 1.84962 24.503 2.00599 24.4976C2.16253 24.4966 2.31667 24.4589 2.45599 24.3876L24.456 13.3876C24.6198 13.3036 24.7573 13.1762 24.8532 13.0191C24.9492 12.8621 25 12.6816 25 12.4976C25 12.3135 24.9492 12.133 24.8532 11.976C24.7573 11.819 24.6198 11.6915 24.456 11.6076ZM3.55599 21.6076L5.76599 13.4976H15.006V11.4976H5.76599L3.55599 3.38756L21.766 12.4976L3.55599 21.6076Z" />

@@ -11,7 +11,7 @@ const KospiWrapper = styled.div`
   gap: 20px;
   align-self: stretch;
   border-radius: 20px;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.newsBackgroundColor};
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.1);
 `;
 

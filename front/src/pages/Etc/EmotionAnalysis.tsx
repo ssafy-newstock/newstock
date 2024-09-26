@@ -12,7 +12,7 @@ const EmotionAnalysisWrapper = styled.div`
   gap: 10px;
   align-self: stretch;
   border-radius: 20px;
-  background: #fff;
+  background-color: ${({ theme }) => theme.newsBackgroundColor};
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.1);
 `;
 
@@ -30,6 +30,8 @@ const EmotionAnalysisGraphWrapper = styled.div`
   /* justify-content: center; */
   align-items: center;
   gap: 10px;
+  max-width: 100%; /* 부모의 크기를 넘지 않도록 설정 */
+  overflow: hidden;
 `;
 
 export const EmotionalAnalysisTextWrapper = styled.div`

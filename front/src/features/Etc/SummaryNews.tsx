@@ -10,7 +10,7 @@ const SummaryNewsWrapper = styled.div`
   padding: 10px;
   align-self: stretch;
   border-radius: 20px;
-  background: #fff;
+  background-color: ${({ theme }) => theme.newsBackgroundColor};
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 `;
@@ -30,7 +30,7 @@ const NewsText = styled.p<{
   fontWeight?: string;
   textColor?: string;
 }>`
-  color: ${({ textColor }) => textColor || 'black'};
+  color: ${({ textColor, theme }) => textColor || theme.textColor};
   font-size: ${({ fontSize }) => fontSize || '36px'};
   font-weight: ${({ fontWeight }) => fontWeight || '700'};
   line-height: 30px; /* 83.333% */

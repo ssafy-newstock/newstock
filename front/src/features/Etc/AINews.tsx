@@ -30,7 +30,7 @@ const NewsItemWrapper = styled.div`
   border: 1px solid #d1d1d1;
   border-radius: 0.3rem;
 
-  background-color: white;
+  background-color: ${({ theme }) => theme.newsBackgroundColor};
   /* text-align: center; */
   display: flex;
   flex-direction: column;

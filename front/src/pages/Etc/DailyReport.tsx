@@ -27,14 +27,14 @@ const DailyReportWrapper = styled.div`
   flex-direction: column;
   align-items: flex-start;
   gap: 10px;
-  background-color: #f7f7f7;
+  background-color: ${({ theme }) => theme.dailyWrapperColor};
 `;
 
 export const DailyReportText = styled.p<{
   fontSize?: string;
   fontWeight?: string;
 }>`
-  color: #000;
+  color: ${({ theme }) => theme.textColor};
   font-size: ${({ fontSize }) => fontSize || '36px'};
   font-weight: ${({ fontWeight }) => fontWeight || '700'};
   line-height: 30px; /* 83.333% */
@@ -56,8 +56,6 @@ const DailyReportRight = styled.div`
   gap: 1.25rem;
   align-self: stretch;
 `;
-
-
 
 const DailyReportPage: React.FC = () => {
   return (
