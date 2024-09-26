@@ -53,7 +53,9 @@ const TradingHistoryList = ({ stock }: { stock: TransactionDto }) => {
 
   // 거래 내역 클릭 시 상세 페이지로 이동
   const handleNavigate = () => {
-    navigate(`/stock-detail/${stock.stockCode}`, { state: { stock } });
+    navigate(`/stock-detail/${stock.stockCode}/daily-chart`, {
+      state: { stock },
+    });
   };
 
   // 거래 타입 매핑
@@ -90,7 +92,7 @@ const TradingHistoryList = ({ stock }: { stock: TransactionDto }) => {
       </StyledTransactionType>
       <Text>{formattedDate}</Text>
       <Text>{stock.stockTransactionPrice.toLocaleString()}원</Text>
-      <Text>{stock.stockTransactionAmount.toLocaleString()}주(호)</Text>
+      <Text>{stock.stockTransactionAmount.toLocaleString()}주</Text>
       <Text>{stock.stockTransactionTotalPrice.toLocaleString()}원</Text>
     </MyStockCardRow>
   );

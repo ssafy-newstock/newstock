@@ -1,10 +1,9 @@
 import styled from 'styled-components';
 import { useThemeStore } from '@store/themeStore';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useAuthStore from '@store/useAuthStore';
 import Login from '@components/Login';
-// import axios from 'axios';
 
 const HeaderContainer = styled.div`
   width: 100%;
@@ -88,12 +87,51 @@ const ThemeIcon = styled.div`
   pointer-events: none; // 아이콘이 클릭 이벤트를 방해하지 않도록 설정
 `;
 
+const StyledIcon = styled.svg`
+  width: 30px;
+  height: 30px;
+  fill: none;
+  color: ${({ theme }) => theme.profileColor};
+  stroke-width: 1.05;
+`;
+
+const PointWrapper = styled(motion.div)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease-in-out; // 애니메이션 적용
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.1); // 확대 효과 */
+  }
+`;
+
+import SockJS from 'sockjs-client';
+import Stomp from 'stompjs';
+import { axiosInstance } from '@api/axiosInstance';
+import { formatUnit } from '@utils/formatUnit';
+import usePointStore from '@store/usePointStore';
 const Header = () => {
   const { memberName } = useAuthStore();
   const { theme, toggleTheme } = useThemeStore();
   const isDarkMode = theme === 'dark';
   // 로그인 모달 상태 추가
   const [loginOpen, setLoginOpen] = useState<boolean>(false);
+  // 유저 포인트 상태
+  const { point, setPoint } = usePointStore();
+  const [isHovering, setIsHovering] = useState(false);
+
+  const handleMouseOver = () => {
+    setIsHovering(true);
+  };
+
+  const handleMouseOut = () => {
+    setIsHovering(false);
+  };
+
   const openLogin = () => {
     setLoginOpen(true);
   };
@@ -101,12 +139,67 @@ const Header = () => {
     setLoginOpen(false);
   };
 
-  const { isLogin, logout } = useAuthStore();
+  const { isLogin, logout, memberId } = useAuthStore();
 
   const handleLogout = () => {
     logout();
     sessionStorage.removeItem('accessToken');
-  }
+  };
+  useEffect(() => {
+    const fetchUserPoint = async (): Promise<void> => {
+      const response = await axiosInstance.get(`/api/member/${memberId}/point`);
+      setPoint(response.data.point);
+    };
+
+    // 로그인 상태가 true일 때만 포인트 가져오기
+    if (isLogin && memberId) {
+      fetchUserPoint();
+    }
+  }, [isLogin, memberId]);
+
+  useEffect(() => {
+    const socket = new SockJS('https://newstock.info/api/member/websocket');
+
+    const client = Stomp.over(socket);
+
+    client.debug = (msg) => {
+      console.log('STOMP debug:', msg);
+    };
+
+    client.connect(
+      {},
+      () => {
+        console.log('WebSocket connected');
+
+        client.subscribe(
+          `/api/sub/member/info/point/${memberId}`,
+          (response) => {
+            console.log('Received message:', response);
+            const newPoint = response.body; // 서버에서 전달받은 포인트
+            setPoint(Number(newPoint));
+          }
+        );
+
+        client.send(
+          '/api/sub/member/info/point',
+          {},
+          JSON.stringify({ memberId })
+        );
+      },
+      (error) => {
+        console.error('WebSocket connection error:', error);
+      }
+    );
+
+    return () => {
+      if (client && client.connected) {
+        client.disconnect(() => {
+          console.log('WebSocket disconnected');
+        });
+      }
+    };
+  }, [isLogin, memberId]);
+
   // API 생성 후 대체
   // const handleLogout = async () => {
   //   try {
@@ -176,22 +269,46 @@ const Header = () => {
               transition={{ type: 'spring', stiffness: 300, damping: 20 }} // 스프링 애니메이션 적용
             />
           </Slider>
-
+          {isLogin && point && (
+            <PointWrapper
+              onMouseOver={handleMouseOver}
+              onMouseOut={handleMouseOut}
+            >
+              {!isHovering ? (
+                <User>
+                  <StyledIcon
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                  >
+                    <g fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <ellipse
+                        cx="9.5"
+                        cy="9.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        rx="9.5"
+                        ry="9.5"
+                        transform="matrix(-1 0 0 1 20 2)"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M13 8.8a3.58 3.58 0 0 0-2.25-.8C8.679 8 7 9.79 7 12s1.679 4 3.75 4c.844 0 1.623-.298 2.25-.8"
+                      />
+                    </g>
+                  </StyledIcon>
+                  <UserName>{formatUnit(point)}원</UserName>
+                </User>
+              ) : (
+                <User>
+                  <UserName>{point.toLocaleString()}원</UserName>
+                </User>
+              )}
+            </PointWrapper>
+          )}
           <User>
-            {isLogin ? (
+            {isLogin && point ? (
               <>
-                <Icon
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="30"
-                  height="30"
-                  viewBox="0 0 40 40"
-                  fill="none"
-                >
-                  <path
-                    d="M19.9998 20C18.1665 20 16.5971 19.3472 15.2915 18.0417C13.9859 16.7361 13.3332 15.1667 13.3332 13.3334C13.3332 11.5 13.9859 9.93058 15.2915 8.62502C16.5971 7.31947 18.1665 6.66669 19.9998 6.66669C21.8332 6.66669 23.4026 7.31947 24.7082 8.62502C26.0137 9.93058 26.6665 11.5 26.6665 13.3334C26.6665 15.1667 26.0137 16.7361 24.7082 18.0417C23.4026 19.3472 21.8332 20 19.9998 20ZM9.99984 33.3334C9.08317 33.3334 8.29873 33.0072 7.6465 32.355C6.99317 31.7017 6.6665 30.9167 6.6665 30V28.6667C6.6665 27.7222 6.90984 26.8539 7.3965 26.0617C7.88206 25.2706 8.52761 24.6667 9.33317 24.25C11.0554 23.3889 12.8054 22.7428 14.5832 22.3117C16.3609 21.8817 18.1665 21.6667 19.9998 21.6667C21.8332 21.6667 23.6387 21.8817 25.4165 22.3117C27.1943 22.7428 28.9443 23.3889 30.6665 24.25C31.4721 24.6667 32.1176 25.2706 32.6032 26.0617C33.0898 26.8539 33.3332 27.7222 33.3332 28.6667V30C33.3332 30.9167 33.0071 31.7017 32.3548 32.355C31.7015 33.0072 30.9165 33.3334 29.9998 33.3334H9.99984Z"
-                    fill="currentColor"
-                  />
-                </Icon>
                 <UserName>{memberName}</UserName>
                 <Icon
                   xmlns="http://www.w3.org/2000/svg"

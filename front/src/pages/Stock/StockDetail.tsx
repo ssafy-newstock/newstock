@@ -5,9 +5,10 @@ import {
   HrTag,
   SpanTag,
   StckPrice,
-  StockImage,
+  StockImageDetail,
   StockPrev,
   StockTitle,
+  TextLarge,
 } from '@features/Stock/styledComponent';
 import {
   IFavoriteStock,
@@ -181,14 +182,17 @@ const StockDetailPage = () => {
             alignItems: 'end',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'end', gap: '1rem' }}>
             <StockTitle>
-              <StockImage
+              <StockImageDetail
                 src={getStockImageUrl()}
                 onError={(e) => (e.currentTarget.src = blueLogo)} // 기본 이미지 설정
                 alt=""
               />
-              {stockDetail?.stockName}
+              <div>
+                <SpanTag>코스피 {stock.stockCode}</SpanTag>
+                <TextLarge>{stockDetail?.stockName}</TextLarge>
+              </div>
             </StockTitle>
             <StckPrice>
               {stockDetail && formatChange(formatNumber(stockDetail.stckPrpr))}
@@ -234,7 +238,7 @@ const StockDetailPage = () => {
             to={`/stock-detail/${stock.stockCode}/live-updates`}
             state={{ stock }}
           >
-            <Button>실시간</Button>
+            <Button>1일</Button>
           </Link>
         </div>
         <DividedSection>

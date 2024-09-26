@@ -51,7 +51,9 @@ const StockHoldingList = ({ stock }: { stock: StockHolding }) => {
   const navigate = useNavigate();
 
   const handleNavigate = () => {
-    navigate(`/stock-detail/${stock.stockCode}`, { state: { stock } });
+    navigate(`/stock-detail/${stock.stockCode}/daily-chart`, {
+      state: { stock },
+    });
   };
 
   const StockCurrentPrice =
@@ -75,9 +77,7 @@ const StockHoldingList = ({ stock }: { stock: StockHolding }) => {
         />
         {stock.stockName}
       </StockTitle>
-      <StckPrice>
-        {stock.stockHoldingBuyAmount.toLocaleString()}주(호)
-      </StckPrice>
+      <StckPrice>{stock.stockHoldingBuyAmount.toLocaleString()}주</StckPrice>
       <Text>{stock.stockHoldingBuyPrice.toLocaleString()}원</Text>
       {/* 현재가에 색상 적용 */}
       <ColoredText $profitStatus={profitStatus}>
