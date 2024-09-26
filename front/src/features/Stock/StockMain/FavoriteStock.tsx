@@ -22,13 +22,21 @@ const FavoriteStock = ({ stock }: { stock: IStock }) => {
   const handleNavigate = () => {
     navigate(`/stock-detail/${stock.stockCode}/daily-chart`, { state: { stock } });
   };
+
+  const getStockImageUrl = () => {
+    // 이미지 URL 생성
+    const url = `https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stock.stockCode}.png`;
+    return url;
+  };
+
   return (
     <StockCardColumn onClick={handleNavigate}>
       <StockCardTitle>
         <StockTitle>
           <StockImage
-            src={`https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stock.stockCode}.png`}
-            alt={blueLogo}
+            src={getStockImageUrl()}
+            onError={(e) => (e.currentTarget.src = blueLogo)}
+            alt=""
           />
           {stock.stockName}
         </StockTitle>
