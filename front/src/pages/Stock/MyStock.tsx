@@ -10,7 +10,7 @@ import {
 } from '@features/MyStock/myStockStyledComponent';
 import StockHoldings from '@features/MyStock/StockHoldings';
 import TradingHistory from '@features/MyStock/TradingHistory';
-import FavoriteStock from '@features/MyStock/FavoriteStock';
+import FavoriteStockContent from '@features/MyStock/FavoriteStockContent';
 import { useState } from 'react';
 import CenterContent from '@features/MyStock/CenterContent';
 
@@ -18,10 +18,14 @@ import { useMyStockData } from '@hooks/useStockHoldings';
 import StockHoldingList, {
   StockHoldingsFirstRow,
 } from '@features/MyStock/StockHoldingList';
-import { MyStockGridRow } from '@features/MyStock/myStockCenterStyledComponent';
+import {
+  MyStockGridRow,
+  StockGridColumn,
+} from '@features/MyStock/myStockCenterStyledComponent';
 import TradingHistoryList, {
   TradingHistoryFirstRow,
 } from '@features/MyStock/TradingHistoryList';
+import FavoriteStockList from '@features/MyStock/FavoriteStockList';
 import { RightVacant } from '@components/RightVacant';
 
 interface StockHolding {
@@ -43,6 +47,13 @@ interface TransactionDto {
   stockTransactionTotalPrice: number;
   stockTransactionType: string;
   stockTransactionDate: string;
+}
+
+interface stockFavoriteDto {
+  stockFavoriteId: number;
+  stockId: number;
+  stockCode: string;
+  stockName: string;
 }
 
 const MyStock: React.FC = () => {
@@ -93,6 +104,11 @@ const MyStock: React.FC = () => {
             title="관심 종목"
             onMoreClick={() => handleMoreClick('FavoriteStock')}
           />
+          <StockGridColumn>
+            {FavoriteData?.map((stock: stockFavoriteDto) => (
+              <FavoriteStockList key={stock.stockId} stock={stock} />
+            ))}
+          </StockGridColumn>
           <MyStockHr />
           <CenterTitle />
           <MyStockHr />
@@ -137,7 +153,7 @@ const MyStock: React.FC = () => {
             {activeSection === 'TradingHistory' && (
               <TradingHistory histories={TradingData} />
             )}
-            {activeSection === 'FavoriteStock' && <FavoriteStock />}
+            {activeSection === 'FavoriteStock' && <FavoriteStockContent />}
           </RightDiv>
         </Right>
       )}
