@@ -113,7 +113,7 @@ const App = () => {
       }
     };
   }, []);
-  
+
   // 최초 데이터 조회 - React Query 사용
   const { isLoading: isTop10StockLoading } = useQuery({
     queryKey: ['top10StockData'],
@@ -125,7 +125,7 @@ const App = () => {
       return response.data.data;
     },
   });
-  
+
   const { isLoading: isIndustryLoading } = useQuery({
     queryKey: ['industryData'],
     queryFn: async () => {
@@ -136,7 +136,7 @@ const App = () => {
       return response.data.data;
     },
   });
-  
+
   const { isLoading: isAllStockLoading } = useQuery({
     queryKey: ['allStockData'],
     queryFn: async () => {
@@ -147,7 +147,7 @@ const App = () => {
       return response.data.data;
     },
   });
-  
+
   if (isTop10StockLoading || isIndustryLoading || isAllStockLoading) {
     return <LoadingPage />;
   }

@@ -61,7 +61,7 @@ export const StockCardTitle = styled.div`
 export const StockTitle = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.5rem;
   font-size: 1rem;
   font-weight: bold;
 
@@ -76,6 +76,11 @@ export const StockImage = styled.img`
   height: 1.5rem;
   border-radius: 50%;
 `;
+
+export const StockImageDetail = styled(StockImage)`
+  width: 3rem;
+  height: 3rem;
+`
 
 export const StckPrice = styled.div`
   font-size: 1rem;
@@ -144,6 +149,7 @@ export const CategoryCardColumn = styled.div`
   background-color: ${({ theme }) => theme.stockBackgroundColor};
   box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
   gap: 1rem; /* 이미지와 텍스트 사이의 간격 */
+  cursor: pointer;
 `;
 
 export const CategoryImgWrapper = styled.div<{$bgColor:string}>`

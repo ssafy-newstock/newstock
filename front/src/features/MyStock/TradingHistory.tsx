@@ -113,7 +113,7 @@ const TradingHistory: React.FC<TransactionDtoProps> = ({ histories }) => {
                       <TextP_20_NOTGRAY>{history.stockName}</TextP_20_NOTGRAY>
                       <ColoredText $color={color}>
                         {time} {history.stockTransactionAmount.toLocaleString()}
-                        주(호) {transactionType}
+                        주 {transactionType}
                       </ColoredText>
                     </StockHoldingCardLeftRightDiv>
                   </StockHoldingCardLeftDiv>

@@ -107,7 +107,11 @@ const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
 
     // 나머지 경우 매핑된 이름과 일치하는지 확인
     return stock.stockIndustry === mappedIndustry;
-  });
+  })
+  // 거래대금(acmlTrPbmn) 기준 내림차순 정렬
+  .sort((a, b) => b.acmlTrPbmn - a.acmlTrPbmn)
+  // 상위 10개만 선택
+  .slice(0, 10);
 
   console.log('filteredStocks', filteredStocks);
 
@@ -157,7 +161,7 @@ const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
               <Text>거래대금</Text>
               <Text>거래량</Text>
             </StockCardRow>
-            {filteredStocks?.slice(0, 10).map((stock) => (
+            {filteredStocks?.map((stock) => (
               <>
                 <StockCardRow>
                   <StockTitle>

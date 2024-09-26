@@ -51,7 +51,7 @@ const DonutChart: React.FC<DonutChartProps> = ({ type }) => {
   } else if (type === 'count') {
     titleText = '보유량';
     const totalCount = series.reduce((acc, curr) => acc + curr, 0);
-    totalAmountDisplay = `${totalCount.toLocaleString()}주(호)`;
+    totalAmountDisplay = `${totalCount.toLocaleString()}주`;
   }
 
   const options: ApexOptions = {
