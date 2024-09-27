@@ -5,7 +5,7 @@ import { ApexOptions } from 'apexcharts';
 // 그래프의 크기를 부모 컨테이너의 100%로 설정
 const ChartContainer = styled.div`
   width: 25rem;
-  height: 1rem;
+  height: 12rem;
 `;
 
 interface DonutChartProps {

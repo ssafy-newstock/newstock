@@ -7,7 +7,6 @@ import LeftNews from '@components/LeftNews';
 import { Outlet } from 'react-router-dom';
 import BookmarkedNews from '@features/News/BookmarkedNews';
 
-
 const SubNewsMainCenter = styled.div`
   display: flex;
   padding: 1.25rem 1.5rem;
@@ -50,7 +49,7 @@ const CategoryWrapper = styled.div`
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  width: 100%;
+  width: 98%;
   gap: 1.25rem;
   flex-wrap: nowrap;
   white-space: nowrap;
@@ -114,7 +113,9 @@ const SubNewsMainPage: React.FC = () => {
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
     // navigate를 사용해 EconomicNewsPage로 이동
-    navigate('/subnews-main/economic-news', { state: { selectedCategory: category } });
+    navigate('/subnews-main/economic-news', {
+      state: { selectedCategory: category },
+    });
   };
 
   return (
