@@ -1,7 +1,7 @@
 import Chart from 'react-apexcharts';
 import { ApexOptions } from 'apexcharts';
 import { useLocation } from 'react-router-dom';
-import { IChartData, IStock } from '@features/Stock/types';
+import { ILive, IStock } from '@features/Stock/types';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import LoadingSpinner from '@components/LoadingSpinner';
@@ -10,19 +10,16 @@ const StockLiveUpdates: React.FC = () => {
   const { state } = useLocation() as { state: { stock: IStock } };
   const { stock } = state;
 
-  const { data: chartData, isLoading: chartLoading } = useQuery<IChartData>({
-    queryKey: [`chartData-${stock.stockCode}`],
+  const { data: StockLiveChart, isLoading: chartLoading } = useQuery<ILive[]>({
+    queryKey: [`StockLiveChart-${stock.stockCode}`],
     queryFn: async () => {
       const response = await axios.get(
-        `https://newstock.info/api/stock/${stock.stockCode}`
+        `https://newstock.info/api/stock/${stock.stockCode}/daily`
       );
       return response.data.data;
     },
     staleTime: 1000 * 60 * 5, // 5분 이내에는 캐시된 데이터 사용
   });
-
-  const StockLiveChart = chartData?.stocksPriceLiveDailyChartRedisDtoList;
-  console.log('StockLiveChart', StockLiveChart);
 
   if (chartLoading) {
     return <LoadingSpinner />;
@@ -30,6 +27,7 @@ const StockLiveUpdates: React.FC = () => {
 
   const series = [
     {
+      name: '',
       data: StockLiveChart
         ? StockLiveChart.map((item) => ({
             x: new Date(item.time).getTime(), // x축에 표시할 시간 (timestamp)
@@ -69,6 +67,16 @@ const StockLiveUpdates: React.FC = () => {
     yaxis: {
       title: {
         text: '주가 (KRW)',
+      },
+    },
+    tooltip: {
+      y: {
+        formatter: (value) => {
+          return `${value} KRW`;
+        },
+      },
+      marker: {
+        show: false,
       },
     },
   };

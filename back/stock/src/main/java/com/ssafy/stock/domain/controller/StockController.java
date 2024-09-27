@@ -6,7 +6,6 @@ import com.ssafy.stock.domain.entity.Redis.StocksPriceRedis;
 import com.ssafy.stock.domain.service.StockIndustryService;
 import com.ssafy.stock.domain.service.StockService;
 import com.ssafy.stock.domain.service.StockTransactionService;
-import com.ssafy.stock.domain.service.request.StockCandleRequestDto;
 import com.ssafy.stock.domain.service.response.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.ssafy.stock.global.common.CommonResponse.success;
@@ -82,8 +82,9 @@ public class StockController{
      */
     @GetMapping("/{stockCode}/candle")
     public ResponseEntity<?> getStockCandle(@PathVariable String stockCode,
-                                            @RequestBody StockCandleRequestDto stockCandleRequestDto){
-        List<StockCandleDto> stockCandleList = stockService.getStockCandle(stockCode, stockCandleRequestDto);
+                                            @RequestParam("startDate") LocalDate startDate,
+                                            @RequestParam("endDate") LocalDate endDate){
+        List<StockCandleDto> stockCandleList = stockService.getStockCandle(stockCode, startDate, endDate);
 
         List<StockCandleResponse> response = stockCandleList.stream()
                 .map(stockCandleDto -> modelMapper.map(stockCandleDto, StockCandleResponse.class))

@@ -5,6 +5,7 @@ import {
   CategoryImg,
   CategoryData,
   CategoryCardRow,
+  TextBold,
 } from '@features/Stock/styledComponent';
 import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
@@ -12,12 +13,11 @@ import { formatNumber } from '@utils/formatNumber';
 export const AllCategoryFirstRow = () => {
   return (
     <CategoryCardRow style={{cursor:'default'}}>
-      <Text></Text>
-      <Text>카테고리</Text>
-      <Text>지수 현재가</Text>
-      <Text>지수 전일 대비</Text>
-      <Text>지수 등락률</Text>
-      <Text>누적 거래 대금(백만)</Text>
+      <TextBold>카테고리</TextBold>
+      <TextBold>지수 현재가</TextBold>
+      <TextBold>지수 전일 대비</TextBold>
+      <TextBold>지수 등락률</TextBold>
+      <TextBold>누적 거래 대금(백만)</TextBold>
     </CategoryCardRow>
   );
 };
@@ -30,7 +30,6 @@ const AllCategoryStock: React.FC<ICategory> = ({
 }) => {
   return (
     <CategoryCardRow onClick={onClick} >
-      <Text></Text>
       <div style={{display:'flex', gap:'1rem', justifyContent:'start', alignItems:'center'}}>
         <CategoryImgWrapper $bgColor={imageBgColor}>
           <CategoryImg src={String(imageUrl)} alt="Category Image" />
