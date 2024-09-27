@@ -56,10 +56,6 @@ const StockDailyChart = () => {
         autoScaleYaxis: true, // 줌에 따라 Y축 자동 조정
       },
     },
-    title: {
-      text: '월별 주식 차트',
-      align: 'left',
-    },
     xaxis: {
       // type: 'datetime',
       type: 'category',
@@ -67,6 +63,9 @@ const StockDailyChart = () => {
     yaxis: {
       tooltip: {
         enabled: true,
+      },
+      title: {
+        text: '주가 (KRW)',
       },
     },
     plotOptions: {
