@@ -21,6 +21,37 @@ export const ArrowIcon = () => (
   </StyledArrowIcon>
 );
 
+// interface TagColor {
+//   background: string;
+//   text: string;
+// }
+
+// // 랜덤 색상 선택 함수
+// const getRandomTagColor = (theme: any) => {
+//   const colors = theme.tagColors;
+//   const randomIndex = Math.floor(Math.random() * colors.length);
+//   return colors[randomIndex];
+// };
+
+// // NewsTag 컴포넌트 정의
+// export const NewsTag = styled.div`
+//   display: flex;
+//   padding: 0.3rem;
+//   justify-content: center;
+//   align-items: center;
+//   gap: 0.625rem;
+//   border-radius: 0.3rem;
+
+//   /* 랜덤 색상 적용 */
+//   background-color: ${({ theme }) => getRandomTagColor(theme).background};
+//   color: ${({ theme }) => getRandomTagColor(theme).text};
+
+//   font-family: Inter;
+//   font-size: 1.25rem;
+//   font-style: normal;
+//   line-height: 1.875rem;
+// `;
+
 // 태그 스타일링
 export const NewsTag = styled.div`
   display: flex;
