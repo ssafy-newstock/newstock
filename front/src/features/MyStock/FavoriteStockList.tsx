@@ -4,14 +4,19 @@ import {
   StockCardTitle,
   StockTitle,
   StockImage,
-  StckPrice,
-  StockPrev,
-  SpanTag,
 } from '@features/MyStock/myStockCenterStyledComponent';
-import { formatChange } from '@utils/formatChange';
-import { formatNumber } from '@utils/formatNumber';
 import blueLogo from '@assets/Stock/blueLogo.png';
 import { useNavigate } from 'react-router-dom';
+import {
+  SpanTag,
+  StckPrice,
+  StockPrev,
+  Text,
+} from '@features/Stock/styledComponent';
+import useAllStockStore from '@store/useAllStockStore';
+import useTop10StockStore from '@store/useTop10StockStore';
+import { formatNumber } from '@utils/formatNumber';
+import { formatChange } from '@utils/formatChange';
 
 interface stockFavoriteDto {
   stockFavoriteId: number;
@@ -20,7 +25,11 @@ interface stockFavoriteDto {
   stockName: string;
 }
 
-const FavoriteStock = ({ stock }: { stock: stockFavoriteDto }) => {
+interface FavoriteStockProps {
+  stock: stockFavoriteDto;
+}
+
+const FavoriteStock: React.FC<FavoriteStockProps> = ({ stock }) => {
   const navigate = useNavigate();
 
   // 주식 상세 페이지 + 월봉 차트 조회
@@ -29,6 +38,16 @@ const FavoriteStock = ({ stock }: { stock: stockFavoriteDto }) => {
       state: { stock },
     });
   };
+
+  // Zustand 스토어에서 allStock과 top10Stock 가져오기
+  const allStock = useAllStockStore((state) => state.allStock);
+  const top10Stock = useTop10StockStore((state) => state.top10Stock);
+
+  // allStock 또는 top10Stock에서 해당 stockCode로 주식 찾기
+  const matchedStock =
+    allStock.find((s) => s.stockCode === stock.stockCode) ||
+    top10Stock.find((s) => s.stockCode === stock.stockCode);
+
   return (
     <StockCardColumn onClick={handleNavigate}>
       <StockCardTitle>
@@ -41,12 +60,19 @@ const FavoriteStock = ({ stock }: { stock: stockFavoriteDto }) => {
         </StockTitle>
         <HeartFill />
       </StockCardTitle>
-      {/* <StckPrice>{formatNumber(stock.stckPrpr)}원</StckPrice>
-      <StockPrev $isPositive={stock.prdyVrss.toString().startsWith('-')}>
-        <SpanTag>어제보다</SpanTag> {formatChange(formatNumber(stock.prdyVrss))}
-        원 ({stock.prdyCtrt}
-        %)
-      </StockPrev> */}
+      {matchedStock ? (
+        <>
+          <StckPrice>{formatNumber(matchedStock.stckPrpr)}원</StckPrice>
+          <StockPrev
+            $isPositive={!matchedStock.prdyVrss.toString().startsWith('-')}
+          >
+            <SpanTag>어제보다</SpanTag>{' '}
+            {formatChange(formatNumber(matchedStock.prdyVrss))}
+          </StockPrev>
+        </>
+      ) : (
+        <Text>데이터 없음</Text> // 매칭되는 주식이 없을 때 출력
+      )}
     </StockCardColumn>
   );
 };
