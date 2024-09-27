@@ -9,6 +9,8 @@ import {
   FontStyle,
   IconWrapper,
 } from './styledComponent';
+import { translateIndustry } from '@api/dummyData/DummyData';
+import { format } from 'date-fns';
 
 interface NewsData {
   title: string;
@@ -29,23 +31,31 @@ interface CenterCardProps {
 }
 
 const CenterNewsCard: React.FC<CenterCardProps> = ({ data }) => {
+  //"YYYY-MM-DD HH:MM" => "YYYY.MM.DD"
+  const formatTransactionDate = (isoDate: string): string => {
+    return format(new Date(isoDate), 'yyyy.MM.dd'); // date-fns의 올바른 포맷 형식 사용
+  };
+
+  const formattedDate = formatTransactionDate(data.uploadDatetime);
   return (
     <CardContainer>
       <CardTitleFontStyle>{data.title}</CardTitleFontStyle>
       <CardContextDiv>
         <FontStyle>{data.media}</FontStyle>
         <p>|</p>
-        <FontStyle>{data.uploadDatetime}</FontStyle>
+        <FontStyle>{formattedDate}</FontStyle>
       </CardContextDiv>
-      <CardBottomContainer hasKeyword={!!data.keywords}>
+      <CardBottomContainer>
         {data.keywords && (
           <CardKeywordDiv>
-            <CardKeywordFontStyle>{data.keywords[0]}</CardKeywordFontStyle>
+            <CardKeywordFontStyle>#{data.keywords[0]}</CardKeywordFontStyle>
           </CardKeywordDiv>
         )}
         {data.industry && (
           <CardKeywordDiv>
-            <CardKeywordFontStyle>{data.industry}</CardKeywordFontStyle>
+            <CardKeywordFontStyle>
+              #{translateIndustry(data.industry)}
+            </CardKeywordFontStyle>
           </CardKeywordDiv>
         )}
         <IconWrapper>

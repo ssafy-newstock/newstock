@@ -14,10 +14,7 @@ const CenterTitle: React.FC = () => {
   return (
     <CenterTitleDiv>
       <CenterTitleFontStyle>저장한 뉴스</CenterTitleFontStyle>
-      <FontStyle>
-        중요한 뉴스를 저장하고 관리하세요. 원하는 뉴스 그룹을 선택하고 관리할 수
-        있어요.
-      </FontStyle>
+      <FontStyle>중요한 뉴스를 저장하고 관리하고 관리할 수 있어요.</FontStyle>
       <CenterMenu>
         <CenterMenuLeft>
           <FontStyle>전체</FontStyle>

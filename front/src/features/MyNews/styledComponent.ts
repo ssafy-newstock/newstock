@@ -137,13 +137,10 @@ export const CardContextDiv = styled.div`
   margin-left: 0.625rem;
 `;
 
-export const CardBottomContainer = styled.div.withConfig({
-  shouldForwardProp: (prop) => prop !== 'hasKeyword',
-})<{ hasKeyword: boolean }>`
+export const CardBottomContainer = styled.div`
   display: flex;
   align-items: center;
-  justify-content: ${({ hasKeyword }) =>
-    hasKeyword ? 'space-between' : 'flex-end'};
+  justify-content: space-between;
   width: 100%;
 `;
 
