@@ -70,8 +70,6 @@ export const NoMessageP = styled.p`
 
 export const ScrapHr = styled.hr`
   width: 100%;
-  height: 0.1875rem;
-  background-color: #828282;
 `;
 
 export const CenterDiv = styled.div`
