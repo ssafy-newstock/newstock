@@ -10,7 +10,6 @@ import {
   StockTitle,
   Text,
   TextLarge,
-  TextLeft,
 } from '@features/Stock/styledComponent';
 import {
   IFavoriteStock,

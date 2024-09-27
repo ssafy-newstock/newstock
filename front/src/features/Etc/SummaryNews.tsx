@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { EmotionalAnalysisTextWrapper } from '@pages/Etc/EmotionAnalysis';
 import { DailyReportText } from '@pages/Etc/DailyReport'; // DailyReportText가 미리 선언되어야 함
-import SummaryNewsModal from './SummaryNewsModal';
+// import SummaryNewsModal from './SummaryNewsModal';
 
 const SummaryNewsWrapper = styled.div`
   display: flex;

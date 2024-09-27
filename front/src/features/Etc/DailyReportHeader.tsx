@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { DailyReportText } from '@pages/Etc/DailyReport';
 import { format } from 'date-fns'; // 추가된 부분
 import { subDays, isWeekend } from 'date-fns'; // 추가된 부분
-import Holidays from 'date-holidays';
+import Holidays from 'date-holidays'; // 추가된 부분
 
 const DailyReportHeaderWrapper = styled.div`
   display: flex;
