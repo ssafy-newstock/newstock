@@ -21,6 +21,7 @@ import blueLogo from '@assets/Stock/blueLogo.png';
 import useAllStockStore from '@store/useAllStockStore';
 import useTop10StockStore from '@store/useTop10StockStore';
 import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface ModalProps {
   onClose: () => void;
@@ -63,6 +64,7 @@ const CloseButton = styled.button`
 `;
 
 const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
+  const navigate = useNavigate();
   const defaultImage = {
     url: 'default-image-url',
     bgColor: 'default-bg-color',
@@ -104,21 +106,22 @@ const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
   };
 
   // 선택한 카테고리에 맞는 주식 필터링
-  const filteredStocks = wholeStock?.filter((stock) => {
-    const mappedIndustry = mapIndustryNames[category.industryName];
+  const filteredStocks = wholeStock
+    ?.filter((stock) => {
+      const mappedIndustry = mapIndustryNames[category.industryName];
 
-    // 금융업의 경우 은행, 농업, 기타금융을 포함하는지 확인
-    if (Array.isArray(mappedIndustry)) {
-      return mappedIndustry.includes(stock.stockIndustry);
-    }
+      // 금융업의 경우 은행, 농업, 기타금융을 포함하는지 확인
+      if (Array.isArray(mappedIndustry)) {
+        return mappedIndustry.includes(stock.stockIndustry);
+      }
 
-    // 나머지 경우 매핑된 이름과 일치하는지 확인
-    return stock.stockIndustry === mappedIndustry;
-  })
-  // 거래대금(acmlTrPbmn) 기준 내림차순 정렬
-  .sort((a, b) => b.acmlTrPbmn - a.acmlTrPbmn)
-  // 상위 10개만 선택
-  .slice(0, 10);
+      // 나머지 경우 매핑된 이름과 일치하는지 확인
+      return stock.stockIndustry === mappedIndustry;
+    })
+    // 거래대금(acmlTrPbmn) 기준 내림차순 정렬
+    .sort((a, b) => b.acmlTrPbmn - a.acmlTrPbmn)
+    // 상위 10개만 선택
+    .slice(0, 10);
 
   console.log('filteredStocks', filteredStocks);
 
@@ -140,7 +143,9 @@ const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
               <TextBold>누적 거래 대금(백만)</TextBold>
             </CategoryCardRow>
             <CategoryCardRow>
-              <StockTitle style={{justifyContent:'center'}}>{category.industryName}</StockTitle>
+              <StockTitle style={{ justifyContent: 'center' }}>
+                {category.industryName}
+              </StockTitle>
               <Text>{category.bstpNmixPrpr}</Text>
               <CategoryData
                 $isPositive={category.bstpNmixPrdyVrss
@@ -158,7 +163,16 @@ const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
               </CategoryData>
               <Text>{formatNumber(category.acmlTrPbmn)}</Text>
             </CategoryCardRow>
-            <Text style={{ textAlign: 'center', marginTop: '1rem', marginBottom: '0.5rem', fontWeight:'600' }}>관련 종목</Text>
+            <Text
+              style={{
+                textAlign: 'center',
+                marginTop: '1rem',
+                marginBottom: '0.5rem',
+                fontWeight: '600',
+              }}
+            >
+              관련 종목
+            </Text>
             <StockCardRow style={{ cursor: 'default' }}>
               <TextBoldLeft>종목명</TextBoldLeft>
               <TextBold>현재가</TextBold>
@@ -168,7 +182,14 @@ const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
             </StockCardRow>
             {filteredStocks?.map((stock) => (
               <>
-                <StockCardRow>
+                <StockCardRow
+                  key={stock.stockCode}
+                  onClick={() =>
+                    navigate(`/stock-detail/${stock.stockCode}/daily-chart`, {
+                      state: { stock },
+                    })
+                  }
+                >
                   <StockTitle>
                     <StockImage
                       src={`https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stock.stockCode}.png`}
