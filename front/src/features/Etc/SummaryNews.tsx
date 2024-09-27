@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { EmotionalAnalysisTextWrapper } from '@pages/Etc/EmotionAnalysis';
 import { DailyReportText } from '@pages/Etc/DailyReport'; // DailyReportText가 미리 선언되어야 함
+import SummaryNewsModal from './SummaryNewsModal';
 
 const SummaryNewsWrapper = styled.div`
   display: flex;
@@ -73,18 +74,6 @@ const SummaryNews: React.FC = () => {
               발표될 예정입니다
             </NewsText>
           </NewsWrapper>
-          {/* <NewsWrapper>
-            <NewsText fontSize="25px" fontWeight="500" $lineLimit={1}>
-              미국 노동절 및 경제 지표 발표 일정
-            </NewsText>
-            <NewsText fontSize="20px" fontWeight="400" $lineLimit={2}>
-              9월 2일은 미국 노동절로 인해 금융시장이 휴장했지만, 9월 3일 이후
-              여러 중요한 경제 지표들이 발표될 예정입니다. 여기에는 8월 S&P
-              글로벌 제조업 PMI, 공급관리협회(ISM) 제조업 PMI, 7월 건설지출 등이
-              포함됩니다. 9월 6일에는 8월 비농업 부문 신규 고용 및 실업률도
-              발표될 예정입니다
-            </NewsText>
-          </NewsWrapper> */}
         </EmotionalAnalysisTextWrapper>
       </SummaryNewsWrapper>
     </>
