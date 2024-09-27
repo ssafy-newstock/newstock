@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const LeftDiv = styled.div`
   display: flex;
-  width: 220px;
+  min-width: 10%;
   padding: 20px;
   flex-direction: column;
   align-items: flex-start;
@@ -40,7 +40,7 @@ const TextP = styled.p`
 `;
 
 const Lefthr = styled.hr`
-  width: 180px;
+  width: 100%;
   height: 2px;
   background-color: #828282;
 `;
