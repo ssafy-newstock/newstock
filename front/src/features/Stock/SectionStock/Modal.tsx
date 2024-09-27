@@ -13,8 +13,8 @@ import {
   StockPrev,
   StockTitle,
   Text,
-  TextLarge,
-  TextLeft,
+  TextBoldLeft,
+  TextBold,
 } from '@features/Stock/styledComponent';
 import { formatUnit } from '@utils/formatUnit';
 import blueLogo from '@assets/Stock/blueLogo.png';
@@ -133,16 +133,14 @@ const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
               <img src={imageUrl.url} alt="" />
             </CategoryImgWrapper>
             <CategoryCardRow style={{ cursor: 'default' }}>
-              <Text></Text>
-              <Text>카테고리</Text>
-              <Text>지수 현재가</Text>
-              <Text>지수 전일 대비</Text>
-              <Text>지수 등락률</Text>
-              <Text>누적 거래 대금(백만)</Text>
+              <TextBold>카테고리</TextBold>
+              <TextBold>지수 현재가</TextBold>
+              <TextBold>지수 전일 대비</TextBold>
+              <TextBold>지수 등락률</TextBold>
+              <TextBold>누적 거래 대금(백만)</TextBold>
             </CategoryCardRow>
             <CategoryCardRow>
-              <Text></Text>
-              <TextLarge>{category.industryName}</TextLarge>
+              <StockTitle style={{justifyContent:'center'}}>{category.industryName}</StockTitle>
               <Text>{category.bstpNmixPrpr}</Text>
               <CategoryData
                 $isPositive={category.bstpNmixPrdyVrss
@@ -160,13 +158,13 @@ const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
               </CategoryData>
               <Text>{formatNumber(category.acmlTrPbmn)}</Text>
             </CategoryCardRow>
-            <Text style={{ textAlign: 'center', marginTop: '1rem', marginBottom: '0.5rem' }}>해당 카테고리의 종목들</Text>
+            <Text style={{ textAlign: 'center', marginTop: '1rem', marginBottom: '0.5rem', fontWeight:'600' }}>관련 종목</Text>
             <StockCardRow style={{ cursor: 'default' }}>
-              <TextLeft>종목명</TextLeft>
-              <Text>현재가</Text>
-              <Text>등락률</Text>
-              <Text>거래대금</Text>
-              <Text>거래량</Text>
+              <TextBoldLeft>종목명</TextBoldLeft>
+              <TextBold>현재가</TextBold>
+              <TextBold>등락률</TextBold>
+              <TextBold>거래대금</TextBold>
+              <TextBold>거래량</TextBold>
             </StockCardRow>
             {filteredStocks?.map((stock) => (
               <>
