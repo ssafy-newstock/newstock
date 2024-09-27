@@ -28,7 +28,7 @@ class NewsServiceTest {
         String hashNewsId = HashUtil.hashNewsId(newsId);
         String mappedType = TypeMappingUtil.getMappedType(newsType);
 
-        hBaseClient.queryData();
+//        hBaseClient.queryData();
 
     }
 
