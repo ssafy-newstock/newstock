@@ -104,12 +104,12 @@ const MyStock: React.FC = () => {
             title="관심 종목"
             onMoreClick={() => handleMoreClick('FavoriteStock')}
           />
+          <MyStockHr />
           <StockGridColumn>
             {FavoriteData?.map((stock: stockFavoriteDto) => (
               <FavoriteStockList key={stock.stockId} stock={stock} />
             ))}
           </StockGridColumn>
-          <MyStockHr />
           <CenterTitle />
           <MyStockHr />
           <CenterContent />

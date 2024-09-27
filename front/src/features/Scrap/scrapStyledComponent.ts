@@ -75,9 +75,7 @@ export const ScrapHr = styled.hr`
 `;
 
 export const CenterDiv = styled.div`
-  display: flex;
-  padding: 1.25rem;
-  flex-direction: column;
+  padding: 1rem;
   align-items: flex-start;
   gap: 0.625rem;
   align-self: stretch;
