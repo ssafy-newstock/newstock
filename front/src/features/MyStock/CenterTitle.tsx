@@ -1,9 +1,13 @@
 import { TitleDiv, TitleP } from '@features/MyStock/myStockStyledComponent';
 
-const CenterTitle: React.FC = () => {
+interface CenterTitleProps {
+  title: string;
+}
+
+const CenterTitle: React.FC<CenterTitleProps> = ({ title }) => {
   return (
     <TitleDiv>
-      <TitleP>나의 자산</TitleP>
+      <TitleP>{title}</TitleP>
     </TitleDiv>
   );
 };

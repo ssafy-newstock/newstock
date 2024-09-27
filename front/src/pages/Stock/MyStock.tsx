@@ -1,27 +1,23 @@
 import { Center } from '@components/Center';
 import LeftStock from '@components/LeftStock';
-import { Right } from '@components/Right';
 import CenterTitle from '@features/MyStock/CenterTitle';
 import SectionTitle from '@features/MyStock/SectionTitle';
-import {
-  CenterDiv,
-  MyStockHr,
-  RightDiv,
-} from '@features/MyStock/myStockStyledComponent';
-import StockHoldings from '@features/MyStock/StockHoldings';
-import TradingHistory from '@features/MyStock/TradingHistory';
-import FavoriteStock from '@features/MyStock/FavoriteStock';
-import { useState } from 'react';
+import { CenterDiv, MyStockHr } from '@features/MyStock/myStockStyledComponent';
 import CenterContent from '@features/MyStock/CenterContent';
 
 import { useMyStockData } from '@hooks/useStockHoldings';
 import StockHoldingList, {
   StockHoldingsFirstRow,
 } from '@features/MyStock/StockHoldingList';
-import { MyStockGridRow } from '@features/MyStock/myStockCenterStyledComponent';
+import {
+  CenterHistoryDiv,
+  MyStockGridRow,
+  StockGridColumn,
+} from '@features/MyStock/myStockCenterStyledComponent';
 import TradingHistoryList, {
   TradingHistoryFirstRow,
 } from '@features/MyStock/TradingHistoryList';
+import FavoriteStockList from '@features/MyStock/FavoriteStockList';
 import { RightVacant } from '@components/RightVacant';
 
 interface StockHolding {
@@ -45,12 +41,15 @@ interface TransactionDto {
   stockTransactionDate: string;
 }
 
+interface stockFavoriteDto {
+  stockFavoriteId: number;
+  stockId: number;
+  stockCode: string;
+  stockName: string;
+}
+
 const MyStock: React.FC = () => {
-  // 상태 추가: 현재 활성화된 섹션을 추적
-  const [activeSection, setActiveSection] = useState<string | null>(null);
   const { data } = useMyStockData();
-  const stockData = data?.stockMyPageHoldingDtoList || [];
-  const TradingData = data?.stockMyPageTransactionDtoList || [];
   const FavoriteData = data?.stockFavoriteDtoList || [];
   console.log(FavoriteData);
   // 보유 내역 총액 계산 함수
@@ -60,14 +59,14 @@ const MyStock: React.FC = () => {
   };
 
   // 보유 내역을 총액 기준으로 내림차순 정렬 후 상위 5개 추출
-  const stockDataTop5 =
+  const stockDataTop10 =
     data?.stockMyPageHoldingDtoList
       .slice()
       .sort((a, b) => calculateTotalAmount(b) - calculateTotalAmount(a))
-      .slice(0, 5) || [];
+      .slice(0, 10) || [];
 
   // 거래 내역을 날짜 기준으로 내림차순 정렬 후 상위 5개 추출
-  const TradingDataTop5 =
+  const TradingDataTop10 =
     data?.stockMyPageTransactionDtoList
       .slice()
       .sort(
@@ -75,72 +74,59 @@ const MyStock: React.FC = () => {
           new Date(b.stockTransactionDate).getTime() -
           new Date(a.stockTransactionDate).getTime()
       )
-      .slice(0, 5) || [];
+      .slice(0, 10) || [];
 
-  // 핸들러 함수: 섹션 타이틀 클릭 시 상태 업데이트
-  const handleMoreClick = (section: string) => {
-    setActiveSection((prevSection) =>
-      prevSection === section ? null : section
-    );
-  };
+  const handleMoreClick = () => {};
 
   return (
     <>
       <LeftStock />
       <Center>
         <CenterDiv>
-          <SectionTitle
-            title="관심 종목"
-            onMoreClick={() => handleMoreClick('FavoriteStock')}
-          />
+          <CenterTitle title={'관심 종목'} />
           <MyStockHr />
-          <CenterTitle />
+          <StockGridColumn>
+            {FavoriteData?.map((stock: stockFavoriteDto) => (
+              <FavoriteStockList key={stock.stockId} stock={stock} />
+            ))}
+          </StockGridColumn>
+          <CenterTitle title={'나의 자산'} />
           <MyStockHr />
           <CenterContent />
-          <SectionTitle
-            title="주식 보유 내역"
-            onMoreClick={() => handleMoreClick('StockHoldings')}
-          />
-          <MyStockHr />
-          <MyStockGridRow>
-            <StockHoldingsFirstRow />
-            {stockDataTop5.map((stock: StockHolding) => (
-              <StockHoldingList key={stock.stockId} stock={stock} />
-            ))}
-          </MyStockGridRow>
-          <SectionTitle
-            title="주식 거래 내역"
-            onMoreClick={() => handleMoreClick('TradingHistory')}
-          />
-          <MyStockHr />
-          <MyStockGridRow>
-            <TradingHistoryFirstRow />
-            {TradingDataTop5.map((stock: TransactionDto) => (
-              <TradingHistoryList
-                key={stock.stockTransactionDate}
-                stock={stock}
+          <div style={{ display: 'flex', flexDirection: 'row' }}>
+            <CenterHistoryDiv>
+              <SectionTitle
+                title="내 주식 TOP 10"
+                onMoreClick={() => handleMoreClick()}
               />
-            ))}
-          </MyStockGridRow>
+              <MyStockHr />
+              <MyStockGridRow>
+                <StockHoldingsFirstRow />
+                {stockDataTop10.map((stock: StockHolding) => (
+                  <StockHoldingList key={stock.stockId} stock={stock} />
+                ))}
+              </MyStockGridRow>
+            </CenterHistoryDiv>
+            <CenterHistoryDiv>
+              <SectionTitle
+                title="최근 거래 내역"
+                onMoreClick={() => handleMoreClick()}
+              />
+              <MyStockHr />
+              <MyStockGridRow>
+                <TradingHistoryFirstRow />
+                {TradingDataTop10.map((stock: TransactionDto) => (
+                  <TradingHistoryList
+                    key={stock.stockTransactionDate}
+                    stock={stock}
+                  />
+                ))}
+              </MyStockGridRow>
+            </CenterHistoryDiv>
+          </div>
         </CenterDiv>
       </Center>
-      {!activeSection ? (
-        <RightVacant>
-          <RightVacant />
-        </RightVacant>
-      ) : (
-        <Right>
-          <RightDiv>
-            {activeSection === 'StockHoldings' && (
-              <StockHoldings stocks={stockData} />
-            )}
-            {activeSection === 'TradingHistory' && (
-              <TradingHistory histories={TradingData} />
-            )}
-            {activeSection === 'FavoriteStock' && <FavoriteStock />}
-          </RightDiv>
-        </Right>
-      )}
+      <RightVacant />
     </>
   );
 };

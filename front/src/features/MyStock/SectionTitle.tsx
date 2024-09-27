@@ -1,6 +1,6 @@
 import {
   MoreDiv,
-  TextP_20,
+  TextP_20_NOTGRAY,
   TitleDiv,
   TitleP,
 } from '@features/MyStock/myStockStyledComponent';
@@ -16,7 +16,7 @@ const SectionTitle: React.FC<SectionTitleProps> = ({ title, onMoreClick }) => {
     <TitleDiv>
       <TitleP>{title}</TitleP>
       <MoreDiv style={{ cursor: 'pointer' }} onClick={onMoreClick}>
-        <TextP_20>더보기</TextP_20>
+        <TextP_20_NOTGRAY>더보기</TextP_20_NOTGRAY>
         <UiwRight />
       </MoreDiv>
     </TitleDiv>
