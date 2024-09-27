@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Center = styled.div`
-  width: 100%;
+  width: 70%;
   height: 100%;
   overflow: auto;
   &::-webkit-scrollbar {

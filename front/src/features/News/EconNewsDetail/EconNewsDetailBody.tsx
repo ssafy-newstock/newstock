@@ -44,29 +44,68 @@ const ThumbnailImage = styled.img`
   object-fit: cover; /* 비율을 유지하면서 컨테이너에 맞추되, 넘치는 부분은 잘라냄 */
 `;
 
-const NewsContentText = styled.p`
-  display: flex;
-  justify-content: center;
+// const NewsContentText = styled.p`
+//   display: flex;
+//   justify-content: center;
+//   color: ${({ theme }) => theme.textColor};
+//   font-size: 1.25rem;
+//   font-style: normal;
+//   line-height: 1.875rem;
+// `;
+const NewsContentText = styled.div`
+  display: block;
+  white-space: normal; /* 줄바꿈을 정상 처리 */
   color: ${({ theme }) => theme.textColor};
   font-size: 1.25rem;
-  font-style: normal;
   line-height: 1.875rem;
+  word-break: break-word; /* 긴 텍스트가 있을 때 줄바꿈 */
+  margin-bottom: 1rem;
 `;
 
 // 이미지 URL과 나머지 기사 내용을 분리하는 함수
+// const processArticle = (article: string) => {
+//   const imageTagRegex = /<ImageTag>(.*?)<\/ImageTag>/;
+//   const match = imageTagRegex.exec(article);
+
+//   let imageUrl = '';
+//   let content = article;
+
+//   if (match && match[1]) {
+//     imageUrl = match[1]; // 이미지 URL 추출
+//     content = article.replace(imageTagRegex, '').trim(); // 이미지 태그 제거 후 남은 기사 내용
+//   }
+
+//   return { imageUrl, content };
+// };
 const processArticle = (article: string) => {
-  const imageTagRegex = /<ImageTag>(.*?)<\/ImageTag>/;
-  const match = imageTagRegex.exec(article);
+  const imageTagRegex = /<ImageTag>(.*?)<\/ImageTag>/g;
+  const content: Array<string | { imageUrl: string }> = [];
+  let lastIndex = 0;
+  let match;
 
-  let imageUrl = '';
-  let content = article;
+  while ((match = imageTagRegex.exec(article)) !== null) {
+    const imageUrl = match[1];
 
-  if (match && match[1]) {
-    imageUrl = match[1]; // 이미지 URL 추출
-    content = article.replace(imageTagRegex, '').trim(); // 이미지 태그 제거 후 남은 기사 내용
+    // ImageTag 이전의 텍스트를 줄바꿈과 함께 저장
+    if (match.index > lastIndex) {
+      const textChunk = article.substring(lastIndex, match.index);
+      content.push(textChunk); // 텍스트는 string으로 저장
+    }
+
+    // ImageTag를 실제 이미지 URL로 교체하여 저장
+    content.push({ imageUrl });
+
+    // 다음 텍스트 조각 시작 위치
+    lastIndex = match.index + match[0].length;
   }
 
-  return { imageUrl, content };
+  // 마지막으로 남은 텍스트 조각 추가
+  if (lastIndex < article.length) {
+    const textChunk = article.substring(lastIndex);
+    content.push(textChunk); // 텍스트는 string으로 저장
+  }
+
+  return content;
 };
 
 const EconNewsDetailBody: React.FC = () => {
@@ -75,34 +114,49 @@ const EconNewsDetailBody: React.FC = () => {
 
   const news = economic.data.find((newsItem) => newsItem.newsId === newsId);
 
-  const { imageUrl, content } = news
-    ? processArticle(news.article)
-    : { imageUrl: '이미지 없음', content: '내용 없음' };
-  const subtitle = news ? news.subtitle : '제목 없음';
+  const contentWithImages = news ? processArticle(news.article) : [];
+  // const { imageUrl, content } = news
+  //   ? processArticle(news.article)
+  //   : { imageUrl: '이미지 없음', content: '내용 없음' };
+  // const subtitle = news ? news.subtitle : '제목 없음';
 
-  const paragraphs = content.split('\n\n').map((paragraph) =>
-    paragraph.split('\n').map((line, index) => (
-      <span key={index}>
-        {line}
-        <br />
-      </span>
-    ))
-  );
+  // const paragraphs = content.split('\n\n').map((paragraph) =>
+  //   paragraph.split('\n').map((line, index) => (
+  //     <span key={index}>
+  //       {line}
+  //       <br />
+  //     </span>
+  //   ))
+  // );
 
   return (
     <>
       <EconNewsDetailBodyWrapper>
         <NewsSubTitleWrapper>
           <NewsSubTitleLine />
-          <NewsSubTitleText>{subtitle}</NewsSubTitleText>
+          <NewsSubTitleText>{news?.subtitle ?? '제목 없음'}</NewsSubTitleText>
         </NewsSubTitleWrapper>
-        <NewsThumbnailWrapper>
-          <ThumbnailImage src={imageUrl} alt="imageUrl" />
-        </NewsThumbnailWrapper>
-        {paragraphs.map((paragraph, index) => (
-          <NewsContentText key={index}>{paragraph}</NewsContentText>
-        ))}
-        {/* <NewsContentText>{content}</NewsContentText> */}
+
+        {contentWithImages.map((item, index) => {
+          if (typeof item === 'object' && 'imageUrl' in item) {
+            // 이미지 부분 렌더링
+            return (
+              <NewsThumbnailWrapper key={index}>
+                <ThumbnailImage src={item.imageUrl} alt={`image-${index}`} />
+              </NewsThumbnailWrapper>
+            );
+          } else if (typeof item === 'string') {
+            // 텍스트 부분 렌더링, 줄바꿈 처리
+            const paragraphs = item.split('\n').map((line, i) => (
+              <span key={i}>
+                {line}
+                <br />
+              </span>
+            ));
+            return <NewsContentText key={index}>{paragraphs}</NewsContentText>;
+          }
+          return null;
+        })}
       </EconNewsDetailBodyWrapper>
     </>
   );
