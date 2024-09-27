@@ -13,7 +13,6 @@ import com.ssafy.stock.domain.repository.redis.StocksPriceLiveDailyChartRedisRep
 import com.ssafy.stock.domain.repository.redis.StocksPriceRedisRepository;
 import com.ssafy.stock.domain.repository.redis.StocksRedisRepository;
 import com.ssafy.stock.domain.service.helper.StockConverter;
-import com.ssafy.stock.domain.service.request.StockCandleRequestDto;
 import com.ssafy.stock.domain.service.response.*;
 import com.ssafy.stock.global.token.KISTokenService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +25,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -206,10 +206,8 @@ public class StockService {
      * @param stockCode
      * @return
      */
-    public List<StockCandleDto> getStockCandle(String stockCode, StockCandleRequestDto stockCandleRequestDto) {
-        Stocks stock = stocksRepository.findByStockCodeWithCandlesAndDate(stockCode,
-                        stockCandleRequestDto.getStartDate(),
-                        stockCandleRequestDto.getEndDate())
+    public List<StockCandleDto> getStockCandle(String stockCode, LocalDate startDate, LocalDate endDate) {
+        Stocks stock = stocksRepository.findByStockCodeWithCandlesAndDate(stockCode, startDate, endDate)
                 .orElseThrow(() -> new StockNotFoundException());
 
         List<StocksCandle> stocksCandles = stock.getStocksCandles();
