@@ -9,13 +9,15 @@ import BookmarkedNews from '@features/News/BookmarkedNews';
 
 const SubNewsMainCenter = styled.div`
   display: flex;
-  padding: 1.25rem 1.5rem;
+  /* padding: 1.25rem 1.5rem; */
+  padding: 1rem;
   flex-direction: column;
   align-items: flex-start;
   align-self: stretch;
   max-width: 106rem;
   /* min-width: 1024px; */
-  width: 64rem;
+  /* width: 64rem; */
+  width: 100%;
 `;
 const SubNewsHeaderWrapper = styled.div`
   display: flex;

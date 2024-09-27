@@ -9,22 +9,21 @@ import EconSubNewsBody from '@features/News/EconNews/EconSubNewsBody';
 const SubCenter = styled.div`
   display: flex;
   width: 100%;
-  padding: 0 1.5rem;
+  padding: 1rem;
   flex-direction: column;
   align-items: flex-start;
   align-self: stretch;
-  /* min-width: 900px; */
   max-width: 106rem;
-  /* min-width: 1024px; */
-  width: 64rem;
+  width: 100%;
 `;
 
 const StockNewsOuterWrapper = styled.div<{ $showSummary: boolean }>`
   display: flex;
   flex-direction: column;
+  align-items: center;
   width: 100%;
   padding: 1.6rem 1.5rem;
-  margin: 1.25rem 0;
+  margin: 0 0 2.5rem 0;
   box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.1);
   background-color: ${({ theme }) => theme.newsBackgroundColor};
   border-radius: 2rem;
