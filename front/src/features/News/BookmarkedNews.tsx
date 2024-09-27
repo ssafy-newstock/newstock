@@ -29,6 +29,7 @@ const BookmarkedNewsWrapper = styled.div`
   height: 10rem;
   padding: 1rem 1.3rem;
   flex-direction: column;
+  justify-content: center;
   align-items: flex-start;
   align-self: stretch;
   gap: 0.625rem;
@@ -112,6 +113,7 @@ const BookmarkedNews: React.FC = () => {
           <ArrowIcon />
         </BookmarkedNewsHeaderSVG>
       </BookmarkedNewsHeader>
+
       {bookmarkedNews.map((news, index) => (
         <BookmarkedNewsWrapper
           key={index}

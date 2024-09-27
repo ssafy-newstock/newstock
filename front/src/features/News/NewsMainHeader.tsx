@@ -36,7 +36,10 @@ const MoreInfoText = styled.div`
 const MoreInfoSVG = styled.div`
   width: 0.5rem;
   height: 1rem;
-  fill: #828282;
+
+  svg {
+    fill: ${({ theme }) => theme.textColor}; /* 여기서 theme.textColor로 설정 */
+  }
 `;
 
 interface NewsMainHeaderProps {

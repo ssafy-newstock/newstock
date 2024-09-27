@@ -29,8 +29,8 @@ export const NewsTag = styled.div`
   align-items: center;
   gap: 0.625rem;
   border-radius: 0.3rem;
-  background-color: #e0e0e0;
-  color: #000;
+  background-color: ${({ theme }) => theme.grayTextColor};
+  color: ${({ theme }) => theme.editorTextColor};
   font-family: Inter;
   font-size: 1.25rem;
   font-style: normal;

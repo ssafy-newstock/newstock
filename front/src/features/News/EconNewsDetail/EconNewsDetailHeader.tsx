@@ -27,7 +27,7 @@ const EconNewsTitleWrapper = styled.div`
   justify-content: space-between;
 `;
 
-const StockNewsTitleText = styled.p`
+const EconNewsTitleText = styled.p`
   /* color: #0448a5; */
   color: ${({ theme }) => theme.textColor};
   font-family: Inter;
@@ -36,19 +36,20 @@ const StockNewsTitleText = styled.p`
   font-weight: 600;
   line-height: 1.6;
   text-indent: 6.5rem;
+  padding-left: 0.5rem;
 `;
 
 const NewsInfoOuterWrapper = styled.div`
   display: flex;
   padding: 0rem 0.625rem;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: flex-end;
   align-self: stretch;
 `;
 
 const NewsInfoInnerWrapper = styled.div`
   display: flex;
-  align-items: flex-start;
+  align-items: flex-end;
   gap: 1rem;
 `;
 
@@ -72,6 +73,7 @@ const Border = styled.div`
   width: 100%;
   height: 0.06rem;
   background-color: ${({ theme }) => theme.grayTextColor};
+  margin-top: 1rem;
 `;
 
 const PositiveIcon = styled(BasePositiveIcon)`
@@ -96,7 +98,7 @@ const EconNewsDetailHeader: React.FC = () => {
           <PositiveIcon>
             <PositiveIconText>긍정</PositiveIconText>
           </PositiveIcon>
-          <StockNewsTitleText>{title}</StockNewsTitleText>
+          <EconNewsTitleText>{title}</EconNewsTitleText>
         </EconNewsTitleWrapper>
 
         <NewsInfoOuterWrapper>
