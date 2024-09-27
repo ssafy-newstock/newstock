@@ -138,7 +138,7 @@ const BuyForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
     <ColumnWrapper>
       <InputWrapper>
         <InputRow>
-          <InputLabel>Price:</InputLabel>
+          <InputLabel>거래가:</InputLabel>
           <Controller
             name="price"
             control={control}
@@ -155,7 +155,7 @@ const BuyForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
       </InputWrapper>
       <InputWrapper>
         <InputRow>
-          <InputLabel>Amount:</InputLabel>
+          <InputLabel>수량:</InputLabel>
           <Controller
             name="amount"
             control={control}
@@ -183,8 +183,8 @@ const BuyForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
       </InputWrapper>
       <InputWrapper>
         <InputRow>
-          <InputLabel>Total Price: </InputLabel>
-          <InputTag type="text" value={totalPrice} disabled />
+          <InputLabel>매도가: </InputLabel>
+          <InputTag type="text" value={totalPrice.toLocaleString()} disabled />
         </InputRow>
       </InputWrapper>
       <ButtonWrapper>
@@ -269,7 +269,7 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
     <ColumnWrapper>
       <InputWrapper>
         <InputRow>
-          <InputLabel>Price:</InputLabel>
+          <InputLabel>거래가:</InputLabel>
           <Controller
             name="price"
             control={control}
@@ -286,7 +286,7 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
       </InputWrapper>
       <InputWrapper>
         <InputRow>
-          <InputLabel>Amount:</InputLabel>
+          <InputLabel>수량:</InputLabel>
           <Controller
             name="amount"
             control={control}
@@ -314,8 +314,8 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
       </InputWrapper>
       <InputWrapper>
         <InputRow>
-          <InputLabel>Total Price: </InputLabel>
-          <InputTag type="text" value={totalPrice} disabled />
+          <InputLabel>매수가: </InputLabel>
+          <InputTag type="text" value={totalPrice.toLocaleString()} disabled />
         </InputRow>
       </InputWrapper>
       <ButtonWrapper>

@@ -1,12 +1,12 @@
 import { ICategory } from '@features/Stock/types';
 import {
   Text,
-  TextLarge,
   CategoryImgWrapper,
   CategoryImgMain,
   CategoryInfo,
   CategoryData,
   CategoryCardColumn,
+  TextBoldLarge,
 } from '@features/Stock/styledComponent';
 import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
@@ -25,7 +25,7 @@ const CategoryStock: React.FC<ICategory> = ({
       </CategoryImgWrapper>
       <CategoryInfo>
         {' '}
-        <TextLarge>{category.industryName}</TextLarge>
+        <TextBoldLarge>{category.industryName}</TextBoldLarge>
         <CategoryData
           $isPositive={category.bstpNmixPrdyCtrt.toString().startsWith('-')}
         >
