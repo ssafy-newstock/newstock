@@ -4,7 +4,7 @@ import {
   PositiveIcon as BasePositiveIcon,
   PositiveIconText,
 } from '@features/News/PNSubicon';
-import { NewsTag, bookmarkedIcon } from '../NewsIconTag';
+import { bookmarkedIcon } from '../NewsIconTag';
 import { useParams } from 'react-router-dom';
 import { getNewsData } from '@api/dummyData/DummyData';
 
@@ -24,6 +24,7 @@ const EconNewsTitleWrapper = styled.div`
   gap: 0.5rem;
   align-self: stretch;
   position: relative;
+  justify-content: space-between;
 `;
 
 const StockNewsTitleText = styled.p`
@@ -105,7 +106,7 @@ const EconNewsDetailHeader: React.FC = () => {
             <NewsAuthorInfoText>{date}</NewsAuthorInfoText>
           </NewsInfoInnerWrapper>
           <NewsInfoInnerWrapper>
-            <NewsTag># 삼성전자</NewsTag>
+            {/* <NewsTag># 삼성전자</NewsTag> */}
             {bookmarkedIcon}
           </NewsInfoInnerWrapper>
         </NewsInfoOuterWrapper>

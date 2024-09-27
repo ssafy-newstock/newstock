@@ -9,13 +9,12 @@ const EconomicNewsBody = styled.div`
   flex-direction: column;
   align-items: flex-start;
   gap: 0.8rem;
-  padding: 0.625rem 0;
 `;
 
 const EconomicNewsHeader = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.8rem;
   align-self: stretch;
 `;
 
@@ -59,7 +58,7 @@ const EconomicNewsContent = styled.p`
 
 const EconomicNewsFooter = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   gap: 2rem;
 `;
 
