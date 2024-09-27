@@ -40,7 +40,7 @@ export const MetricItem = styled.div`
 `;
 
 export const MyStockCardRow = styled(StockCardRow)`
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr; /* 각 열의 너비를 설정 */
+  grid-template-columns: 1.9fr 1fr 1fr 0.9fr 0.7fr 1fr; /* 각 열의 너비를 설정 */
 `;
 
 export const MyStockGridRow = styled(StockGridRow)`
@@ -52,6 +52,7 @@ export const StockGridColumn = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1.25rem;
+  padding: 1.25rem;
 `;
 
 export const StockCardColumn = styled.div`
@@ -108,4 +109,17 @@ export const StockPrev = styled.div<{ $isPositive: boolean }>`
 export const SpanTag = styled.span`
   font-size: 0.8rem;
   color: ${({ theme }) => theme.textColor};
+`;
+
+export const CenterHistoryDiv = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  padding: 0.875rem;
+  margin: 0.625rem;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+  border-radius: 1.25rem;
+  background: ${({ theme }) => theme.centerContentSectionBackgroundColor};
 `;

@@ -73,7 +73,7 @@ const TradingHistoryList = ({ stock }: { stock: TransactionDto }) => {
   const formatTransactionDate = (isoDate: string): string => {
     const date = new Date(isoDate);
     const adjustedDate = addHours(date, 9); // +9시간 추가
-    return format(adjustedDate, 'yyyy-MM-dd HH:mm'); // "YYYY-MM-DD HH:MM" 형식
+    return format(adjustedDate, 'MM-dd HH:mm'); // "YYYY-MM-DD HH:MM" 형식
   };
 
   const formattedDate = formatTransactionDate(stock.stockTransactionDate);
