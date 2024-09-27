@@ -8,7 +8,9 @@ import {
   StockImageDetail,
   StockPrev,
   StockTitle,
+  Text,
   TextLarge,
+  TextLeft,
 } from '@features/Stock/styledComponent';
 import {
   IFavoriteStock,
@@ -227,19 +229,22 @@ const StockDetailPage = () => {
         </div>
 
         <HrTag style={{ width: '100%' }} />
-        <div style={{ display: 'flex', gap: '1rem' }}>
-          <Link
-            to={`/stock-detail/${stock.stockCode}/daily-chart`}
-            state={{ stock }}
-          >
-            <Button>일봉</Button>
-          </Link>
-          <Link
-            to={`/stock-detail/${stock.stockCode}/live-updates`}
-            state={{ stock }}
-          >
-            <Button>1일</Button>
-          </Link>
+        <div style={{display:'flex', justifyContent:'space-between', alignItems:'start'}}>
+          <div style={{ display: 'flex', gap: '1rem' }}>
+            <Link
+              to={`/stock-detail/${stock.stockCode}/daily-chart`}
+              state={{ stock }}
+            >
+              <Button>일봉</Button>
+            </Link>
+            <Link
+              to={`/stock-detail/${stock.stockCode}/live-updates`}
+              state={{ stock }}
+            >
+              <Button>1일</Button>
+            </Link>
+          </div>
+          <Text style={{marginRight:'1rem'}}>{stock.stockIndustry}</Text>
         </div>
         <DividedSection>
           <Outlet />
