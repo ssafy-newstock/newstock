@@ -7,13 +7,13 @@ const NewsWrapper = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   width: 100%;
-  margin-top: 20px;
-  gap: 20px;
+  margin-top: 1.25rem;
+  gap: 1.25rem;
 `;
 
 const NewsHeaderText = styled.p`
   font-weight: 600;
-  font-size: 20px;
+  font-size: 1.25rem;
 `;
 
 const NewsOuterWrapper = styled.div`
@@ -25,12 +25,12 @@ const NewsOuterWrapper = styled.div`
 const NewsItemWrapper = styled.div`
   flex: 0 0 auto; /* 아이템이 가로로 배치되도록 설정 */
   width: 20%;
-  height: 200px;
-  padding: 20px 16px;
+  height: 12.5rem;
+  padding: 1.25rem 1rem;
   border: 1px solid #d1d1d1;
-  border-radius: 5px;
+  border-radius: 0.3rem;
 
-  background-color: white;
+  background-color: ${({ theme }) => theme.newsBackgroundColor};
   /* text-align: center; */
   display: flex;
   flex-direction: column;
@@ -38,19 +38,19 @@ const NewsItemWrapper = styled.div`
 `;
 
 const NewsMedia = styled.h3`
-  font-size: 18px;
+  font-size: 1.1rem;
   font-weight: 600;
 `;
 
 const NewsTitle = styled.p`
-  font-size: 14px;
+  font-size: 0.9rem;
   color: #666;
 `;
 
 const NewsDate = styled.p`
-  font-size: 10px;
+  font-size: 0.625rem;
   color: #e0e0e0;
-  margin-bottom: 15px;
+  margin-bottom: 1rem;
 `;
 
 interface NewsItem {

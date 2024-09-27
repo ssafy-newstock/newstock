@@ -1,11 +1,11 @@
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { Center } from '@components/Center';
 import { Right } from '@components/Right';
 import LeftNews from '@components/LeftNews';
 import { Outlet } from 'react-router-dom';
 import BookmarkedNews from '@features/News/BookmarkedNews';
-import { useState } from 'react';
-import { useLocation } from 'react-router-dom';
 
 const SubNewsMainCenter = styled.div`
   display: flex;
@@ -49,7 +49,7 @@ const CategoryWrapper = styled.div`
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  width: 100%;
+  width: 98%;
   gap: 1.25rem;
   flex-wrap: nowrap;
   white-space: nowrap;
@@ -104,10 +104,19 @@ const categories: Category[] = [
 
 const SubNewsMainPage: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<string>('전체 기사');
 
   const isEconomicNews = location.pathname.includes('economic-news');
   // const isEconomicNews = location.pathname.includes(stock-news);
+
+  const handleCategoryClick = (category: string) => {
+    setSelectedCategory(category);
+    // navigate를 사용해 EconomicNewsPage로 이동
+    navigate('/subnews-main/economic-news', {
+      state: { selectedCategory: category },
+    });
+  };
 
   return (
     <>
@@ -127,7 +136,7 @@ const SubNewsMainPage: React.FC = () => {
                   <CategoryText
                     key={index}
                     $isSelected={selectedCategory === category.label}
-                    onClick={() => setSelectedCategory(category.label)}
+                    onClick={() => handleCategoryClick(category.label)}
                   >
                     {category.label}
                   </CategoryText>

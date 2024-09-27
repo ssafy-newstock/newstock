@@ -15,6 +15,7 @@ const Auth = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<ErrorType>(null);
   const { login } = useAuthStore();
+  const pathname = localStorage.getItem('pathname');
 
   const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -72,7 +73,13 @@ const Auth = () => {
           .trim();
         // 토큰을 cessionStorage에 저장
         sessionStorage.setItem('accessToken', accessToken);
-        navigate('/');
+
+        // pathname이 있을 경우 해당 경로로 이동, 없을 경우 '/'로 이동
+        if (pathname) {
+          navigate(pathname);
+        } else {
+          navigate('/');
+        }
       } catch (err) {
         console.error('Error during login:', err);
         setError(err);

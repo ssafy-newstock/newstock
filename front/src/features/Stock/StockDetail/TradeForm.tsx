@@ -77,12 +77,15 @@ const BuyForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
   const [modalMessage, setModalMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(true);
   const [modalAmount, setModalAmount] = useState(0); // 모달로 보낼 amount 상태 추가
+  const [modalPrice, setModalPrice] = useState(0); // 모달로 보낼 price 상태 추가
+  const [totalPrice, setTotalPrice] = useState(0); // 구매 금액 상태 추가
 
   const {
     control,
     handleSubmit,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
@@ -91,9 +94,15 @@ const BuyForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
     },
   });
 
+  const amount = watch('amount'); // amount 값 가져오기(실시간)
+
   useEffect(() => {
     setValue('price', price);
   }, [price, setValue]);
+
+  useEffect(() => {
+    setTotalPrice(Number(price) * Number(amount));
+  }, [amount, price]);
 
   const onSubmit = async (data: FormValues) => {
     // const accessToken = sessionStorage.getItem('accessToken');
@@ -120,6 +129,7 @@ const BuyForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
       setIsSuccess(false);
     }
     setModalAmount(buyData.amount); // 입력한 amount 값을 설정
+    setModalPrice(buyData.price); // 입력한 price 값을 설정
     setModalOpen(true); // 모달을 띄움
     reset({ price: price, amount: 0 }); // 폼 리셋
   };
@@ -171,6 +181,12 @@ const BuyForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
           />
         </InputRow>
       </InputWrapper>
+      <InputWrapper>
+        <InputRow>
+          <InputLabel>Total Price: </InputLabel>
+          <InputTag type="text" value={totalPrice} disabled />
+        </InputRow>
+      </InputWrapper>
       <ButtonWrapper>
         <Button type="button" $variant="buy" onClick={handleSubmit(onSubmit)}>
           Buy
@@ -181,7 +197,7 @@ const BuyForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
         onClose={() => setModalOpen(false)}
         message={modalMessage}
         buySuccess={isSuccess}
-        price={price}
+        price={modalPrice}
         amount={modalAmount}
       />
     </ColumnWrapper>
@@ -193,12 +209,15 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
   const [modalMessage, setModalMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(true);
   const [modalAmount, setModalAmount] = useState(0); // 모달로 보낼 amount 상태 추가
+  const [modalPrice, setModalPrice] = useState(0); // 모달로 보낼 price 상태 추가
+  const [totalPrice, setTotalPrice] = useState(0); // 구매 금액 상태 추가
 
   const {
     control,
     handleSubmit,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
@@ -207,9 +226,15 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
     },
   });
 
+  const amount = watch('amount'); // amount 값 가져오기(실시간)
+
   useEffect(() => {
     setValue('price', price);
   }, [price, setValue]);
+
+  useEffect(() => {
+    setTotalPrice(Number(price) * Number(amount));
+  }, [amount, price]);
 
   const onSubmit = async (data: FormValues) => {
     // const accessToken = sessionStorage.getItem('accessToken');
@@ -235,6 +260,7 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
       setIsSuccess(false);
     }
     setModalAmount(sellData.amount); // 입력한 amount 값을 설정
+    setModalPrice(sellData.price); // 입력한 price 값을 설정
     setModalOpen(true);
     reset({ price: price, amount: 0 }); // 폼 리셋
   };
@@ -286,6 +312,12 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
           />
         </InputRow>
       </InputWrapper>
+      <InputWrapper>
+        <InputRow>
+          <InputLabel>Total Price: </InputLabel>
+          <InputTag type="text" value={totalPrice} disabled />
+        </InputRow>
+      </InputWrapper>
       <ButtonWrapper>
         <Button type="button" $variant="sell" onClick={handleSubmit(onSubmit)}>
           Sell
@@ -296,7 +328,7 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
         onClose={() => setModalOpen(false)}
         message={modalMessage}
         sellSuccess={isSuccess}
-        price={price}
+        price={modalPrice}
         amount={modalAmount}
       />
     </ColumnWrapper>

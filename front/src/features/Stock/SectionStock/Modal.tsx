@@ -19,6 +19,8 @@ import {
 import { formatUnit } from '@utils/formatUnit';
 import blueLogo from '@assets/Stock/blueLogo.png';
 import useAllStockStore from '@store/useAllStockStore';
+import useTop10StockStore from '@store/useTop10StockStore';
+import { useMemo } from 'react';
 
 interface ModalProps {
   onClose: () => void;
@@ -71,6 +73,11 @@ const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
       : defaultImage;
 
   const { allStock } = useAllStockStore();
+  const { top10Stock } = useTop10StockStore();
+
+  const wholeStock = useMemo(() => {
+    return (allStock || []).concat(top10Stock || []);
+  }, [allStock, top10Stock]);
 
   const mapIndustryNames: { [key: string]: string | string[] } = {
     음식료품: '음식료품',
@@ -97,7 +104,7 @@ const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
   };
 
   // 선택한 카테고리에 맞는 주식 필터링
-  const filteredStocks = allStock?.filter((stock) => {
+  const filteredStocks = wholeStock?.filter((stock) => {
     const mappedIndustry = mapIndustryNames[category.industryName];
 
     // 금융업의 경우 은행, 농업, 기타금융을 포함하는지 확인

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const LeftDiv = styled.div`
   display: flex;
-  width: 220px;
+  width: 10%;
   height: 100px;
   padding: 20px;
   flex-direction: column;
