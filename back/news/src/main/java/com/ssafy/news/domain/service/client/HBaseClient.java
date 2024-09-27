@@ -1,117 +1,85 @@
 package com.ssafy.news.domain.service.client;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ssafy.news.global.exception.NewsNotFoundException;
+import com.ssafy.news.domain.entity.IndustryNewsDto;
 import com.ssafy.news.global.util.DateTimeUtil;
-import com.ssafy.news.global.util.SaltUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.ssafy.news.global.util.EncryptUtil.decodeBase64;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class HBaseClient {
-    @Value("${hbase.url}")
-    private String hbaseUrl;
+    private final Connection phoenixConnection;
 
-    private final RestTemplate restTemplate;
-    private final ObjectMapper objectMapper;
+    public List<IndustryNewsDto> getTop4LatestIndustryNews() throws SQLException {
+        String sql = "SELECT article, description, industry, media, newsId, sentiment, subtitle, thumbnail, title, uploadDatetime " +
+                "FROM industry_news " +
+                "ORDER BY uploadDatetime DESC " +
+                "LIMIT 4";
 
-    public Long getTimestampByKey(String rowKey) {
-        String url = hbaseUrl + "/industry_news_keys/" + rowKey;
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Accept", "application/json");
-
-        try {
-            // API 요청 보내기
-            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-
-            if (response.getStatusCode().is2xxSuccessful()) {
-                // JSON 응답 파싱
-                JsonNode root = objectMapper.readTree(response.getBody());
-
-                // base64 인코딩된 값 가져오기
-                String base64Value = root.path("Row").get(0).path("Cell").get(0).path("$").asText();
-
-                // base64 디코딩
-                String datetimeStr = decodeBase64(base64Value);
-
-                // UTC 타임스탬프로 변환
-                return DateTimeUtil.convertToUtcTimestamp(datetimeStr);
-
-            } else {
-                System.err.println("Error fetching data for row key " + rowKey + ": " + response.getStatusCodeValue() + ", " + response.getBody());
-                return null;
+        List<IndustryNewsDto> newsList = new ArrayList<>();
+        try (PreparedStatement statement = phoenixConnection.prepareStatement(sql)) {
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                newsList.add(new IndustryNewsDto(
+                        rs.getString("article"),
+                        rs.getString("description"),
+                        rs.getString("industry"),
+                        rs.getString("media"),
+                        rs.getString("newsId"),
+                        rs.getString("sentiment"),
+                        rs.getString("subtitle"),
+                        rs.getString("thumbnail"),
+                        rs.getString("title"),
+                        DateTimeUtil.convertStringToLocalDateTime(rs.getString("uploadDatetime")) // LocalDateTime으로 변환
+                ));
             }
-
-        } catch (Exception e) {
-            e.fillInStackTrace();
-            throw new NewsNotFoundException();
         }
+        return newsList;
     }
 
-    public Map<String, String> getNewsByKey(String newsType, Long timestamps, String newsIdHash, String columnFamily) {
-        try {
-            // salt 계산
-            String salt = SaltUtil.getSalt(newsIdHash);
+    public List<IndustryNewsDto> getIndustryNewsListByType(String mappedType, int pageSize, int offset) throws SQLException {
+        String sql = "SELECT article, description, industry, media, newsId, sentiment, subtitle, thumbnail, title, uploadDatetime " +
+                "FROM industry_news " +
+                "WHERE industry = ? " +
+                "ORDER BY uploadDatetime DESC " +
+                "LIMIT ? OFFSET ?";
 
-            // row key 생성
-            String rowKey = salt + newsType + timestamps + newsIdHash;
+        List<IndustryNewsDto> newsList = new ArrayList<>();
 
-            // HBase API 호출 URL
-            String url = hbaseUrl + "/industry_news/" + rowKey;
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Accept", "application/json");
+        try (PreparedStatement statement = phoenixConnection.prepareStatement(sql)) {
+            statement.setString(1, mappedType);  // Setting the mapped type
+            statement.setInt(2, pageSize);       // Setting page size (LIMIT)
+            statement.setInt(3, offset);         // Setting offset (OFFSET)
 
-            // HBase REST API 호출
-            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+            ResultSet rs = statement.executeQuery();
 
-            // 응답 성공 시
-            if (response.getStatusCode().is2xxSuccessful()) {
-                JsonNode data = objectMapper.readTree(response.getBody());
-                Map<String, String> result = new HashMap<>();
-
-                // Row 데이터가 있으면 처리
-                if (data.has("Row") && data.get("Row").size() > 0) {
-                    JsonNode rowData = data.get("Row").get(0);
-
-                    for (JsonNode cell : rowData.get("Cell")) {
-                        // 컬럼명 가져오기
-                        String column = cell.get("column").asText();
-                        String decodedColumn = decodeBase64(column);
-
-                        // 값 가져오기
-                        String value = cell.get("$").asText();
-                        String decodedValue = decodeBase64(value);
-
-                        // 컬럼 패밀리 제거 후 결과에 추가
-                        String cleanColumnName = decodedColumn.replace(columnFamily + ":", "");
-                        result.put(cleanColumnName, decodedValue);
-                    }
-                }
-                return result;
-
-            } else {
-                System.err.println("Error fetching data for row key: " + response.getStatusCodeValue());
-                return null;
+            while (rs.next()) {
+                // IndustryNewsDto 객체를 생성하고 값을 설정한 후 리스트에 추가
+                newsList.add(new IndustryNewsDto(
+                        rs.getString("article"),
+                        rs.getString("description"),
+                        rs.getString("industry"),
+                        rs.getString("media"),
+                        rs.getString("newsId"),
+                        rs.getString("sentiment"),
+                        rs.getString("subtitle"),
+                        rs.getString("thumbnail"),
+                        rs.getString("title"),
+                        DateTimeUtil.convertStringToLocalDateTime(rs.getString("uploadDatetime")) // LocalDateTime으로 변환
+                ));
             }
-
-        } catch (IOException e) {
-            System.err.println("Error parsing response: " + e.getMessage());
-            e.fillInStackTrace();
-            return null;
         }
+
+        return newsList;
     }
+
 }

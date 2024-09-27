@@ -1,7 +1,5 @@
 package com.ssafy.news.domain.controller;
 
-import com.ssafy.news.domain.controller.response.IndustryNewsFindResponse;
-import com.ssafy.news.domain.entity.IndustryNewsDto;
 import com.ssafy.news.domain.service.NewsService;
 import com.ssafy.news.global.common.CommonResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +18,10 @@ public class NewsController {
     @GetMapping("/{newsType}/{newsId}")
     public CommonResponse<?> getOneNews(@PathVariable("newsType") String newsType,
                                         @PathVariable("newsId") String newsId) {
-        IndustryNewsDto industryNewsDto = newsService.selectIndustryNewsOne(newsId, newsType);
-        IndustryNewsFindResponse response = modelMapper.map(industryNewsDto, IndustryNewsFindResponse.class);
-
-        return CommonResponse.success(response);
+//        IndustryNewsDto industryNewsDto = newsService.selectIndustryNewsOne(newsId, newsType);
+//        IndustryNewsFindResponse response = modelMapper.map(industryNewsDto, IndustryNewsFindResponse.class);
+//
+        return null;
+//        return CommonResponse.success(response);
     }
 }
