@@ -1,7 +1,7 @@
 import Chart from 'react-apexcharts';
 import { ApexOptions } from 'apexcharts';
 import { useLocation } from 'react-router-dom';
-import { IChartData, IStock } from '@features/Stock/types';
+import { IDaily, IStock } from '@features/Stock/types';
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import LoadingSpinner from '@components/LoadingSpinner';
@@ -11,18 +11,22 @@ const StockDailyChart = () => {
   const { state } = useLocation() as { state: { stock: IStock } };
   const { stock } = state;
 
-  const { data: chartData, isLoading: chartLoading } = useQuery<IChartData>({
-    queryKey: [`chartData-${stock.stockCode}`],
+  const params = {
+    startDate: '2024-01-01',
+    endDate: '2024-09-20',
+  };
+
+  const { data: stockDailyChart, isLoading: chartLoading } = useQuery<IDaily[]>({
+    queryKey: [`stockDailyChart-${stock.stockCode}`],
     queryFn: async () => {
       const response = await axios.get(
-        `https://newstock.info/api/stock/${stock.stockCode}`
+        `https://newstock.info/api/stock/${stock.stockCode}/candle`,{params}
       );
       return response.data.data;
     },
     staleTime: 1000 * 60 * 5, // 5분 이내에는 캐시된 데이터 사용
   });
 
-  const stockDailyChart = chartData?.stockCandleDtoList;
   if (chartLoading) {
     return <LoadingSpinner />;
   }

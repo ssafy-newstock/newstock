@@ -5,7 +5,8 @@ import {
   StockPrev,
   StockTitle,
   Text,
-  TextLeft,
+  TextBold,
+  TextBoldLeft,
 } from '@features/Stock/styledComponent';
 import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
@@ -18,11 +19,11 @@ import { useNavigate } from 'react-router-dom';
 export const AllStockFirstRow = () => {
   return (
     <StockCardRow>
-      <TextLeft>종목명</TextLeft>
-      <Text>현재가</Text>
-      <Text>등락률</Text>
-      <Text>거래대금</Text>
-      <Text>거래량</Text>
+      <TextBoldLeft>종목명</TextBoldLeft>
+      <TextBold>현재가</TextBold>
+      <TextBold>등락률</TextBold>
+      <TextBold>거래대금</TextBold>
+      <TextBold>거래량</TextBold>
     </StockCardRow>
   );
 };
