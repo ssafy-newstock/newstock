@@ -1,9 +1,7 @@
 import styled from 'styled-components';
 
 export const CenterDiv = styled.div`
-  display: flex;
-  padding: 1.25rem;
-  flex-direction: column;
+  padding: 1rem;
   align-items: flex-start;
   gap: 0.625rem;
   align-self: stretch;
@@ -45,15 +43,6 @@ export const SelectDateDiv = styled.div`
 
 export const CenterHr = styled.hr`
   width: 100%;
-  height: 0.1875rem;
-  background-color: #828282;
-`;
-
-export const CenterTitleHr = styled.hr`
-  width: 9%; /* 전체 너비로 설정 */
-  height: 0.1875rem; /* 높이는 동일하게 유지 */
-  background-color: #828282;
-  margin-left: 0; /* 왼쪽 정렬 */
 `;
 
 export const CenterContentDiv = styled.div`
