@@ -247,3 +247,62 @@ export const DetailPageButton = styled.div`
   border-radius: 1rem;
   padding: 0.5rem 1rem;
 `;
+
+export const FormWrapper = styled.div`
+  display: flex;
+  gap: 2rem;
+  max-width: 100%;
+`;
+
+export const ColumnWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1;
+`;
+
+export const InputWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+`;
+
+export const InputRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+export const InputLabel = styled.label`
+  min-width: 60px;
+  font-weight: bold;
+`;
+
+export const InputTag = styled.input`
+  padding: 0.5rem;
+  border-radius: 1rem;
+  border: none;
+  background-color: ${({ theme }) => theme.profileBackgroundColor};
+  color: ${({ theme }) => theme.profileColor};
+  flex-grow: 1;
+`;
+
+export const TradeButtonWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
+export const TradeButton = styled.button<{ $variant: 'buy' | 'sell' }>`
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 1rem;
+  color: #fff;
+  cursor: pointer;
+  background-color: ${(props) =>
+    props.$variant === 'buy' ? '#4caf50' : '#f44336'};
+  &:hover {
+    opacity: 0.8;
+  }
+`;
+

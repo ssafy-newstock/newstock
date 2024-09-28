@@ -93,3 +93,13 @@ export interface IChartData {
 export interface OutletContext {
   chartData: IChartData; // IChartData는 stockCandleDtoList를 포함하는 데이터 구조
 }
+
+export interface FormValues {
+  price: number;
+  amount: number;
+}
+
+export interface TradeFormProps {
+  price: number;
+  stockCode: string;
+}
