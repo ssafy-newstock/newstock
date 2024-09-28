@@ -1,6 +1,7 @@
 import { Center } from '@components/Center';
 import LeftStock from '@components/LeftStock';
 import {
+  DetailPageButton,
   DividedSection,
   HrTag,
   SpanTag,
@@ -20,7 +21,6 @@ import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import blueLogo from '@assets/Stock/blueLogo.png';
-import styled from 'styled-components';
 import TradeForm from '@features/Stock/StockDetail/TradeForm';
 import { RightVacant } from '@components/RightVacant';
 import { axiosInstance } from '@api/axiosInstance';
@@ -31,13 +31,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import useAllStockStore from '@store/useAllStockStore';
 import useTop10StockStore from '@store/useTop10StockStore';
 import LoadingPage from '@components/LodingPage';
-
-const Button = styled.div`
-  background-color: ${({ theme }) => theme.profileBackgroundColor};
-  color: ${({ theme }) => theme.profileColor};
-  border-radius: 1rem;
-  padding: 0.5rem 1rem;
-`;
 
 const StockDetailPage = () => {
   const location = useLocation();
@@ -163,13 +156,13 @@ const StockDetailPage = () => {
     return url;
   };
 
+  if (isLoading) {
+    return <LoadingPage />;
+  }
+
   // 에러 발생 시 콘솔 출력
   if (error) {
     console.error('관심 주식 조회 에러', error);
-  }
-
-  if (isLoading) {
-    return <LoadingPage />;
   }
 
   return (
@@ -223,7 +216,7 @@ const StockDetailPage = () => {
                   favoriteStock={() => addFavoriteStock(stock.stockCode)}
                 />
               ))}
-            {showButton && <Button>유사도 분석</Button>}
+            {showButton && <DetailPageButton>유사도 분석</DetailPageButton>}
           </div>
         </div>
 
@@ -234,13 +227,13 @@ const StockDetailPage = () => {
               to={`/stock-detail/${stock.stockCode}/daily-chart`}
               state={{ stock }}
             >
-              <Button>일봉</Button>
+              <DetailPageButton>일봉</DetailPageButton>
             </Link>
             <Link
               to={`/stock-detail/${stock.stockCode}/live-updates`}
               state={{ stock }}
             >
-              <Button>1일</Button>
+              <DetailPageButton>1일</DetailPageButton>
             </Link>
           </div>
           <Text style={{marginRight:'1rem'}}>{stock.stockIndustry}</Text>

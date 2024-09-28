@@ -240,3 +240,10 @@ export const IconWrapper = styled.div`
   align-items: center;
   pointer-events: none;
 `;
+
+export const DetailPageButton = styled.div`
+  background-color: ${({ theme }) => theme.profileBackgroundColor};
+  color: ${({ theme }) => theme.profileColor};
+  border-radius: 1rem;
+  padding: 0.5rem 1rem;
+`;
