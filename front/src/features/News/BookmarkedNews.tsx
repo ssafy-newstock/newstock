@@ -129,7 +129,7 @@ const BookmarkedNews: React.FC = () => {
           </BookmarkedNewsMiddle>
 
           <BookmarkedNewsFooter>
-            <NewsTag># 싸피</NewsTag>
+            <NewsTag $tagName="싸피"># 싸피</NewsTag>
             {bookmarkedIcon}
           </BookmarkedNewsFooter>
         </BookmarkedNewsWrapper>

@@ -1,4 +1,4 @@
-import { useState, ChangeEvent, KeyboardEvent } from 'react';
+import { useState, useEffect, useRef, ChangeEvent, KeyboardEvent } from 'react';
 import { Center } from '@components/Center';
 import styled from 'styled-components';
 import chatbotImg from '@assets/Chat/chatbotImg.png';
@@ -19,18 +19,18 @@ const ChatCenter = styled.div`
 
 const DateWrapper = styled.div`
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
-  gap: 0.625rem;
-  width: 100%;
+  /* margin: 0 0.625rem; */
+  padding: 0 1rem;
 `;
 
-const DateText = styled.p`
-  color: #828282;
-  font-family: Inter;
-  font-size: 1rem;
-  line-height: 1.875rem;
-`;
+// const DateText = styled.p`
+//   color: #828282;
+//   font-family: Inter;
+//   font-size: 1rem;
+//   line-height: 1.875rem;
+// `;
 
 const ChatOuterWrapper = styled.div`
   width: 70%;
@@ -52,13 +52,14 @@ const ChatBodyWrapper = styled.div`
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
 `;
 
 const ChatMessageOuterWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 1.5rem;
 `;
 
 const ChatMessageInnerWrapper = styled.div<{ $isMine: boolean }>`
@@ -91,6 +92,14 @@ const ChatMessage = styled.div<{ $isMine: boolean }>`
     $isMine ? 'right' : 'left'}; /* 텍스트 정렬 */
 `;
 
+const InfoWrapper = styled.div`
+  width: 100%;
+  border: 1px solid #d1d1d1;
+  border-radius: 0.3rem;
+  padding: 1.25rem 1rem;
+  line-height: 1.75rem;
+`;
+
 const ChatInputWrapper = styled.div`
   display: flex;
   width: 100%;
@@ -105,7 +114,7 @@ const ChatInputWrapper = styled.div`
 
 const ChatInput = styled.input`
   flex: 1;
-  padding: 0.94rem 1.25rem;
+  padding: 0.94rem 1.25rem 0.94rem 0.1rem;
   border-radius: 1.875rem;
   border: none;
   background-color: transparent; /* 입력 필드의 배경색 투명화 */
@@ -148,6 +157,16 @@ const AIChatBotPage: React.FC = () => {
   const [input, setInput] = useState<string>('');
   // const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
 
+  // 스크롤 제어를 위한 Ref 생성
+  const chatBodyRef = useRef<HTMLDivElement>(null);
+
+  // 사용자가 채팅을 보낼 때만 스크롤을 아래로 이동
+  useEffect(() => {
+    if (chatBodyRef.current) {
+      chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
+    }
+  }, [messages]);
+
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setInput(e.target.value);
   };
@@ -186,20 +205,7 @@ const AIChatBotPage: React.FC = () => {
       <Center>
         <ChatCenter>
           <ChatOuterWrapper>
-            <DateWrapper>
-              <CalendarIcon />
-              <DateText>24.08.01 ~ 24.08.31</DateText>
-              {/* <DatePicker
-                selected={selectedDate}
-                onChange={(date: Date | null) => setSelectedDate(date)}
-                dateFormat="yyyy.MM.dd"
-              /> */}
-              {/* <DateText>
-                {selectedDate ? selectedDate.toLocaleDateString() : '날짜 선택'}
-              </DateText> */}
-            </DateWrapper>
-
-            <ChatBodyWrapper>
+            <ChatBodyWrapper ref={chatBodyRef}>
               {messages.length === 0 && <WelcomeMessage />}
               {messages.map((msg, index) => (
                 <ChatMessageOuterWrapper key={index}>
@@ -221,6 +227,14 @@ const AIChatBotPage: React.FC = () => {
                       </>
                     )}
                   </ChatMessageInnerWrapper>
+                  {!msg.isMine && (
+                    <InfoWrapper>
+                      NewStock AI는 매 질문에 대해 최근 한 달간의 관련 뉴스를
+                      제공합니다.
+                      <br /> 만약 뉴스 제공 기간을 변경하고 싶다면, 입력창 옆의
+                      날짜 아이콘을 클릭해 주세요.
+                    </InfoWrapper>
+                  )}
                   {/* AI의 메시지 아래에 AINews 출력 */}
                   {!msg.isMine && <AINews />}
                 </ChatMessageOuterWrapper>
@@ -228,6 +242,9 @@ const AIChatBotPage: React.FC = () => {
             </ChatBodyWrapper>
             {/* <ChatDataWrapper></ChatDataWrapper> */}
             <ChatInputWrapper>
+              <DateWrapper>
+                <CalendarIcon />
+              </DateWrapper>
               <ChatInput
                 value={input}
                 onChange={handleInputChange}

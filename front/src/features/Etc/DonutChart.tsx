@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import Chart from 'react-apexcharts';
 import { ApexOptions } from 'apexcharts';
+import { useTheme } from 'styled-components';
 
 // 그래프의 크기를 부모 컨테이너의 100%로 설정
 const ChartContainer = styled.div`
@@ -21,6 +22,8 @@ const DonutChart: React.FC<DonutChartProps> = ({
   colors,
   totalCounts,
 }) => {
+  const theme = useTheme();
+
   const chartOptions: ApexOptions = {
     chart: {
       type: 'donut',
@@ -33,6 +36,9 @@ const DonutChart: React.FC<DonutChartProps> = ({
     },
     legend: {
       position: 'right',
+      labels: {
+        colors: theme.textColor, // legend의 텍스트 색상에 theme 적용
+      },
     },
   };
 

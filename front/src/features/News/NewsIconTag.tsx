@@ -21,51 +21,38 @@ export const ArrowIcon = () => (
   </StyledArrowIcon>
 );
 
-// interface TagColor {
-//   background: string;
-//   text: string;
-// }
+// 태그 이름을 기반으로 고유한 색상 인덱스를 계산하는 함수
+const getTagIndex = (tag: string, totalColors: number): number => {
+  let hash = 0;
+  for (let i = 0; i < tag.length; i++) {
+    hash = tag.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return Math.abs(hash) % totalColors; // 색상 리스트의 길이로 나머지 연산
+};
 
-// // 랜덤 색상 선택 함수
-// const getRandomTagColor = (theme: any) => {
-//   const colors = theme.tagColors;
-//   const randomIndex = Math.floor(Math.random() * colors.length);
-//   return colors[randomIndex];
-// };
-
-// // NewsTag 컴포넌트 정의
-// export const NewsTag = styled.div`
-//   display: flex;
-//   padding: 0.3rem;
-//   justify-content: center;
-//   align-items: center;
-//   gap: 0.625rem;
-//   border-radius: 0.3rem;
-
-//   /* 랜덤 색상 적용 */
-//   background-color: ${({ theme }) => getRandomTagColor(theme).background};
-//   color: ${({ theme }) => getRandomTagColor(theme).text};
-
-//   font-family: Inter;
-//   font-size: 1.25rem;
-//   font-style: normal;
-//   line-height: 1.875rem;
-// `;
+interface NewsTagProps {
+  $tagName: string; // 태그 이름을 받아 고유한 색상 인덱스를 계산
+}
 
 // 태그 스타일링
-export const NewsTag = styled.div`
+export const NewsTag = styled.div<NewsTagProps>`
   display: flex;
   padding: 0.3rem;
   justify-content: center;
   align-items: center;
   gap: 0.625rem;
   border-radius: 0.3rem;
-  background-color: ${({ theme }) => theme.grayTextColor};
+  /* background-color: ${({ theme }) => theme.grayTextColor}; */
   color: ${({ theme }) => theme.editorTextColor};
   font-family: Inter;
   font-size: 1.25rem;
   font-style: normal;
   line-height: 1.875rem;
+
+  background-color: ${({ theme, $tagName }) => {
+    const index = getTagIndex($tagName, theme.tagColors.length);
+    return theme.tagColors[index].background;
+  }};
 `;
 
 // 북마크 스타일링

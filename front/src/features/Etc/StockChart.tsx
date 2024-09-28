@@ -1,6 +1,8 @@
 import ReactApexChart from 'react-apexcharts';
+import { useTheme } from 'styled-components'; // theme을 가져오기 위해 useTheme 사용
 
 const StockChart = () => {
+  const theme = useTheme(); // styled-components에서 theme 가져오기
   const series = [
     {
       name: 'Stock Price',
@@ -36,10 +38,20 @@ const StockChart = () => {
         '15:00',
         '16:00',
       ], // x축 시간 데이터
+      labels: {
+        style: {
+          colors: theme.textColor, // theme에서 가져온 textColor를 적용
+        },
+      },
     },
     yaxis: {
       min: 26,
       max: 43,
+      labels: {
+        style: {
+          colors: theme.textColor, // y축 레이블에 theme.textColor 적용
+        },
+      },
     },
     fill: {
       gradient: {

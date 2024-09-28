@@ -7,11 +7,10 @@ import NewsMainBody from '@features/News/NewsMainBody';
 // import newsData from '@api/dummyData/20240907.json';
 import { getNewsData, translateIndustry } from '@api/dummyData/DummyData';
 
-
 // 스타일드 컴포넌트 정의
 const NewsMainCenter = styled.div`
   display: flex;
-  width: 100%;
+  width: 90%;
   // 화면 퍼지는거 보기 싫어서 일단 최댓값 박아둠.
   max-width: 106rem;
   /* padding: 1.25rem 3rem; */
