@@ -18,6 +18,7 @@ public class IndustryNewsPreviewDto {
     private String description;
     private String media;
     private String newsId;
+    private String thumbnail;
     private LocalDateTime uploadDatetime;
 }
 
