@@ -6,6 +6,7 @@ import com.ssafy.news.domain.repository.StockNewsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,18 +26,18 @@ public class StockNewsService {
         validateNewsContent(top4);
         return convertStockToDtoList(top4);
     }
-//
-//    public List<IndustryNewsDto> getIndustryNews(String industry, int page, int size) {
-////        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("uploadDatetime").descending());
-////
-////        List<IndustryNews> content = null;
-////        if (industry == null || industry.isEmpty()) {
-////            content = industryNewsRepository.findAllIndustryPage(pageRequest).getContent();
-////        } else {
-////            content = industryNewsRepository.findAllByIndustry(industry, pageRequest).getContent();
-////        }
-////
-////        validateNewsContent(content);  // 뉴스가 없을 때 예외 처리
-////        return convertToDtoList(content);  // DTO 변환
-//    }
+
+    public List<StockNewsDto> getStockNews(String stockCode, int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("uploadDatetime").descending());
+
+        List<StockNews> content = null;
+        if (stockCode == null || stockCode.isEmpty()) {
+            content = stockNewsRepository.findAllStockPage(pageRequest).getContent();
+        } else {
+            content = stockNewsRepository.findByStockCode(stockCode, pageRequest).getContent();
+        }
+
+        validateNewsContent(content);  // 뉴스가 없을 때 예외 처리
+        return convertStockToDtoList(content);  // DTO 변환
+    }
 }
