@@ -9,8 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface IndustryNewsRepository extends JpaRepository<IndustryNews, Integer> {
-    @Query("select i from IndustryNews i order by i.uploadDatetime desc limit 4")
-    List<IndustryNews> findTop4();
+    @Query("select i from IndustryNews i order by i.uploadDatetime desc")
+    List<IndustryNews> findTop4(Pageable pageable);
 
     Page<IndustryNews> findAllByIndustry(String industry, Pageable pageable);
 

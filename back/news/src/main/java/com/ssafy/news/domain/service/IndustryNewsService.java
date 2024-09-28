@@ -27,7 +27,7 @@ public class IndustryNewsService {
      * @return 최신 뉴스 4개
      */
     public List<IndustryNewsDto> getRecentIndustryNews() {
-        List<IndustryNews> top4 = industryNewsRepository.findTop4();
+        List<IndustryNews> top4 = industryNewsRepository.findTop4(PageRequest.of(0, 4));
 
         validateNewsContent(top4);
         return convertIndustryToDtoList(top4);
