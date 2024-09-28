@@ -35,7 +35,6 @@ const Underline = styled.div<{ $activeIndex: number }>`
 const SectionStockPage = () => {
   const { categoryStock } = useCategoryStockStore();
   // 모달 관련
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] =
     useState<ICategoryStock | null>(null);
 
@@ -49,12 +48,10 @@ const SectionStockPage = () => {
 
   const openModal = (category: ICategoryStock) => {
     setSelectedCategory(category);
-    setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setSelectedCategory(null);
-    setIsModalOpen(false);
   };
 
   // 정렬 함수: 문자열을 숫자로 변환한 후 정렬
@@ -135,7 +132,7 @@ const SectionStockPage = () => {
         </DividedSection>
       </Center>
       <RightVacant />
-      {isModalOpen && selectedCategory && (
+      {selectedCategory && (
         <Modal onClose={closeModal} category={selectedCategory} />
       )}
     </>
