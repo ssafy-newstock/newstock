@@ -31,6 +31,7 @@ public class NewsConverter {
         }).collect(toList());
     }
 
+    // 종목 뉴스 목록을 프리뷰 DTO로 변환
     public static List<StockNewsPreviewDto> convertStockToPreviewDtoList(List<StockNews> content) {
         return content.stream()
                 .map(stockNews -> {
@@ -39,6 +40,14 @@ public class NewsConverter {
 
                     return StockNewsPreviewDto.of(stockNews, stockNewsStockCodeDtos, stockKeywords);
                 }).collect(toList());
+    }
+
+    // 종목 뉴스를 DTO 로 변환하는 메소드
+    public static StockNewsDto convertStockToDto(StockNews content) {
+        List<String> stockKeywords = convertKeywordToDto(content.getStockKeywords());
+        List<String> stockNewsStockCodeDtos = convertStockCodeToDto(content.getStockNewsStockCodes());
+
+        return StockNewsDto.of(content, stockNewsStockCodeDtos, stockKeywords);
     }
 
     private static List<String> convertKeywordToDto(List<StockKeyword> content) {
