@@ -1,7 +1,6 @@
 // 필요한 임포트 추가
 import styled from 'styled-components';
 import {
-  StckPrice,
   StockImage,
   StockTitle,
   Text,
@@ -26,10 +25,10 @@ export const StockHoldingsFirstRow = () => {
   return (
     <MyStockCardRow>
       <TextLeft>종목명</TextLeft>
-      <Text>보유량</Text>
       <Text>구매가</Text>
       <Text>현재가</Text>
       <Text>수익률</Text>
+      <Text>보유량</Text>
       <Text>총액</Text>
     </MyStockCardRow>
   );
@@ -77,16 +76,14 @@ const StockHoldingList = ({ stock }: { stock: StockHolding }) => {
         />
         {stock.stockName}
       </StockTitle>
-      <StckPrice>{stock.stockHoldingBuyAmount.toLocaleString()}주</StckPrice>
       <Text>{stock.stockHoldingBuyPrice.toLocaleString()}원</Text>
-      {/* 현재가에 색상 적용 */}
       <ColoredText $profitStatus={profitStatus}>
         {StockCurrentPrice.toLocaleString()}원
       </ColoredText>
-      {/* 수익률에 색상 적용 */}
       <ColoredText $profitStatus={profitStatus}>
         {stock.stockHoldingChangeRate.toFixed(2)}%
       </ColoredText>
+      <Text>{stock.stockHoldingBuyAmount.toLocaleString()}주</Text>
       <Text>{TotalPrice.toLocaleString()}원</Text>
     </MyStockCardRow>
   );

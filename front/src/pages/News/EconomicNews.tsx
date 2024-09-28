@@ -1,4 +1,4 @@
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { getNewsData, translateIndustry } from '@api/dummyData/DummyData';
@@ -100,16 +100,16 @@ const processArticle = (article: string) => {
   return { imageUrl, content };
 };
 
-interface ContextProps {
-  selectedCategory: string;
-}
+// interface ContextProps {
+//   selectedCategory: string;
+// }
 
 const EconomicNewsPage: React.FC = () => {
   const { economic } = getNewsData();
-  const { selectedCategory } = useOutletContext<ContextProps>();
-  // const [newsList, setNewsList] = useState<NewsItem[]>(
-  //   economic.data.slice(0, 10) // ???
-  // );
+  const location = useLocation();
+  const selectedCategory = location.state?.selectedCategory || '전체 기사';
+  // const { selectedCategory } = useOutletContext<ContextProps>();
+
   const [newsList, setNewsList] = useState<NewsItem[]>([]);
   const [displayedItems, setDisplayedItems] = useState<number>(10); // 처음에 표시할 데이터 개수
   const [loading, setLoading] = useState<boolean>(false); // 로딩 상태

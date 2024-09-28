@@ -117,12 +117,24 @@ export const StockCardRow = styled.div`
 `;
 
 export const CategoryCardRow = styled(StockCardRow)`
-  grid-template-columns: 1fr 4fr 4fr 4fr 4fr 4fr 1fr; /* 각 열의 너비를 설정 */
+  grid-template-columns: 4fr 4fr 4fr 4fr 4fr; /* 각 열의 너비를 설정 */
 `;
 
 export const Text = styled.div`
   font-size: 1rem;
   color: ${({ theme }) => theme.textColor};
+`;
+
+export const TextBold = styled(Text)`
+  font-weight: bold;
+`;
+
+export const TextBoldLeft = styled(TextBold)`
+  text-align: left;
+`;
+
+export const TextBoldLarge = styled(TextBold)`
+  font-size: 1.5rem;
 `;
 
 export const TextLarge = styled(Text)`

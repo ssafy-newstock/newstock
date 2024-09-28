@@ -25,6 +25,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -134,9 +135,9 @@ public class StockService {
      * @return 코스피 958개의 종목코드, 종목이름, 현재가, 전일 대비, 전일 대비율
      */
     public List<StockPricesResponseDto> getStockPrices(List<StocksRedis> stocksInfo,
-                                                       String accessToken,
-                                                       String appKey,
-                                                       String appSecret) {
+                                                        String accessToken,
+                                                        String appKey,
+                                                        String appSecret) {
         List<StockPricesResponseDto> stockPricesResponseDtos = new ArrayList<>();
 
         int totalStockCodes = stocksInfo.size();
@@ -201,18 +202,27 @@ public class StockService {
     }
 
     /**
-     * 주식 상세 페이지 조회 시 일봉데이터 조회
-     *
+     * 주식 상세 페이지 일봉데이터 조회
      * @param stockCode
      * @return
      */
-    public StockDetailDto getStockDetail(String stockCode) {
-        Stocks stock = stocksRepository.findByStockCodeWithCandles(stockCode)
+    public List<StockCandleDto> getStockCandle(String stockCode, LocalDate startDate, LocalDate endDate) {
+        Stocks stock = stocksRepository.findByStockCodeWithCandlesAndDate(stockCode, startDate, endDate)
                 .orElseThrow(() -> new StockNotFoundException());
 
-        // 일봉 차트 데이터
         List<StocksCandle> stocksCandles = stock.getStocksCandles();
 
+        return stocksCandles.stream()
+                .map(stocksCandle -> new StockCandleDto(stock, stocksCandle))
+                .toList();
+    }
+
+    /**
+     * 주식 상세 페이지 데일리차트 조회
+     * @param stockCode
+     * @return
+     */
+    public List<StocksPriceLiveDailyChartRedisDto> getStockDaily(String stockCode){
         // 데일리 차트 데이터
         List<StocksPriceLiveDailyChartRedis> LiveDailyChartRedisList = stocksPriceLiveDailyChartRedisRepository.findAllByStockCode(stockCode);
 
@@ -221,15 +231,9 @@ public class StockService {
                 .sorted(Comparator.comparing(StocksPriceLiveDailyChartRedis::getTime))
                 .toList();
 
-        List<StockCandleDto> stockCandleDtoList = stocksCandles.stream()
-                .map(stocksCandle -> new StockCandleDto(stock, stocksCandle))
-                .toList();
-
-        List<StocksPriceLiveDailyChartRedisDto> stocksPriceLiveDailyChartRedisDtoList = sortedLiveDailyChartRedisList.stream()
+        return sortedLiveDailyChartRedisList.stream()
                 .map(stocksPriceLiveDailyChartRedis -> new StocksPriceLiveDailyChartRedisDto(stocksPriceLiveDailyChartRedis))
                 .toList();
-
-        return new StockDetailDto(stockCandleDtoList, stocksPriceLiveDailyChartRedisDtoList);
     }
 
 

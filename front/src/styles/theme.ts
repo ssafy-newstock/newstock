@@ -36,6 +36,7 @@ export const lightTheme: DefaultTheme = {
   hoverOptionTextColor: '#333333', // 드롭다운 마우스 오버시 텍스트 색상
   editorBackgroundColor: '#FFFFFF', // 에디터 배경색
   editorTextColor: '#000000', // 에디터 텍스트 색상
+  dailyWrapperColor: '#F9F9F9', // 일일레포트 페이지 색상
 };
 
 export const darkTheme: DefaultTheme = {
@@ -74,4 +75,5 @@ export const darkTheme: DefaultTheme = {
   hoverOptionTextColor: '#FFFFFF', // 드롭다운 마우스 오버시 텍스트 색상
   editorBackgroundColor: '#4C506B', // 에디터 배경색
   editorTextColor: '#FFFFFF', // 에디터 텍스트 색상
+  dailyWrapperColor: '#171717', // 일일레포트 페이지 색상
 };

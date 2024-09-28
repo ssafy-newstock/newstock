@@ -13,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.ssafy.stock.global.common.CommonResponse.success;
@@ -21,7 +22,7 @@ import static com.ssafy.stock.global.common.CommonResponse.success;
 @RequiredArgsConstructor
 @RequestMapping("/api/stock")
 @Slf4j
-public class StockController implements StockControllerSwagger{
+public class StockController{
 
     private final ModelMapper modelMapper;
     private final StockService stockService;
@@ -74,18 +75,36 @@ public class StockController implements StockControllerSwagger{
     }
 
     /**
-     * 주식 상세페이지 조회
+     * 주식 상세페이지 일봉 데이터 조회
+     * @param stockCode
+     * @param stockCandleRequestDto
+     * @return
+     */
+    @GetMapping("/{stockCode}/candle")
+    public ResponseEntity<?> getStockCandle(@PathVariable String stockCode,
+                                            @RequestParam("startDate") LocalDate startDate,
+                                            @RequestParam("endDate") LocalDate endDate){
+        List<StockCandleDto> stockCandleList = stockService.getStockCandle(stockCode, startDate, endDate);
+
+        List<StockCandleResponse> response = stockCandleList.stream()
+                .map(stockCandleDto -> modelMapper.map(stockCandleDto, StockCandleResponse.class))
+                .toList();
+
+        return ResponseEntity.ok()
+                .body(response);
+    }
+
+    /**
+     * 주식 상세페이지 데일리 차트 조회
      * @param stockCode
      * @return
      */
-    @GetMapping("/{stockCode}")
-    public ResponseEntity<?> getStockInfo(@PathVariable String stockCode){
-        StockDetailDto stockDetailDto = stockService.getStockDetail(stockCode);
-
-        // TODO : ModelMapper로 DTO -> 응답객체로 바꾸기!
+    @GetMapping("/{stockCode}/daily")
+    public ResponseEntity<?> getStockDaily(@PathVariable String stockCode){
+        List<StocksPriceLiveDailyChartRedisDto> stockDailyList = stockService.getStockDaily(stockCode);
 
         return ResponseEntity.ok()
-                .body(success(stockDetailDto));
+                .body(stockDailyList);
     }
 
     /**

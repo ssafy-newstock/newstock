@@ -25,7 +25,7 @@ const StockNewsOuterWrapper = styled.div<{ $showSummary: boolean }>`
   width: 100%;
   padding: 1.6rem 1.5rem;
   margin: 1.25rem 0;
-  box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.1);
   background-color: ${({ theme }) => theme.newsBackgroundColor};
   border-radius: 2rem;
   align-self: stretch;
@@ -116,7 +116,13 @@ const processArticle = (
 const StockNewsPage: React.FC = () => {
   const { stock } = getNewsData();
 
-  const [newsList, setNewsList] = useState<NewsItem[]>([]);
+  const [newsList, setNewsList] = useState<NewsItem[]>(() => {
+    return stock.data.slice(0, 10).map((newsItem) => {
+      const { imageUrl, content } = processArticle(newsItem.article);
+      return { ...newsItem, content, imageUrl };
+    });
+  });
+
   const [displayedItems, setDisplayedItems] = useState<number>(10); // 처음에 표시할 데이터 개수
   const [loading, setLoading] = useState<boolean>(false); // 로딩 상태
   const [showSummary, setShowSummary] = useState<boolean>(false); // 모달 상태 관리
