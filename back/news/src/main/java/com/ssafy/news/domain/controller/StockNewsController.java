@@ -1,14 +1,12 @@
 package com.ssafy.news.domain.controller;
 
+import com.ssafy.news.domain.entity.dto.StockNewsDto;
 import com.ssafy.news.domain.entity.dto.StockNewsPreviewDto;
 import com.ssafy.news.domain.service.StockNewsService;
 import com.ssafy.news.global.common.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -35,17 +33,27 @@ public class StockNewsController {
 
     /**
      * 종목별 최신 뉴스를 조회하는 메소드
+     *
      * @param stockCode
      * @param page
      * @param size
      * @return
      */
     @GetMapping("")
-    public CommonResponse<?> getStockNews(
+    public CommonResponse<?> getStockNewsPreviews(
             @RequestParam(value = "stockCode", required = false) String stockCode,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
         List<StockNewsPreviewDto> stockNews = stockNewsService.getStockNewsPreviews(stockCode, page, size);
+
+        // 모델 매퍼가 List 까지 변환해주진 않기에 생략함
+
+        return CommonResponse.success(stockNews);
+    }
+
+    @GetMapping("/{id}")
+    public CommonResponse<?> getStockNews(@PathVariable("id") Long id) {
+        StockNewsDto stockNews = stockNewsService.getStockNewsDetail(id);
 
         // 모델 매퍼가 List 까지 변환해주진 않기에 생략함
 
