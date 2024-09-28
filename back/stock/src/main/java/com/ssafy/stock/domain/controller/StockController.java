@@ -6,6 +6,7 @@ import com.ssafy.stock.domain.entity.Redis.StocksPriceRedis;
 import com.ssafy.stock.domain.service.StockIndustryService;
 import com.ssafy.stock.domain.service.StockService;
 import com.ssafy.stock.domain.service.StockTransactionService;
+import com.ssafy.stock.domain.service.request.StockCodeToNameRequest;
 import com.ssafy.stock.domain.service.response.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -167,5 +168,13 @@ public class StockController{
         StockMyPageDto stockMyPage = stockService.getStockMyPage(memberId);
 
         return ResponseEntity.ok(success(stockMyPage));
+    }
+
+
+    @GetMapping("/stock-code/name")
+    public ResponseEntity<?> getStockName(@RequestBody StockCodeToNameRequest request){
+        List<StockCodeToNameResponse> stockNameList = stockService.getStockName(request);
+
+        return ResponseEntity.ok(success(stockNameList));
     }
 }
