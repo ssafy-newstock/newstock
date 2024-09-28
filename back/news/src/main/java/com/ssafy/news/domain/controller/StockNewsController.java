@@ -1,7 +1,6 @@
 package com.ssafy.news.domain.controller;
 
-import com.ssafy.news.domain.controller.response.StockNewsResponse;
-import com.ssafy.news.domain.entity.dto.StockNewsDto;
+import com.ssafy.news.domain.entity.dto.StockNewsPreviewDto;
 import com.ssafy.news.domain.service.StockNewsService;
 import com.ssafy.news.global.common.CommonResponse;
 import lombok.RequiredArgsConstructor;
@@ -27,13 +26,11 @@ public class StockNewsController {
      */
     @GetMapping("/top4")
     public CommonResponse<?> getTop4() {
-        List<StockNewsDto> recentTop4 = stockNewsService.getRecentStockNewsTop4();
+        List<StockNewsPreviewDto> recentTop4 = stockNewsService.getRecentStockNewsTop4();
 
-        List<StockNewsResponse> responses = recentTop4.stream()
-                .map(dto -> modelMapper.map(dto, StockNewsResponse.class))
-                .toList();
+        // 모델 매퍼가 List 까지 변환해주진 않기에 생략함
 
-        return CommonResponse.success(responses);
+        return CommonResponse.success(recentTop4);
     }
 
     /**
@@ -44,16 +41,14 @@ public class StockNewsController {
      * @return
      */
     @GetMapping("")
-    public CommonResponse<?> getIndustryNews(
+    public CommonResponse<?> getStockNews(
             @RequestParam(value = "stockCode", required = false) String stockCode,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
-        List<StockNewsDto> stockNews = stockNewsService.getStockNews(stockCode, page, size);
+        List<StockNewsPreviewDto> stockNews = stockNewsService.getStockNewsPreviews(stockCode, page, size);
 
-        List<StockNewsResponse> responses = stockNews.stream()
-                .map(dto -> modelMapper.map(dto, StockNewsResponse.class))
-                .toList();
+        // 모델 매퍼가 List 까지 변환해주진 않기에 생략함
 
-        return CommonResponse.success(responses);
+        return CommonResponse.success(stockNews);
     }
 }
