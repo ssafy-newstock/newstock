@@ -213,3 +213,30 @@ export const SortButton = styled.button`
   position: relative;
   color: ${({theme})=>theme.textColor};
 `;
+
+export const SearchInputWrapper = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
+export const SearchInput = styled.input`
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem 0.5rem 2.5rem;
+  width: 100%;
+  border-radius: 1rem;
+  border: none;
+  background-color: ${({ theme }) => theme.stockBackgroundColor};
+  color: ${({ theme }) => theme.textColor};
+  font-size: 1rem;
+`;
+
+export const IconWrapper = styled.div`
+  position: absolute;
+  left: 1rem;
+  top: 1.5rem;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+`;

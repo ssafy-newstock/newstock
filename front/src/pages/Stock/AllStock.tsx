@@ -6,6 +6,9 @@ import {
   StockGridRow,
   StockHeader,
   DividedSection,
+  SearchInputWrapper,
+  SearchInput,
+  IconWrapper,
 } from '@features/Stock/styledComponent';
 import { IStock } from '@features/Stock/types';
 import { RightVacant } from '@components/RightVacant';
@@ -37,33 +40,6 @@ const Underline = styled.div<{ $sortBy: string }>`
   width: 2.4rem;
   background-color: ${({ theme }) => theme.textColor};
   transition: left 0.3s ease;
-`;
-
-const SearchInputWrapper = styled.div`
-  position: relative;
-  width: 100%;
-`;
-
-const SearchInput = styled.input`
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
-  padding: 0.5rem 1rem 0.5rem 2.5rem;
-  width: 100%;
-  border-radius: 1rem;
-  border: none;
-  background-color: ${({ theme }) => theme.stockBackgroundColor};
-  color: ${({ theme }) => theme.textColor};
-  font-size: 1rem;
-`;
-
-const IconWrapper = styled.div`
-  position: absolute;
-  left: 1rem;
-  top: 1.5rem;
-  transform: translateY(-50%);
-  display: flex;
-  align-items: center;
-  pointer-events: none;
 `;
 
 const AllStockPage: React.FC = () => {
