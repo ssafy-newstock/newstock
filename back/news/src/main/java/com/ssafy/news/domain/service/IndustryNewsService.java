@@ -1,8 +1,7 @@
 package com.ssafy.news.domain.service;
 
 
-import com.ssafy.news.domain.entity.IndustryNews;
-import com.ssafy.news.domain.entity.dto.IndustryNewsDto;
+import com.ssafy.news.domain.entity.dto.IndustryNewsPreviewDto;
 import com.ssafy.news.domain.repository.IndustryNewsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.ssafy.news.domain.service.converter.NewsConverter.convertIndustryToDtoList;
 import static com.ssafy.news.domain.service.validator.NewsValidator.validateNewsContent;
 
 @RequiredArgsConstructor
@@ -26,11 +24,12 @@ public class IndustryNewsService {
      *
      * @return 최신 뉴스 4개
      */
-    public List<IndustryNewsDto> getRecentIndustryNews() {
-        List<IndustryNews> top4 = industryNewsRepository.findTop4(PageRequest.of(0, 4));
+    public List<IndustryNewsPreviewDto> getRecentIndustryNews() {
+        List<IndustryNewsPreviewDto> content = industryNewsRepository.findAllIndustryNewsPreview(PageRequest.of(0, 4)).getContent();
 
-        validateNewsContent(top4);
-        return convertIndustryToDtoList(top4);
+        // IndustryNewsPreviewDto 로 반환되기에 valid 이후 바로 반환
+        validateNewsContent(content);
+        return content;
     }
 
     /**
@@ -42,18 +41,21 @@ public class IndustryNewsService {
      * @param size     사이즈
      * @return
      */
-    public List<IndustryNewsDto> getIndustryNews(String industry, int page, int size) {
+    public List<IndustryNewsPreviewDto> getIndustryNews(String industry, int page, int size) {
         PageRequest pageRequest = PageRequest.of(Math.max(page - 1, 0), size, Sort.by("uploadDatetime").descending());
 
-        List<IndustryNews> content = null;
+        // 만약 industry 가 있다면, 특정 산업에 맞는 뉴스 반환
+        // 없다면 최신순으로 전체 뉴스 반환
+        List<IndustryNewsPreviewDto> content = null;
         if (industry == null || industry.isEmpty()) {
-            content = industryNewsRepository.findAllIndustryPage(pageRequest).getContent();
+            content = industryNewsRepository.findAllIndustryNewsPreview(pageRequest).getContent();
         } else {
-            content = industryNewsRepository.findAllByIndustry(industry, pageRequest).getContent();
+            content = industryNewsRepository.findIndustryNewsPreviewWithIndustry(industry, pageRequest).getContent();
         }
 
-        validateNewsContent(content);  // 뉴스가 없을 때 예외 처리
-        return convertIndustryToDtoList(content);  // DTO 변환
+        // IndustryNewsPreviewDto 로 반환되기에 valid 이후 바로 반환
+        validateNewsContent(content);
+        return content;
     }
 
 
