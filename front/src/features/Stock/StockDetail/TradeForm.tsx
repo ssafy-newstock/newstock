@@ -183,7 +183,7 @@ const BuyForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
       </InputWrapper>
       <InputWrapper>
         <InputRow>
-          <InputLabel>매도가: </InputLabel>
+          <InputLabel>매수가: </InputLabel>
           <InputTag type="text" value={totalPrice.toLocaleString()} disabled />
         </InputRow>
       </InputWrapper>
@@ -314,7 +314,7 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
       </InputWrapper>
       <InputWrapper>
         <InputRow>
-          <InputLabel>매수가: </InputLabel>
+          <InputLabel>매도가: </InputLabel>
           <InputTag type="text" value={totalPrice.toLocaleString()} disabled />
         </InputRow>
       </InputWrapper>
