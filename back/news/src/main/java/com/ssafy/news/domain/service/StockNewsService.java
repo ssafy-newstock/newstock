@@ -1,6 +1,7 @@
 package com.ssafy.news.domain.service;
 
 import com.ssafy.news.domain.entity.StockNews;
+import com.ssafy.news.domain.entity.dto.StockNewsDto;
 import com.ssafy.news.domain.entity.dto.StockNewsPreviewDto;
 import com.ssafy.news.domain.repository.StockNewsRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,8 +11,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
-import static com.ssafy.news.domain.service.converter.NewsConverter.convertStockToPreviewDtoList;
+import static com.ssafy.news.domain.service.converter.NewsConverter.*;
+import static com.ssafy.news.domain.service.validator.NewsValidator.validateNewsContent;
 import static com.ssafy.news.domain.service.validator.NewsValidator.validateNewsListContent;
 
 @RequiredArgsConstructor
@@ -39,5 +42,12 @@ public class StockNewsService {
 
         validateNewsListContent(content);  // 뉴스가 없을 때 예외 처리
         return convertStockToPreviewDtoList(content);  // DTO 변환
+    }
+
+    public StockNewsDto getStockNewsDetail(Long id) {
+        Optional<StockNews> findNews = stockNewsRepository.findById(id);
+        validateNewsContent(findNews);
+
+        return convertStockToDto(findNews.get());
     }
 }
