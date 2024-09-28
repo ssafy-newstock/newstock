@@ -78,9 +78,12 @@ const App = () => {
     },
   });
 
-  if (isTop10StockLoading || isIndustryLoading || isAllStockLoading) {
+  const isLoading = isTop10StockLoading || isIndustryLoading || isAllStockLoading;
+
+  if (isLoading) {
     return <LoadingPage />;
   }
+
   return (
     <ThemeProvider theme={currentTheme}>
       <GlobalStyle />
