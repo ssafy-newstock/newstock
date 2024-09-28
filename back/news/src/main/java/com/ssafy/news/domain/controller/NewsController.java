@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/news")
 @RequiredArgsConstructor
+@Deprecated
 public class NewsController {
     private final ModelMapper modelMapper;
     @GetMapping("/{newsType}/{newsId}")

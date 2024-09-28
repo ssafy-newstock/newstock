@@ -1,10 +1,11 @@
 package com.ssafy.news.domain.controller;
 
-import com.ssafy.news.domain.controller.response.IndustryNewsResponse;
-import com.ssafy.news.domain.entity.dto.IndustryNewsDto;
+import com.ssafy.news.domain.controller.response.IndustryNewsPreviewResponse;
+import com.ssafy.news.domain.entity.dto.IndustryNewsPreviewDto;
 import com.ssafy.news.domain.service.IndustryNewsService;
 import com.ssafy.news.global.common.CommonResponse;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,13 +18,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class IndustryNewsController {
     private final IndustryNewsService industryNewsService;
+    private final ModelMapper modelMapper;
 
     @GetMapping("/top4")
     public CommonResponse<?> getTop4() {
-        List<IndustryNewsDto> response = industryNewsService.getRecentIndustryNews();
+        List<IndustryNewsPreviewDto> industryNewsPreviewDtos = industryNewsService.getRecentIndustryNews();
 
-
-        return CommonResponse.success(response);
+        // previewDto -> response
+        List<IndustryNewsPreviewResponse> responses = industryNewsPreviewDtos.stream()
+                .map(dto -> modelMapper.map(dto, IndustryNewsPreviewResponse.class))
+                .toList();
+        return CommonResponse.success(responses);
     }
 
     @GetMapping()
@@ -32,11 +37,12 @@ public class IndustryNewsController {
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
 
-        List<IndustryNewsDto> industryNews = industryNewsService.getIndustryNews(industry, page, size);
-        List<IndustryNewsResponse> responses = industryNews.stream()
-                .map(IndustryNewsResponse::of)
-                .toList();
+        List<IndustryNewsPreviewDto> industryNewsPreviewDtos = industryNewsService.getIndustryNews(industry, page, size);
 
+        // previewDto -> response
+        List<IndustryNewsPreviewResponse> responses = industryNewsPreviewDtos.stream()
+                .map(dto -> modelMapper.map(dto, IndustryNewsPreviewResponse.class))
+                .toList();
         return CommonResponse.success(responses);
     }
 }
