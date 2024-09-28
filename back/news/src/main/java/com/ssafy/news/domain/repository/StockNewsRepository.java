@@ -7,20 +7,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
-
 public interface StockNewsRepository extends JpaRepository<StockNews, Integer> {
     @Query("select s from StockNews s order by s.uploadDatetime desc")
-    List<StockNews> findTop4(Pageable pageable);
-
-    @Query("select s from StockNews s order by s.uploadDatetime desc")
-    Page<StockNews> findAllStockPage(Pageable pageable);
+    Page<StockNews> findAllStockNews(Pageable pageable);
 
     @Query("SELECT sn " +
             "FROM StockNews sn " +
             "JOIN sn.stockNewsStockCodes sc " +
             "WHERE sc.stockCode = :stockCode " +
             "ORDER BY sn.uploadDatetime DESC")
-    Page<StockNews> findByStockCode(@Param("stockCode") String stockCode, Pageable pageable);
-
+    Page<StockNews> findAllByStockCode(@Param("stockCode") String stockCode, Pageable pageable);
 }
