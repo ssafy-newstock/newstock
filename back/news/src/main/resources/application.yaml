@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: news
+  datasource:
+    url: jdbc:mysql://3.38.182.23:3306/news
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ssafy1234
+    password: ssafy1234
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+server:
+  port: 8002
+hbase:
+  url: http://j11c207a.p.ssafy.io:9090
