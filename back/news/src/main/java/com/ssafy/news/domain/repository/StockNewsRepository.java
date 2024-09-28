@@ -16,7 +16,11 @@ public interface StockNewsRepository extends JpaRepository<StockNews, Integer> {
     @Query("select s from StockNews s order by s.uploadDatetime desc")
     Page<StockNews> findAllStockPage(Pageable pageable);
 
-    @Query("SELECT sn FROM StockNews sn JOIN sn.stockNewsStockCodes sc WHERE sc.stockCode = :stockCode")
+    @Query("SELECT sn " +
+            "FROM StockNews sn " +
+            "JOIN sn.stockNewsStockCodes sc " +
+            "WHERE sc.stockCode = :stockCode " +
+            "ORDER BY sn.uploadDatetime DESC")
     Page<StockNews> findByStockCode(@Param("stockCode") String stockCode, Pageable pageable);
 
 }
