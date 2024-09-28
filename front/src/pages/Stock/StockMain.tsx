@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Center } from '@components/Center';
 import LeftStock from '@components/LeftStock';
 import { categoryImage } from '@features/Stock/category';
@@ -18,7 +18,7 @@ import RealTimeStock, {
 } from '@features/Stock/StockMain/RealTimeStock';
 import CategoryStock from '@features/Stock/StockMain/CategoryStock';
 import More from '@features/Stock/More';
-import { ICategoryStock, IStock } from '@features/Stock/types';
+import { ICategoryStock, IFavoriteStock, IStock } from '@features/Stock/types';
 import { RightVacant } from '@components/RightVacant';
 import { useNavigate } from 'react-router-dom';
 import Modal from '@features/Stock/SectionStock/Modal';
@@ -29,13 +29,6 @@ import { axiosInstance } from '@api/axiosInstance';
 import useAllStockStore from '@store/useAllStockStore';
 import useAuthStore from '@store/useAuthStore';
 import LoadingSpinner from '@components/LoadingSpinner';
-
-interface favoriteStock {
-  stockFavoriteId: number;
-  stockId: number;
-  stockCode: string;
-  stockName: string;
-}
 
 const StockMainPage = () => {
   const { categoryStock } = useCategoryStockStore();
@@ -75,28 +68,34 @@ const StockMainPage = () => {
     });
 
   // favoriteStock의 stockId를 Set으로 만들어 빠른 검색 가능
-  const favoriteStockCode = isLogin
-    ? new Set(favoriteStockList?.map((stock: favoriteStock) => stock.stockCode))
-    : new Set();
+  const favoriteStockCode: Set<string> = useMemo(() => {
+    return isLogin
+      ? new Set(
+          favoriteStockList?.map((stock: IFavoriteStock) => stock.stockCode)
+        )
+      : new Set();
+  }, [isLogin, favoriteStockList]);
 
-  const favoriteAllStock = isLogin
-    ? allStock?.filter((stock) => {
-        return favoriteStockCode.has(stock.stockCode);
-      })
-    : [];
+  // 관심 주식 목록 필터링
+  const filterFavoriteStocks = (
+    stocks: IStock[],
+    favoriteStockCode: Set<string>
+  ) => {
+    return stocks?.filter((stock) => favoriteStockCode.has(stock.stockCode));
+  };
 
-  const favoriteTop10Stock = isLogin
-    ? top10Stock?.filter((stock) => {
-        return favoriteStockCode.has(stock.stockCode);
-      })
-    : [];
-
-  const favoriteStock = isLogin
-    ? favoriteAllStock?.concat(favoriteTop10Stock)
-    : [];
-
+  // 관심 주식 목록
+  const favoriteStock = useMemo(() => {
+    if (!isLogin) return [];
+    const favoriteAllStock = filterFavoriteStocks(allStock, favoriteStockCode);
+    const favoriteTop10Stock = filterFavoriteStocks(
+      top10Stock,
+      favoriteStockCode
+    );
+    return [...favoriteAllStock, ...favoriteTop10Stock];
+  }, [isLogin, allStock, top10Stock, favoriteStockCode]);
   if (isFavoriteStockLoading && isLogin) {
-    return <LoadingSpinner />; // 또는 로딩 컴포넌트
+    return <LoadingSpinner />;
   }
 
   return (
