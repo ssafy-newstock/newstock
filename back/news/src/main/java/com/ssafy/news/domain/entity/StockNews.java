@@ -20,7 +20,6 @@ public class StockNews {
 
     private String article;
     private String description;
-    private String industry;
     private String media;
     private String newsId;
     private String sentiment;

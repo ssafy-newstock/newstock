@@ -1,4 +1,4 @@
-package com.ssafy.news.domain.controller.response;
+package com.ssafy.news.domain.entity.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,19 +7,18 @@ import lombok.ToString;
 
 import java.time.LocalDateTime;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
-public class IndustryNewsResponse {
-    private String article;
-    private String description;
+public class IndustryNewsPreviewDto {
+    private Long id;
+    private String title;
     private String industry;
+    private String description;
     private String media;
     private String newsId;
-    private String sentiment;
-    private String subtitle;
     private String thumbnail;
-    private String title;
     private LocalDateTime uploadDatetime;
 }
+

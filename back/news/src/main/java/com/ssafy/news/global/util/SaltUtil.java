@@ -1,7 +1,10 @@
 package com.ssafy.news.global.util;
 
 import java.math.BigInteger;
-
+/**
+ * HBase를 위한 Util 클래스
+ */
+@Deprecated
 public class SaltUtil {
 
     public static String getSalt(String newsIdHash) {

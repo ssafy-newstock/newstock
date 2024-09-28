@@ -7,19 +7,15 @@ import lombok.ToString;
 
 import java.time.LocalDateTime;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
-public class IndustryNewsResponse {
-    private String article;
+public class IndustryNewsPreviewResponse {
+    private Long id;
+    private String title;
     private String description;
-    private String industry;
     private String media;
     private String newsId;
-    private String sentiment;
-    private String subtitle;
-    private String thumbnail;
-    private String title;
     private LocalDateTime uploadDatetime;
 }

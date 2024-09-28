@@ -2,7 +2,10 @@ package com.ssafy.news.global.util;
 
 import java.util.HashMap;
 import java.util.Map;
-
+/**
+ * HBase를 위한 Util 클래스
+ */
+@Deprecated
 public class TypeMappingUtil {
 
     private static final Map<String, String> typeMapping = new HashMap<>();
