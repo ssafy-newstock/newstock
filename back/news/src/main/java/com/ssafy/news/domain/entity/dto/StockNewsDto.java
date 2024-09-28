@@ -25,10 +25,10 @@ public class StockNewsDto {
     private String thumbnail;
     private String title;
     private LocalDateTime uploadDatetime;
-    private List<StockNewsStockCodeDto> stockNewsStockCodes = new ArrayList<>();
-    private List<StockKeywordDto> stockKeywords = new ArrayList<>();
+    private List<String> stockNewsStockCodes = new ArrayList<>();
+    private List<String> stockKeywords = new ArrayList<>();
 
-    public static StockNewsDto of(StockNews entity, List<StockNewsStockCodeDto> stockNewsStockCodes, List<StockKeywordDto> stockKeywords) {
+    public static StockNewsDto of(StockNews entity, List<String> stockNewsStockCodes, List<String> stockKeywords) {
         StockNewsDto dto = new StockNewsDto();
         dto.id = entity.getId();
         dto.article = entity.getArticle();
