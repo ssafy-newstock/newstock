@@ -41,9 +41,6 @@ const App = () => {
   const { setCategoryStock } = useCategoryStockStore();
   const { setTop10Stock } = useTop10StockStore();
 
-  // 웹소켓 연결
-  <WebSocketComponent/>
-
   // 최초 데이터 조회 - React Query 사용
   const { isLoading: isTop10StockLoading } = useQuery({
     queryKey: ['top10StockData'],
@@ -78,6 +75,7 @@ const App = () => {
     },
   });
 
+
   const isLoading = isTop10StockLoading || isIndustryLoading || isAllStockLoading;
 
   if (isLoading) {
@@ -96,6 +94,8 @@ const App = () => {
           </Content>
         </Main>
       </Container>
+      {/* 웹소켓 연결 */}
+      <WebSocketComponent/>
     </ThemeProvider>
   );
 };

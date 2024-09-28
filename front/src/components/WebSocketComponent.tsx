@@ -83,7 +83,7 @@ const WebSocketComponent: React.FC = () => {
     };
   }, []);
 
-  return null; // UI 반환 X
+  return <></>; // UI 반환 X
 };
 
 export default WebSocketComponent;
