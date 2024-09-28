@@ -51,19 +51,16 @@ const StockMainPage = () => {
     navigate('/section-stock');
   };
 
-  // 모달 관련
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // 카테고리+관련 주식 관련 모달
   const [selectedCategory, setSelectedCategory] =
     useState<ICategoryStock | null>(null);
 
   const openModal = (category: ICategoryStock) => {
     setSelectedCategory(category);
-    setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setSelectedCategory(null);
-    setIsModalOpen(false);
   };
 
   // 관심 주식 목록 조회
@@ -106,27 +103,26 @@ const StockMainPage = () => {
     <>
       <LeftStock />
       <Center style={{ padding: '1rem' }}>
-        {isLogin ? (
+        {/* 로그인 여부에 따라 관심 종목 표시 */}
+        {isLogin && (
           <>
-            {' '}
             <StockHeader>관심 종목</StockHeader>
             <HrTag />
-            {/* 관심 종목이 없을 경우 */}
-            {favoriteStock?.length === 0 && (
+            {favoriteStock?.length === 0 ? (
               <TextCenter>
                 상세 페이지에서 관심 종목을 추가해 보세요.
               </TextCenter>
+            ) : (
+              <StockGridColumn>
+                {favoriteStock?.map((stock: IStock, index: number) => (
+                  <FavoriteStock key={index} stock={stock} />
+                ))}
+              </StockGridColumn>
             )}
-            <StockGridColumn>
-              {favoriteStock?.map((stock: IStock, index: number) => (
-                <FavoriteStock key={index} stock={stock} />
-              ))}
-            </StockGridColumn>
           </>
-        ) : (
-          <></>
         )}
 
+        {/* 실시간 차트(top 10) */}
         <DividedSection style={{ marginTop: isLogin ? '1.5rem' : '0rem' }}>
           <StockHeaderWrapper>
             <StockHeader>실시간 차트</StockHeader>
@@ -141,6 +137,7 @@ const StockMainPage = () => {
           </StockGridRow>
         </DividedSection>
 
+        {/* 주식 카테고리 목록 */}
         <StockHeaderWrapper>
           <StockHeader>카테고리</StockHeader>
           <More handlClick={categoryNavigate} />
@@ -180,7 +177,7 @@ const StockMainPage = () => {
         </CategoryGridColumn>
       </Center>
       <RightVacant />
-      {isModalOpen && selectedCategory && (
+      {selectedCategory && (
         <Modal onClose={closeModal} category={selectedCategory} />
       )}
     </>
