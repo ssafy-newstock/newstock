@@ -1,6 +1,6 @@
 package com.ssafy.newsscrap.domain.entity.dto;
 
-import com.ssafy.newsscrap.domain.IndustryNewsResponse;
+import com.ssafy.newsscrap.controller.response.IndustryNewsResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
