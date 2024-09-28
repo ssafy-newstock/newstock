@@ -181,7 +181,6 @@ const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
               <TextBold>거래량</TextBold>
             </StockCardRow>
             {filteredStocks?.map((stock) => (
-              <>
                 <StockCardRow
                   key={stock.stockCode}
                   onClick={() =>
@@ -208,7 +207,6 @@ const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
                   <Text>{formatUnit(stock.acmlTrPbmn)}</Text>
                   <Text>{formatNumber(stock.acmlVol)}주</Text>
                 </StockCardRow>
-              </>
             ))}
           </div>
         )}
