@@ -368,11 +368,11 @@ public class StockService {
 
     /**
      * 주식 코드 -> 이름 변환 메소드
-     * @param stockCodeToNameRequest
+     * @param stockCodeList
      * @return
      */
-    public List<StockCodeToNameResponse> getStockName(StockCodeToNameRequest stockCodeToNameRequest){
-        return stockCodeToNameRequest.getStockCodeList().stream()
+    public List<StockCodeToNameResponse> getStockName(List<String> stockCodeList){
+        return stockCodeList.stream()
                 .map(stockCode -> {
                     Stocks stock = stocksRepository.findByStockCode(stockCode)
                             .orElseThrow(() -> new StockNotFoundException());
