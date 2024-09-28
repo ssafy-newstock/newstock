@@ -46,8 +46,6 @@ const BuyForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
   }, [amount, price]);
 
   const onSubmit = async (data: FormValues) => {
-    // const accessToken = sessionStorage.getItem('accessToken');
-    // console.log('accessToken:', accessToken);
     const buyData = {
       price: data.price,
       amount: Number(data.amount),
