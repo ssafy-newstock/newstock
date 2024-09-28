@@ -11,7 +11,7 @@ const SubCenter = styled.div`
   align-items: flex-start;
   align-self: stretch;
   max-width: 106rem;
-  width: 64rem;
+  width: 100%;
 `;
 
 const NewsWrapper = styled.div`

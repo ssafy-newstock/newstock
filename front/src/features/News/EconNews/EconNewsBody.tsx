@@ -31,8 +31,6 @@ const EconomicNewsTitleText = styled.p`
   color: ${({ theme }) => theme.highlightColor};
   font-family: Inter;
   font-size: 2rem;
-  font-style: normal;
-  font-weight: 400;
   line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;

@@ -63,12 +63,13 @@ const CategoryText = styled.p<{ $isSelected: boolean }>`
   font-size: 1rem;
   font-weight: ${({ $isSelected }) => ($isSelected ? '600' : '400')};
   line-height: 1.9rem; /* 187.5% */
-  color: ${({ $isSelected }) => ($isSelected ? '#000' : '#828282')};
+  color: ${({ $isSelected, theme }) =>
+    $isSelected ? theme.editorTextColor : theme.grayTextColor};
   text-decoration: none;
   cursor: pointer;
 
   &:hover {
-    color: #000;
+    color: ${({ theme }) => theme.editorTextColor};
     font-weight: 600;
   }
 `;

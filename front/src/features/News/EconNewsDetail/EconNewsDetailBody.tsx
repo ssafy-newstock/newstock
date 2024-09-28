@@ -15,6 +15,7 @@ const NewsSubTitleWrapper = styled.div`
   width: 100%;
   gap: 1.875rem;
   align-items: flex-start;
+  margin-bottom: 2rem;
 `;
 const NewsSubTitleLine = styled.div`
   width: 0.15rem;

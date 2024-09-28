@@ -19,10 +19,10 @@ const StockNewsDetailHeaderWrapper = styled.div`
   gap: 1rem;
 `;
 
-const HeaderGapWrapper = styled.div<{ gapSize: number }>`
+const HeaderGapWrapper = styled.div<{ $gapSize: number }>`
   display: flex;
   flex-direction: column;
-  gap: ${({ gapSize }) => `${gapSize}rem`};
+  gap: ${({ $gapSize }) => `${$gapSize}rem`};
   width: 100%;
 `;
 
@@ -102,7 +102,7 @@ const StockNewsDetailHeader: React.FC = () => {
   return (
     <>
       <StockNewsDetailHeaderWrapper>
-        <HeaderGapWrapper gapSize={1.25}>
+        <HeaderGapWrapper $gapSize={1.25}>
           <StockNewsHeader />
           <StockNewsTitleWrapper>
             <PositiveIcon>
@@ -112,7 +112,7 @@ const StockNewsDetailHeader: React.FC = () => {
           </StockNewsTitleWrapper>
         </HeaderGapWrapper>
 
-        <HeaderGapWrapper gapSize={1}>
+        <HeaderGapWrapper $gapSize={1}>
           <InfoWrapper>
             <NewsMediaText>{media}</NewsMediaText>
             <NewsAuthorInfoText>박선홍 기자</NewsAuthorInfoText>
@@ -122,7 +122,9 @@ const StockNewsDetailHeader: React.FC = () => {
           <TagBookmarkWrapper>
             <InfoWrapper>
               {tagList.map((tag, index) => (
-                <NewsTag key={index}># {tag}</NewsTag>
+                <NewsTag key={index} $tagName={tag}>
+                  # {tag}
+                </NewsTag>
               ))}
             </InfoWrapper>
             {bookmarkedIcon}

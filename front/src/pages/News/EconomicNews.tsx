@@ -29,7 +29,7 @@ const EconomicNewsWrapper = styled.div<{ $showSummary: boolean }>`
   background-color: ${({ theme }) => theme.newsBackgroundColor};
   box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.1);
   width: 100%;
-  height: 18rem;
+  /* height: 18rem; */
   cursor: pointer;
 
   transition: ${({ $showSummary }) =>

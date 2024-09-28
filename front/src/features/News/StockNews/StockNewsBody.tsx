@@ -116,7 +116,9 @@ const StockNewsBody: React.FC<StockNewsBodyProps> = ({
 
       <BookmarkedNewsTagWrapper>
         {keywords.map((keyword, index) => (
-          <NewsTag key={index}># {keyword}</NewsTag>
+          <NewsTag key={index} $tagName={keyword}>
+            # {keyword}
+          </NewsTag>
         ))}
       </BookmarkedNewsTagWrapper>
     </StockNewsBodyWrapper>
