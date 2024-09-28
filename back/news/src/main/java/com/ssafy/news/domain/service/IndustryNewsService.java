@@ -4,7 +4,6 @@ package com.ssafy.news.domain.service;
 import com.ssafy.news.domain.entity.IndustryNews;
 import com.ssafy.news.domain.entity.dto.IndustryNewsDto;
 import com.ssafy.news.domain.repository.IndustryNewsRepository;
-import com.ssafy.news.global.exception.NewsNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -12,6 +11,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static com.ssafy.news.domain.service.converter.NewsConverter.convertIndustryToDtoList;
+import static com.ssafy.news.domain.service.validator.NewsValidator.validateNewsContent;
 
 @RequiredArgsConstructor
 @Service
@@ -28,7 +30,7 @@ public class IndustryNewsService {
         List<IndustryNews> top4 = industryNewsRepository.findTop4();
 
         validateNewsContent(top4);
-        return convertToDtoList(top4);
+        return convertIndustryToDtoList(top4);
     }
 
     /**
@@ -51,24 +53,7 @@ public class IndustryNewsService {
         }
 
         validateNewsContent(content);  // 뉴스가 없을 때 예외 처리
-        return convertToDtoList(content);  // DTO 변환
-    }
-
-    // -------------------------------------------
-
-    // 뉴스가 조회되지 않았을 때 처리하는 메서드 분리
-    private void validateNewsContent(List<IndustryNews> content) {
-        if (content.isEmpty()) {
-            log.error("뉴스가 조회되지 않았습니다.");
-            throw new NewsNotFoundException();
-        }
-    }
-
-    // 뉴스 목록을 DTO로 변환하는 메서드 분리
-    private List<IndustryNewsDto> convertToDtoList(List<IndustryNews> content) {
-        return content.stream()
-                .map(IndustryNewsDto::of)
-                .toList();
+        return convertIndustryToDtoList(content);  // DTO 변환
     }
 
 
