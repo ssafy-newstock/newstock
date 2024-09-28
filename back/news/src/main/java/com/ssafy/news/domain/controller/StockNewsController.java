@@ -5,7 +5,6 @@ import com.ssafy.news.domain.entity.dto.StockNewsPreviewDto;
 import com.ssafy.news.domain.service.StockNewsService;
 import com.ssafy.news.global.common.CommonResponse;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,7 +14,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StockNewsController {
     private final StockNewsService stockNewsService;
-    private final ModelMapper modelMapper;
 
     /**
      * 종목 뉴스 4개의 최신 뉴스를 조회하는 API
