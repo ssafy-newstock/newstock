@@ -43,7 +43,7 @@ public class IndustryNewsService {
      * @return
      */
     public List<IndustryNewsDto> getIndustryNews(String industry, int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("uploadDatetime").descending());
+        PageRequest pageRequest = PageRequest.of(Math.max(page - 1, 0), size, Sort.by("uploadDatetime").descending());
 
         List<IndustryNews> content = null;
         if (industry == null || industry.isEmpty()) {

@@ -28,7 +28,7 @@ public class StockNewsService {
     }
 
     public List<StockNewsDto> getStockNews(String stockCode, int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("uploadDatetime").descending());
+        PageRequest pageRequest = PageRequest.of(Math.max(page - 1, 0), size, Sort.by("uploadDatetime").descending());
 
         List<StockNews> content = null;
         if (stockCode == null || stockCode.isEmpty()) {
