@@ -1,6 +1,6 @@
 package com.ssafy.news.domain.controller;
 
-import com.ssafy.news.domain.service.NewsService;
+
 import com.ssafy.news.global.common.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/news")
 @RequiredArgsConstructor
 public class NewsController {
-    private final NewsService newsService;
     private final ModelMapper modelMapper;
     @GetMapping("/{newsType}/{newsId}")
     public CommonResponse<?> getOneNews(@PathVariable("newsType") String newsType,
