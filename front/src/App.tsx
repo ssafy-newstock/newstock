@@ -9,10 +9,10 @@ import useAllStockStore from '@store/useAllStockStore';
 import useCategoryStockStore from '@store/useCategoryStockStore';
 import useTop10StockStore from '@store/useTop10StockStore';
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 import WebSocketComponent from '@components/WebSocketComponent';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { axiosInstance } from '@api/axiosInstance';
 
 const Container = styled.div`
   display: flex;
@@ -46,9 +46,7 @@ const App = () => {
   useQuery({
     queryKey: ['top10StockData'],
     queryFn: async () => {
-      const response = await axios.get(
-        'https://newstock.info/api/stock/price-list/live'
-      );
+      const response = await axiosInstance.get('/stock/price-list/live');
       setTop10Stock(response.data.data);
       return response.data.data;
     },
@@ -57,9 +55,7 @@ const App = () => {
   useQuery({
     queryKey: ['industryData'],
     queryFn: async () => {
-      const response = await axios.get(
-        'https://newstock.info/api/stock/industry-list'
-      );
+      const response = await axiosInstance.get('/stock/industry-list');
       setCategoryStock(response.data.data);
       return response.data.data;
     },
@@ -68,9 +64,7 @@ const App = () => {
   useQuery({
     queryKey: ['allStockData'],
     queryFn: async () => {
-      const response = await axios.get(
-        'https://newstock.info/api/stock/price-list'
-      );
+      const response = await axiosInstance.get('/stock/price-list');
       setAllStock(response.data.data);
       return response.data.data;
     },

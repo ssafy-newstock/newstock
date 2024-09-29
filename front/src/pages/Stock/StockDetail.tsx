@@ -23,7 +23,7 @@ import { Link, Outlet, useLocation } from 'react-router-dom';
 import blueLogo from '@assets/Stock/blueLogo.png';
 import TradeForm from '@features/Stock/StockDetail/TradeForm';
 import { RightVacant } from '@components/RightVacant';
-import { axiosInstance } from '@api/axiosInstance';
+import { authRequest } from '@api/axiosInstance';
 import { HeartFill } from '@features/Stock/HeartFill';
 import { Heart } from '@features/Stock/Heart';
 import useAuthStore from '@store/useAuthStore';
@@ -55,7 +55,7 @@ const StockDetailPage = () => {
   } = useQuery<IFavoriteStock[]>({
     queryKey: ['favoriteStockList'],
     queryFn: async () => {
-      const response = await axiosInstance.get('/stock/favorite');
+      const response = await authRequest.get('/stock/favorite');
       return response.data.data;
     },
     // 초기 데이터 설정 -> 타입 설정시 undefined 고려할 필요 없어짐
@@ -77,7 +77,7 @@ const StockDetailPage = () => {
     IMutationContext
   >({
     mutationFn: async (stockCode: string) => {
-      await axiosInstance.post(`/stock/favorite/${stockCode}`);
+      await authRequest.post(`/stock/favorite/${stockCode}`);
     },
     onMutate: async (stockCode: string) => {
       await queryClient.cancelQueries({ queryKey: ['favoriteStockList'] });
@@ -118,7 +118,7 @@ const StockDetailPage = () => {
     IMutationContext
   >({
     mutationFn: async (stockCode: string) => {
-      await axiosInstance.delete(`/stock/favorite/${stockCode}`);
+      await authRequest.delete(`/stock/favorite/${stockCode}`);
     },
     onMutate: async (stockCode: string) => {
       await queryClient.cancelQueries({ queryKey: ['favoriteStockList'] });

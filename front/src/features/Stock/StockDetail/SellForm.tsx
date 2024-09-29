@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { axiosInstance } from '@api/axiosInstance';
+import { authRequest } from '@api/axiosInstance';
 import TradeModal from '@features/Stock/StockDetail/TradeModal';
 import {
   ColumnWrapper,
@@ -74,7 +74,7 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
     // 매도 로직
     try {
       // 매도 API 요청
-      const response = await axiosInstance.post('/stock/transaction/sell', {
+      const response = await authRequest.post('/stock/transaction/sell', {
         stockCode: stockCode,
         stockTransactionAmount: sellData.amount,
         stockTransactionType: 'SELL',

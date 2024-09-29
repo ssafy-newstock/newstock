@@ -25,7 +25,7 @@ import Modal from '@features/Stock/SectionStock/Modal';
 import useCategoryStockStore from '@store/useCategoryStockStore';
 import useTop10StockStore from '@store/useTop10StockStore';
 import { useQuery } from '@tanstack/react-query';
-import { axiosInstance } from '@api/axiosInstance';
+import { authRequest } from '@api/axiosInstance';
 import useAllStockStore from '@store/useAllStockStore';
 import useAuthStore from '@store/useAuthStore';
 import LoadingSpinner from '@components/LoadingSpinner';
@@ -61,7 +61,7 @@ const StockMainPage = () => {
     useQuery({
       queryKey: ['favoriteStockList'],
       queryFn: async () => {
-        const response = await axiosInstance.get('/stock/favorite');
+        const response = await authRequest.get('/stock/favorite');
         return response.data.data;
       },
       enabled: isLogin,
