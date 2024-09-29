@@ -5,12 +5,13 @@ import { ILive, IStock } from '@features/Stock/types';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import LoadingSpinner from '@components/LoadingSpinner';
+import { Suspense } from 'react';
 
 const StockLiveUpdates: React.FC = () => {
   const { state } = useLocation() as { state: { stock: IStock } };
   const { stock } = state;
 
-  const { data: StockLiveChart, isLoading: chartLoading } = useQuery<ILive[]>({
+  const { data: StockLiveChart } = useQuery<ILive[]>({
     queryKey: [`StockLiveChart-${stock.stockCode}`],
     queryFn: async () => {
       const response = await axios.get(
@@ -20,10 +21,6 @@ const StockLiveUpdates: React.FC = () => {
     },
     staleTime: 1000 * 60 * 5, // 5분 이내에는 캐시된 데이터 사용
   });
-
-  if (chartLoading) {
-    return <LoadingSpinner />;
-  }
 
   const series = [
     {
@@ -83,7 +80,9 @@ const StockLiveUpdates: React.FC = () => {
 
   return (
     <div id="chart">
-      <Chart options={options} series={series} type="line" height={350} />
+      <Suspense fallback={<LoadingSpinner />}>
+        <Chart options={options} series={series} type="line" height={350} />
+      </Suspense>
     </div>
   );
 };

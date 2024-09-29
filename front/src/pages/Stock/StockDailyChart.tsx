@@ -5,6 +5,7 @@ import { IDaily, IStock } from '@features/Stock/types';
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import LoadingSpinner from '@components/LoadingSpinner';
+import { Suspense } from 'react';
 
 const StockDailyChart = () => {
   // 구조분해할당 활용
@@ -16,7 +17,7 @@ const StockDailyChart = () => {
     endDate: '2024-09-20',
   };
 
-  const { data: stockDailyChart, isLoading: chartLoading } = useQuery<IDaily[]>(
+  const { data: stockDailyChart, } = useQuery<IDaily[]>(
     {
       // 쿼리 키 대쉬 보다 배열 , 로 구분하여 변경
       queryKey: [`stockDailyChart-${stock.stockCode}`],
@@ -35,9 +36,10 @@ const StockDailyChart = () => {
   // const {} = useInfiniteQuery({
   // })
 
-  if (chartLoading) {
-    return <LoadingSpinner />;
-  }
+  // if (chartLoading) {
+  //   return <LoadingSpinner />;
+  // }
+
   // stockDailyChart가 undefined가 아닌 경우에만 데이터 생성
   const series = stockDailyChart
     ? [
@@ -92,12 +94,14 @@ const StockDailyChart = () => {
 
   return (
     <div id="chart">
-      <Chart
-        options={options}
-        series={series}
-        type="candlestick"
-        height={350}
-      />
+      <Suspense fallback={<LoadingSpinner />}>
+        <Chart
+          options={options}
+          series={series}
+          type="candlestick"
+          height={350}
+        />
+      </Suspense>
     </div>
   );
 };

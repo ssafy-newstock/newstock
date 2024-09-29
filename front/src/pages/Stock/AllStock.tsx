@@ -12,12 +12,13 @@ import {
 } from '@features/Stock/styledComponent';
 import { IStock } from '@features/Stock/types';
 import { RightVacant } from '@components/RightVacant';
-import { useMemo, useState } from 'react';
+import { Suspense, useMemo, useState } from 'react';
 import { ButtonWrapper, SortButton } from '@features/Stock/styledComponent';
 import styled from 'styled-components';
 import useAllStockStore from '@store/useAllStockStore';
 import SearchIcon from '@features/Stock/AllStock/SearchIcon';
 import useTop10StockStore from '@store/useTop10StockStore';
+import LoadingSpinner from '@components/LoadingSpinner';
 
 const Underline = styled.div<{ $sortBy: string }>`
   position: absolute;
@@ -121,9 +122,11 @@ const AllStockPage: React.FC = () => {
         <DividedSection>
           <StockGridRow>
             <AllStockFirstRow />
-            {sortedStockData.map((stock: IStock, index: number) => (
-              <AllStock key={index} stock={stock} />
-            ))}
+            <Suspense fallback={<LoadingSpinner />}>
+              {sortedStockData.map((stock: IStock, index: number) => (
+                <AllStock key={index} stock={stock} />
+              ))}
+            </Suspense>
           </StockGridRow>
         </DividedSection>
       </Center>
