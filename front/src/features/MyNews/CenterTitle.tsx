@@ -10,6 +10,7 @@ import {
   FontStyle,
   SelectDateDiv,
 } from './styledComponent';
+import { ko } from 'date-fns/locale';
 
 const CenterTitle: React.FC<{
   onDateRangeChange: (dates: [Date | null, Date | null]) => void;
@@ -66,6 +67,7 @@ const CenterTitle: React.FC<{
               dateFormat="yyyy.MM.dd"
               shouldCloseOnSelect={false}
               customInput={<CustomInput />}
+              locale={ko}
             />
           </SelectDateDiv>
         </CenterMenuLeft>
