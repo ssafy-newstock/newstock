@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 public class StockNewsDto {
-    private Long id;
+    private Long stockNewsId;
     private String article;
     private String description;
     private String media;
@@ -30,7 +30,7 @@ public class StockNewsDto {
 
     public static StockNewsDto of(StockNews entity, List<String> stockNewsStockCodes, List<String> stockKeywords) {
         StockNewsDto dto = new StockNewsDto();
-        dto.id = entity.getId();
+        dto.stockNewsId = entity.getId();
         dto.article = entity.getArticle();
         dto.description = entity.getDescription();
         dto.media = entity.getMedia();
