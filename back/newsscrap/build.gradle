@@ -37,3 +37,7 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+bootJar {
+    archiveBaseName = 'newsscrap'
+}
