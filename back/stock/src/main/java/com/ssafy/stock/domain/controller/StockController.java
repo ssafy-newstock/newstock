@@ -168,4 +168,12 @@ public class StockController{
 
         return ResponseEntity.ok(success(stockMyPage));
     }
+
+
+    @GetMapping("/stock-code/name")
+    public ResponseEntity<?> getStockName(@RequestParam List<String> stockCodeList){
+        List<StockCodeToNameResponse> stockNameList = stockService.getStockName(stockCodeList);
+
+        return ResponseEntity.ok(success(stockNameList));
+    }
 }

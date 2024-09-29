@@ -13,6 +13,7 @@ import com.ssafy.stock.domain.repository.redis.StocksPriceLiveDailyChartRedisRep
 import com.ssafy.stock.domain.repository.redis.StocksPriceRedisRepository;
 import com.ssafy.stock.domain.repository.redis.StocksRedisRepository;
 import com.ssafy.stock.domain.service.helper.StockConverter;
+import com.ssafy.stock.domain.service.request.StockCodeToNameRequest;
 import com.ssafy.stock.domain.service.response.*;
 import com.ssafy.stock.global.token.KISTokenService;
 import lombok.RequiredArgsConstructor;
@@ -365,4 +366,17 @@ public class StockService {
         log.info("{}번 회원이 {} 주식을 찜 해제했습니다.", memberId, stock.getStockName());
     }
 
+    /**
+     * 주식 코드 -> 이름 변환 메소드
+     * @param stockCodeList
+     * @return
+     */
+    public List<StockCodeToNameResponse> getStockName(List<String> stockCodeList){
+        return stockCodeList.stream()
+                .map(stockCode -> {
+                    Stocks stock = stocksRepository.findByStockCode(stockCode)
+                            .orElseThrow(() -> new StockNotFoundException());
+                    return new StockCodeToNameResponse(stockCode, stock.getStockName());
+                }).toList();
+    }
 }

@@ -2,7 +2,10 @@ package com.ssafy.news.global.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
+/**
+ * HBase를 위한 Util 클래스
+ */
+@Deprecated
 public class HashUtil {
 
     // 뉴스 ID를 해시로 변환하는 메서드
