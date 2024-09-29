@@ -1,7 +1,7 @@
 package com.ssafy.news.domain.service;
 
-import com.ssafy.news.domain.entity.StockNews;
-import com.ssafy.news.domain.entity.StockNewsStockCode;
+import com.ssafy.news.domain.entity.stock.StockNews;
+import com.ssafy.news.domain.entity.stock.StockNewsStockCode;
 import com.ssafy.news.domain.entity.dto.StockNewsDto;
 import com.ssafy.news.domain.entity.dto.StockNewsPreviewDto;
 import com.ssafy.news.domain.repository.StockNewsRepository;
