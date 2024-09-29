@@ -12,6 +12,8 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import LoadingPage from '@components/LodingPage';
 import WebSocketComponent from '@components/WebSocketComponent';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Container = styled.div`
   display: flex;
@@ -75,19 +77,19 @@ const App = () => {
     },
   });
 
-
-  const isLoading = isTop10StockLoading || isIndustryLoading || isAllStockLoading;
+  const isLoading =
+    isTop10StockLoading || isIndustryLoading || isAllStockLoading;
 
   if (isLoading) {
     return <LoadingPage />;
   }
 
-//   에러 처리 ErroBoundary, Suspense 사용
-//   <ErrorBoundary fallback=<ErrorComponent/>
-//  <Suspense fallback=<Skeleton/>
-//  <component/>
-//  </Suspense>
-//  <ErrorBoundary>
+  //   에러 처리 ErroBoundary, Suspense 사용
+  //   <ErrorBoundary fallback=<ErrorComponent/>
+  //  <Suspense fallback=<Skeleton/>
+  //  <component/>
+  //  </Suspense>
+  //  <ErrorBoundary>
 
   return (
     <ThemeProvider theme={currentTheme}>
@@ -102,7 +104,18 @@ const App = () => {
         </Main>
       </Container>
       {/* 웹소켓 연결 */}
-      <WebSocketComponent/>
+      <WebSocketComponent />
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={true}
+        rtl={false}
+        pauseOnFocusLoss={false}
+        draggable={true}
+        pauseOnHover={false}
+      />
     </ThemeProvider>
   );
 };
