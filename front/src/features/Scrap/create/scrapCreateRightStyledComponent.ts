@@ -11,7 +11,8 @@ export const RightTitleTopDiv = styled.div`
 export const RightTitleBottomDiv = styled.div`
   display: flex;
   width: 100%;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 1rem;
   align-items: center;
   margin-top: 1.25rem;
 `;
@@ -25,7 +26,7 @@ export const RightTitleBottomFilterDiv = styled.div`
 
 export const RightNewsCardDiv = styled.div`
   display: flex;
-  padding: 0.9375rem 0.625rem;
+  padding: 0.9375rem 0.625rem 0rem 0.625rem;
   flex-direction: column;
   align-items: flex-start;
   gap: 0.625rem;
@@ -46,11 +47,11 @@ export const RightNewsCardBottomDiv = styled.div`
 
 export const RightNewsCardTagDiv = styled.div`
   display: flex;
-  padding: 5px;
+  padding: 0.313rem;
   justify-content: center;
   align-items: center;
-  gap: 10px;
-  border-radius: 0.625rem;
+  gap: 0.625rem;
+  border-radius: 0.3rem;
   background: ${({ theme }) => theme.buttonBackgroundColor};
 `;
 
