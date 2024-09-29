@@ -1,4 +1,4 @@
-package com.ssafy.news.domain.entity;
+package com.ssafy.news.domain.entity.stock;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -6,8 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -29,8 +28,8 @@ public class StockNews {
     private LocalDateTime uploadDatetime;
 
     @OneToMany(mappedBy = "stockNews")
-    private List<StockNewsStockCode> stockNewsStockCodes = new ArrayList<>();
+    private Set<StockNewsStockCode> stockNewsStockCodes;
 
     @OneToMany(mappedBy = "stockNews")
-    private List<StockKeyword> stockKeywords = new ArrayList<>();
+    private Set<StockKeyword> stockKeywords;
 }

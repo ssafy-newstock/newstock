@@ -1,9 +1,8 @@
 package com.ssafy.news.domain.service;
 
 
-import com.ssafy.news.domain.entity.IndustryNews;
 import com.ssafy.news.domain.entity.dto.IndustryNewsDto;
-import com.ssafy.news.domain.entity.dto.IndustryNewsPreviewDto;
+import com.ssafy.news.domain.entity.industry.IndustryNews;
 import com.ssafy.news.domain.repository.IndustryNewsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +27,8 @@ public class IndustryNewsService {
      *
      * @return 최신 뉴스 4개
      */
-    public List<IndustryNewsPreviewDto> getRecentIndustryNewsTop4() {
-        List<IndustryNewsPreviewDto> content = industryNewsRepository.findAllIndustryNewsPreview(PageRequest.of(0, 4)).getContent();
+    public List<IndustryNewsDto> getRecentIndustryNewsTop4() {
+        List<IndustryNewsDto> content = industryNewsRepository.findAllIndustryNewsPreview(PageRequest.of(0, 4)).getContent();
 
         // IndustryNewsPreviewDto 로 반환되기에 valid 이후 바로 반환
         validateNewsListContent(content);
@@ -45,12 +44,12 @@ public class IndustryNewsService {
      * @param size     사이즈
      * @return
      */
-    public List<IndustryNewsPreviewDto> getIndustryNewsPreviews(String industry, int page, int size) {
+    public List<IndustryNewsDto> getIndustryNewsPreviews(String industry, int page, int size) {
         PageRequest pageRequest = PageRequest.of(Math.max(page - 1, 0), size, Sort.by("uploadDatetime").descending());
 
         // 만약 industry 가 있다면, 특정 산업에 맞는 뉴스 반환
         // 없다면 최신순으로 전체 뉴스 반환
-        List<IndustryNewsPreviewDto> content = null;
+        List<IndustryNewsDto> content = null;
         if (industry == null || industry.isEmpty()) {
             content = industryNewsRepository.findAllIndustryNewsPreview(pageRequest).getContent();
         } else {
@@ -62,6 +61,11 @@ public class IndustryNewsService {
         return content;
     }
 
+    /**
+     * ID를 통해 시황 뉴스의 상세 정보를 조회하는 메소드
+     * @param id
+     * @return
+     */
     public IndustryNewsDto getIndustryNews(Long id) {
         Optional<IndustryNews> findNews = industryNewsRepository.findById(id);
         validateNewsContent(findNews);

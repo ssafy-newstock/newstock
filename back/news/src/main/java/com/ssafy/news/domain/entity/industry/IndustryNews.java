@@ -1,17 +1,21 @@
-package com.ssafy.newsscrap.controller.response;
+package com.ssafy.news.domain.entity.industry;
 
-import lombok.AllArgsConstructor;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import java.time.LocalDateTime;
 
-@AllArgsConstructor
-@NoArgsConstructor
+@Entity
 @Getter
-@ToString
-public class IndustryNewsResponse {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class IndustryNews {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "industry_news_id")
+    private Long id;
+
     private String article;
     private String description;
     private String industry;

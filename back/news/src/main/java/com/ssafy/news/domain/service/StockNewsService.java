@@ -1,9 +1,8 @@
 package com.ssafy.news.domain.service;
 
-import com.ssafy.news.domain.entity.StockNews;
-import com.ssafy.news.domain.entity.StockNewsStockCode;
 import com.ssafy.news.domain.entity.dto.StockNewsDto;
-import com.ssafy.news.domain.entity.dto.StockNewsPreviewDto;
+import com.ssafy.news.domain.entity.stock.StockNews;
+import com.ssafy.news.domain.entity.stock.StockNewsStockCode;
 import com.ssafy.news.domain.repository.StockNewsRepository;
 import com.ssafy.news.domain.service.client.StockClient;
 import com.ssafy.news.domain.service.client.response.StockCodeToNameResponse;
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.ssafy.news.domain.service.converter.NewsConverter.*;
@@ -28,12 +28,18 @@ import static com.ssafy.news.domain.service.validator.NewsValidator.validateNews
 public class StockNewsService {
     private final StockNewsRepository stockNewsRepository;
     private final StockClient stockClient;
-    public List<StockNewsPreviewDto> getRecentStockNewsTop4() {
+
+    /**
+     * 최근 4개의 주식 뉴스를 조회하는 메소드
+     * 특정 주식이 아닌 전체 뉴스 중 4개를 조회함
+     * @return
+     */
+    public List<StockNewsDto> getRecentStockNewsTop4() {
         List<StockNews> top4 = stockNewsRepository.findAllStockNews(PageRequest.of(0, 4)).getContent();
 
         validateNewsListContent(top4);
 
-        List<StockNewsPreviewDto> result = top4.stream()
+        List<StockNewsDto> result = top4.stream()
                 .map(stockNews -> {
                     List<String> stringCodes = convertStockCodeToDto(stockNews.getStockNewsStockCodes());
                     List<StockCodeToNameResponse> response = (List<StockCodeToNameResponse>) stockClient.getStockName(stringCodes).getData();
@@ -45,7 +51,15 @@ public class StockNewsService {
         return result;
     }
 
-    public List<StockNewsPreviewDto> getStockNewsPreviews(String stockCode, int page, int size) {
+    /**
+     * 주식 코드를 기준으로 최근 뉴스 preview 객체 리스트를 반환해주는 메소드
+     * 만약 주식 코드가 없다면 전체 주식 코드를 기준으로 반환
+     * @param stockCode
+     * @param page
+     * @param size
+     * @return
+     */
+    public List<StockNewsDto> getStockNewsPreviews(String stockCode, int page, int size) {
         PageRequest pageRequest = PageRequest.of(Math.max(page - 1, 0), size, Sort.by("uploadDatetime").descending());
 
         List<StockNews> content = null;
@@ -58,9 +72,9 @@ public class StockNewsService {
         validateNewsListContent(content);  // 뉴스가 없을 때 예외 처리
 
 
-        List<StockNewsPreviewDto> result = content.stream()
+        List<StockNewsDto> result = content.stream()
                 .map(stockNews -> {
-                    List<StockNewsStockCode> stockNewsStockCodes = stockNews.getStockNewsStockCodes();
+                    Set<StockNewsStockCode> stockNewsStockCodes = stockNews.getStockNewsStockCodes();
                     List<String> stringCodes = convertStockCodeToDto(stockNewsStockCodes);
 
                     CommonResponse<?> response = stockClient.getStockName(stringCodes);
@@ -74,10 +88,20 @@ public class StockNewsService {
         return result;  // DTO 변환
     }
 
+    /**
+     * ID를 기준으로 종목 뉴스 상세 정보를 조회하는 메소드
+     * @param id
+     * @return
+     */
     public StockNewsDto getStockNewsDetail(Long id) {
         Optional<StockNews> findNews = stockNewsRepository.findById(id);
         validateNewsContent(findNews);
 
-        return convertStockToDto(findNews.get());
+        StockNews stockNews = findNews.get();
+        List<String> keywords = convertKeywordToDto(stockNews.getStockKeywords());
+        List<String> stringCodes = convertStockCodeToDto(stockNews.getStockNewsStockCodes());
+        List<StockCodeToNameResponse> stockCodes = (List<StockCodeToNameResponse>) stockClient.getStockName(stringCodes).getData();
+
+        return StockNewsDto.of(stockNews, stockCodes, keywords);
     }
 }
