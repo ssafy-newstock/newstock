@@ -1,7 +1,7 @@
 import { axiosInstance } from '@api/axiosInstance';
 import NewsSection from '@features/MyNews/NewsSection';
 import { CenterContentDiv } from '@features/MyNews/styledComponent';
-import { parseISO, isWithinInterval } from 'date-fns';
+import { parseISO, isWithinInterval, parse } from 'date-fns';
 import { useEffect, useState } from 'react';
 
 interface NewsData {
@@ -54,12 +54,14 @@ const CenterContent: React.FC<CenterContentProps> = ({ selectedDateRange }) => {
     if (selectedDateRange[0] && selectedDateRange[1]) {
       const [startDate, endDate] = selectedDateRange;
       // 선택된 날짜 범위에 맞는 뉴스 필터링
-      const filtered = EconomicNews.filter((news) =>
-        isWithinInterval(parseISO(news.uploadDatetime), {
-          start: startDate!,
-          end: endDate!,
-        })
-      );
+
+      const filtered = EconomicNews.filter((news) => {
+        const cardDate = parse(news.uploadDatetime, 'yyyy.MM.dd', new Date()); // card.Date를 Date 객체로 변환
+        return isWithinInterval(cardDate, {
+          start: startDate, // 여기에 Date 객체 사용
+          end: endDate,
+        });
+      });
       setFilteredEconomicNews(filtered);
     } else {
       setFilteredEconomicNews(EconomicNews); // 날짜가 없으면 전체 뉴스
@@ -68,12 +70,13 @@ const CenterContent: React.FC<CenterContentProps> = ({ selectedDateRange }) => {
     if (selectedDateRange[0] && selectedDateRange[1]) {
       const [startDate, endDate] = selectedDateRange;
       // 선택된 날짜 범위에 맞는 뉴스 필터링
-      const filtered = StockNews.filter((news) =>
-        isWithinInterval(parseISO(news.uploadDatetime), {
-          start: startDate!,
-          end: endDate!,
-        })
-      );
+      const filtered = StockNews.filter((news) => {
+        const cardDate = parse(news.uploadDatetime, 'yyyy.MM.dd', new Date()); // card.Date를 Date 객체로 변환
+        return isWithinInterval(cardDate, {
+          start: startDate, // 여기에 Date 객체 사용
+          end: endDate,
+        });
+      });
       setFilteredStockNews(filtered);
     } else {
       setFilteredStockNews(StockNews); // 날짜가 없으면 전체 뉴스
