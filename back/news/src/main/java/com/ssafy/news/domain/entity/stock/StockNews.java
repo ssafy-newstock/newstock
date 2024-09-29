@@ -1,4 +1,4 @@
-package com.ssafy.news.domain.entity;
+package com.ssafy.news.domain.entity.stock;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -6,19 +6,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class IndustryNews {
+public class StockNews {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "industry_news_id")
+    @Column(name = "stock_news_id")
     private Long id;
 
     private String article;
     private String description;
-    private String industry;
     private String media;
     private String newsId;
     private String sentiment;
@@ -26,4 +27,10 @@ public class IndustryNews {
     private String thumbnail;
     private String title;
     private LocalDateTime uploadDatetime;
+
+    @OneToMany(mappedBy = "stockNews")
+    private List<StockNewsStockCode> stockNewsStockCodes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "stockNews")
+    private List<StockKeyword> stockKeywords = new ArrayList<>();
 }

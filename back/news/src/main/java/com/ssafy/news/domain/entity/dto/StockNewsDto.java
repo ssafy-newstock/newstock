@@ -1,6 +1,6 @@
 package com.ssafy.news.domain.entity.dto;
 
-import com.ssafy.news.domain.entity.StockNews;
+import com.ssafy.news.domain.entity.stock.StockNews;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

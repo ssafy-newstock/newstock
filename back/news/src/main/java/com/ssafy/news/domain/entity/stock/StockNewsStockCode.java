@@ -1,4 +1,4 @@
-package com.ssafy.news.domain.entity;
+package com.ssafy.news.domain.entity.stock;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
