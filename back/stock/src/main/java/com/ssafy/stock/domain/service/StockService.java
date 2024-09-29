@@ -13,7 +13,6 @@ import com.ssafy.stock.domain.repository.redis.StocksPriceLiveDailyChartRedisRep
 import com.ssafy.stock.domain.repository.redis.StocksPriceRedisRepository;
 import com.ssafy.stock.domain.repository.redis.StocksRedisRepository;
 import com.ssafy.stock.domain.service.helper.StockConverter;
-import com.ssafy.stock.domain.service.request.StockCodeToNameRequest;
 import com.ssafy.stock.domain.service.response.*;
 import com.ssafy.stock.global.token.KISTokenService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +29,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutorService;
@@ -371,12 +371,19 @@ public class StockService {
      * @param stockCodeList
      * @return
      */
-    public List<StockCodeToNameResponse> getStockName(List<String> stockCodeList){
+    public List<StockCodeToNameResponse> getStockName(List<String> stockCodeList) {
+        List<Stocks> stocksList = stocksRepository.findByStockCodeIn(stockCodeList);
+
+        Map<String, String> stockCodeToNameMap = stocksList.stream()
+                .collect(Collectors.toMap(Stocks::getStockCode, Stocks::getStockName));
+
         return stockCodeList.stream()
                 .map(stockCode -> {
-                    Stocks stock = stocksRepository.findByStockCode(stockCode)
-                            .orElseThrow(() -> new StockNotFoundException());
-                    return new StockCodeToNameResponse(stockCode, stock.getStockName());
+                    String stockName = stockCodeToNameMap.get(stockCode);
+                    if (stockName == null) {
+                        throw new StockNotFoundException();
+                    }
+                    return new StockCodeToNameResponse(stockCode, stockName);
                 }).toList();
     }
 }

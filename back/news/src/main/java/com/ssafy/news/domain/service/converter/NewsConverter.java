@@ -5,6 +5,7 @@ import com.ssafy.news.domain.entity.StockKeyword;
 import com.ssafy.news.domain.entity.StockNews;
 import com.ssafy.news.domain.entity.StockNewsStockCode;
 import com.ssafy.news.domain.entity.dto.*;
+import com.ssafy.news.domain.service.client.response.StockCodeToNameResponse;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -32,14 +33,9 @@ public class NewsConverter {
     }
 
     // 종목 뉴스 목록을 프리뷰 DTO로 변환
-    public static List<StockNewsPreviewDto> convertStockToPreviewDtoList(List<StockNews> content) {
-        return content.stream()
-                .map(stockNews -> {
-                    List<String> stockKeywords = convertKeywordToDto(stockNews.getStockKeywords());
-                    List<String> stockNewsStockCodeDtos = convertStockCodeToDto(stockNews.getStockNewsStockCodes());
-
-                    return StockNewsPreviewDto.of(stockNews, stockNewsStockCodeDtos, stockKeywords);
-                }).collect(toList());
+    public static StockNewsPreviewDto convertStockToPreviewDto(StockNews content, List<StockCodeToNameResponse> stockNewsStockCodeDtos) {
+        List<String> stockKeywords = convertKeywordToDto(content.getStockKeywords());
+        return StockNewsPreviewDto.of(content, stockNewsStockCodeDtos, stockKeywords);
     }
 
     // 종목 뉴스를 DTO 로 변환하는 메소드
@@ -50,13 +46,13 @@ public class NewsConverter {
         return StockNewsDto.of(content, stockNewsStockCodeDtos, stockKeywords);
     }
 
-    private static List<String> convertKeywordToDto(List<StockKeyword> content) {
+    public static List<String> convertKeywordToDto(List<StockKeyword> content) {
         return content.stream()
                 .map(StockKeyword::getKeyword)
                 .collect(Collectors.toList());
     }
 
-    private static List<String> convertStockCodeToDto(List<StockNewsStockCode> content) {
+    public static List<String> convertStockCodeToDto(List<StockNewsStockCode> content) {
         return content.stream()
                 .map(StockNewsStockCode::getStockCode)
                 .collect(Collectors.toList());

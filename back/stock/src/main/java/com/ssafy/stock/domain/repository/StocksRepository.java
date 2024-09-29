@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface StocksRepository extends JpaRepository<Stocks, Long> {
     Optional<Stocks> findByStockCode(String stockCode);
 
+    List<Stocks> findByStockCodeIn(List<String> stockCodes);
     @Query("SELECT s " +
             "FROM Stocks s " +
             "LEFT JOIN FETCH s.stocksCandles " +
