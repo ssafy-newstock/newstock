@@ -28,6 +28,12 @@ import static com.ssafy.news.domain.service.validator.NewsValidator.validateNews
 public class StockNewsService {
     private final StockNewsRepository stockNewsRepository;
     private final StockClient stockClient;
+
+    /**
+     * 최근 4개의 주식 뉴스를 조회하는 메소드
+     * 특정 주식이 아닌 전체 뉴스 중 4개를 조회함
+     * @return
+     */
     public List<StockNewsPreviewDto> getRecentStockNewsTop4() {
         List<StockNews> top4 = stockNewsRepository.findAllStockNews(PageRequest.of(0, 4)).getContent();
 
@@ -45,6 +51,14 @@ public class StockNewsService {
         return result;
     }
 
+    /**
+     * 주식 코드를 기준으로 최근 뉴스 preview 객체 리스트를 반환해주는 메소드
+     * 만약 주식 코드가 없다면 전체 주식 코드를 기준으로 반환
+     * @param stockCode
+     * @param page
+     * @param size
+     * @return
+     */
     public List<StockNewsPreviewDto> getStockNewsPreviews(String stockCode, int page, int size) {
         PageRequest pageRequest = PageRequest.of(Math.max(page - 1, 0), size, Sort.by("uploadDatetime").descending());
 
@@ -74,6 +88,11 @@ public class StockNewsService {
         return result;  // DTO 변환
     }
 
+    /**
+     * ID를 기준으로 종목 뉴스 상세 정보를 조회하는 메소드
+     * @param id
+     * @return
+     */
     public StockNewsDto getStockNewsDetail(Long id) {
         Optional<StockNews> findNews = stockNewsRepository.findById(id);
         validateNewsContent(findNews);

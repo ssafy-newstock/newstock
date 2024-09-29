@@ -62,6 +62,11 @@ public class IndustryNewsService {
         return content;
     }
 
+    /**
+     * ID를 통해 시황 뉴스의 상세 정보를 조회하는 메소드
+     * @param id
+     * @return
+     */
     public IndustryNewsDto getIndustryNews(Long id) {
         Optional<IndustryNews> findNews = industryNewsRepository.findById(id);
         validateNewsContent(findNews);
