@@ -1,6 +1,6 @@
 package com.ssafy.news.domain.repository;
 
-import com.ssafy.news.domain.entity.StockNews;
+import com.ssafy.news.domain.entity.stock.StockNews;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
