@@ -13,6 +13,7 @@ import {
 } from '@features/Scrap/scrapStyledComponent';
 import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
+import { ko } from 'date-fns/locale';
 
 const RightTitle: React.FC<{
   onDateRangeChange: (dates: [Date | null, Date | null]) => void;
@@ -33,7 +34,6 @@ const RightTitle: React.FC<{
     onDateRangeChange([null, null]); // 날짜 선택 초기화
   };
 
-  // Custom input to display both CalendarIcon and selected date range
   const CustomInput = React.forwardRef(({ value, onClick }: any, ref: any) => (
     <div
       onClick={onClick}
@@ -65,14 +65,15 @@ const RightTitle: React.FC<{
         </TextP_16>
         <RightTitleBottomFilterDiv style={{ cursor: 'pointer' }}>
           <DatePicker
-            selected={startDate || undefined} // null 대신 undefined로 변환
+            selected={startDate || undefined}
             onChange={handleDateChange}
-            startDate={startDate || undefined} // null 대신 undefined로 변환
-            endDate={endDate || undefined} // null 대신 undefined로 변환
+            startDate={startDate || undefined}
+            endDate={endDate || undefined}
             selectsRange
             dateFormat="yyyy.MM.dd"
             shouldCloseOnSelect={false}
             customInput={<CustomInput />}
+            locale={ko}
           />
         </RightTitleBottomFilterDiv>
       </RightTitleBottomDiv>
