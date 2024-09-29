@@ -1,9 +1,9 @@
 package com.ssafy.news.domain.service.converter;
 
-import com.ssafy.news.domain.entity.IndustryNews;
-import com.ssafy.news.domain.entity.StockKeyword;
-import com.ssafy.news.domain.entity.StockNews;
-import com.ssafy.news.domain.entity.StockNewsStockCode;
+import com.ssafy.news.domain.entity.industry.IndustryNews;
+import com.ssafy.news.domain.entity.stock.StockKeyword;
+import com.ssafy.news.domain.entity.stock.StockNews;
+import com.ssafy.news.domain.entity.stock.StockNewsStockCode;
 import com.ssafy.news.domain.entity.dto.*;
 import com.ssafy.news.domain.service.client.response.StockCodeToNameResponse;
 import lombok.extern.slf4j.Slf4j;
