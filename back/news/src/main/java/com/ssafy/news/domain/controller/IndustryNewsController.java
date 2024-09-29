@@ -4,7 +4,6 @@ import com.ssafy.news.domain.entity.dto.IndustryNewsDto;
 import com.ssafy.news.domain.service.IndustryNewsService;
 import com.ssafy.news.global.common.CommonResponse;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,7 +13,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class IndustryNewsController {
     private final IndustryNewsService industryNewsService;
-    private final ModelMapper modelMapper;
 
     @GetMapping("/top4")
     public CommonResponse<?> getTop4() {
