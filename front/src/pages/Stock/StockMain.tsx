@@ -29,6 +29,7 @@ import { authRequest } from '@api/axiosInstance';
 import useAllStockStore from '@store/useAllStockStore';
 import useAuthStore from '@store/useAuthStore';
 import LoadingSpinner from '@components/LoadingSpinner';
+import { toast } from 'react-toastify';
 
 // 새로운 컴포넌트: FavoriteStockSection
 const FavoriteStockSection = () => {
@@ -40,6 +41,7 @@ const FavoriteStockSection = () => {
     queryKey: ['favoriteStockList'],
     queryFn: async () => {
       const response = await authRequest.get('/stock/favorite');
+      toast.success('관심 주식 목록을 불러왔습니다.');
       return response.data.data;
     },
     enabled: isLogin,

@@ -7,6 +7,7 @@ import LoadingSpinner from '@components/LoadingSpinner';
 import { Suspense, useState } from 'react';
 import dayjs from 'dayjs';
 import { axiosInstance } from '@api/axiosInstance';
+import { toast } from 'react-toastify';
 
 // 타임프레임 상수
 const TIMEFRAMES = [
@@ -61,6 +62,7 @@ const StockDailyChart = () => {
         `/stock/${stock.stockCode}/candle`,
         { params }
       );
+      toast.success(`${stock.stockName} 조회 완료`);
       return response.data.data;
     },
   });

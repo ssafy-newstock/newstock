@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import LoadingSpinner from '@components/LoadingSpinner';
 import { Suspense } from 'react';
+import { toast } from 'react-toastify';
 
 const StockLiveUpdates: React.FC = () => {
   const { state } = useLocation() as { state: { stock: IStock } };
@@ -17,6 +18,7 @@ const StockLiveUpdates: React.FC = () => {
       const response = await axios.get(
         `https://newstock.info/api/stock/${stock.stockCode}/daily`
       );
+      toast.success(`${stock.stockName} 조회 완료`);
       return response.data.data;
     },
     staleTime: 1000 * 60 * 5, // 5분 이내에는 캐시된 데이터 사용
