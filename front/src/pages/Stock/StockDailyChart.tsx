@@ -2,50 +2,59 @@ import Chart from 'react-apexcharts';
 import { ApexOptions } from 'apexcharts';
 import { useLocation } from 'react-router-dom';
 import { IDaily, IStock } from '@features/Stock/types';
-import axios from 'axios';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import LoadingSpinner from '@components/LoadingSpinner';
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
+import dayjs from 'dayjs';
+import { axiosInstance } from '@api/axiosInstance';
 
 const StockDailyChart = () => {
-  // 구조분해할당 활용
   const { state } = useLocation() as { state: { stock: IStock } };
   const { stock } = state;
+  const queryClient = useQueryClient();
 
-  const params = {
-    startDate: '2024-01-01',
-    endDate: '2024-09-20',
+  // 날짜 범위를 상태로 관리
+  const [params, setParams] = useState({
+    startDate: '2024-08-01',
+    endDate: '2024-08-31',
+  });
+
+  // 타임프레임 옵션 배열
+  const timeframes = [
+    // { label: '1주', value: 7 },
+    { label: '1개월', value: 30 },
+    { label: '3개월', value: 90 },
+    { label: '1년', value: 365 },
+  ];
+
+  // 타임프레임 변경 함수
+  const handleTimeframeChange = (days: number) => {
+    const endDate = dayjs().format('YYYY-MM-DD');
+    const startDate = dayjs().subtract(days, 'day').format('YYYY-MM-DD');
+    setParams({ startDate, endDate });
+
+    // 쿼리 무효화하여 새 params로 쿼리 실행
+    queryClient.invalidateQueries([`stockDailyChart-${stock.stockCode}`, params]);
   };
 
-  const { data: stockDailyChart, } = useQuery<IDaily[]>(
-    {
-      // 쿼리 키 대쉬 보다 배열 , 로 구분하여 변경
-      queryKey: [`stockDailyChart-${stock.stockCode}`],
-      queryFn: async () => {
-        const response = await axios.get(
-          `https://newstock.info/api/stock/${stock.stockCode}/candle`,
-          { params }
-        );
-        return response.data.data;
-      },
-      staleTime: 1000 * 60 * 5, // 5분 이내에는 캐시된 데이터 사용
-    }
-  );
+  // params를 쿼리 키에 포함하여 관리
+  const { data: stockDailyChart } = useQuery<IDaily[]>({
+    queryKey: [`stockDailyChart-${stock.stockCode}`, params], // params 추가
+    queryFn: async () => {
+      const response = await axiosInstance.get(
+        `/stock/${stock.stockCode}/candle`,
+        { params }
+      );
+      return response.data.data;
+    },
+    staleTime: 1000 * 60 * 5, // 5분 캐시 유지
+  });
 
-  // 무한 페이지 로직으로 필요시 캔들 차트 데이터 추가로 불러오기
-  // const {} = useInfiniteQuery({
-  // })
-
-  // if (chartLoading) {
-  //   return <LoadingSpinner />;
-  // }
-
-  // stockDailyChart가 undefined가 아닌 경우에만 데이터 생성
+  // 캔들 차트 시리즈 구성
   const series = stockDailyChart
     ? [
         {
           data: stockDailyChart.map((item) => ({
-            // x: new Date(item.stockCandleDay).getTime(),
             x: item.stockCandleDay,
             y: [
               item.stockCandleOpen,
@@ -58,20 +67,38 @@ const StockDailyChart = () => {
       ]
     : [];
 
+  // 차트 옵션 설정
   const options: ApexOptions = {
     dataLabels: {
-      enabled: false, // 데이터 레이블 비활성화
+      enabled: false,
     },
     chart: {
       type: 'candlestick',
       height: 350,
       zoom: {
-        enabled: true, // 줌 기능 활성화
-        autoScaleYaxis: true, // 줌에 따라 Y축 자동 조정
+        enabled: true,
+        autoScaleYaxis: true,
+      },
+      // animations: {
+      //   enabled: false,
+      // },
+      events: {
+        click: (_event, _chartContext, { dataPointIndex, seriesIndex }) => {
+          const clickedDate = series[seriesIndex].data[dataPointIndex].x;
+
+          // 날짜 범위 설정
+          const startDate = dayjs(clickedDate).subtract(2, 'week').format('YYYY-MM-DD');
+          const endDate = dayjs(clickedDate).add(2, 'week').format('YYYY-MM-DD');
+
+          // 새로운 날짜로 params 업데이트
+          setParams({ startDate, endDate });
+
+          // 쿼리 무효화, 새 params로 다시 쿼리 실행
+          queryClient.invalidateQueries([`stockDailyChart-${stock.stockCode}`, params]);
+        },
       },
     },
     xaxis: {
-      // type: 'datetime',
       type: 'category',
     },
     yaxis: {
@@ -85,8 +112,8 @@ const StockDailyChart = () => {
     plotOptions: {
       candlestick: {
         colors: {
-          upward: '#FF0000', // 양봉 색상 (빨간색)
-          downward: '#0000FF', // 음봉 색상 (파란색)
+          upward: '#FF0000',
+          downward: '#0000FF',
         },
       },
     },
@@ -94,6 +121,16 @@ const StockDailyChart = () => {
 
   return (
     <div id="chart">
+      {/* 타임프레임 선택 버튼 */}
+      <div>
+        {timeframes.map((tf) => (
+          <button key={tf.value} onClick={() => handleTimeframeChange(tf.value)}>
+            {tf.label}
+          </button>
+        ))}
+      </div>
+
+      {/* 차트 렌더링 */}
       <Suspense fallback={<LoadingSpinner />}>
         <Chart
           options={options}
