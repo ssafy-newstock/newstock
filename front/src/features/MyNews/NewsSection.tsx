@@ -32,7 +32,7 @@ interface NewsSectionProps {
 const NewsSection: React.FC<NewsSectionProps> = ({ title, datas }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(4); // 기본 4개
-  const [displayedDatas, setDisplayedDatas] = useState(datas);
+  const [displayedDatas, setDisplayedDatas] = useState<NewsData[]>([]);
 
   // 화면 크기에 따라 itemsPerPage 설정
   useEffect(() => {
@@ -53,19 +53,19 @@ const NewsSection: React.FC<NewsSectionProps> = ({ title, datas }) => {
       }
     };
 
-    useEffect(() => {
-      setDisplayedDatas(datas); // 초기화 데이터로 설정
-    }, [datas]);
+    // 초기 데이터 설정
+    setDisplayedDatas(datas || []);
 
     handleResize(); // 초기 화면 크기에 맞게 설정
     window.addEventListener('resize', handleResize); // 화면 크기 변경 시 호출
 
+    // 클린업
     return () => {
-      window.removeEventListener('resize', handleResize); // 클린업
+      window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [datas]); // datas가 변경되면 effect 재실행
 
-  const totalItems = datas.length;
+  const totalItems = displayedDatas.length;
   const maxIndex = Math.ceil(totalItems / itemsPerPage) - 1;
 
   const handlePrev = () => {
@@ -83,13 +83,15 @@ const NewsSection: React.FC<NewsSectionProps> = ({ title, datas }) => {
   const getDisplayedItems = () => {
     const startIndex = currentIndex * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    return datas.slice(startIndex, endIndex);
+    return displayedDatas.slice(startIndex, endIndex);
   };
+
   const handleDelete = (id: number) => {
     setDisplayedDatas((prevDatas) =>
       prevDatas.filter((news) => news.id !== id)
     );
   };
+
   return (
     <>
       <CenterContentSectionBeforeDiv>

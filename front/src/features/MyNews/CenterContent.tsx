@@ -1,7 +1,7 @@
 import { axiosInstance } from '@api/axiosInstance';
 import NewsSection from '@features/MyNews/NewsSection';
 import { CenterContentDiv } from '@features/MyNews/styledComponent';
-import { parseISO, isWithinInterval, parse } from 'date-fns';
+import { isWithinInterval, parse } from 'date-fns';
 import { useEffect, useState } from 'react';
 
 interface NewsData {
@@ -36,13 +36,13 @@ const CenterContent: React.FC<CenterContentProps> = ({ selectedDateRange }) => {
       '/api/news/favorite/industry/list'
     );
     const { data } = response.data;
-    setEconomicNews(data);
+    setEconomicNews(data || []);
   };
 
   const fetchNewsData = async () => {
     const response = await axiosInstance.get('/api/news/favorite/stock/list');
     const { data } = response.data.data;
-    setStockNews(data);
+    setStockNews(data || []);
   };
 
   useEffect(() => {
@@ -53,35 +53,32 @@ const CenterContent: React.FC<CenterContentProps> = ({ selectedDateRange }) => {
   useEffect(() => {
     if (selectedDateRange[0] && selectedDateRange[1]) {
       const [startDate, endDate] = selectedDateRange;
-      // 선택된 날짜 범위에 맞는 뉴스 필터링
 
-      const filtered = EconomicNews.filter((news) => {
-        const cardDate = parse(news.uploadDatetime, 'yyyy.MM.dd', new Date()); // card.Date를 Date 객체로 변환
-        return isWithinInterval(cardDate, {
-          start: startDate, // 여기에 Date 객체 사용
+      // EconomicNews 필터링
+      const filteredEconomicNews = EconomicNews.filter((news) => {
+        const newsDate = parse(news.uploadDatetime, 'yyyy.MM.dd', new Date()); // 뉴스 날짜를 Date 객체로 변환
+        return isWithinInterval(newsDate, {
+          start: startDate, // Date 객체로 비교
           end: endDate,
         });
       });
-      setFilteredEconomicNews(filtered);
-    } else {
-      setFilteredEconomicNews(EconomicNews); // 날짜가 없으면 전체 뉴스
-    }
+      setFilteredEconomicNews(filteredEconomicNews);
 
-    if (selectedDateRange[0] && selectedDateRange[1]) {
-      const [startDate, endDate] = selectedDateRange;
-      // 선택된 날짜 범위에 맞는 뉴스 필터링
-      const filtered = StockNews.filter((news) => {
-        const cardDate = parse(news.uploadDatetime, 'yyyy.MM.dd', new Date()); // card.Date를 Date 객체로 변환
-        return isWithinInterval(cardDate, {
-          start: startDate, // 여기에 Date 객체 사용
+      // StockNews 필터링
+      const filteredStockNews = StockNews.filter((news) => {
+        const newsDate = parse(news.uploadDatetime, 'yyyy.MM.dd', new Date()); // 뉴스 날짜를 Date 객체로 변환
+        return isWithinInterval(newsDate, {
+          start: startDate, // Date 객체로 비교
           end: endDate,
         });
       });
-      setFilteredStockNews(filtered);
+      setFilteredStockNews(filteredStockNews);
     } else {
-      setFilteredStockNews(StockNews); // 날짜가 없으면 전체 뉴스
+      // 선택된 날짜가 없을 경우 전체 뉴스로 설정
+      setFilteredEconomicNews(EconomicNews);
+      setFilteredStockNews(StockNews);
     }
-  }, [selectedDateRange]);
+  }, [selectedDateRange, EconomicNews, StockNews]);
 
   return (
     <CenterContentDiv>
