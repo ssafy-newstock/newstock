@@ -4,9 +4,6 @@ import com.ssafy.news.domain.entity.dto.StockNewsDto;
 import com.ssafy.news.domain.entity.stock.StockNews;
 import com.ssafy.news.domain.entity.stock.StockNewsStockCode;
 import com.ssafy.news.domain.repository.StockNewsRepository;
-import com.ssafy.news.domain.service.client.StockClient;
-import com.ssafy.news.domain.service.client.response.StockCodeToNameResponse;
-import com.ssafy.news.global.common.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +24,6 @@ import static com.ssafy.news.domain.service.validator.NewsValidator.validateNews
 @Slf4j
 public class StockNewsService {
     private final StockNewsRepository stockNewsRepository;
-    private final StockClient stockClient;
 
     /**
      * 최근 4개의 주식 뉴스를 조회하는 메소드
@@ -42,9 +38,7 @@ public class StockNewsService {
         List<StockNewsDto> result = top4.stream()
                 .map(stockNews -> {
                     List<String> stringCodes = convertStockCodeToDto(stockNews.getStockNewsStockCodes());
-                    List<StockCodeToNameResponse> response = (List<StockCodeToNameResponse>) stockClient.getStockName(stringCodes).getData();
-
-                    return convertStockToPreviewDto(stockNews, response);
+                    return convertStockToPreviewDto(stockNews, stringCodes);
 
                 })
                 .collect(Collectors.toList());
@@ -75,13 +69,9 @@ public class StockNewsService {
         List<StockNewsDto> result = content.stream()
                 .map(stockNews -> {
                     Set<StockNewsStockCode> stockNewsStockCodes = stockNews.getStockNewsStockCodes();
-                    List<String> stringCodes = convertStockCodeToDto(stockNewsStockCodes);
+                    List<String> stockCodes = convertStockCodeToDto(stockNewsStockCodes);
 
-                    CommonResponse<?> response = stockClient.getStockName(stringCodes);
-                    Object data = response.getData();
-                    List<StockCodeToNameResponse> stockCodeToNameResponses = (List<StockCodeToNameResponse>) data;
-
-                    return convertStockToPreviewDto(stockNews, stockCodeToNameResponses);
+                    return convertStockToPreviewDto(stockNews, stockCodes);
 
                 })
                 .collect(Collectors.toList());
@@ -99,8 +89,7 @@ public class StockNewsService {
 
         StockNews stockNews = findNews.get();
         List<String> keywords = convertKeywordToDto(stockNews.getStockKeywords());
-        List<String> stringCodes = convertStockCodeToDto(stockNews.getStockNewsStockCodes());
-        List<StockCodeToNameResponse> stockCodes = (List<StockCodeToNameResponse>) stockClient.getStockName(stringCodes).getData();
+        List<String> stockCodes = convertStockCodeToDto(stockNews.getStockNewsStockCodes());
 
         return StockNewsDto.of(stockNews, stockCodes, keywords);
     }

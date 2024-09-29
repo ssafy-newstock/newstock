@@ -7,7 +7,6 @@ import com.ssafy.news.domain.entity.stock.StockNews;
 import com.ssafy.news.domain.entity.stock.StockNewsStockCode;
 import com.ssafy.news.domain.repository.FavoriteStockNewsRepository;
 import com.ssafy.news.domain.repository.StockNewsRepository;
-import com.ssafy.news.domain.service.client.StockClient;
 import com.ssafy.news.domain.service.client.response.StockCodeToNameResponse;
 import com.ssafy.news.global.exception.AlreadyFavoriteNews;
 import com.ssafy.news.global.exception.NewsNotFoundException;
@@ -33,7 +32,6 @@ import static com.ssafy.news.domain.service.converter.NewsConverter.convertStock
 public class FavoriteStockNewsService {
     private final FavoriteStockNewsRepository favoriteStockNewsRepository;
     private final StockNewsRepository stockNewsRepository;
-    private final StockClient stockClient;
 
     @Transactional
     public void favoriteNews(Long memberId, Long stockNewsId) {
@@ -72,9 +70,8 @@ public class FavoriteStockNewsService {
                     Set<StockKeyword> keywordEntity = stockNews.getStockKeywords();
 
                     List<String> keywords = convertKeywordToDto(keywordEntity);
-                    List<String> stringStockCodes = convertStockCodeToDto(stockNewsStockCodesEntity);
+                    List<String> stockCodes = convertStockCodeToDto(stockNewsStockCodesEntity);
 
-                    List<StockCodeToNameResponse> stockCodes = (List<StockCodeToNameResponse>) stockClient.getStockName(stringStockCodes).getData();
                     return StockNewsDto.of(stockNews, stockCodes, keywords);
                 }).collect(Collectors.toList());
 
