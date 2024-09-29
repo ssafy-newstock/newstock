@@ -149,7 +149,7 @@ const Header = () => {
   };
   useEffect(() => {
     const fetchUserPoint = async (): Promise<void> => {
-      const response = await axiosInstance.get(`/api/member/${memberId}/point`);
+      const response = await axiosInstance.get(`/member/${memberId}/point`);
       setPoint(response.data.point);
     };
 
