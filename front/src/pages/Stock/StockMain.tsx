@@ -67,6 +67,20 @@ const StockMainPage = () => {
       enabled: isLogin,
     });
 
+    // 리액트 쿼리 분리 하기
+    // const getList = async()=>{
+    //   const res = await axios.get('/api/example')
+    //   return res.data
+    // }
+
+    // export const useGetList = ()=>{
+    //   useQuery({
+    //     queryKey:['getList'],
+    //     queryFn:getList
+    //   })
+    // } 
+    // const {data} = useGetList()
+
   // favoriteStock의 stockId를 Set으로 만들어 빠른 검색 가능
   const favoriteStockCode: Set<string> = useMemo(() => {
     return isLogin

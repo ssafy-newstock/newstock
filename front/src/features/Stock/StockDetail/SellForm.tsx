@@ -13,6 +13,12 @@ import {
 } from '@features/Stock/styledComponent';
 import { FormValues, TradeFormProps } from '@features/Stock/types';
 
+// 가독성, 타입 안정성을 위해 enum 사용
+// enum TradeType {
+//   BUY = 'BUY',
+//   SELL = 'SELL',
+// }
+
 const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
@@ -20,6 +26,20 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
   const [modalAmount, setModalAmount] = useState(0); // 모달로 보낼 amount 상태 추가
   const [modalPrice, setModalPrice] = useState(0); // 모달로 보낼 price 상태 추가
   const [totalPrice, setTotalPrice] = useState(0); // 구매 금액 상태 추가
+
+
+  // const [a, setA] = useState({
+  //   price: 0,
+  //   sum: 0
+  // })
+
+  // useEffect(() => {
+  //   setA((prev) => ({
+  //     ...prev,
+  //     price: 1
+  //   }))
+  // })
+
 
   const {
     control,

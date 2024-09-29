@@ -82,6 +82,13 @@ const App = () => {
     return <LoadingPage />;
   }
 
+//   에러 처리 ErroBoundary, Suspense 사용
+//   <ErrorBoundary fallback=<ErrorComponent/>
+//  <Suspense fallback=<Skeleton/>
+//  <component/>
+//  </Suspense>
+//  <ErrorBoundary>
+
   return (
     <ThemeProvider theme={currentTheme}>
       <GlobalStyle />

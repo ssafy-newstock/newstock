@@ -16,16 +16,24 @@ const StockDailyChart = () => {
     endDate: '2024-09-20',
   };
 
-  const { data: stockDailyChart, isLoading: chartLoading } = useQuery<IDaily[]>({
-    queryKey: [`stockDailyChart-${stock.stockCode}`],
-    queryFn: async () => {
-      const response = await axios.get(
-        `https://newstock.info/api/stock/${stock.stockCode}/candle`,{params}
-      );
-      return response.data.data;
-    },
-    staleTime: 1000 * 60 * 5, // 5분 이내에는 캐시된 데이터 사용
-  });
+  const { data: stockDailyChart, isLoading: chartLoading } = useQuery<IDaily[]>(
+    {
+      // 쿼리 키 대쉬 보다 배열 , 로 구분하여 변경
+      queryKey: [`stockDailyChart-${stock.stockCode}`],
+      queryFn: async () => {
+        const response = await axios.get(
+          `https://newstock.info/api/stock/${stock.stockCode}/candle`,
+          { params }
+        );
+        return response.data.data;
+      },
+      staleTime: 1000 * 60 * 5, // 5분 이내에는 캐시된 데이터 사용
+    }
+  );
+
+  // 무한 페이지 로직으로 필요시 캔들 차트 데이터 추가로 불러오기
+  // const {} = useInfiniteQuery({
+  // })
 
   if (chartLoading) {
     return <LoadingSpinner />;

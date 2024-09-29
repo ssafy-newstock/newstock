@@ -96,6 +96,7 @@ const Auth = () => {
   }
 
   return (
+    // <></>는 Fragment로 불필요한 div 태그를 생성하지 않음 <Fragment></Fragment>와 동일
     <>
       {isLoading ? (
         <p>로그인 중...</p>
