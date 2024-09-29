@@ -1,5 +1,7 @@
 import { NoMessageP } from '@features/Scrap/scrapStyledComponent';
 import ScrapCard from '@features/Scrap/detail/ScrapCard';
+import { useEffect, useState } from 'react';
+import { isWithinInterval, parse } from 'date-fns';
 
 interface NewsItem {
   title: string;
@@ -45,13 +47,36 @@ const cards: CardData[] = [
 
 interface RightContentProps {
   onCardClick: (card: CardData) => void; // 클릭 시 호출되는 함수
+  selectedDateRange: [Date | null, Date | null];
 }
 
-const RightContent: React.FC<RightContentProps> = ({ onCardClick }) => {
+const RightContent: React.FC<RightContentProps> = ({
+  onCardClick,
+  selectedDateRange,
+}) => {
+  const [filteredScrap, setFilteredScrap] = useState(cards);
+  useEffect(() => {
+    if (selectedDateRange[0] && selectedDateRange[1]) {
+      const [startDate, endDate] = selectedDateRange;
+
+      const filtered = cards.filter((card) => {
+        const cardDate = parse(card.Date, 'yyyy.MM.dd', new Date()); // card.Date를 Date 객체로 변환
+        return isWithinInterval(cardDate, {
+          start: startDate, // 여기에 Date 객체 사용
+          end: endDate,
+        });
+      });
+
+      setFilteredScrap(filtered);
+    } else {
+      setFilteredScrap(cards); // 날짜가 없으면 전체 뉴스
+    }
+  }, [selectedDateRange, cards]);
+
   return (
     <>
       {cards.length > 0 ? (
-        cards.map((data, index) => (
+        filteredScrap.map((data, index) => (
           <ScrapCard
             key={index}
             data={data}

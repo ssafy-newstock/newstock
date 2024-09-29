@@ -9,9 +9,10 @@ export const RightTitleTopDiv = styled.div`
 export const RightTitleBottomDiv = styled.div`
   display: flex;
   width: 100%;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   margin-top: 1.25rem;
+  gap: 1rem;
 `;
 
 export const RightTitleBottomFilterDiv = styled.div`
