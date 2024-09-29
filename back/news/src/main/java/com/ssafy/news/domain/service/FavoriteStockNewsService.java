@@ -7,7 +7,8 @@ import com.ssafy.news.domain.entity.stock.StockNews;
 import com.ssafy.news.domain.entity.stock.StockNewsStockCode;
 import com.ssafy.news.domain.repository.FavoriteStockNewsRepository;
 import com.ssafy.news.domain.repository.StockNewsRepository;
-import com.ssafy.news.domain.service.converter.NewsConverter;
+import com.ssafy.news.domain.service.client.StockClient;
+import com.ssafy.news.domain.service.client.response.StockCodeToNameResponse;
 import com.ssafy.news.global.exception.AlreadyFavoriteNews;
 import com.ssafy.news.global.exception.NewsNotFoundException;
 import com.ssafy.news.global.exception.NotExistFavoriteNews;
@@ -19,7 +20,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.ssafy.news.domain.service.converter.NewsConverter.convertKeywordToDto;
+import static com.ssafy.news.domain.service.converter.NewsConverter.convertStockCodeToDto;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +33,7 @@ import java.util.stream.Collectors;
 public class FavoriteStockNewsService {
     private final FavoriteStockNewsRepository favoriteStockNewsRepository;
     private final StockNewsRepository stockNewsRepository;
+    private final StockClient stockClient;
 
     @Transactional
     public void favoriteNews(Long memberId, Long stockNewsId) {
@@ -62,13 +68,14 @@ public class FavoriteStockNewsService {
         List<StockNewsDto> stockNewsDtos = content.stream()
                 .map(favoriteStockNews -> {
                     StockNews stockNews = favoriteStockNews.getStockNews();
-                    List<StockNewsStockCode> stockNewsStockCodesEntity = stockNews.getStockNewsStockCodes();
-                    List<StockKeyword> keywordEntity = stockNews.getStockKeywords();
+                    Set<StockNewsStockCode> stockNewsStockCodesEntity = stockNews.getStockNewsStockCodes();
+                    Set<StockKeyword> keywordEntity = stockNews.getStockKeywords();
 
-                    List<String> codes = NewsConverter.convertStockCodeToDto(stockNewsStockCodesEntity);
-                    List<String> keywords = NewsConverter.convertKeywordToDto(keywordEntity);
+                    List<String> keywords = convertKeywordToDto(keywordEntity);
+                    List<String> stringStockCodes = convertStockCodeToDto(stockNewsStockCodesEntity);
 
-                    return StockNewsDto.of(stockNews, codes, keywords);
+                    List<StockCodeToNameResponse> stockCodes = (List<StockCodeToNameResponse>) stockClient.getStockName(stringStockCodes).getData();
+                    return StockNewsDto.of(stockNews, stockCodes, keywords);
                 }).collect(Collectors.toList());
 
         return stockNewsDtos;

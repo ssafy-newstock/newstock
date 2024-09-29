@@ -1,7 +1,6 @@
 package com.ssafy.news.domain.controller;
 
 import com.ssafy.news.domain.entity.dto.StockNewsDto;
-import com.ssafy.news.domain.entity.dto.StockNewsPreviewDto;
 import com.ssafy.news.domain.service.StockNewsService;
 import com.ssafy.news.global.common.CommonResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +21,7 @@ public class StockNewsController {
      */
     @GetMapping("/top4")
     public CommonResponse<?> getTop4() {
-        List<StockNewsPreviewDto> recentTop4 = stockNewsService.getRecentStockNewsTop4();
+        List<StockNewsDto> recentTop4 = stockNewsService.getRecentStockNewsTop4();
 
         // 모델 매퍼가 List 까지 변환해주진 않기에 생략함
 
@@ -42,7 +41,7 @@ public class StockNewsController {
             @RequestParam(value = "stockCode", required = false) String stockCode,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
-        List<StockNewsPreviewDto> stockNews = stockNewsService.getStockNewsPreviews(stockCode, page, size);
+        List<StockNewsDto> stockNews = stockNewsService.getStockNewsPreviews(stockCode, page, size);
 
         // 모델 매퍼가 List 까지 변환해주진 않기에 생략함
 

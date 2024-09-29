@@ -1,9 +1,8 @@
 package com.ssafy.news.domain.service;
 
+import com.ssafy.news.domain.entity.dto.StockNewsDto;
 import com.ssafy.news.domain.entity.stock.StockNews;
 import com.ssafy.news.domain.entity.stock.StockNewsStockCode;
-import com.ssafy.news.domain.entity.dto.StockNewsDto;
-import com.ssafy.news.domain.entity.dto.StockNewsPreviewDto;
 import com.ssafy.news.domain.repository.StockNewsRepository;
 import com.ssafy.news.domain.service.client.StockClient;
 import com.ssafy.news.domain.service.client.response.StockCodeToNameResponse;
@@ -16,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.ssafy.news.domain.service.converter.NewsConverter.*;
@@ -34,12 +34,12 @@ public class StockNewsService {
      * 특정 주식이 아닌 전체 뉴스 중 4개를 조회함
      * @return
      */
-    public List<StockNewsPreviewDto> getRecentStockNewsTop4() {
+    public List<StockNewsDto> getRecentStockNewsTop4() {
         List<StockNews> top4 = stockNewsRepository.findAllStockNews(PageRequest.of(0, 4)).getContent();
 
         validateNewsListContent(top4);
 
-        List<StockNewsPreviewDto> result = top4.stream()
+        List<StockNewsDto> result = top4.stream()
                 .map(stockNews -> {
                     List<String> stringCodes = convertStockCodeToDto(stockNews.getStockNewsStockCodes());
                     List<StockCodeToNameResponse> response = (List<StockCodeToNameResponse>) stockClient.getStockName(stringCodes).getData();
@@ -59,7 +59,7 @@ public class StockNewsService {
      * @param size
      * @return
      */
-    public List<StockNewsPreviewDto> getStockNewsPreviews(String stockCode, int page, int size) {
+    public List<StockNewsDto> getStockNewsPreviews(String stockCode, int page, int size) {
         PageRequest pageRequest = PageRequest.of(Math.max(page - 1, 0), size, Sort.by("uploadDatetime").descending());
 
         List<StockNews> content = null;
@@ -72,9 +72,9 @@ public class StockNewsService {
         validateNewsListContent(content);  // 뉴스가 없을 때 예외 처리
 
 
-        List<StockNewsPreviewDto> result = content.stream()
+        List<StockNewsDto> result = content.stream()
                 .map(stockNews -> {
-                    List<StockNewsStockCode> stockNewsStockCodes = stockNews.getStockNewsStockCodes();
+                    Set<StockNewsStockCode> stockNewsStockCodes = stockNews.getStockNewsStockCodes();
                     List<String> stringCodes = convertStockCodeToDto(stockNewsStockCodes);
 
                     CommonResponse<?> response = stockClient.getStockName(stringCodes);
@@ -97,6 +97,11 @@ public class StockNewsService {
         Optional<StockNews> findNews = stockNewsRepository.findById(id);
         validateNewsContent(findNews);
 
-        return convertStockToDto(findNews.get());
+        StockNews stockNews = findNews.get();
+        List<String> keywords = convertKeywordToDto(stockNews.getStockKeywords());
+        List<String> stringCodes = convertStockCodeToDto(stockNews.getStockNewsStockCodes());
+        List<StockCodeToNameResponse> stockCodes = (List<StockCodeToNameResponse>) stockClient.getStockName(stringCodes).getData();
+
+        return StockNewsDto.of(stockNews, stockCodes, keywords);
     }
 }
