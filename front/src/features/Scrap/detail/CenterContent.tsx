@@ -38,12 +38,32 @@ const CenterContent: React.FC<CenterContentProps> = ({ selectedCard }) => {
     <CenterContentDiv>
       <CenterNewsDiv>
         <CenterNewsLeftDiv>
-          <TextP_24_NOTGRAY>{selectedCard.NewsItem.title}</TextP_24_NOTGRAY>
-          <TextP_20>{selectedCard.NewsItem.description}</TextP_20>
+          <TextP_24_NOTGRAY
+            style={{
+              display: '-webkit-box',
+              WebkitBoxOrient: 'vertical',
+              WebkitLineClamp: 1,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {selectedCard.NewsItem.title}
+          </TextP_24_NOTGRAY>
+          <TextP_20
+            style={{
+              display: '-webkit-box',
+              WebkitBoxOrient: 'vertical',
+              WebkitLineClamp: 3,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {selectedCard.NewsItem.description}
+          </TextP_20>
+
           <CenterNewsLeftTopDiv>
-            <TextP_16>
-              {selectedCard.NewsItem.media} {formattedDate}
-            </TextP_16>
+            <TextP_16>{selectedCard.NewsItem.media}</TextP_16>
+            <TextP_16> {formattedDate}</TextP_16>
           </CenterNewsLeftTopDiv>
         </CenterNewsLeftDiv>
         {selectedCard.NewsItem.thumbnail ? (
@@ -51,7 +71,6 @@ const CenterContent: React.FC<CenterContentProps> = ({ selectedCard }) => {
         ) : (
           <CenterNewsRightDiv />
         )}
-        <CenterNewsRightImg src={selectedCard.NewsItem.thumbnail} />
       </CenterNewsDiv>
       <CenterNewsContextDiv>
         <div dangerouslySetInnerHTML={{ __html: selectedCard.context }} />
