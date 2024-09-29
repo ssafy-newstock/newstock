@@ -87,7 +87,7 @@ const CenterContent: React.FC = () => {
       <CenterContentDiv>
         <CenterContentTopDiv>
           <StyledInput
-            placeholder="제목"
+            placeholder="제목을 입력해주세요"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
