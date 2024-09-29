@@ -12,7 +12,7 @@ import {
 } from '@features/Stock/styledComponent';
 import { IStock } from '@features/Stock/types';
 import { RightVacant } from '@components/RightVacant';
-import { Suspense, useMemo, useState } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import { ButtonWrapper, SortButton } from '@features/Stock/styledComponent';
 import styled from 'styled-components';
 import useAllStockStore from '@store/useAllStockStore';
@@ -56,18 +56,15 @@ const AllStockPage: React.FC = () => {
   >('stckPrpr');
 
   const [query, setQuery] = useState(''); // 검색어 상태
-  const [filteredStocks, setFilteredStocks] = useState<IStock[]>(allStock); // 필터링된 주식 목록
+  const [filteredStocks, setFilteredStocks] = useState<IStock[]>([]); // 필터링된 주식 목록
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setQuery(value);
-
-    // 검색어에 맞게 주식 목록 필터링
+  // allStock과 top10Stock이 변경될 때마다 filteredStocks 업데이트
+  useEffect(() => {
     const filtered = wholeStock.filter((stock) =>
-      stock.stockName.includes(value)
+      stock.stockName.includes(query)
     );
     setFilteredStocks(filtered);
-  };
+  }, [wholeStock, query]);
 
   const sortData = (data: IStock[]) => {
     return data.sort((a, b) => {
@@ -87,6 +84,11 @@ const AllStockPage: React.FC = () => {
   };
 
   const sortedStockData = sortData([...filteredStocks]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setQuery(value);
+  };
 
   return (
     <>
