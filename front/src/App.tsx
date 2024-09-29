@@ -10,7 +10,6 @@ import useCategoryStockStore from '@store/useCategoryStockStore';
 import useTop10StockStore from '@store/useTop10StockStore';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import LoadingPage from '@components/LodingPage';
 import WebSocketComponent from '@components/WebSocketComponent';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -44,7 +43,7 @@ const App = () => {
   const { setTop10Stock } = useTop10StockStore();
 
   // 최초 데이터 조회 - React Query 사용
-  const { isLoading: isTop10StockLoading } = useQuery({
+  useQuery({
     queryKey: ['top10StockData'],
     queryFn: async () => {
       const response = await axios.get(
@@ -55,7 +54,7 @@ const App = () => {
     },
   });
 
-  const { isLoading: isIndustryLoading } = useQuery({
+  useQuery({
     queryKey: ['industryData'],
     queryFn: async () => {
       const response = await axios.get(
@@ -66,7 +65,7 @@ const App = () => {
     },
   });
 
-  const { isLoading: isAllStockLoading } = useQuery({
+  useQuery({
     queryKey: ['allStockData'],
     queryFn: async () => {
       const response = await axios.get(
@@ -76,13 +75,6 @@ const App = () => {
       return response.data.data;
     },
   });
-
-  const isLoading =
-    isTop10StockLoading || isIndustryLoading || isAllStockLoading;
-
-  if (isLoading) {
-    return <LoadingPage />;
-  }
 
   //   에러 처리 ErroBoundary, Suspense 사용
   //   <ErrorBoundary fallback=<ErrorComponent/>
