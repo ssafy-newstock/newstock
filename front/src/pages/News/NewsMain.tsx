@@ -4,13 +4,32 @@ import { Center } from '@components/Center';
 import LeftNews from '@components/LeftNews';
 import NewsMainHeader from '@features/News/NewsMainHeader';
 import NewsMainBody from '@features/News/NewsMainBody';
-// import newsData from '@api/dummyData/20240907.json';
-import { getNewsData, translateIndustry } from '@api/dummyData/DummyData';
+import { translateIndustry } from '@api/dummyData/DummyData';
+
+import axios from 'axios';
+import { useState, useEffect } from 'react';
+
+interface StockCode {
+  stockCode: string;
+  stockName: string;
+}
+
+interface NewsData {
+  id: number;
+  title: string;
+  description: string;
+  media: string;
+  newsId: string;
+  uploadDatetime: string;
+  industry?: string;
+  sentiment: string;
+  stockNewsStockCodes?: StockCode[];
+}
 
 // 스타일드 컴포넌트 정의
 const NewsMainCenter = styled.div`
   display: flex;
-  width: 90%;
+  width: 95%;
   // 화면 퍼지는거 보기 싫어서 일단 최댓값 박아둠.
   max-width: 106rem;
   /* padding: 1.25rem 3rem; */
@@ -31,10 +50,43 @@ const NewsMainBodyWrapper = styled.div`
   gap: 1.25rem;
 `;
 
+const fetchEconomicNews = async (): Promise<NewsData[]> => {
+  try {
+    const response = await axios.get(
+      `https://newstock.info/api/news/industry/top4`
+    );
+    return response.data.data;
+  } catch (error) {
+    console.error('Failed to fetch EconomicNews:', error);
+    return [];
+  }
+};
+
+const fetchStockNews = async (): Promise<NewsData[]> => {
+  try {
+    const response = await axios.get(
+      `https://newstock.info/api/news/stock/top4`
+    );
+    return response.data.data;
+  } catch (error) {
+    console.log('Failed to fetch StockNews: ', error);
+    return [];
+  }
+};
+
 const NewsMainPage: React.FC = () => {
-  const { economic, stock } = getNewsData();
-  const economic4News = economic.data.slice(0, 4);
-  const stock4News = stock.data.slice(0, 4);
+  const [economicNews, setEconomicNews] = useState<NewsData[]>([]);
+  const [stockNews, setStockNews] = useState<NewsData[]>([]);
+
+  useEffect(() => {
+    const loadNews = async () => {
+      const economicNewsData = await fetchEconomicNews();
+      const stockNewsData = await fetchStockNews();
+      setEconomicNews(economicNewsData);
+      setStockNews(stockNewsData);
+    };
+    loadNews();
+  }, []);
 
   return (
     <>
@@ -44,7 +96,7 @@ const NewsMainPage: React.FC = () => {
           {/* 시황 뉴스 헤더 텍스트 */}
           <NewsMainHeader newsType="시황" />
           <NewsMainBodyWrapper>
-            {economic4News.map((news, index) => (
+            {economicNews.map((news, index) => (
               <NewsMainBody
                 key={index}
                 newsType="시황"
@@ -52,14 +104,16 @@ const NewsMainPage: React.FC = () => {
                 description={news.description}
                 media={news.media}
                 date={news.uploadDatetime}
-                header={translateIndustry(news.industry)}
-                newsId={news.newsId}
+                // header={translateIndustry(news.industry)}
+                header={translateIndustry(news.industry!)}
+                id={news.id}
+                sentiment={news.sentiment}
               />
             ))}
           </NewsMainBodyWrapper>
           <NewsMainHeader newsType="종목" />
           <NewsMainBodyWrapper>
-            {stock4News.map((news, index) => (
+            {stockNews.map((news, index) => (
               <NewsMainBody
                 key={index}
                 newsType="종목"
@@ -67,8 +121,9 @@ const NewsMainPage: React.FC = () => {
                 description={news.description}
                 media={news.media}
                 date={news.uploadDatetime}
-                header="삼성전자"
-                newsId={news.newsId}
+                header={news.stockNewsStockCodes![0].stockName}
+                id={news.id}
+                sentiment={news.sentiment}
               />
             ))}
           </NewsMainBodyWrapper>
