@@ -5,7 +5,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from 'axios';
 
-const baseUrl = 'https://newstock.info';
+const baseUrl = 'https://newstock.info/api';
 
 // getJWTHeader 함수 : JWT 토큰(accessToken)을 받아 Authorization 헤더 객체를 생성
 // 파라미터 : jwt토큰(accessToken) 넣어줘야함

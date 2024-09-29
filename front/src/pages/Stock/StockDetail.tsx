@@ -55,7 +55,7 @@ const StockDetailPage = () => {
   } = useQuery<IFavoriteStock[]>({
     queryKey: ['favoriteStockList'],
     queryFn: async () => {
-      const response = await axiosInstance.get('/api/stock/favorite');
+      const response = await axiosInstance.get('/stock/favorite');
       return response.data.data;
     },
     // 초기 데이터 설정 -> 타입 설정시 undefined 고려할 필요 없어짐
@@ -77,7 +77,7 @@ const StockDetailPage = () => {
     IMutationContext
   >({
     mutationFn: async (stockCode: string) => {
-      await axiosInstance.post(`/api/stock/favorite/${stockCode}`);
+      await axiosInstance.post(`/stock/favorite/${stockCode}`);
     },
     onMutate: async (stockCode: string) => {
       await queryClient.cancelQueries({ queryKey: ['favoriteStockList'] });
@@ -118,7 +118,7 @@ const StockDetailPage = () => {
     IMutationContext
   >({
     mutationFn: async (stockCode: string) => {
-      await axiosInstance.delete(`/api/stock/favorite/${stockCode}`);
+      await axiosInstance.delete(`/stock/favorite/${stockCode}`);
     },
     onMutate: async (stockCode: string) => {
       await queryClient.cancelQueries({ queryKey: ['favoriteStockList'] });

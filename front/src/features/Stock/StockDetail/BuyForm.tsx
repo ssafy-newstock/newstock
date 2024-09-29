@@ -17,9 +17,9 @@ const BuyForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(true);
-  const [modalAmount, setModalAmount] = useState(0); // 모달로 보낼 amount 상태 추가
-  const [modalPrice, setModalPrice] = useState(0); // 모달로 보낼 price 상태 추가
-  const [totalPrice, setTotalPrice] = useState(0); // 구매 금액 상태 추가
+  const [modalAmount, setModalAmount] = useState(0);
+  const [modalPrice, setModalPrice] = useState(0); 
+  const [totalPrice, setTotalPrice] = useState(0);
 
   const {
     control,
@@ -54,7 +54,7 @@ const BuyForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
     // 매수 로직
     try {
       // 매수 API 요청
-      const response = await axiosInstance.post('/api/stock/transaction/buy', {
+      const response = await axiosInstance.post('/stock/transaction/buy', {
         stockCode: stockCode,
         stockTransactionAmount: buyData.amount,
         stockTransactionType: 'BUY',

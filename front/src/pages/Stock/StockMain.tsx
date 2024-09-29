@@ -61,7 +61,7 @@ const StockMainPage = () => {
     useQuery({
       queryKey: ['favoriteStockList'],
       queryFn: async () => {
-        const response = await axiosInstance.get('/api/stock/favorite');
+        const response = await axiosInstance.get('/stock/favorite');
         return response.data.data;
       },
       enabled: isLogin,
