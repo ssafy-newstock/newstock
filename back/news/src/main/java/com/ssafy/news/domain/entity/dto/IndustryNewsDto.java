@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 public class IndustryNewsDto {
-    private Long industryNewsId;
+    private Long id;
     private String article;
     private String description;
     private String industry;
@@ -25,7 +25,7 @@ public class IndustryNewsDto {
 
     public static IndustryNewsDto of(IndustryNews industryNews) {
         IndustryNewsDto dto = new IndustryNewsDto();
-        dto.industryNewsId = industryNews.getId();
+        dto.id = industryNews.getId();
         dto.article = industryNews.getArticle();
         dto.description = industryNews.getDescription();
         dto.industry = industryNews.getIndustry();

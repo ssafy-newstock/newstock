@@ -1,6 +1,7 @@
 package com.ssafy.news.domain.entity.dto;
 
 import com.ssafy.news.domain.entity.stock.StockNews;
+import com.ssafy.news.domain.service.client.response.StockCodeToNameResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 public class StockNewsDto {
-    private Long stockNewsId;
+    private Long id;
     private String article;
     private String description;
     private String media;
@@ -25,12 +26,12 @@ public class StockNewsDto {
     private String thumbnail;
     private String title;
     private LocalDateTime uploadDatetime;
-    private List<String> stockNewsStockCodes = new ArrayList<>();
+    private List<StockCodeToNameResponse> stockNewsStockCodes = new ArrayList<>();
     private List<String> stockKeywords = new ArrayList<>();
 
-    public static StockNewsDto of(StockNews entity, List<String> stockNewsStockCodes, List<String> stockKeywords) {
+    public static StockNewsDto of(StockNews entity, List<StockCodeToNameResponse> stockNewsStockCodes, List<String> stockKeywords) {
         StockNewsDto dto = new StockNewsDto();
-        dto.stockNewsId = entity.getId();
+        dto.id = entity.getId();
         dto.article = entity.getArticle();
         dto.description = entity.getDescription();
         dto.media = entity.getMedia();
