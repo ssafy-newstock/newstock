@@ -30,13 +30,6 @@ spec:
             name: newstock-stock-member-service
             port:
               number: 8001
-      - path: /api/news(/|$)(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: newstock-stock-news-service
-            port:
-              number: 8002
       - path: /api/stock/transaction(/|$)(.*)
         pathType: ImplementationSpecific
         backend:
