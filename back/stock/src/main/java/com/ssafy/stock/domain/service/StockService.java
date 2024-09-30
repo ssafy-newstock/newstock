@@ -1,21 +1,16 @@
 package com.ssafy.stock.domain.service;
 
-import com.ssafy.stock.domain.entity.Redis.StocksPriceLiveDailyChartRedis;
-import com.ssafy.stock.domain.entity.Redis.StocksPriceLiveRedis;
-import com.ssafy.stock.domain.entity.Redis.StocksPriceRedis;
-import com.ssafy.stock.domain.entity.Redis.StocksRedis;
+import com.ssafy.stock.domain.entity.Redis.*;
 import com.ssafy.stock.domain.entity.*;
 import com.ssafy.stock.domain.error.custom.StockAlreadyFavoriteException;
 import com.ssafy.stock.domain.error.custom.StockFavoriteNotFoundException;
+import com.ssafy.stock.domain.error.custom.StockHoldingNotFoundException;
 import com.ssafy.stock.domain.error.custom.StockNotFoundException;
 import com.ssafy.stock.domain.repository.StockFavoriteRepository;
 import com.ssafy.stock.domain.repository.StockHoldingRepository;
 import com.ssafy.stock.domain.repository.StockTransactionRepository;
 import com.ssafy.stock.domain.repository.StocksRepository;
-import com.ssafy.stock.domain.repository.redis.StocksPriceLiveDailyChartRedisRepository;
-import com.ssafy.stock.domain.repository.redis.StocksPriceLiveRedisRepository;
-import com.ssafy.stock.domain.repository.redis.StocksPriceRedisRepository;
-import com.ssafy.stock.domain.repository.redis.StocksRedisRepository;
+import com.ssafy.stock.domain.repository.redis.*;
 import com.ssafy.stock.domain.service.helper.StockConverter;
 import com.ssafy.stock.domain.service.response.*;
 import com.ssafy.stock.global.token.KISTokenService;
@@ -70,6 +65,7 @@ public class StockService {
     private final StockTransactionRepository stockTransactionRepository;
     private final StockHoldingRepository stockHoldingRepository;
     private final StockFavoriteRepository stockFavoriteRepository;
+    private final StocksPriceDailyChartRedisRepository stocksPriceDailyChartRedisRepository;
     private final StocksPriceLiveDailyChartRedisRepository stocksPriceLiveDailyChartRedisRepository;
     private final SimpMessageSendingOperations simpMessageSendingOperations;
     private final StockConverter stockConverter;
@@ -260,19 +256,33 @@ public class StockService {
      * @return
      */
     public List<StocksPriceLiveDailyChartRedisDto> getStockDaily(String stockCode) {
-        // 데일리 차트 데이터
-        List<StocksPriceLiveDailyChartRedis> LiveDailyChartRedisList = stocksPriceLiveDailyChartRedisRepository.findAllByStockCode(stockCode);
+        // Top 10
+        if(stockNameMap.containsKey(stockCode)){
+            // 데일리 차트 데이터
+            List<StocksPriceLiveDailyChartRedis> LiveDailyChartRedisList = stocksPriceLiveDailyChartRedisRepository.findAllByStockCode(stockCode);
 
-        // time을 기준으로 오름차순 정렬
-        List<StocksPriceLiveDailyChartRedis> sortedLiveDailyChartRedisList = LiveDailyChartRedisList.stream()
-                .sorted(Comparator.comparing(StocksPriceLiveDailyChartRedis::getTime))
-                .toList();
+            // time을 기준으로 오름차순 정렬
+            List<StocksPriceLiveDailyChartRedis> sortedLiveDailyChartRedisList = LiveDailyChartRedisList.stream()
+                    .sorted(Comparator.comparing(StocksPriceLiveDailyChartRedis::getTime))
+                    .toList();
 
-        return sortedLiveDailyChartRedisList.stream()
-                .map(stocksPriceLiveDailyChartRedis -> new StocksPriceLiveDailyChartRedisDto(stocksPriceLiveDailyChartRedis))
-                .toList();
+            return sortedLiveDailyChartRedisList.stream()
+                    .map(stocksPriceLiveDailyChartRedis -> new StocksPriceLiveDailyChartRedisDto(stocksPriceLiveDailyChartRedis))
+                    .toList();    
+        } else {
+            // 나머지 전종목 데일리 차트 데이터
+            List<StocksPriceDailyChartRedis> dailyChartRedisList = stocksPriceDailyChartRedisRepository.findAllByStockCode(stockCode);
+            
+            // time 기준으로 오름차순 정렬
+            List<StocksPriceDailyChartRedis> sortedLiveDailyChartRedisList = dailyChartRedisList.stream()
+                    .sorted(Comparator.comparing(StocksPriceDailyChartRedis::getTime))
+                    .toList();
+
+            return sortedLiveDailyChartRedisList.stream()
+                    .map(stocksPriceDailyChartRedis -> new StocksPriceLiveDailyChartRedisDto(stocksPriceDailyChartRedis))
+                    .toList();
+        }
     }
-
 
     /**
      * 주식 마이페이지 조회 메소드
@@ -289,11 +299,11 @@ public class StockService {
     }
 
     /**
-     * 보유 주식 조회 메소드
+     * 보유 주식 전체 조회 메소드
      * @param myStockHoldings
      * @return
      */
-    private List<StockMyPageHoldingDto> getStockMyPageHoldingDtoList(Long memberId) {
+    public List<StockMyPageHoldingDto> getStockMyPageHoldingDtoList(Long memberId) {
         List<StocksHoldings> myStockHoldings = stockHoldingRepository.findAllByMemberIdWithStock(memberId);
 
         return myStockHoldings.stream()
@@ -318,11 +328,45 @@ public class StockService {
     }
 
     /**
-     * 주식 거래 내역 조회 메소드
+     * 특정 주식 보유 조회
+     * @param memberId
+     * @param stockCode
+     * @return
+     */
+    public List<StockMyPageHoldingDto> getStockHoldingDtoList(Long memberId, String stockCode) {
+        List<StocksHoldings> myStockHoldings = stockHoldingRepository.findAllByMemberIdAndStockCodeWithStock(memberId, stockCode);
+
+        if(myStockHoldings.isEmpty()){
+            throw new StockHoldingNotFoundException();
+        }
+
+        return myStockHoldings.stream()
+                .map(myStockHolding -> {
+                    Stocks stock = myStockHolding.getStock();
+
+                    Long currentPrice = stockTransactionService.getCurrentPrice(stock.getStockCode()); // 현재 주가
+                    Long buyPrice = myStockHolding.getStockHoldingBuyPrice(); // 평단가
+                    Long changeAmount = currentPrice - buyPrice; // 등락 가격
+                    Double changeRate = (buyPrice != 0) ? (double) changeAmount / buyPrice * 100 : 0.0; // 등락률 계산 (0으로 나누기 방지)
+
+                    return new StockMyPageHoldingDto(
+                            stock.getId(),
+                            stock.getStockCode(),
+                            stock.getStockName(),
+                            myStockHolding.getStockHoldingBuyAmount(),
+                            buyPrice,
+                            changeAmount,
+                            changeRate
+                    );
+                }).toList();
+    }
+
+    /**
+     * 주식 거래 내역 전체 조회 메소드
      * @param myStockTransactions
      * @return
      */
-    private List<StockMyPageTransactionDto> getStockMyPageTransactionDtoList(Long memberId) {
+    public List<StockMyPageTransactionDto> getStockMyPageTransactionDtoList(Long memberId) {
         List<StocksTransactions> myStockTransactions = stockTransactionRepository.findAllByMemberIdWithStock(memberId);
 
         return myStockTransactions.stream()
