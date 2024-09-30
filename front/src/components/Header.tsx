@@ -4,6 +4,11 @@ import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import useAuthStore from '@store/useAuthStore';
 import Login from '@components/Login';
+import SockJS from 'sockjs-client';
+import Stomp from 'stompjs';
+import { authRequest } from '@api/axiosInstance';
+import { formatUnit } from '@utils/formatUnit';
+import usePointStore from '@store/usePointStore';
 
 const HeaderContainer = styled.div`
   width: 100%;
@@ -109,11 +114,6 @@ const PointWrapper = styled(motion.div)`
   }
 `;
 
-import SockJS from 'sockjs-client';
-import Stomp from 'stompjs';
-import { axiosInstance } from '@api/axiosInstance';
-import { formatUnit } from '@utils/formatUnit';
-import usePointStore from '@store/usePointStore';
 const Header = () => {
   const { memberName } = useAuthStore();
   const { theme, toggleTheme } = useThemeStore();
@@ -149,7 +149,7 @@ const Header = () => {
   };
   useEffect(() => {
     const fetchUserPoint = async (): Promise<void> => {
-      const response = await axiosInstance.get(`/api/member/${memberId}/point`);
+      const response = await authRequest.get(`/member/${memberId}/point`);
       setPoint(response.data.point);
     };
 
