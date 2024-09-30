@@ -19,6 +19,7 @@ import TradingHistoryList, {
 } from '@features/MyStock/TradingHistoryList';
 import FavoriteStockList from '@features/MyStock/FavoriteStockList';
 import { RightVacant } from '@components/RightVacant';
+import { Flex } from '@components/styledComponent';
 
 interface StockHolding {
   stockId: number;
@@ -93,7 +94,7 @@ const MyStock: React.FC = () => {
           <CenterTitle title={'나의 자산'} />
           <MyStockHr />
           <CenterContent />
-          <div style={{ display: 'flex', flexDirection: 'row' }}>
+          <Flex>
             <CenterHistoryDiv>
               <SectionTitle
                 title="내 주식 TOP 10"
@@ -123,7 +124,7 @@ const MyStock: React.FC = () => {
                 ))}
               </MyStockGridRow>
             </CenterHistoryDiv>
-          </div>
+          </Flex>
         </CenterDiv>
       </Center>
       <RightVacant />

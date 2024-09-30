@@ -9,10 +9,11 @@ import {
 } from '@features/Stock/styledComponent';
 import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
+import { FlexGapStastCenter } from '@components/styledComponent';
 
 export const AllCategoryFirstRow = () => {
   return (
-    <CategoryCardRow style={{cursor:'default'}}>
+    <CategoryCardRow style={{ cursor: 'default' }}>
       <TextBold>카테고리</TextBold>
       <TextBold>지수 현재가</TextBold>
       <TextBold>지수 전일 대비</TextBold>
@@ -29,18 +30,22 @@ const AllCategoryStock: React.FC<ICategory> = ({
   onClick,
 }) => {
   return (
-    <CategoryCardRow onClick={onClick} >
-      <div style={{display:'flex', gap:'1rem', justifyContent:'start', alignItems:'center'}}>
-        <CategoryImgWrapper $bgColor={imageBgColor}>
-          <CategoryImg src={String(imageUrl)} alt="Category Image" />
-        </CategoryImgWrapper>
-        <Text>{category.industryName}</Text>
-      </div>
+    <CategoryCardRow onClick={onClick}>
+      <FlexGapStastCenter gap="1rem">
+          <CategoryImgWrapper $bgColor={imageBgColor}>
+            <CategoryImg src={String(imageUrl)} alt="Category Image" />
+          </CategoryImgWrapper>
+          <Text>{category.industryName}</Text>
+      </FlexGapStastCenter>
       <Text>{category.bstpNmixPrpr}</Text>
-      <CategoryData $isPositive={category.bstpNmixPrdyVrss.toString().startsWith('-')}>
+      <CategoryData
+        $isPositive={category.bstpNmixPrdyVrss.toString().startsWith('-')}
+      >
         {formatChange(category.bstpNmixPrdyVrss)}
       </CategoryData>
-      <CategoryData $isPositive={category.bstpNmixPrdyCtrt.toString().startsWith('-')}>
+      <CategoryData
+        $isPositive={category.bstpNmixPrdyCtrt.toString().startsWith('-')}
+      >
         {formatChange(category.bstpNmixPrdyCtrt)}%
       </CategoryData>
       <Text>{formatNumber(category.acmlTrPbmn)}</Text>

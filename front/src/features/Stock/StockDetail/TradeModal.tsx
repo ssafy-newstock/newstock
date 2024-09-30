@@ -2,7 +2,8 @@
 import { Text, TextLarge } from '@features/Stock/styledComponent';
 import StockIcon from '@features/Stock/StockDetail/StockIcon';
 import styled from 'styled-components';
-import {formatNumber} from '@utils/formatNumber';
+import { formatNumber } from '@utils/formatNumber';
+import { FlexAlignCenter } from '@components/styledComponent';
 
 interface TradeModalProps {
   isOpen: boolean;
@@ -67,12 +68,7 @@ const TradeModal: React.FC<TradeModalProps> = ({
         {/* 매수 결과가 있을 경우 */}
         {buySuccess !== undefined && (
           <>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
+            <FlexAlignCenter>
               <StockIcon buySuccess={buySuccess} />
               <TextLarge
                 style={{
@@ -82,12 +78,14 @@ const TradeModal: React.FC<TradeModalProps> = ({
               >
                 {buySuccess ? '매수 성공' : '매수 실패'}
               </TextLarge>
-            </div>
+            </FlexAlignCenter>
             {buySuccess ? (
               <>
                 <Text>체결가 : {formatNumber(price ?? 0)}원</Text>
                 <Text>주문 수량 : {amount}주</Text>
-                <Text>주문 금액 : {formatNumber((price ?? 0) * (amount ?? 0))}원</Text>
+                <Text>
+                  주문 금액 : {formatNumber((price ?? 0) * (amount ?? 0))}원
+                </Text>
               </>
             ) : (
               <>{message}</>
@@ -98,12 +96,7 @@ const TradeModal: React.FC<TradeModalProps> = ({
         {/* 매도 결과가 있고 매수 결과가 없는 경우 */}
         {buySuccess === undefined && sellSuccess !== undefined && (
           <>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
+            <FlexAlignCenter>
               <StockIcon sellSuccess={sellSuccess} />
               <TextLarge
                 style={{
@@ -113,12 +106,14 @@ const TradeModal: React.FC<TradeModalProps> = ({
               >
                 {sellSuccess ? '매도 성공' : '매도 실패'}
               </TextLarge>
-            </div>
+            </FlexAlignCenter>
             {sellSuccess ? (
               <>
                 <Text>체결가 : {formatNumber(price ?? 0)}원</Text>
                 <Text>판매 수량 : {amount}주</Text>
-                <Text>판매 금액 : {formatNumber((price ?? 0) * (amount ?? 0))}원</Text>
+                <Text>
+                  판매 금액 : {formatNumber((price ?? 0) * (amount ?? 0))}원
+                </Text>
               </>
             ) : (
               <>{message}</>

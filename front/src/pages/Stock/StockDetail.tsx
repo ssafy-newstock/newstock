@@ -31,6 +31,13 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import useAllStockStore from '@store/useAllStockStore';
 import useTop10StockStore from '@store/useTop10StockStore';
 import LoadingPage from '@components/LodingPage';
+import {
+  DivTag,
+  FlexBetweenEnd,
+  FlexBetweenStart,
+  FlexGap,
+  FlexGapEnd,
+} from '@components/styledComponent';
 
 const StockDetailPage = () => {
   const location = useLocation();
@@ -171,24 +178,18 @@ const StockDetailPage = () => {
     <>
       <LeftStock />
       <Center style={{ padding: '1rem' }}>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'end',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'end', gap: '1rem' }}>
+        <FlexBetweenEnd>
+          <FlexGapEnd gap="1rem">
             <StockTitle>
               <StockImageDetail
                 src={getStockImageUrl()}
                 onError={(e) => (e.currentTarget.src = blueLogo)} // 기본 이미지 설정
                 alt=""
               />
-              <div>
+              <DivTag>
                 <SpanTag>코스피 {stock.stockCode}</SpanTag>
                 <TextLarge>{stockDetail?.stockName}</TextLarge>
-              </div>
+              </DivTag>
             </StockTitle>
             <StckPrice>
               {stockDetail && formatChange(formatNumber(stockDetail.stckPrpr))}
@@ -204,8 +205,9 @@ const StockDetailPage = () => {
               원 ({stockDetail?.prdyCtrt}
               %)
             </StockPrev>
-          </div>
-          <div style={{ display: 'flex', gap: '1rem' }}>
+          </FlexGapEnd>
+
+          <FlexGap gap="1rem">
             {isLogin &&
               (isFavorite ? (
                 <HeartFill
@@ -219,18 +221,11 @@ const StockDetailPage = () => {
                 />
               ))}
             {showButton && <DetailPageButton>유사도 분석</DetailPageButton>}
-          </div>
-        </div>
-
-        <HrTag style={{ width: '100%' }} />
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'start',
-          }}
-        >
-          <div style={{ display: 'flex', gap: '1rem' }}>
+          </FlexGap>
+        </FlexBetweenEnd>
+        <HrTag/>
+        <FlexBetweenStart>
+          <FlexGap gap="1rem">
             <Link
               to={`/stock-detail/${stock.stockCode}/day-chart`}
               state={{ stock }}
@@ -251,7 +246,7 @@ const StockDetailPage = () => {
             >
               <DetailPageButton>1개월</DetailPageButton>
             </Link>
-            
+
             <Link
               to={`/stock-detail/${stock.stockCode}/three-month-chart`}
               state={{ stock }}
@@ -279,10 +274,9 @@ const StockDetailPage = () => {
             >
               <DetailPageButton>5년</DetailPageButton>
             </Link>
-
-          </div>
+          </FlexGap>
           <Text style={{ marginRight: '1rem' }}>{stock.stockIndustry}</Text>
-        </div>
+        </FlexBetweenStart>
         <DividedSection>
           <Outlet />
         </DividedSection>
