@@ -306,7 +306,7 @@ export const TradeButton = styled.button<{ $variant: 'buy' | 'sell' }>`
   }
 `;
 
-export const ModalOverlay = styled.div`
+export const TradeModalOverlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
@@ -319,7 +319,7 @@ export const ModalOverlay = styled.div`
   z-index: 1000;
 `;
 
-export const ModalContent = styled.div`
+export const TradeModalContent = styled.div`
   background-color: white;
   padding: 1rem;
   border-radius: 1rem;
@@ -331,7 +331,7 @@ export const ModalContent = styled.div`
   align-items: center;
 `;
 
-export const CloseButton = styled.button`
+export const TradeCloseButton = styled.button`
   background-color: #f0f0f0;
   border: none;
   padding: 0.5rem 1rem;
@@ -339,5 +339,39 @@ export const CloseButton = styled.button`
   cursor: pointer;
   &:hover {
     background-color: #ccc;
+  }
+`;
+
+export const CategoryModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const CategoryModalContent = styled.div`
+  background: ${({ theme }) => theme.stockBackgroundColor};
+  padding: 1rem;
+  border-radius: 1rem;
+  position: relative;
+  max-width: 1000px;
+  width: 100%;
+`;
+
+export const CategoryCloseButton = styled.button`
+  color: ${({ theme }) => theme.textColor};
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  :hover {
   }
 `;

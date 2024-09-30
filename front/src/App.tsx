@@ -91,6 +91,7 @@ const App = () => {
   return (
     <ThemeProvider theme={currentTheme}>
       <GlobalStyle />
+      {/* 에러 바운더리 */}
       <ErrorBoundary
         FallbackComponent={ErrorFallback}
         onReset={() => {
@@ -108,6 +109,7 @@ const App = () => {
         </Container>
         {/* 웹소켓 연결 */}
         <WebSocketComponent />
+        {/* 토스트 메세지 */}
         <ToastContainer
           position="bottom-right"
           autoClose={3000}

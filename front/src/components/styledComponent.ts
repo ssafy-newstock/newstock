@@ -21,6 +21,10 @@ export const FlexGapStastCenter = styled(FlexGap)`
   align-items: center;
 `;
 
+export const FlexGapRow = styled(FlexGap)`
+  flex-direction: row;
+`;
+
 export const FlexBetween = styled(Flex)`
   justify-content: space-between;
 `;

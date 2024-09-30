@@ -1,10 +1,10 @@
 // import { Background, Modal, Overlay } from '@components/ModalComponents';
 import {
-  ModalContent,
-  ModalOverlay,
+  TradeModalOverlay,
+  TradeModalContent,
+  TradeCloseButton,
   Text,
   TextLarge,
-  CloseButton,
 } from '@features/Stock/styledComponent';
 import StockIcon from '@features/Stock/StockDetail/StockIcon';
 import { formatNumber } from '@utils/formatNumber';
@@ -23,8 +23,8 @@ const TradeModal: React.FC<TradeModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <ModalOverlay onClick={onClose}>
-      <ModalContent>
+    <TradeModalOverlay onClick={onClose}>
+      <TradeModalContent>
         {/* 매수 결과가 있을 경우 */}
         {buySuccess !== undefined && (
           <>
@@ -81,9 +81,9 @@ const TradeModal: React.FC<TradeModalProps> = ({
           </>
         )}
         {/* 닫기 버튼 */}
-        <CloseButton onClick={onClose}>닫기</CloseButton>
-      </ModalContent>
-    </ModalOverlay>
+        <TradeCloseButton onClick={onClose}>닫기</TradeCloseButton>
+      </TradeModalContent>
+    </TradeModalOverlay>
   );
 };
 

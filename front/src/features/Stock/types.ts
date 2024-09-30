@@ -113,3 +113,8 @@ export interface TradeModalProps {
   price?: number;
   amount?: number;
 }
+
+export interface CategoryModalProps {
+  onClose: () => void;
+  category: ICategoryStock;
+}
