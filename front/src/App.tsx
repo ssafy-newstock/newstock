@@ -13,6 +13,7 @@ import WebSocketComponent from '@components/WebSocketComponent';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { axiosInstance } from '@api/axiosInstance';
+import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 
 const Container = styled.div`
   display: flex;
@@ -33,6 +34,16 @@ const Content = styled.div`
   height: 100%;
   flex-direction: row;
 `;
+
+function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
+  return (
+    <div role="alert">
+      <p>Something went wrong:</p>
+      <pre>{error.message}</pre>
+      <button onClick={resetErrorBoundary}>Try again</button>
+    </div>
+  );
+}
 
 const App = () => {
   const { theme } = useThemeStore();
@@ -80,28 +91,35 @@ const App = () => {
   return (
     <ThemeProvider theme={currentTheme}>
       <GlobalStyle />
-      <Container>
-        <Navbar />
-        <Main>
-          <Header />
-          <Content>
-            <Outlet />
-          </Content>
-        </Main>
-      </Container>
-      {/* 웹소켓 연결 */}
-      <WebSocketComponent />
-      <ToastContainer
-        position="bottom-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick={true}
-        rtl={false}
-        pauseOnFocusLoss={false}
-        draggable={true}
-        pauseOnHover={false}
-      />
+      <ErrorBoundary
+        FallbackComponent={ErrorFallback}
+        onReset={() => {
+          console.log('ErrorBoundary reset, retrying...');
+        }}
+      >
+        <Container>
+          <Navbar />
+          <Main>
+            <Header />
+            <Content>
+              <Outlet />
+            </Content>
+          </Main>
+        </Container>
+        {/* 웹소켓 연결 */}
+        <WebSocketComponent />
+        <ToastContainer
+          position="bottom-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick={true}
+          rtl={false}
+          pauseOnFocusLoss={false}
+          draggable={true}
+          pauseOnHover={false}
+        />
+      </ErrorBoundary>
     </ThemeProvider>
   );
 };
