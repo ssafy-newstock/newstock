@@ -1,7 +1,6 @@
 package com.ssafy.stock.domain.controller;
 
 import com.ssafy.stock.domain.entity.Redis.StockIndustryRedis;
-import com.ssafy.stock.domain.entity.Redis.StocksPriceLiveRedis;
 import com.ssafy.stock.domain.entity.Redis.StocksPriceRedis;
 import com.ssafy.stock.domain.service.StockIndustryService;
 import com.ssafy.stock.domain.service.StockService;
@@ -47,9 +46,9 @@ public class StockController{
      */
     @GetMapping("/price-list")
     public ResponseEntity<?> getStockPriceList(){
-        Iterable<StocksPriceRedis> stocksPriceRedis = stockService.getStocksPriceRedis();
+        List<StockPricesResponseDto> response = stockService.getStocksPrice();
         return ResponseEntity.ok()
-                .body(stocksPriceRedis);
+                .body(response);
     }
 
     /**
@@ -58,9 +57,9 @@ public class StockController{
      */
     @GetMapping("/price-list/live")
     public ResponseEntity<?> getStockPriceLiveList(){
-        Iterable<StocksPriceLiveRedis> stocksPriceLiveRedis = stockService.getStocksPriceLiveRedis();
+        List<StockPricesResponseDto> response = stockService.getStocksPriceLive();
         return ResponseEntity.ok()
-                .body(stocksPriceLiveRedis);
+                .body(response);
     }
 
     /**
@@ -167,13 +166,5 @@ public class StockController{
         StockMyPageDto stockMyPage = stockService.getStockMyPage(memberId);
 
         return ResponseEntity.ok(success(stockMyPage));
-    }
-
-
-    @GetMapping("/stock-code/name")
-    public ResponseEntity<?> getStockName(@RequestParam List<String> stockCodeList){
-        List<StockCodeToNameResponse> stockNameList = stockService.getStockName(stockCodeList);
-
-        return ResponseEntity.ok(success(stockNameList));
     }
 }
