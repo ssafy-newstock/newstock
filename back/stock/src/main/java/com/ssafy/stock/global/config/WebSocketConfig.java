@@ -1,6 +1,6 @@
 package com.ssafy.stock.global.config;
 
-import com.ssafy.stock.domain.repository.StocksPriceLiveRedisRepository;
+import com.ssafy.stock.domain.repository.redis.StocksPriceLiveRedisRepository;
 import com.ssafy.stock.domain.repository.redis.StocksPriceRedisRepository;
 import com.ssafy.stock.domain.service.helper.StockConverter;
 import com.ssafy.stock.global.handler.KISSocketHandler;
