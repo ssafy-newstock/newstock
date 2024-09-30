@@ -4,6 +4,7 @@ import com.ssafy.news.global.common.CommonResponse;
 import com.ssafy.news.global.exception.AlreadyFavoriteNews;
 import com.ssafy.news.global.exception.NewsNotFoundException;
 import com.ssafy.news.global.exception.NotExistFavoriteNews;
+import com.ssafy.news.global.exception.ScrapNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,5 +32,10 @@ public class NewsControllerAdvice {
         return new ResponseEntity<>(CommonResponse.failure(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(ScrapNotFoundException.class)
+    public ResponseEntity<?> handleNotFoundScrap(ScrapNotFoundException e) {
+        log.error(e.getMessage());
+        return new ResponseEntity<>(CommonResponse.failure(e.getMessage()), HttpStatus.NOT_FOUND);
+    }
 
 }
