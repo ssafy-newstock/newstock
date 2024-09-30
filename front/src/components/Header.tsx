@@ -4,6 +4,11 @@ import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import useAuthStore from '@store/useAuthStore';
 import Login from '@components/Login';
+import SockJS from 'sockjs-client';
+import Stomp from 'stompjs';
+import { authRequest } from '@api/axiosInstance';
+import { formatUnit } from '@utils/formatUnit';
+import usePointStore from '@store/usePointStore';
 
 const HeaderContainer = styled.div`
   width: 100%;
@@ -109,11 +114,6 @@ const PointWrapper = styled(motion.div)`
   }
 `;
 
-import SockJS from 'sockjs-client';
-import Stomp from 'stompjs';
-import { axiosInstance } from '@api/axiosInstance';
-import { formatUnit } from '@utils/formatUnit';
-import usePointStore from '@store/usePointStore';
 const Header = () => {
   const { memberName } = useAuthStore();
   const { theme, toggleTheme } = useThemeStore();
@@ -149,7 +149,7 @@ const Header = () => {
   };
   useEffect(() => {
     const fetchUserPoint = async (): Promise<void> => {
-      const response = await axiosInstance.get(`/api/member/${memberId}/point`);
+      const response = await authRequest.get(`/member/${memberId}/point`);
       setPoint(response.data.point);
     };
 
@@ -271,46 +271,46 @@ const Header = () => {
               transition={{ type: 'spring', stiffness: 300, damping: 20 }} // 스프링 애니메이션 적용
             />
           </Slider>
-          {isLogin && point && (
-            <PointWrapper
-              onMouseOver={handleMouseOver}
-              onMouseOut={handleMouseOut}
-            >
-              {!isHovering ? (
+          {isLogin && point !== null ? (
+            <>
+              {/* 포인트 출력 */}
+              <PointWrapper
+                onMouseOver={handleMouseOver}
+                onMouseOut={handleMouseOut}
+              >
                 <User>
-                  <StyledIcon
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                  >
-                    <g fill="none" stroke="currentColor" strokeWidth="1.5">
-                      <ellipse
-                        cx="9.5"
-                        cy="9.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        rx="9.5"
-                        ry="9.5"
-                        transform="matrix(-1 0 0 1 20 2)"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M13 8.8a3.58 3.58 0 0 0-2.25-.8C8.679 8 7 9.79 7 12s1.679 4 3.75 4c.844 0 1.623-.298 2.25-.8"
-                      />
-                    </g>
-                  </StyledIcon>
-                  <UserName>{formatUnit(point)}원</UserName>
+                  {!isHovering ? (
+                    <>
+                      <StyledIcon
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                      >
+                        <g fill="none" stroke="currentColor" strokeWidth="1.5">
+                          <ellipse
+                            cx="9.5"
+                            cy="9.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            rx="9.5"
+                            ry="9.5"
+                            transform="matrix(-1 0 0 1 20 2)"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M13 8.8a3.58 3.58 0 0 0-2.25-.8C8.679 8 7 9.79 7 12s1.679 4 3.75 4c.844 0 1.623-.298 2.25-.8"
+                          />
+                        </g>
+                      </StyledIcon>
+                      <UserName>{formatUnit(point)}원</UserName>
+                    </>
+                  ) : (
+                    <UserName>{point.toLocaleString()}원</UserName>
+                  )}
                 </User>
-              ) : (
-                <User>
-                  <UserName>{point.toLocaleString()}원</UserName>
-                </User>
-              )}
-            </PointWrapper>
-          )}
-          <User>
-            {isLogin && point ? (
-              <>
+              </PointWrapper>
+
+              <User>
                 <UserName>{memberName}</UserName>
                 <Icon
                   xmlns="http://www.w3.org/2000/svg"
@@ -325,11 +325,13 @@ const Header = () => {
                     fill="currentColor"
                   />
                 </Icon>
-              </>
-            ) : (
+              </User>
+            </>
+          ) : (
+            <User>
               <LoginAlert onClick={openLogin}>로그인 해주세요</LoginAlert>
-            )}
-          </User>
+            </User>
+          )}
         </HeaderRight>
       </HeaderContainer>
       {/* 로그인 모달 */}

@@ -32,9 +32,31 @@ const ScrapCard: React.FC<ScrapCardProps> = ({ data, onClick }) => {
         <AkarIcon />
       </ScrapCardLeftDiv>
       <ScrapCardRightDiv>
-        <TextP_24_NOTGRAY>{data.Title}</TextP_24_NOTGRAY>
+        <TextP_24_NOTGRAY
+          style={{
+            display: '-webkit-box',
+            WebkitBoxOrient: 'vertical',
+            WebkitLineClamp: 1,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {data.Title}
+        </TextP_24_NOTGRAY>
         <ScrapCardRightBottomDiv>
-          <TextP_16>{data.NewsItem.title}</TextP_16>
+          <div>
+            <TextP_16
+              style={{
+                display: '-webkit-box',
+                WebkitBoxOrient: 'vertical',
+                WebkitLineClamp: 1,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              {data.NewsItem.title}
+            </TextP_16>
+          </div>
           <TextP_16>{data.Date}</TextP_16>
         </ScrapCardRightBottomDiv>
       </ScrapCardRightDiv>

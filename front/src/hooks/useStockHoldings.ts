@@ -1,4 +1,4 @@
-import { axiosInstance } from '@api/axiosInstance';
+import { authRequest } from '@api/axiosInstance';
 import { useQuery } from '@tanstack/react-query';
 
 interface StockHolding {
@@ -40,7 +40,7 @@ interface ApiResponse {
 
 // 주식 보유 내역 데이터를 가져오는 함수
 const fetchMyStockData = async (): Promise<ApiResponse['data']> => {
-  const response = await axiosInstance.get<ApiResponse>('/api/stock/mypage');
+  const response = await authRequest.get<ApiResponse>('/stock/mypage');
   return response.data.data;
 };
 

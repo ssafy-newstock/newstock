@@ -34,6 +34,7 @@ const EconomicSubNewsPNG = styled.img`
   width: 1.9rem;
   border-radius: 0.3rem;
   color: #828282;
+  margin-bottom: 0.2rem;
   cursor: pointer; /* 클릭 가능한 커서 설정 */
 
   &:hover {

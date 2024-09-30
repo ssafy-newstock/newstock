@@ -23,21 +23,15 @@ const BookmarkedNewsHeaderSVG = styled.div`
   height: 1rem;
 `;
 
-const BookmarkedNewsMain = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  align-self: stretch;
-`;
-
 const BookmarkedNewsWrapper = styled.div`
   display: flex;
   width: 100%;
   height: 10rem;
   padding: 1rem 1.3rem;
   flex-direction: column;
+  justify-content: center;
   align-items: flex-start;
-  align-items: stretch;
+  align-self: stretch;
   gap: 0.625rem;
   background-color: ${({ theme }) => theme.newsBackgroundColor};
   border-radius: 1.25rem;
@@ -119,24 +113,26 @@ const BookmarkedNews: React.FC = () => {
           <ArrowIcon />
         </BookmarkedNewsHeaderSVG>
       </BookmarkedNewsHeader>
-      {bookmarkedNews.map((news, index) => (
-        <BookmarkedNewsMain key={index}>
-          <BookmarkedNewsWrapper onClick={() => handleNewsClick(news.newsId)}>
-            <BookmarkedNewsTitle>{news.title}</BookmarkedNewsTitle>
-            <BookmarkedNewsMiddle>
-              <BookmarkedNewsMiddleText>{news.media}</BookmarkedNewsMiddleText>
-              <BookmarkedNewsMiddleLine />
-              <BookmarkedNewsMiddleText>
-                {news.uploadDatetime.split(' ')[0].replace(/-/g, '.')}
-              </BookmarkedNewsMiddleText>
-            </BookmarkedNewsMiddle>
 
-            <BookmarkedNewsFooter>
-              <NewsTag># 싸피</NewsTag>
-              {bookmarkedIcon}
-            </BookmarkedNewsFooter>
-          </BookmarkedNewsWrapper>
-        </BookmarkedNewsMain>
+      {bookmarkedNews.map((news, index) => (
+        <BookmarkedNewsWrapper
+          key={index}
+          onClick={() => handleNewsClick(news.newsId)}
+        >
+          <BookmarkedNewsTitle>{news.title}</BookmarkedNewsTitle>
+          <BookmarkedNewsMiddle>
+            <BookmarkedNewsMiddleText>{news.media}</BookmarkedNewsMiddleText>
+            <BookmarkedNewsMiddleLine />
+            <BookmarkedNewsMiddleText>
+              {news.uploadDatetime.split(' ')[0].replace(/-/g, '.')}
+            </BookmarkedNewsMiddleText>
+          </BookmarkedNewsMiddle>
+
+          <BookmarkedNewsFooter>
+            <NewsTag $tagName="싸피"># 싸피</NewsTag>
+            {bookmarkedIcon}
+          </BookmarkedNewsFooter>
+        </BookmarkedNewsWrapper>
       ))}
     </>
   );

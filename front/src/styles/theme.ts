@@ -37,6 +37,22 @@ export const lightTheme: DefaultTheme = {
   editorBackgroundColor: '#FFFFFF', // 에디터 배경색
   editorTextColor: '#000000', // 에디터 텍스트 색상
   dailyWrapperColor: '#F9F9F9', // 일일레포트 페이지 색상
+  tableHeaderColor: '#f0f0f0', // 일일레포트 테이블 헤더 색상
+
+  // 태그 색상
+  tagColors: [
+    { background: '#D9EAD3' },
+    { background: '#FCE5CD' },
+    { background: '#F4CCCC' },
+    { background: '#D9D2E9' },
+    { background: '#CFE2F3' },
+    { background: '#FFF2CC' },
+    { background: '#EAD1DC' },
+    { background: '#E5E0EC' },
+    { background: '#D0E0E3' },
+    { background: '#FCE3C9' },
+    // 추가 색상
+  ],
 };
 
 export const darkTheme: DefaultTheme = {
@@ -76,4 +92,19 @@ export const darkTheme: DefaultTheme = {
   editorBackgroundColor: '#4C506B', // 에디터 배경색
   editorTextColor: '#FFFFFF', // 에디터 텍스트 색상
   dailyWrapperColor: '#171717', // 일일레포트 페이지 색상
+  tableHeaderColor: '#3E444E', // 일일레포트 테이블 헤더 색상
+  // 태그 색상
+  tagColors: [
+    { background: '#274E13' },
+    { background: '#783F04' },
+    { background: '#990000' },
+    { background: '#351C75' },
+    { background: '#0C4583' },
+    { background: '#BF9000' },
+    { background: '#640D14' },
+    { background: '#4B2D3D' },
+    { background: '#3E444E' },
+    { background: '#8B4513' },
+    // 추가 색상
+  ],
 };

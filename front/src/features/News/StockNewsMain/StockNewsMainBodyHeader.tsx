@@ -23,7 +23,7 @@ const NewsBodyStockPriceWrapper = styled.div`
 `;
 
 const StockPrice = styled.span`
-  color: ${({ theme }) => theme.highlightColor};
+  color: ${({ theme }) => theme.editorTextColor};
   font-family: Inter;
   font-size: 0.75rem;
   font-style: normal;

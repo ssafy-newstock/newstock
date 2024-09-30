@@ -34,7 +34,7 @@ const AllStock = ({ stock }: { stock: IStock }) => {
 
   // 주식 상세 페이지 + 월봉 차트 조회
   const handleNavigate = () => {
-    navigate(`/stock-detail/${stock.stockCode}/daily-chart`, { state: { stock } });
+    navigate(`/stock-detail/${stock.stockCode}/day-chart`, { state: { stock } });
   };
 
   const getStockImageUrl = () => {
