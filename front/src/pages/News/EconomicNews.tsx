@@ -143,14 +143,6 @@ const fetchEconomyNewsData = async (
     });
 
     return newsData;
-    //   // industry 값을 한글로 변환
-    //   const translatedData = newsData.map((news: NewsItem) => ({
-    //     ...news,
-    //     industry: translateIndustry(news.industry), // translateIndustry 함수로 변환
-    //   })
-    // );
-
-    //   return translatedData; // 변환된 데이터를 반환
   } catch (error) {
     console.error('Failed to fetch Economic news: ', error);
     return [];
@@ -244,6 +236,7 @@ const EconomicNewsPage: React.FC = () => {
               sentiment={news.sentiment}
             />
             <EconSubNewsBody
+              id={news.id}
               thumbnail={news.thumbnail}
               onShowSummaryChange={handleShowSummaryChange}
             />

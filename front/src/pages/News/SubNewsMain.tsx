@@ -109,9 +109,20 @@ const SubNewsMainPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<string>('전체 기사');
+  // 북마크 업데이트 상태 관리
+  const [bookmarkUpdated, setBookmarkUpdated] = useState(false);
+
+  // 북마크 성공 시 호출되는 콜백 함수
+  const handleBookmarkSuccess = () => {
+    setBookmarkUpdated(true); // 북마크가 성공하면 상태를 true로 변경
+  };
+
+  // 북마크 업데이트가 발생하면, BookmarkedNews를 갱신할 수 있도록 상태를 초기화
+  const resetBookmarkUpdated = () => {
+    setBookmarkUpdated(false); // 상태를 다시 false로 설정
+  };
 
   const isEconomicNews = location.pathname.includes('economic-news');
-  // const isEconomicNews = location.pathname.includes(stock-news);
 
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category);
@@ -148,12 +159,20 @@ const SubNewsMainPage: React.FC = () => {
             ) : null}
           </SubNewsHeaderWrapper>
         </SubNewsMainCenter>
-        <Outlet context={{ selectedCategory }} />
+        <Outlet
+          context={{
+            selectedCategory,
+            onBookmarkSuccess: handleBookmarkSuccess,
+          }}
+        />
       </Center>
 
       <Right>
         <SubNewsMainRight>
-          <BookmarkedNews />
+          <BookmarkedNews
+            bookmarkUpdated={bookmarkUpdated}
+            resetBookmarkUpdated={resetBookmarkUpdated}
+          />
         </SubNewsMainRight>
       </Right>
     </>

@@ -4,6 +4,9 @@ import summaryIcon from '@assets/Chat/summaryIcon.png';
 import NewsSummary from '@features/News/NewsSummary';
 import { bookmarkedIcon, unbookmarkedIcon } from '@features/News/NewsIconTag';
 import { Overlay, Background, Modal } from '@components/ModalComponents';
+import { useOutletContext } from 'react-router-dom';
+
+import { axiosInstance } from '@api/axiosInstance';
 
 const EconomicSubNewsWrapper = styled.div`
   width: 25%;
@@ -58,46 +61,54 @@ const EconomicSubNewsThumbnail = styled.div`
   }
 `;
 
-// const Overlay = styled.div`
-//   position: fixed;
-//   inset: 0;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   z-index: 9999;
-// `;
-
-// const Background = styled.div`
-//   position: fixed;
-//   inset: 0;
-//   background-color: rgba(0, 0, 0, 0.5); /* 반투명 검은 배경 */
-// `;
+const registerBookmark = async (id: number) => {
+  try {
+    const response = await axiosInstance.post(
+      `/api/news/favorite/industry/${id}`
+    );
+    if (response.data.success) {
+      alert('북마크가 성공적으로 등록되었습니다.');
+    }
+  } catch (error) {
+    console.error('Failed to register bookmark: ', error);
+    alert('북마크 등록에 실패했습니다.');
+  }
+};
 
 interface EconSubNewsBodyProps {
+  id: number;
   thumbnail?: string;
   onShowSummaryChange: (showSummary: boolean) => void;
 }
 
-// 요약창이 화면 중앙에 나타나도록 설정
-// const Modal = styled.div`
-//   background-color: ${({ theme }) => theme.backgroundColor};
-//   border-radius: 0.5rem;
-//   box-shadow: 0 0.25rem 0.375rem rgba(0, 0, 0, 0.1);
-//   padding: 1.25rem 1.5rem;
-//   z-index: 9999;
-//   width: 18.75rem;
-// `;
+// Outlet에서 전달된 값에 대한 타입 정의
+interface OutletContextType {
+  onBookmarkSuccess: () => void; // onBookmarkSuccess가 함수라는 것을 명시
+}
 
 const EconSubNewsBody: React.FC<EconSubNewsBodyProps> = ({
+  id,
   thumbnail,
   onShowSummaryChange,
 }) => {
   const [showSummary, setShowSummary] = useState<boolean>(false);
   const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
 
-  const handleIconClick = (event: React.MouseEvent) => {
+  // Outlet에서 전달된 콜백 함수 받기
+  const { onBookmarkSuccess } = useOutletContext<OutletContextType>();
+
+  const handleIconClick = async (event: React.MouseEvent) => {
     event.stopPropagation(); // 상위 클릭 이벤트 중지
-    setIsBookmarked(!isBookmarked);
+
+    if (!isBookmarked) {
+      try {
+        await registerBookmark(id);
+        setIsBookmarked(true);
+        onBookmarkSuccess(); // 콜백 함수 호출 (북마크 성공 알림)
+      } catch (error) {
+        console.error('Bookmark registration failed', error);
+      }
+    }
   };
 
   const handleSummaryClick = (event: React.MouseEvent) => {

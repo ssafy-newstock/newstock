@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { ArrowIcon, bookmarkedIcon, NewsTag } from './NewsIconTag';
-import { getNewsData } from '@api/dummyData/DummyData';
+import { axiosInstance } from '@api/axiosInstance';
+import { useEffect, useState } from 'react';
 
 const BookmarkedNewsHeader = styled.div`
   display: flex;
@@ -88,11 +89,65 @@ const BookmarkedNewsFooter = styled.div`
   align-items: stretch;
 `;
 
-const BookmarkedNews: React.FC = () => {
+const fetchBookmarkedNews = async () => {
+  try {
+    const response = await axiosInstance.get(
+      '/api/news/favorite/industry/list'
+    );
+    if (response.data.success) {
+      return response.data.data;
+    } else {
+      throw new Error('북마크된 뉴스 조회 실패');
+    }
+  } catch (error) {
+    console.error('Failed to fetch bookmarked news:', error);
+    throw error;
+  }
+};
+
+// 인터페이스 정의
+interface NewsItem {
+  id: number;
+  title: string;
+  article: string;
+  description: string;
+  industry: string;
+  media: string;
+  sentiment: string;
+  subtitle: string;
+  thumbnail?: string;
+  uploadDatetime: string;
+}
+
+const BookmarkedNews: React.FC<{
+  bookmarkUpdated: boolean;
+  resetBookmarkUpdated: () => void;
+}> = ({ bookmarkUpdated, resetBookmarkUpdated }) => {
+  const [bookmarkedNews, setBookmarkedNews] = useState<NewsItem[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
-  const { economic } = getNewsData();
-  const bookmarkedNews = economic.data.slice(0, 3);
-  // const bookmarkedNews: BookmarkedNewsItem[] = bookmarkedNewsData.data;
+
+  // 북마크 리스트를 다시 불러오는 함수
+  const reloadBookmarkedNews = async () => {
+    setLoading(true);
+    try {
+      const data = await fetchBookmarkedNews();
+      setBookmarkedNews(data);
+    } catch (error) {
+      console.error('Failed to load bookmarked news', error);
+    } finally {
+      setLoading(false); // 데이터가 로드되면 로딩 상태 해제
+    }
+  };
+
+  useEffect(() => {
+    reloadBookmarkedNews(); // 첫 로드 시 관심 뉴스 불러오기
+
+    if (bookmarkUpdated) {
+      reloadBookmarkedNews(); // 북마크 업데이트 발생 시 다시 로드
+      resetBookmarkUpdated(); // 상태 초기화
+    }
+  }, [bookmarkUpdated, resetBookmarkUpdated]);
 
   const handleInterestNewsClick = () => {
     navigate(`/my-news`);
@@ -101,6 +156,10 @@ const BookmarkedNews: React.FC = () => {
   const handleNewsClick = (stockId: string) => {
     navigate(`/subnews-main/economic-news/${stockId}`);
   };
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <>
@@ -114,26 +173,30 @@ const BookmarkedNews: React.FC = () => {
         </BookmarkedNewsHeaderSVG>
       </BookmarkedNewsHeader>
 
-      {bookmarkedNews.map((news, index) => (
-        <BookmarkedNewsWrapper
-          key={index}
-          onClick={() => handleNewsClick(news.newsId)}
-        >
-          <BookmarkedNewsTitle>{news.title}</BookmarkedNewsTitle>
-          <BookmarkedNewsMiddle>
-            <BookmarkedNewsMiddleText>{news.media}</BookmarkedNewsMiddleText>
-            <BookmarkedNewsMiddleLine />
-            <BookmarkedNewsMiddleText>
-              {news.uploadDatetime.split(' ')[0].replace(/-/g, '.')}
-            </BookmarkedNewsMiddleText>
-          </BookmarkedNewsMiddle>
+      {bookmarkedNews.length > 0 ? (
+        bookmarkedNews.map((news, index) => (
+          <BookmarkedNewsWrapper
+            key={index}
+            onClick={() => handleNewsClick(news.id.toString())}
+          >
+            <BookmarkedNewsTitle>{news.title}</BookmarkedNewsTitle>
+            <BookmarkedNewsMiddle>
+              <BookmarkedNewsMiddleText>{news.media}</BookmarkedNewsMiddleText>
+              <BookmarkedNewsMiddleLine />
+              <BookmarkedNewsMiddleText>
+                {news.uploadDatetime.split(' ')[0].replace(/-/g, '.')}
+              </BookmarkedNewsMiddleText>
+            </BookmarkedNewsMiddle>
 
-          <BookmarkedNewsFooter>
-            <NewsTag $tagName="싸피"># 싸피</NewsTag>
-            {bookmarkedIcon}
-          </BookmarkedNewsFooter>
-        </BookmarkedNewsWrapper>
-      ))}
+            <BookmarkedNewsFooter>
+              <NewsTag $tagName="관심"># 관심</NewsTag>
+              {bookmarkedIcon}
+            </BookmarkedNewsFooter>
+          </BookmarkedNewsWrapper>
+        ))
+      ) : (
+        <p>북마크된 뉴스가 없습니다.</p>
+      )}
     </>
   );
 };

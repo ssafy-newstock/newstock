@@ -9,6 +9,8 @@ import {
   NeutralIconText,
 } from '@features/News/PNSubicon';
 import { NewsTag, bookmarkedIcon } from '../NewsIconTag';
+import useAllStockStore from '@store/useAllStockStore';
+import useTop10StockStore from '@store/useTop10StockStore';
 
 const StockNewsDetailHeaderWrapper = styled.div`
   display: flex;
@@ -103,6 +105,7 @@ interface StockNewsDetailHeaderProps {
   uploadDate: string;
   sentiment: string;
   tagList: string[];
+  stockNewsStockCodes?: string[];
 }
 
 const StockNewsDetailHeader: React.FC<StockNewsDetailHeaderProps> = ({
@@ -111,8 +114,17 @@ const StockNewsDetailHeader: React.FC<StockNewsDetailHeaderProps> = ({
   uploadDate,
   sentiment,
   tagList,
+  stockNewsStockCodes,
 }) => {
   const date = uploadDate.split('T')[0].replace(/-/g, '.');
+  const { allStock } = useAllStockStore();
+  const { top10Stock } = useTop10StockStore();
+
+  const stockCode = stockNewsStockCodes?.[0];
+  const stockDetail =
+    allStock?.find((s) => s.stockCode === stockCode) ||
+    top10Stock?.find((s) => s.stockCode === stockCode);
+  const stockName = stockDetail?.stockName || 'Unknown Stock';
 
   // 감정 분석에 따른 아이콘 설정
   let IconComponent;
@@ -141,7 +153,7 @@ const StockNewsDetailHeader: React.FC<StockNewsDetailHeaderProps> = ({
     <>
       <StockNewsDetailHeaderWrapper>
         <HeaderGapWrapper $gapSize={1.25}>
-          <StockNewsHeader />
+          <StockNewsHeader header={stockName} stockDetail={stockDetail!} />
           <StockNewsTitleWrapper>
             {/* <PositiveIcon>
               <PositiveIconText>긍정</PositiveIconText>
