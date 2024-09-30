@@ -1,4 +1,4 @@
-package com.ssafy.newsscrap.domain.entity;
+package com.ssafy.news.domain.entity.scrap;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
