@@ -8,7 +8,7 @@ import LoadingSpinner from '@components/LoadingSpinner';
 import { Suspense } from 'react';
 import { toast } from 'react-toastify';
 
-const StockLiveUpdates: React.FC = () => {
+const DayChart: React.FC = () => {
   const { state } = useLocation() as { state: { stock: IStock } };
   const { stock } = state;
 
@@ -89,4 +89,4 @@ const StockLiveUpdates: React.FC = () => {
   );
 };
 
-export default StockLiveUpdates;
+export default DayChart;

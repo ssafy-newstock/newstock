@@ -184,7 +184,7 @@ const Modal: React.FC<ModalProps> = ({ onClose, category }) => {
                 <StockCardRow
                   key={stock.stockCode}
                   onClick={() =>
-                    navigate(`/stock-detail/${stock.stockCode}/daily-chart`, {
+                    navigate(`/stock-detail/${stock.stockCode}/day-chart`, {
                       state: { stock },
                     })
                   }

@@ -16,8 +16,15 @@ import ScrapDetailPage from '@pages/Etc/ScrapDetail';
 import ScrapEditPage from '@pages/Etc/ScrapEdit';
 import StockMainPage from '@pages/Stock/StockMain';
 import StockDetailPage from '@pages/Stock/StockDetail';
-import StockDailyChart from '@pages/Stock/StockDailyChart';
-import StockLiveUpdates from '@pages/Stock/StockLiveUpdates';
+import DayChart from '@pages/Stock/Chart/DayChart';
+import WeekChart from '@pages/Stock/Chart/WeekChart';
+
+import MonthChart from '@pages/Stock/Chart/MonthChart';
+import ThreeMonthChart from '@pages/Stock/Chart/ThreeMonthChart';
+import YearChart from '@pages/Stock/Chart/YearChart';
+import ThreeYearChart from '@pages/Stock/Chart/ThreeYearChart';
+import FiveYearChart from '@pages/Stock/Chart/FiveYearChart';
+
 import MyStockPage from '@pages/Stock/MyStock';
 import AllStockPage from '@pages/Stock/AllStock';
 import SectionStockPage from '@pages/Stock/SectionStock';
@@ -66,11 +73,16 @@ const router = createBrowserRouter([
         path: 'stock-detail/:stockCode',
         element: <StockDetailPage />,
         children: [
-          { path: 'daily-chart', element: <StockDailyChart /> },
+          { path: 'day-chart', element: <DayChart /> },
           {
-            path: 'live-updates',
-            element: <StockLiveUpdates />,
+            path: 'week-chart',
+            element: <WeekChart />,
           },
+          {path:'month-chart',element:<MonthChart/>},
+          {path:'three-month-chart',element:<ThreeMonthChart/>},
+          {path:'year-chart',element:<YearChart/>},
+          {path:'three-year-chart',element:<ThreeYearChart/>},
+          {path:'five-year-chart',element:<FiveYearChart/>},
         ],
       },
       { path: 'my-stock', element: <MyStockPage /> },
