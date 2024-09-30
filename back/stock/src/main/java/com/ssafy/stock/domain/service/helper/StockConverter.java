@@ -1,7 +1,9 @@
 package com.ssafy.stock.domain.service.helper;
 
+import com.ssafy.stock.domain.entity.Redis.StocksPriceLiveRedis;
 import com.ssafy.stock.domain.entity.Redis.StocksPriceRedis;
 import com.ssafy.stock.domain.entity.Redis.StocksRedis;
+import com.ssafy.stock.domain.entity.Stocks;
 import com.ssafy.stock.domain.service.response.StockPricesKisResponseDto;
 import com.ssafy.stock.domain.service.response.StockPricesOutputKisResponseDto;
 import com.ssafy.stock.domain.service.response.StockPricesResponseDto;
@@ -145,5 +147,41 @@ public class StockConverter {
         request.put("header", header);
         request.put("body", body);
         return request;
+    }
+
+    public StockPricesResponseDto stockToPriceDto(Stocks stock){
+        return new StockPricesResponseDto(
+                stock.getStockCode(),
+                stock.getStockName(),
+                stock.getStockIndustry(),
+                stock.getStockPrice().getStckPrpr(),
+                stock.getStockPrice().getPrdyVrss(),
+                stock.getStockPrice().getPrdyCtrt(),
+                stock.getStockPrice().getAcmlTrPbmn(),
+                stock.getStockPrice().getAcmlVol());
+    }
+
+    public StockPricesResponseDto stockRedisToPriceDto(StocksPriceRedis stock){
+        return new StockPricesResponseDto(
+                stock.getStockCode(),
+                stock.getStockName(),
+                stock.getStockIndustry(),
+                stock.getStckPrpr(),
+                stock.getPrdyVrss(),
+                stock.getPrdyCtrt(),
+                stock.getAcmlTrPbmn(),
+                stock.getAcmlVol());
+    }
+
+    public StockPricesResponseDto stockLiveRedisToPriceDto(StocksPriceLiveRedis stock){
+        return new StockPricesResponseDto(
+                stock.getStockCode(),
+                stock.getStockName(),
+                stock.getStockIndustry(),
+                stock.getStckPrpr(),
+                stock.getPrdyVrss(),
+                stock.getPrdyCtrt(),
+                stock.getAcmlTrPbmn(),
+                stock.getAcmlVol());
     }
 }
