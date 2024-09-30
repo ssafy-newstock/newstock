@@ -1,55 +1,15 @@
 // import { Background, Modal, Overlay } from '@components/ModalComponents';
-import { Text, TextLarge } from '@features/Stock/styledComponent';
+import {
+  ModalContent,
+  ModalOverlay,
+  Text,
+  TextLarge,
+  CloseButton,
+} from '@features/Stock/styledComponent';
 import StockIcon from '@features/Stock/StockDetail/StockIcon';
-import styled from 'styled-components';
 import { formatNumber } from '@utils/formatNumber';
 import { FlexAlignCenter } from '@components/styledComponent';
-
-interface TradeModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  message: string;
-  buySuccess?: boolean;
-  sellSuccess?: boolean;
-  price?: number;
-  amount?: number;
-}
-
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-`;
-
-const ModalContent = styled.div`
-  background-color: white;
-  padding: 1rem;
-  border-radius: 1rem;
-  min-width: 15rem;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  align-items: center;
-`;
-
-const CloseButton = styled.button`
-  background-color: #f0f0f0;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 1rem;
-  cursor: pointer;
-  &:hover {
-    background-color: #ccc;
-  }
-`;
+import { TradeModalProps } from '@features/Stock/types';
 
 const TradeModal: React.FC<TradeModalProps> = ({
   isOpen,

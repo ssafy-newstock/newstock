@@ -103,3 +103,13 @@ export interface TradeFormProps {
   price: number;
   stockCode: string;
 }
+
+export interface TradeModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  message: string;
+  buySuccess?: boolean;
+  sellSuccess?: boolean;
+  price?: number;
+  amount?: number;
+}
