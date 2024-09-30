@@ -39,7 +39,7 @@ export const CenterContentNewsDiv = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  border: 3px dashed #828282;
+  border: 2px dashed ${({ theme }) => theme.textColor};
 `;
 
 export const MyBlock = styled.div`
@@ -75,13 +75,22 @@ export const CenterGlobalStyle = createGlobalStyle`
 
   /* 드롭다운 옵션 메뉴 */
   .rdw-dropdown-optionwrapper {
-    background-color: ${({ theme }) => theme.centerContentSectionBackgroundColor};
+    background : ${({ theme }) => theme.centerContentSectionBackgroundColor};
     border: 1px solid #ccc;
     border-radius: 4px;
     padding: 5px;
     z-index: 1001;
+    &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
   }
-
+  .rdw-colorpicker-modal {
+  background : ${({ theme }) => theme.centerContentSectionBackgroundColor};
+  }
+  }
+  .rdw-block-dropdown {
+  background : ${({ theme }) => theme.centerContentSectionBackgroundColor};
+  }
   /* 드롭다운에서의 개별 옵션 스타일 */
   .rdw-option-wrapper {
     border: none;
@@ -90,9 +99,23 @@ export const CenterGlobalStyle = createGlobalStyle`
     margin-right: 0.5rem;
     border: 1px solid #ccc;
     background: ${({ theme }) => theme.centerContentSectionBackgroundColor};
-    color: ${({ theme }) => theme.textColor}; /* 텍스트 색상 */
+  }
+  .rdw-option-wrapper img {
+    filter: ${({ theme }) =>
+      theme.textColor === '#A9ACBB'
+        ? 'invert(100%)'
+        : 'invert(0) brightness(1)'};
   }
 
+  .rdw-dropdown-selectedtext img {
+    filter: ${({ theme }) =>
+      theme.textColor === '#A9ACBB'
+        ? 'invert(100%)'
+        : 'invert(0) brightness(1)'};
+  }
+  .rdw-dropdown-selectedtext span {
+  color : ${({ theme }) => theme.editorTextColor};
+  }
   /* 드롭다운 옵션이 활성화될 때 */
   .rdw-option-active {
     background-color: ${({ theme }) => theme.activeOptionBackgroundColor}; /* 활성화된 옵션 배경색 */
@@ -109,7 +132,7 @@ export const CenterGlobalStyle = createGlobalStyle`
   .rdw-editor-main {
     min-height: 400px;
     border-radius: 0.625rem;
-    padding: 1rem;
+    padding : 0.5rem;
     border: 1px solid #ccc;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     background: ${({ theme }) => theme.editorBackgroundColor}; /* 에디터 배경색 */
@@ -117,6 +140,10 @@ export const CenterGlobalStyle = createGlobalStyle`
     cursor: text;
   }
 
+  .public-DraftStyleDefault-block,
+  .public-DraftStyleDefault-ltr {
+    margin: 0.5rem !important; /* 마진 제거 */
+  }
   /* 에디터 전체 감싸는 wrapper */
   .rdw-editor-wrapper {
     overflow: visible !important;
@@ -149,6 +176,10 @@ export const StyledInput = styled.input`
   border-radius: 0.5rem; /* 약간 둥근 모서리 */
   outline: none;
 
+  &::placeholder {
+    color: ${({ theme }) => theme.textColor}; /* 테마에 맞는 placeholder 색상 */
+    opacity: 0.8; /* placeholder 투명도 */
+  }
   /* 포커스 시 스타일 */
   &:focus {
     border-color: ${({ theme }) =>
