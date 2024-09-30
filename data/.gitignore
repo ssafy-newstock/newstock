@@ -161,3 +161,7 @@ scrap_venv/
 **/[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9].json
 
 .DS_Store
+
+#data 제거
+/notebook/data
+/notebook/jdbc

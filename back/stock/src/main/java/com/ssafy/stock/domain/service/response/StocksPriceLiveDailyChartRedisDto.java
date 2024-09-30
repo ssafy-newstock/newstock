@@ -1,5 +1,6 @@
 package com.ssafy.stock.domain.service.response;
 
+import com.ssafy.stock.domain.entity.Redis.StocksPriceDailyChartRedis;
 import com.ssafy.stock.domain.entity.Redis.StocksPriceLiveDailyChartRedis;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,5 +26,14 @@ public class StocksPriceLiveDailyChartRedisDto {
         this.stockIndustry = stocksPriceLiveDailyChartRedis.getStockIndustry();
         this.stckPrpr = stocksPriceLiveDailyChartRedis.getStckPrpr();
         this.time = stocksPriceLiveDailyChartRedis.getTime();
+    }
+
+    public StocksPriceLiveDailyChartRedisDto(StocksPriceDailyChartRedis stocksPriceDailyChartRedis) {
+        this.id = stocksPriceDailyChartRedis.getId();
+        this.stockCode = stocksPriceDailyChartRedis.getStockCode();
+        this.stockName = stocksPriceDailyChartRedis.getStockName();
+        this.stockIndustry = stocksPriceDailyChartRedis.getStockIndustry();
+        this.stckPrpr = stocksPriceDailyChartRedis.getStckPrpr();
+        this.time = stocksPriceDailyChartRedis.getTime();
     }
 }

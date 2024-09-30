@@ -43,6 +43,13 @@ spec:
                 name: newstock-stock-stock-service
                 port:
                   number: 8003
+          - path: /api/news(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: newstock-stock-news-service
+                port:
+                  number: 8002
           - path: /api/member/websocket
             pathType: Prefix
             backend:

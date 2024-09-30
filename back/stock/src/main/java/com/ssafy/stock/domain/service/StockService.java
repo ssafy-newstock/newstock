@@ -1,17 +1,16 @@
 package com.ssafy.stock.domain.service;
 
-import com.ssafy.stock.domain.entity.Redis.StocksPriceLiveDailyChartRedis;
-import com.ssafy.stock.domain.entity.Redis.StocksPriceLiveRedis;
-import com.ssafy.stock.domain.entity.Redis.StocksPriceRedis;
-import com.ssafy.stock.domain.entity.Redis.StocksRedis;
+import com.ssafy.stock.domain.entity.Redis.*;
 import com.ssafy.stock.domain.entity.*;
 import com.ssafy.stock.domain.error.custom.StockAlreadyFavoriteException;
 import com.ssafy.stock.domain.error.custom.StockFavoriteNotFoundException;
+import com.ssafy.stock.domain.error.custom.StockHoldingNotFoundException;
 import com.ssafy.stock.domain.error.custom.StockNotFoundException;
-import com.ssafy.stock.domain.repository.*;
-import com.ssafy.stock.domain.repository.redis.StocksPriceLiveDailyChartRedisRepository;
-import com.ssafy.stock.domain.repository.redis.StocksPriceRedisRepository;
-import com.ssafy.stock.domain.repository.redis.StocksRedisRepository;
+import com.ssafy.stock.domain.repository.StockFavoriteRepository;
+import com.ssafy.stock.domain.repository.StockHoldingRepository;
+import com.ssafy.stock.domain.repository.StockTransactionRepository;
+import com.ssafy.stock.domain.repository.StocksRepository;
+import com.ssafy.stock.domain.repository.redis.*;
 import com.ssafy.stock.domain.service.helper.StockConverter;
 import com.ssafy.stock.domain.service.response.*;
 import com.ssafy.stock.global.token.KISTokenService;
@@ -66,6 +65,7 @@ public class StockService {
     private final StockTransactionRepository stockTransactionRepository;
     private final StockHoldingRepository stockHoldingRepository;
     private final StockFavoriteRepository stockFavoriteRepository;
+    private final StocksPriceDailyChartRedisRepository stocksPriceDailyChartRedisRepository;
     private final StocksPriceLiveDailyChartRedisRepository stocksPriceLiveDailyChartRedisRepository;
     private final SimpMessageSendingOperations simpMessageSendingOperations;
     private final StockConverter stockConverter;
@@ -127,7 +127,6 @@ public class StockService {
 
     /**
      * 한국투자증권 시세 갱신 메소드
-     *
      * @param stocksInfo  종목코드, 종목이름
      * @param accessToken
      * @param appKey
@@ -181,12 +180,46 @@ public class StockService {
         }
     }
 
-    public Iterable<StocksPriceRedis> getStocksPriceRedis() {
-        return stocksPriceRedisRepository.findAll();
+    /**
+     * 코스피 가격 정보 조회
+     * @return
+     */
+    public List<StockPricesResponseDto> getStocksPrice() {
+        // Redis에서 가격 조회
+        List<StocksPriceRedis> stocksPriceRedisList = stocksPriceRedisRepository.findAll();
+
+        // Redis에서 조회된 내용이 없으면 DBMS에서 조회
+        if (stocksPriceRedisList.isEmpty()) {
+            return stocksRepository.findAllWithStockPrice(STOCKPRICE.OTHER).stream()
+                    .map(stock -> stockConverter.stockToPriceDto(stock))
+                    .toList();
+        }
+
+        // Redis에서 찾은 가격 response
+        return stocksPriceRedisList.stream()
+                .map(stocksPriceRedis -> stockConverter.stockRedisToPriceDto(stocksPriceRedis))
+                .toList();
     }
 
-    public Iterable<StocksPriceLiveRedis> getStocksPriceLiveRedis() {
-        return stocksPriceLiveRedisRepository.findAll();
+    /**
+     * 코스피 상위 10 종목 가격 정보 조회
+     * @return
+     */
+    public List<StockPricesResponseDto> getStocksPriceLive() {
+        // Redis에서 가격 조회
+        List<StocksPriceLiveRedis> stocksPriceLiveRedisList = stocksPriceLiveRedisRepository.findAll();
+
+        // Redis에서 조회된 내용이 없으면 DBMS에서 조회
+        if (stocksPriceLiveRedisList.isEmpty()) {
+            return stocksRepository.findAllWithStockPrice(STOCKPRICE.TOP).stream()
+                    .map(stock -> stockConverter.stockToPriceDto(stock))
+                    .toList();
+        }
+
+        // Redis에서 찾은 가격 response
+        return stocksPriceLiveRedisList.stream()
+                .map(stock -> stockConverter.stockLiveRedisToPriceDto(stock))
+                .toList();
     }
 
     /**
@@ -222,20 +255,34 @@ public class StockService {
      * @param stockCode
      * @return
      */
-    public List<StocksPriceLiveDailyChartRedisDto> getStockDaily(String stockCode){
-        // 데일리 차트 데이터
-        List<StocksPriceLiveDailyChartRedis> LiveDailyChartRedisList = stocksPriceLiveDailyChartRedisRepository.findAllByStockCode(stockCode);
+    public List<StocksPriceLiveDailyChartRedisDto> getStockDaily(String stockCode) {
+        // Top 10
+        if(stockNameMap.containsKey(stockCode)){
+            // 데일리 차트 데이터
+            List<StocksPriceLiveDailyChartRedis> LiveDailyChartRedisList = stocksPriceLiveDailyChartRedisRepository.findAllByStockCode(stockCode);
 
-        // time을 기준으로 오름차순 정렬
-        List<StocksPriceLiveDailyChartRedis> sortedLiveDailyChartRedisList = LiveDailyChartRedisList.stream()
-                .sorted(Comparator.comparing(StocksPriceLiveDailyChartRedis::getTime))
-                .toList();
+            // time을 기준으로 오름차순 정렬
+            List<StocksPriceLiveDailyChartRedis> sortedLiveDailyChartRedisList = LiveDailyChartRedisList.stream()
+                    .sorted(Comparator.comparing(StocksPriceLiveDailyChartRedis::getTime))
+                    .toList();
 
-        return sortedLiveDailyChartRedisList.stream()
-                .map(stocksPriceLiveDailyChartRedis -> new StocksPriceLiveDailyChartRedisDto(stocksPriceLiveDailyChartRedis))
-                .toList();
+            return sortedLiveDailyChartRedisList.stream()
+                    .map(stocksPriceLiveDailyChartRedis -> new StocksPriceLiveDailyChartRedisDto(stocksPriceLiveDailyChartRedis))
+                    .toList();    
+        } else {
+            // 나머지 전종목 데일리 차트 데이터
+            List<StocksPriceDailyChartRedis> dailyChartRedisList = stocksPriceDailyChartRedisRepository.findAllByStockCode(stockCode);
+            
+            // time 기준으로 오름차순 정렬
+            List<StocksPriceDailyChartRedis> sortedLiveDailyChartRedisList = dailyChartRedisList.stream()
+                    .sorted(Comparator.comparing(StocksPriceDailyChartRedis::getTime))
+                    .toList();
+
+            return sortedLiveDailyChartRedisList.stream()
+                    .map(stocksPriceDailyChartRedis -> new StocksPriceLiveDailyChartRedisDto(stocksPriceDailyChartRedis))
+                    .toList();
+        }
     }
-
 
     /**
      * 주식 마이페이지 조회 메소드
@@ -252,18 +299,18 @@ public class StockService {
     }
 
     /**
-     * 보유 주식 조회 메소드
+     * 보유 주식 전체 조회 메소드
      * @param myStockHoldings
      * @return
      */
-    private List<StockMyPageHoldingDto> getStockMyPageHoldingDtoList(Long memberId) {
+    public List<StockMyPageHoldingDto> getStockMyPageHoldingDtoList(Long memberId) {
         List<StocksHoldings> myStockHoldings = stockHoldingRepository.findAllByMemberIdWithStock(memberId);
 
         return myStockHoldings.stream()
                 .map(myStockHolding -> {
                     Stocks stock = myStockHolding.getStock();
 
-                    Long currentPrice = stockTransactionService.checkTopTenStock(stock.getStockCode()); // 현재 주가
+                    Long currentPrice = stockTransactionService.getCurrentPrice(stock.getStockCode()); // 현재 주가
                     Long buyPrice = myStockHolding.getStockHoldingBuyPrice(); // 평단가
                     Long changeAmount = currentPrice - buyPrice; // 등락 가격
                     Double changeRate = (buyPrice != 0) ? (double) changeAmount / buyPrice * 100 : 0.0; // 등락률 계산 (0으로 나누기 방지)
@@ -281,11 +328,45 @@ public class StockService {
     }
 
     /**
-     * 주식 거래 내역 조회 메소드
+     * 특정 주식 보유 조회
+     * @param memberId
+     * @param stockCode
+     * @return
+     */
+    public List<StockMyPageHoldingDto> getStockHoldingDtoList(Long memberId, String stockCode) {
+        List<StocksHoldings> myStockHoldings = stockHoldingRepository.findAllByMemberIdAndStockCodeWithStock(memberId, stockCode);
+
+        if(myStockHoldings.isEmpty()){
+            throw new StockHoldingNotFoundException();
+        }
+
+        return myStockHoldings.stream()
+                .map(myStockHolding -> {
+                    Stocks stock = myStockHolding.getStock();
+
+                    Long currentPrice = stockTransactionService.getCurrentPrice(stock.getStockCode()); // 현재 주가
+                    Long buyPrice = myStockHolding.getStockHoldingBuyPrice(); // 평단가
+                    Long changeAmount = currentPrice - buyPrice; // 등락 가격
+                    Double changeRate = (buyPrice != 0) ? (double) changeAmount / buyPrice * 100 : 0.0; // 등락률 계산 (0으로 나누기 방지)
+
+                    return new StockMyPageHoldingDto(
+                            stock.getId(),
+                            stock.getStockCode(),
+                            stock.getStockName(),
+                            myStockHolding.getStockHoldingBuyAmount(),
+                            buyPrice,
+                            changeAmount,
+                            changeRate
+                    );
+                }).toList();
+    }
+
+    /**
+     * 주식 거래 내역 전체 조회 메소드
      * @param myStockTransactions
      * @return
      */
-    private List<StockMyPageTransactionDto> getStockMyPageTransactionDtoList(Long memberId) {
+    public List<StockMyPageTransactionDto> getStockMyPageTransactionDtoList(Long memberId) {
         List<StocksTransactions> myStockTransactions = stockTransactionRepository.findAllByMemberIdWithStock(memberId);
 
         return myStockTransactions.stream()
@@ -306,6 +387,7 @@ public class StockService {
 
     /**
      * 찜한 주식 조회 메소드
+     *
      * @param myStockFavorites
      * @return
      */
@@ -364,5 +446,4 @@ public class StockService {
         stockFavoriteRepository.delete(stocksFavorite);
         log.info("{}번 회원이 {} 주식을 찜 해제했습니다.", memberId, stock.getStockName());
     }
-
 }

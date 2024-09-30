@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: newsscrap
+  datasource:
+    url: jdbc:mysql://svc.sel4.cloudtype.app:30947/newsscrap
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: ssafy
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+server:
+  port: 8004

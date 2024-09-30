@@ -4,12 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class StockDetailDto {
-    List<StockCandleDto> stockCandleDtoList;
-    List<StocksPriceLiveDailyChartRedisDto> stocksPriceLiveDailyChartRedisDtoList;
+public class StockCodeToNameResponse {
+    private String stockCode;
+    private String stockName;
 }

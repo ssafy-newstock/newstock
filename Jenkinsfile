@@ -9,17 +9,6 @@ pipeline {
         OCI_AUTH_TOKEN = credentials('OCI_AUTH_TOKEN')
     }
     stages {
-//         stage('Check for Changes') {
-//             steps {
-//                 script {
-//                     def changedFiles = sh(script: "git diff --name-only HEAD~1", returnStdout: true).trim().split('\n')
-//                     env.MEMBER_CHANGED = changedFiles.any { it.startsWith('back/member/') } ? 'true' : 'false'
-//                     env.NEWS_CHANGED = changedFiles.any { it.startsWith('back/news/') } ? 'true' : 'false'
-//                     env.STOCK_CHANGED = changedFiles.any { it.startsWith('back/stock/') } ? 'true' : 'false'
-//                     env.FRONT_CHANGED = changedFiles.any { it.startsWith('front/') } ? 'true' : 'false'
-//                 }
-//             }
-//         }
         stage('Login to OCI Registry') {
             steps {
                 script {
@@ -32,9 +21,6 @@ pipeline {
         }
 
         stage('Build and Push Docker Image for Member') {
-//             when {
-//                 expression { env.MEMBER_CHANGED == 'true' }
-//             }
             steps {
                 script {
                     sh """
@@ -45,25 +31,7 @@ pipeline {
             }
         }
 
-        stage('Update Kubernetes Deployment for Member') {
-//             when {
-//                 expression { env.MEMBER_CHANGED == 'true' }
-//             }
-            steps {
-                script {
-                    def deploymentPath = 'k8s/backend/deployment-member.yaml'  // deploymentPath 정의
-                    sh """
-                        sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
-                        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f ${deploymentPath}
-                    """
-                }
-            }
-        }
-
         stage('Build and Push Docker Image for News') {
-//             when {
-//                 expression { env.NEWS_CHANGED == 'true' }
-//             }
             steps {
                 script {
                     sh """
@@ -74,45 +42,23 @@ pipeline {
             }
         }
 
-        stage('Update Kubernetes Deployment for News') {
-//             when {
-//                 expression { env.NEWS_CHANGED == 'true' }
-//             }
+        stage('Build and Push Docker Image for Newsscrap') {
             steps {
                 script {
-                    def deploymentPath = 'k8s/backend/deployment-news.yaml'  // deploymentPath 정의
                     sh """
-                        sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
-                        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f ${deploymentPath}
+                        docker build -t ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstocknewsscrap:${IMAGE_TAG} back/newsscrap/
+                        docker push ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstocknewsscrap:${IMAGE_TAG}
                     """
                 }
             }
         }
 
         stage('Build and Push Docker Image for Stock') {
-//             when {
-//                 expression { env.STOCK_CHANGED == 'true' }
-//             }
             steps {
                 script {
                     sh """
                         docker build -t ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstockstock:${IMAGE_TAG} back/stock/
                         docker push ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstockstock:${IMAGE_TAG}
-                    """
-                }
-            }
-        }
-
-        stage('Update Kubernetes Deployment for Stock') {
-//             when {
-//                 expression { env.STOCK_CHANGED == 'true' }
-//             }
-            steps {
-                script {
-                    def deploymentPath = 'k8s/backend/deployment-stock.yaml'  // deploymentPath 정의
-                    sh """
-                        sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
-                        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f ${deploymentPath}
                     """
                 }
             }
@@ -132,21 +78,6 @@ pipeline {
             }
         }
 
-        stage('Update Kubernetes Deployment for Frontend') {
-//             when {
-//                 expression { env.MEMBER_CHANGED == 'true' }
-//             }
-            steps {
-                script {
-                    def deploymentPath = 'k8s/frontend/deployment-front.yaml'  // deploymentPath 정의
-                    sh """
-                        sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
-                        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f ${deploymentPath}
-                    """
-                }
-            }
-        }
-
         stage('Build and Push Docker Image for Auth') {
 //             when {
 //                 expression { env.NEWS_CHANGED == 'true' }
@@ -156,6 +87,66 @@ pipeline {
                     sh """
                         docker build -t ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstockauth:${IMAGE_TAG} back/auth/
                         docker push ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstockauth:${IMAGE_TAG}
+                    """
+                }
+            }
+        }
+
+        stage('Update Kubernetes Deployment for Member') {
+            steps {
+                script {
+                    def deploymentPath = 'k8s/backend/deployment-member.yaml'  // deploymentPath 정의
+                    sh """
+                        sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
+                        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f ${deploymentPath}
+                    """
+                }
+            }
+        }
+
+        stage('Update Kubernetes Deployment for News') {
+            steps {
+                script {
+                    def deploymentPath = 'k8s/backend/deployment-news.yaml'  // deploymentPath 정의
+                    sh """
+                        sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
+                        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f ${deploymentPath}
+                    """
+                }
+            }
+        }
+
+        stage('Update Kubernetes Deployment for Newsscrap') {
+            steps {
+                script {
+                    def deploymentPath = 'k8s/backend/deployment-newsscrap.yaml'  // deploymentPath 정의
+                    sh """
+                        sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
+                        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f ${deploymentPath}
+                    """
+                }
+            }
+        }
+
+        stage('Update Kubernetes Deployment for Stock') {
+            steps {
+                script {
+                    def deploymentPath = 'k8s/backend/deployment-stock.yaml'  // deploymentPath 정의
+                    sh """
+                        sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
+                        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f ${deploymentPath}
+                    """
+                }
+            }
+        }
+
+        stage('Update Kubernetes Deployment for Frontend') {
+            steps {
+                script {
+                    def deploymentPath = 'k8s/frontend/deployment-front.yaml'  // deploymentPath 정의
+                    sh """
+                        sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
+                        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f ${deploymentPath}
                     """
                 }
             }

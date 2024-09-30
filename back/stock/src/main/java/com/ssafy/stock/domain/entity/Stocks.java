@@ -37,4 +37,7 @@ public class Stocks extends BaseEntity{
 
     @OneToMany(mappedBy = "stock", cascade = CascadeType.REMOVE)
     private List<StocksHoldings> stocksHoldings;
+
+    @OneToOne(mappedBy = "stock", cascade = CascadeType.REMOVE)
+    private StocksPrice stockPrice;
 }
