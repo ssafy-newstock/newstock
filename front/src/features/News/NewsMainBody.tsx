@@ -33,12 +33,24 @@ const NewsBody = styled.div`
   gap: 0.3rem;
   align-self: stretch;
 `;
+interface IStockDetail {
+  stockCode: string;
+  stockName: string;
+  stockIndustry: string;
+  stckPrpr: number;
+  prdyVrss: number;
+  prdyCtrt: number;
+  acmlVol: number;
+  acmlTrPbmn: number;
+}
+
 
 interface NewsMainBodyProps {
   title: string;
   description: string;
   media: string;
   date: string;
+  stockDetail?: IStockDetail;
   header: string;
   newsType: string;
   id: number;
@@ -50,6 +62,7 @@ const NewsMainBody: React.FC<NewsMainBodyProps> = ({
   description,
   media,
   date,
+  stockDetail,
   header,
   newsType,
   id,
@@ -72,7 +85,7 @@ const NewsMainBody: React.FC<NewsMainBodyProps> = ({
         {isEconomicNews ? (
           <EconNewsMainBodyHeader header={header} />
         ) : (
-          <StockNewsMainBodyHeader header={header} />
+          <StockNewsMainBodyHeader header={header} stockDetail={stockDetail!} />
         )}
         <NewsBodyTitle title={title} sentiment={sentiment} />
         <NewsBodyContent content={description} />

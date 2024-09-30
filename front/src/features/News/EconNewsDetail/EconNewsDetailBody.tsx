@@ -1,6 +1,4 @@
 import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
-import { getNewsData } from '@api/dummyData/DummyData';
 
 const EconNewsDetailBodyWrapper = styled.div`
   display: flex;
@@ -44,14 +42,6 @@ const ThumbnailImage = styled.img`
   height: auto; /* 이미지의 원래 비율을 유지 */
   object-fit: cover; /* 비율을 유지하면서 컨테이너에 맞추되, 넘치는 부분은 잘라냄 */
 `;
-
-// const NewsContentText = styled.p`
-//   display: flex;
-//   justify-content: center;
-//   color: ${({ theme }) => theme.textColor};
-//   font-size: 1.25rem;
-//   font-style: normal;
-//   line-height: 1.875rem;
 // `;
 const NewsContentText = styled.div`
   display: block;
@@ -63,21 +53,6 @@ const NewsContentText = styled.div`
   margin-bottom: 1rem;
 `;
 
-// 이미지 URL과 나머지 기사 내용을 분리하는 함수
-// const processArticle = (article: string) => {
-//   const imageTagRegex = /<ImageTag>(.*?)<\/ImageTag>/;
-//   const match = imageTagRegex.exec(article);
-
-//   let imageUrl = '';
-//   let content = article;
-
-//   if (match && match[1]) {
-//     imageUrl = match[1]; // 이미지 URL 추출
-//     content = article.replace(imageTagRegex, '').trim(); // 이미지 태그 제거 후 남은 기사 내용
-//   }
-
-//   return { imageUrl, content };
-// };
 const processArticle = (article: string) => {
   const imageTagRegex = /<ImageTag>(.*?)<\/ImageTag>/g;
   const content: Array<string | { imageUrl: string }> = [];
@@ -109,33 +84,25 @@ const processArticle = (article: string) => {
   return content;
 };
 
-const EconNewsDetailBody: React.FC = () => {
-  const { newsId } = useParams();
-  const { economic } = getNewsData();
+interface EconNewsDetailBodyProps {
+  subtitle?: string;
+  article: string;
+}
 
-  const news = economic.data.find((newsItem) => newsItem.newsId === newsId);
-
-  const contentWithImages = news ? processArticle(news.article) : [];
-  // const { imageUrl, content } = news
-  //   ? processArticle(news.article)
-  //   : { imageUrl: '이미지 없음', content: '내용 없음' };
-  // const subtitle = news ? news.subtitle : '제목 없음';
-
-  // const paragraphs = content.split('\n\n').map((paragraph) =>
-  //   paragraph.split('\n').map((line, index) => (
-  //     <span key={index}>
-  //       {line}
-  //       <br />
-  //     </span>
-  //   ))
-  // );
+const EconNewsDetailBody: React.FC<EconNewsDetailBodyProps> = ({
+  subtitle,
+  article,
+}) => {
+  const contentWithImages = article ? processArticle(article) : [];
 
   return (
     <>
       <EconNewsDetailBodyWrapper>
         <NewsSubTitleWrapper>
           <NewsSubTitleLine />
-          <NewsSubTitleText>{news?.subtitle ?? '제목 없음'}</NewsSubTitleText>
+          {subtitle && (
+            <NewsSubTitleText>{subtitle ?? '제목 없음'}</NewsSubTitleText>
+          )}
         </NewsSubTitleWrapper>
 
         {contentWithImages.map((item, index) => {

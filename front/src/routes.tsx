@@ -41,11 +41,11 @@ const router = createBrowserRouter([
         children: [
           { path: 'economic-news', element: <EconomicNewsPage /> },
           {
-            path: 'economic-news/:newsId',
+            path: 'economic-news/:id',
             element: <EconomicNewsDetailPage />,
           },
           { path: 'stock-news', element: <StockNewsPage /> },
-          { path: 'stock-news/:newsId', element: <StockNewsDetailPage /> },
+          { path: 'stock-news/:id', element: <StockNewsDetailPage /> },
         ],
       },
       { path: 'daily-report', element: <DailyReportPage /> },

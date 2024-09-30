@@ -5,14 +5,11 @@ import LeftNews from '@components/LeftNews';
 import NewsMainHeader from '@features/News/NewsMainHeader';
 import NewsMainBody from '@features/News/NewsMainBody';
 import { translateIndustry } from '@api/dummyData/DummyData';
+import useAllStockStore from '@store/useAllStockStore';
 
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-
-interface StockCode {
-  stockCode: string;
-  stockName: string;
-}
+import useTop10StockStore from '@store/useTop10StockStore';
 
 interface NewsData {
   id: number;
@@ -23,7 +20,7 @@ interface NewsData {
   uploadDatetime: string;
   industry?: string;
   sentiment: string;
-  stockNewsStockCodes?: StockCode[];
+  stockNewsStockCodes?: string[];
 }
 
 // 스타일드 컴포넌트 정의
@@ -77,6 +74,8 @@ const fetchStockNews = async (): Promise<NewsData[]> => {
 const NewsMainPage: React.FC = () => {
   const [economicNews, setEconomicNews] = useState<NewsData[]>([]);
   const [stockNews, setStockNews] = useState<NewsData[]>([]);
+  const { allStock } = useAllStockStore();
+  const { top10Stock } = useTop10StockStore();
 
   useEffect(() => {
     const loadNews = async () => {
@@ -113,19 +112,29 @@ const NewsMainPage: React.FC = () => {
           </NewsMainBodyWrapper>
           <NewsMainHeader newsType="종목" />
           <NewsMainBodyWrapper>
-            {stockNews.map((news, index) => (
-              <NewsMainBody
-                key={index}
-                newsType="종목"
-                title={news.title}
-                description={news.description}
-                media={news.media}
-                date={news.uploadDatetime}
-                header={news.stockNewsStockCodes![0].stockName}
-                id={news.id}
-                sentiment={news.sentiment}
-              />
-            ))}
+            {stockNews.map((news, index) => {
+              // stockNewsStockCodes의 첫 번째 stockCode에 해당하는 stockName을 찾음
+              const stockCode = news.stockNewsStockCodes![0];
+              const stockDetail =
+                allStock?.find((s) => s.stockCode === stockCode) ||
+                top10Stock?.find((s) => s.stockCode === stockCode);
+              // const stockName = stockDetail?.stockName;
+
+              return (
+                <NewsMainBody
+                  key={index}
+                  newsType="종목"
+                  title={news.title}
+                  description={news.description}
+                  media={news.media}
+                  date={news.uploadDatetime}
+                  header={stockDetail?.stockName || 'Unknown Stock'}
+                  stockDetail={stockDetail}
+                  id={news.id}
+                  sentiment={news.sentiment}
+                />
+              );
+            })}
           </NewsMainBodyWrapper>
         </NewsMainCenter>
       </Center>

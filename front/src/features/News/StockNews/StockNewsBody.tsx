@@ -1,12 +1,5 @@
 import styled from 'styled-components';
-import {
-  PositiveIcon,
-  PositiveIconText,
-  NegativeIcon,
-  NegativeIconText,
-  NeutralIcon,
-  NeutralIconText,
-} from '@features/News/PNSubicon';
+import SentimentIcon from '@features/News/PNSubicon';
 import { NewsTag } from '../NewsIconTag';
 
 const StockNewsBodyWrapper = styled.div`
@@ -104,34 +97,12 @@ const StockNewsBody: React.FC<StockNewsBodyProps> = ({
   keywords,
   sentiment,
 }) => {
-  const formattedDate = date?.split(' ')[0].replace(/-/g, '.') || '날짜 불명';
+  const formattedDate = date.split('T')[0].replace(/-/g, '.');
 
-  // 감정 분석에 따른 아이콘 설정
-  let IconComponent;
-  let IconText;
-
-  switch (sentiment) {
-    case '0': // 부정적
-      IconComponent = NegativeIcon;
-      IconText = <NegativeIconText>부정</NegativeIconText>;
-      break;
-    case '1': // 중립적
-      IconComponent = NeutralIcon;
-      IconText = <NeutralIconText>중립</NeutralIconText>;
-      break;
-    case '2': // 긍정적
-      IconComponent = PositiveIcon;
-      IconText = <PositiveIconText>긍정</PositiveIconText>;
-      break;
-    default:
-      IconComponent = NeutralIcon; // 기본값으로 중립 아이콘을 사용
-      IconText = <NeutralIconText>중립</NeutralIconText>;
-      break;
-  }
   return (
     <StockNewsBodyWrapper>
       <StockNewsTitleWrapper>
-        <IconComponent>{IconText}</IconComponent>
+        <SentimentIcon sentiment={sentiment} /> {/* SentimentIcon 사용 */}
         <StockNewsTitle>
           <StockNewsTitleText>{title}</StockNewsTitleText>
         </StockNewsTitle>

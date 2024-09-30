@@ -228,7 +228,13 @@ const StockDetailPage = () => {
         </div>
 
         <HrTag style={{ width: '100%' }} />
-        <div style={{display:'flex', justifyContent:'space-between', alignItems:'start'}}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'start',
+          }}
+        >
           <div style={{ display: 'flex', gap: '1rem' }}>
             <Link
               to={`/stock-detail/${stock.stockCode}/daily-chart`}
@@ -243,7 +249,7 @@ const StockDetailPage = () => {
               <Button>1일</Button>
             </Link>
           </div>
-          <Text style={{marginRight:'1rem'}}>{stock.stockIndustry}</Text>
+          <Text style={{ marginRight: '1rem' }}>{stock.stockIndustry}</Text>
         </div>
         <DividedSection>
           <Outlet />

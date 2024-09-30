@@ -93,19 +93,21 @@ interface NewsItem {
 
 const processArticle = (
   article: string
-): { imageUrl: string; content: string } => {
-  const imageTagRegex = /<ImageTag>(.*?)<\/ImageTag>/;
-  const match = imageTagRegex.exec(article);
-
-  let imageUrl = '';
+): { imageUrls: string[]; content: string } => {
+  const imageTagRegex = /<ImageTag>(.*?)<\/ImageTag>/g;
+  const imageUrls: string[] = [];
   let content = article;
+  let match;
 
-  if (match && match[1]) {
-    imageUrl = match[1];
-    content = article.replace(imageTagRegex, '').trim();
+  // 모든 ImageTag를 찾고, 해당하는 이미지 URL을 배열에 저장
+  while ((match = imageTagRegex.exec(article)) !== null) {
+    imageUrls.push(match[1]); // 이미지 URL을 배열에 추가
   }
 
-  return { imageUrl, content };
+  // 모든 ImageTag를 텍스트에서 제거
+  content = article.replace(imageTagRegex, '').trim();
+
+  return { imageUrls, content };
 };
 
 const fetchEconomyNewsData = async (
@@ -131,11 +133,11 @@ const fetchEconomyNewsData = async (
 
     console.log('Fetched data:', response.data); // 가져온 데이터를 출력
     const newsData = response.data.data.map((newsItem: NewsItem) => {
-      const { imageUrl, content } = processArticle(newsItem.article);
+      const { imageUrls, content } = processArticle(newsItem.article);
       return {
         ...newsItem,
         content,
-        imageUrl,
+        imageUrls,
         industry: translateIndustry(newsItem.industry), // industry 값을 한글로 변환
       };
     });
@@ -216,65 +218,6 @@ const EconomicNewsPage: React.FC = () => {
       }
     };
   }, [fetchNews, loading, initialLoadComplete]);
-
-  // // 선택된 카테고리로 뉴스 필터링
-  // const filteredNewsList = useMemo(
-  //   () =>
-  //     economic.data
-  //       .filter(
-  //         (news) =>
-  //           selectedCategory === '전체 기사' ||
-  //           translateIndustry(news.industry) === selectedCategory
-  //       )
-  //       .map((news) => {
-  //         const { imageUrl, content } = processArticle(news.article);
-  //         return {
-  //           ...news,
-  //           content,
-  //           imageUrl,
-  //         };
-  //       }),
-  //   [economic.data, selectedCategory]
-  // );
-
-  // useEffect(() => {
-  //   setNewsList(filteredNewsList.slice(0, 10));
-  //   setDisplayedItems(10);
-  // }, [selectedCategory, filteredNewsList]);
-
-  // // Intersection Observer가 작동할 때 추가로 10개의 데이터를 보여줌
-  // const loadMoreNews = useCallback(() => {
-  //   if (displayedItems < filteredNewsList.length) {
-  //     setLoading(true); // 로딩 시작
-  //     setTimeout(() => {
-  //       const moreNews = filteredNewsList.slice(
-  //         displayedItems,
-  //         displayedItems + 10
-  //       );
-  //       setNewsList((prevNewsList) => [...prevNewsList, ...moreNews]);
-  //       setDisplayedItems(displayedItems + 10);
-  //       setLoading(false); // 로딩 완료
-  //     }, 1000); // 데이터 로드 시간 시뮬레이션 (1초 대기)
-  //   }
-  // }, [displayedItems, filteredNewsList]);
-
-  // useEffect(() => {
-  //   const observer = new IntersectionObserver((entries) => {
-  //     if (entries[0].isIntersecting && !loading) {
-  //       setCurrentPage((prevPage) => prevPage + 1);
-  //     }
-  //   });
-
-  //   if (observerRef.current) {
-  //     observer.observe(observerRef.current);
-  //   }
-
-  //   return () => {
-  //     if (observerRef.current) {
-  //       observer.unobserve(observerRef.current);
-  //     }
-  //   };
-  // }, [loading]);
 
   const handleNewsClick = (id: number) => {
     navigate(`/subnews-main/economic-news/${id}`);

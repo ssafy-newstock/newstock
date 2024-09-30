@@ -5,6 +5,8 @@ import StockNewsBody from '@features/News/StockNews/StockNewsBody';
 import StockNewsHeader from '@features/News/StockNews/StockNewsHeader';
 import EconSubNewsBody from '@features/News/EconNews/EconSubNewsBody';
 import axios, { AxiosResponse } from 'axios';
+import useAllStockStore from '@store/useAllStockStore';
+import useTop10StockStore from '@store/useTop10StockStore';
 
 const SubCenter = styled.div`
   display: flex;
@@ -94,6 +96,7 @@ interface NewsItem {
   stockKeywords: string[];
   newsId: string;
   imageUrl?: string;
+  stockNewsStockCodes?: string[];
 }
 
 // 이미지 URL과 나머지 기사 내용을 분리하는 함수
@@ -141,20 +144,15 @@ export const fetchStockNewsData = async (page: number): Promise<NewsItem[]> => {
 };
 
 const StockNewsPage: React.FC = () => {
-  // const { stock } = getNewsData();
-  // const [newsList, setNewsList] = useState<NewsItem[]>(() => {
-  //   return stock.data.slice(0, 10).map((newsItem) => {
-  //     const { imageUrl, content } = processArticle(newsItem.article);
-  //     return { ...newsItem, content, imageUrl };
-  //   });
-  // });
-
   const [newsList, setNewsList] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState<boolean>(false); // 로딩 상태
   const [showSummary, setShowSummary] = useState<boolean>(false); // 모달 상태 관리
   const [page, setPage] = useState<number>(1); // API 페이지 번호
   const [initialLoadComplete, setInitialLoadComplete] =
     useState<boolean>(false);
+
+  const { allStock } = useAllStockStore();
+  const { top10Stock } = useTop10StockStore();
 
   const observerRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
@@ -181,28 +179,6 @@ const StockNewsPage: React.FC = () => {
     }
   }, [fetchNews, initialLoadComplete]);
 
-  // const loadMoreNews = useCallback(() => {
-  //   if (displayedItems < stock.data.length) {
-  //     setLoading(true); // 로딩 시작
-  //     setTimeout(() => {
-  //       const moreNews = stock.data
-  //         .slice(displayedItems, displayedItems + 10)
-  //         .map((newsItem) => {
-  //           const { imageUrl, content } = processArticle(newsItem.article); // article에서 imageUrl과 content 추출
-  //           return {
-  //             ...newsItem,
-  //             content, // content 추가
-  //             imageUrl, // imageUrl 추가
-  //           };
-  //         });
-
-  //       setNewsList((prevNewsList) => [...prevNewsList, ...moreNews]);
-  //       setDisplayedItems(displayedItems + 10);
-  //       setLoading(false); // 로딩 완료
-  //     }, 1000); // 데이터 로드 시간 시뮬레이션 (1초 대기)
-  //   }
-  // }, [displayedItems, stock.data]);
-
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting && !loading && initialLoadComplete) {
@@ -223,6 +199,7 @@ const StockNewsPage: React.FC = () => {
   }, [fetchNews, loading, initialLoadComplete]);
 
   const handleNewsClick = (id: number) => {
+    console.log(`Navigating to: /subnews-main/stock-news/${id}`);
     navigate(`/subnews-main/stock-news/${id}`);
   };
 
@@ -233,29 +210,42 @@ const StockNewsPage: React.FC = () => {
   return (
     <SubCenter>
       {newsList.length > 0
-        ? newsList.map((news, index) => (
-            <StockNewsOuterWrapper
-              key={index}
-              onClick={() => handleNewsClick(news.id)}
-              $showSummary={showSummary}
-            >
-              <StockNewsHeader />
-              <StockNewsWrapper>
-                <StockNewsBody
-                  title={news.title}
-                  content={news.content}
-                  media={news.media}
-                  date={news.uploadDatetime}
-                  keywords={news.stockKeywords}
-                  sentiment={news.sentiment}
+        ? newsList.map((news, index) => {
+            // stockNewsStockCodes의 첫 번째 stockCode를 기반으로 stockDetail 찾기
+            const stockCode = news.stockNewsStockCodes?.[0];
+            const stockDetail =
+              allStock?.find((s) => s.stockCode === stockCode) ||
+              top10Stock?.find((s) => s.stockCode === stockCode);
+            const stockName = stockDetail?.stockName || 'Unknown Stock';
+
+            return (
+              <StockNewsOuterWrapper
+                key={index}
+                onClick={() => handleNewsClick(news.id)}
+                $showSummary={showSummary}
+              >
+                {/* stockName을 전달 */}
+                <StockNewsHeader
+                  header={stockName}
+                  stockDetail={stockDetail!}
                 />
-                <EconSubNewsBody
-                  thumbnail={news.thumbnail}
-                  onShowSummaryChange={handleShowSummaryChange}
-                />
-              </StockNewsWrapper>
-            </StockNewsOuterWrapper>
-          ))
+                <StockNewsWrapper>
+                  <StockNewsBody
+                    title={news.title}
+                    content={news.content}
+                    media={news.media}
+                    date={news.uploadDatetime}
+                    keywords={news.stockKeywords}
+                    sentiment={news.sentiment}
+                  />
+                  <EconSubNewsBody
+                    thumbnail={news.thumbnail}
+                    onShowSummaryChange={handleShowSummaryChange}
+                  />
+                </StockNewsWrapper>
+              </StockNewsOuterWrapper>
+            );
+          })
         : !loading && <p>No news available</p>}
       {loading && (
         <LoadingIcon>
