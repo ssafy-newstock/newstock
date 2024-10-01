@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.ssafy.news.domain.service.validator.NewsValidator.validateNewsContent;
 import static com.ssafy.news.domain.service.validator.NewsValidator.validateNewsListContent;
@@ -74,6 +75,9 @@ public class IndustryNewsService {
     }
 
     public List<IndustryNewsDto> getIndustryNewsInIds(List<Long> industryIds) {
-        return industryNewsRepository.findAllByIdIn(industryIds);
+        List<IndustryNews> industryNewsByIdIn = industryNewsRepository.findAllByIdIn(industryIds);
+        return industryNewsByIdIn.stream()
+                .map(IndustryNewsDto::of)
+                .collect(Collectors.toList());
     }
 }

@@ -1,9 +1,14 @@
 package com.ssafy.news.domain.service;
 
+import com.ssafy.news.domain.entity.dto.StockNewsDto;
 import com.ssafy.news.domain.entity.dto.StockScrapDto;
 import com.ssafy.news.domain.entity.scrap.StockScrap;
+import com.ssafy.news.domain.entity.stock.StockKeyword;
+import com.ssafy.news.domain.entity.stock.StockNews;
+import com.ssafy.news.domain.entity.stock.StockNewsStockCode;
 import com.ssafy.news.domain.repository.StockNewsRepository;
 import com.ssafy.news.domain.repository.StockScrapRepository;
+import com.ssafy.news.domain.service.converter.NewsConverter;
 import com.ssafy.news.global.exception.ScrapContentNotEmptyException;
 import com.ssafy.news.global.exception.ScrapNotFoundException;
 import com.ssafy.news.global.exception.ScrapPermissionException;
@@ -16,6 +21,8 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,20 +32,16 @@ public class StockScrapService {
     private final TokenProvider tokenProvider;
 
     @Transactional
-    public void writeScrap(String token, StockScrapDto dto) {
-        Long memberId = tokenProvider.getMemberId(token);
+    public void writeScrap(Long memberId, StockScrapDto dto) {
+        hasText(dto);
 
-        if (StringUtils.hasText(dto.getTitle()) || StringUtils.hasText(dto.getContent())) {
-            throw new ScrapContentNotEmptyException();
-        }
         StockScrap entity = StockScrap.of(dto, memberId);
         stockScrapRepository.save(entity);
     }
 
-    @Transactional
-    public void editScrap(String token, Long scrapId, StockScrapDto dto) {
-        Long memberId = tokenProvider.getMemberId(token);
 
+    @Transactional
+    public void editScrap(Long memberId, Long scrapId, StockScrapDto dto) {
         StockScrap newsScrap = stockScrapRepository.findById(scrapId)
                 .orElseThrow(ScrapNotFoundException::new);
 
@@ -48,17 +51,13 @@ public class StockScrapService {
         }
 
         // 본문이 비어있으면 오류
-        if (StringUtils.hasText(dto.getTitle()) || StringUtils.hasText(dto.getContent())) {
-            throw new ScrapContentNotEmptyException();
-        }
+        hasText(dto);
 
         newsScrap.updateContent(dto);
     }
 
     @Transactional
-    public void deleteScrap(String token, Long scrapId) {
-        Long memberId = tokenProvider.getMemberId(token);
-
+    public void deleteScrap(Long memberId, Long scrapId) {
         StockScrap newsScrap = stockScrapRepository.findById(scrapId)
                 .orElseThrow(ScrapNotFoundException::new);
 
@@ -78,7 +77,7 @@ public class StockScrapService {
     }
 
     public List<StockScrapDto> getMyStockScraps(Long memberId, int page, int size, LocalDate startDate, LocalDate endDate) {
-        PageRequest pageRequest = PageRequest.of(page, size);
+        PageRequest pageRequest = PageRequest.of(Math.max(page - 1, 0), size);
 
         List<StockScrap> content = stockScrapRepository
                 .findAllByMemberIdAndCreatedDateBetween(memberId, startDate, endDate, pageRequest)
@@ -89,4 +88,32 @@ public class StockScrapService {
                 .toList();
     }
 
+    private static void hasText(final StockScrapDto dto) {
+        if (!StringUtils.hasText(dto.getTitle()) || !StringUtils.hasText(dto.getContent())) {
+            throw new ScrapContentNotEmptyException();
+        }
+    }
+
+
+    public List<Long> getScrapInStockNewsIn(final List<StockScrapDto> myStockScraps) {
+        return myStockScraps.stream()
+                .map(StockScrapDto::getNewsId)
+                .collect(Collectors.toList());
+    }
+
+    public List<StockNewsDto> getStockNewsInIds(final List<Long> scrapInStockNewsIds) {
+        List<StockNews> industryNewsByIdIn = stockNewsRepository.findAllByIdIn(scrapInStockNewsIds);
+
+        return industryNewsByIdIn.stream()
+                        .map(stockNews -> {
+                            Set<StockNewsStockCode> entityStockCodes = stockNews.getStockNewsStockCodes();
+                            Set<StockKeyword> entityKeywords = stockNews.getStockKeywords();
+
+                            List<String> stockCodes = NewsConverter.convertStockCodeToDto(entityStockCodes);
+                            List<String> keywords = NewsConverter.convertKeywordToDto(entityKeywords);
+
+                            return StockNewsDto.of(stockNews, stockCodes, keywords);
+                        })
+                .collect(Collectors.toList());
+    }
 }

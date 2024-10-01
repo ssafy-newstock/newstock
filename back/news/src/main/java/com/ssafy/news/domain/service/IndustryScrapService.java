@@ -2,7 +2,6 @@ package com.ssafy.news.domain.service;
 
 import com.ssafy.news.domain.entity.dto.IndustryScrapDto;
 import com.ssafy.news.domain.entity.scrap.IndustryScrap;
-import com.ssafy.news.domain.repository.IndustryNewsRepository;
 import com.ssafy.news.domain.repository.IndustryScrapRepository;
 import com.ssafy.news.global.exception.ScrapContentNotEmptyException;
 import com.ssafy.news.global.exception.ScrapNotFoundException;
@@ -16,29 +15,24 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class IndustryScrapService {
-    private final IndustryNewsRepository industryNewsRepository;
     private final IndustryScrapRepository industryScrapRepository;
     private final TokenProvider tokenProvider;
 
     @Transactional
-    public void writeScrap(String token, IndustryScrapDto dto) {
-        Long memberId = tokenProvider.getMemberId(token);
+    public void writeScrap(Long memberId, IndustryScrapDto dto) {
 
-        if (StringUtils.hasText(dto.getTitle()) || StringUtils.hasText(dto.getContent())) {
-            throw new ScrapContentNotEmptyException();
-        }
+        hasText(dto);
         IndustryScrap entity = IndustryScrap.of(dto, memberId);
         industryScrapRepository.save(entity);
     }
 
     @Transactional
-    public void editScrap(String token, Long scrapId, IndustryScrapDto dto) {
-        Long memberId = tokenProvider.getMemberId(token);
-
+    public void editScrap(Long memberId, Long scrapId, IndustryScrapDto dto) {
         IndustryScrap newsScrap = industryScrapRepository.findById(scrapId)
                 .orElseThrow(ScrapNotFoundException::new);
 
@@ -48,17 +42,13 @@ public class IndustryScrapService {
         }
 
         // 본문이 비어있으면 오류
-        if (StringUtils.hasText(dto.getTitle()) || StringUtils.hasText(dto.getContent())) {
-            throw new ScrapContentNotEmptyException();
-        }
+        hasText(dto);
 
         newsScrap.updateContent(dto);
     }
 
     @Transactional
-    public void deleteScrap(String token, Long scrapId) {
-        Long memberId = tokenProvider.getMemberId(token);
-
+    public void deleteScrap(Long memberId, Long scrapId) {
         IndustryScrap newsScrap = industryScrapRepository.findById(scrapId)
                 .orElseThrow(ScrapNotFoundException::new);
 
@@ -77,8 +67,8 @@ public class IndustryScrapService {
         return IndustryScrapDto.of(newsScrap);
     }
 
-    public List<IndustryScrapDto> getMyStockScraps(Long memberId, int page, int size, LocalDate startDate, LocalDate endDate) {
-        PageRequest pageRequest = PageRequest.of(page, size);
+    public List<IndustryScrapDto> getMyIndustryScraps(Long memberId, int page, int size, LocalDate startDate, LocalDate endDate) {
+        PageRequest pageRequest = PageRequest.of(Math.max(page - 1, 0), size);
 
         List<IndustryScrap> content = industryScrapRepository
                 .findAllByMemberIdAndCreatedDateBetween(memberId, startDate, endDate, pageRequest)
@@ -89,4 +79,15 @@ public class IndustryScrapService {
                 .toList();
     }
 
+    public List<Long> getScrapInIndustryNewsIn(List<IndustryScrapDto> scrapDtos) {
+        return scrapDtos.stream()
+                .map(IndustryScrapDto::getNewsId)
+                .collect(Collectors.toList());
+    }
+
+    private static void hasText(final IndustryScrapDto dto) {
+        if (!StringUtils.hasText(dto.getTitle()) || !StringUtils.hasText(dto.getContent())) {
+            throw new ScrapContentNotEmptyException();
+        }
+    }
 }
