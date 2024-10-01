@@ -6,8 +6,17 @@ import RightContent from '@features/Scrap/create/RightContent';
 import RightTitle from '@features/Scrap/create/RightTitle';
 import { RightDiv, ScrapHr } from '@features/Scrap/scrapStyledComponent';
 import { CenterDiv } from '@features/MyNews/styledComponent';
+import { useState } from 'react';
 
 const ScrapCreatePage = () => {
+  const [selectedDateRange, setSelectedDateRange] = useState<
+    [Date | null, Date | null]
+  >([null, null]);
+
+  // 날짜 범위 변경 핸들러
+  const handleDateRangeChange = (dates: [Date | null, Date | null]) => {
+    setSelectedDateRange(dates);
+  };
   return (
     <>
       <LeftNews />
@@ -18,9 +27,9 @@ const ScrapCreatePage = () => {
       </Center>
       <Right>
         <RightDiv>
-          <RightTitle />
+          <RightTitle onDateRangeChange={handleDateRangeChange} />
           <ScrapHr />
-          <RightContent />
+          <RightContent selectedDateRange={selectedDateRange} />
         </RightDiv>
       </Right>
     </>

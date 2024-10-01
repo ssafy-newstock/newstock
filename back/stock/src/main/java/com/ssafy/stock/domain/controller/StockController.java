@@ -167,4 +167,37 @@ public class StockController{
 
         return ResponseEntity.ok(success(stockMyPage));
     }
+
+    @GetMapping("/my-holding")
+    public ResponseEntity<?> getStockMyHolding(@RequestHeader("authorization") String token){
+        Long memberId = stockTransactionService.getMemberId(token);
+        List<StockMyPageHoldingDto> response = stockService.getStockMyPageHoldingDtoList(memberId);
+
+        return ResponseEntity.ok(success(response));
+    }
+
+    @GetMapping("/my-holding/{stockCode}")
+    public ResponseEntity<?> getStockMyHolding(@RequestHeader("authorization") String token,
+                                                @PathVariable String stockCode){
+        Long memberId = stockTransactionService.getMemberId(token);
+        List<StockMyPageHoldingDto> response = stockService.getStockHoldingDtoList(memberId, stockCode);
+
+        return ResponseEntity.ok(success(response));
+    }
+
+    @GetMapping("/my-transaction")
+    public ResponseEntity<?> getStockMyTransaction(@RequestHeader("authorization") String token){
+        Long memberId = stockTransactionService.getMemberId(token);
+        List<StockMyPageTransactionDto> response = stockService.getStockMyPageTransactionDtoList(memberId);
+
+        return ResponseEntity.ok(success(response));
+    }
+
+    @GetMapping("/my-favorite")
+    public ResponseEntity<?> getStockMyFavorite(@RequestHeader("authorization") String token){
+        Long memberId = stockTransactionService.getMemberId(token);
+        List<StockFavoriteDto> response = stockService.getStockMyPageFavoriteDtoList(memberId);
+
+        return ResponseEntity.ok(success(response));
+    }
 }

@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import useAuthStore from '@store/useAuthStore';
 import LoadingSpinner from '@components/LoadingSpinner';
+import { toast } from 'react-toastify';
 
 type AuthType = string | null;
 type ErrorType = string | null | unknown;
@@ -73,7 +74,7 @@ const Auth = () => {
           .trim();
         // 토큰을 cessionStorage에 저장
         sessionStorage.setItem('accessToken', accessToken);
-
+        toast.success('로그인 성공!');
         // pathname이 있을 경우 해당 경로로 이동, 없을 경우 '/'로 이동
         if (pathname) {
           navigate(pathname);
@@ -83,6 +84,7 @@ const Auth = () => {
       } catch (err) {
         console.error('Error during login:', err);
         setError(err);
+        toast.error('로그인 중 오류가 발생했습니다.');
       } finally {
         setIsLoading(false);
       }
@@ -96,6 +98,7 @@ const Auth = () => {
   }
 
   return (
+    // <></>는 Fragment로 불필요한 div 태그를 생성하지 않음 <Fragment></Fragment>와 동일
     <>
       {isLoading ? (
         <p>로그인 중...</p>

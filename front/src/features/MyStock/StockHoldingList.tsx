@@ -50,7 +50,7 @@ const StockHoldingList = ({ stock }: { stock: StockHolding }) => {
   const navigate = useNavigate();
 
   const handleNavigate = () => {
-    navigate(`/stock-detail/${stock.stockCode}/daily-chart`, {
+    navigate(`/stock-detail/${stock.stockCode}/day-chart`, {
       state: { stock },
     });
   };

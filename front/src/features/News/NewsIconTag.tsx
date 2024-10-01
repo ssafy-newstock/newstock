@@ -21,20 +21,38 @@ export const ArrowIcon = () => (
   </StyledArrowIcon>
 );
 
+// 태그 이름을 기반으로 고유한 색상 인덱스를 계산하는 함수
+const getTagIndex = (tag: string, totalColors: number): number => {
+  let hash = 0;
+  for (let i = 0; i < tag.length; i++) {
+    hash = tag.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return Math.abs(hash) % totalColors; // 색상 리스트의 길이로 나머지 연산
+};
+
+interface NewsTagProps {
+  $tagName: string; // 태그 이름을 받아 고유한 색상 인덱스를 계산
+}
+
 // 태그 스타일링
-export const NewsTag = styled.div`
+export const NewsTag = styled.div<NewsTagProps>`
   display: flex;
   padding: 0.3rem;
   justify-content: center;
   align-items: center;
   gap: 0.625rem;
   border-radius: 0.3rem;
-  background-color: #e0e0e0;
-  color: #000;
+  /* background-color: ${({ theme }) => theme.grayTextColor}; */
+  color: ${({ theme }) => theme.editorTextColor};
   font-family: Inter;
   font-size: 1.25rem;
   font-style: normal;
   line-height: 1.875rem;
+
+  background-color: ${({ theme, $tagName }) => {
+    const index = getTagIndex($tagName, theme.tagColors.length);
+    return theme.tagColors[index].background;
+  }};
 `;
 
 // 북마크 스타일링
