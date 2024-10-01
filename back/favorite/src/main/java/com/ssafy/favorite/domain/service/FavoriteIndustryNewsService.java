@@ -1,13 +1,11 @@
-package com.ssafy.news.domain.service;
+package com.ssafy.favorite.domain.service;
 
-import com.ssafy.news.domain.entity.dto.IndustryNewsDto;
-import com.ssafy.news.domain.entity.favorite.FavoriteIndustryNews;
-import com.ssafy.news.domain.entity.industry.IndustryNews;
-import com.ssafy.news.domain.repository.FavoriteIndustryNewsRepository;
-import com.ssafy.news.domain.repository.IndustryNewsRepository;
-import com.ssafy.news.global.exception.AlreadyFavoriteNews;
-import com.ssafy.news.global.exception.NewsNotFoundException;
-import com.ssafy.news.global.exception.NotExistFavoriteNews;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.favorite.domain.entity.FavoriteIndustryNews;
+import com.ssafy.favorite.domain.repository.FavoriteIndustryNewsRepository;
+import com.ssafy.favorite.domain.service.client.response.IndustryNewsDto;
+import com.ssafy.favorite.global.exception.AlreadyFavoriteNews;
+import com.ssafy.favorite.global.exception.NotExistFavoriteNews;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,14 +13,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class FavoriteIndustryNewsService {
     private final FavoriteIndustryNewsRepository favoriteIndustryNewsRepository;
-    private final IndustryNewsRepository industryNewsRepository;
+    private final IndustryNewsFeignService industryNewsFeignService;
+    private final ObjectMapper objectMapper;
 
     @Transactional
     public void favoriteNews(Long memberId, Long industryNewsId) {
@@ -31,9 +29,9 @@ public class FavoriteIndustryNewsService {
             throw new AlreadyFavoriteNews();
         }
 
-        IndustryNews industryNews = industryNewsRepository.findById(industryNewsId).orElseThrow(NewsNotFoundException::new);
+        IndustryNewsDto industryNews = industryNewsFeignService.getIndustryNews(industryNewsId);
 
-        FavoriteIndustryNews favoriteIndustryNews = FavoriteIndustryNews.of(memberId, industryNews);
+        FavoriteIndustryNews favoriteIndustryNews = FavoriteIndustryNews.of(memberId, industryNews.getId());
         favoriteIndustryNewsRepository.save(favoriteIndustryNews);
     }
 
@@ -50,17 +48,16 @@ public class FavoriteIndustryNewsService {
     public List<IndustryNewsDto> getFavoriteIndustryNews(Long memberId, int page, int size) {
         PageRequest pageRequest = PageRequest.of(Math.max(page - 1, 0), size);
 
-        // 패치조인으로 industry news까지 같이 가져옴
         Page<FavoriteIndustryNews> result = favoriteIndustryNewsRepository.findAllFavoriteNewsByMemberId(memberId, pageRequest);
         List<FavoriteIndustryNews> content = result.getContent();
 
-        List<IndustryNewsDto> industryNewsDtos = content.stream()
-                .map(favoriteIndustryNews -> {
-                    IndustryNews industryNews = favoriteIndustryNews.getIndustryNews();
-                    return IndustryNewsDto.of(industryNews);
-                }).collect(Collectors.toList());
+        List<Long> newsIds = content.stream()
+                .map(FavoriteIndustryNews::getIndustryNewsId)
+                .toList();
 
-        return industryNewsDtos;
+        List<IndustryNewsDto> industryNewsInIds = industryNewsFeignService.getIndustryNewsInIds(newsIds);
+
+        return industryNewsInIds;
     }
 
 }

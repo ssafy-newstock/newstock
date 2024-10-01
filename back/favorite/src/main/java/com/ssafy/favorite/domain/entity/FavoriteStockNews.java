@@ -1,6 +1,5 @@
-package com.ssafy.news.domain.entity.favorite;
+package com.ssafy.favorite.domain.entity;
 
-import com.ssafy.news.domain.entity.stock.StockNews;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -17,14 +16,13 @@ public class FavoriteStockNews extends BaseEntity {
 
     private Long memberId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "stock_news_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private StockNews stockNews;
+    private Long stockNewsId;
 
-    public static FavoriteStockNews of(Long memberId, StockNews stockNews) {
+    public static FavoriteStockNews of(Long memberId, Long stockNewsId) {
         FavoriteStockNews entity = new FavoriteStockNews();
+        entity.stockNewsId = stockNewsId;
         entity.memberId = memberId;
-        entity.stockNews = stockNews;
         return entity;
     }
+
 }

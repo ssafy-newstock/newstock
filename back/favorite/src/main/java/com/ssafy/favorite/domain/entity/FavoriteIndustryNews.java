@@ -1,6 +1,5 @@
-package com.ssafy.news.domain.entity.favorite;
+package com.ssafy.favorite.domain.entity;
 
-import com.ssafy.news.domain.entity.industry.IndustryNews;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -18,14 +17,12 @@ public class FavoriteIndustryNews extends BaseEntity{
     // 좋아요한 멤버 DB 아이디
     private Long memberId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "industry_news_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private IndustryNews industryNews;
+    private Long industryNewsId;
 
-    public static FavoriteIndustryNews of(Long memberId, IndustryNews industryNews) {
+    public static FavoriteIndustryNews of(Long memberId, Long industryNewsId) {
         FavoriteIndustryNews entity = new FavoriteIndustryNews();
         entity.memberId = memberId;
-        entity.industryNews = industryNews;
+        entity.industryNewsId = industryNewsId;
         return entity;
     }
 }

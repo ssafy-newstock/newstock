@@ -1,4 +1,4 @@
-package com.ssafy.news.domain.entity.favorite;
+package com.ssafy.favorite.domain.entity;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;

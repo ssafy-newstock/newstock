@@ -1,4 +1,4 @@
-package com.ssafy.news.global.exception;
+package com.ssafy.favorite.global.exception;
 
 public class AlreadyFavoriteNews extends RuntimeException {
     public AlreadyFavoriteNews() {
