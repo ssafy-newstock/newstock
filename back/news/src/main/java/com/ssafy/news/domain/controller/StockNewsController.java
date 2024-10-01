@@ -56,4 +56,10 @@ public class StockNewsController {
 
         return CommonResponse.success(stockNews);
     }
+
+    @GetMapping("/bulk")
+    public CommonResponse<?> getStockNewsInIds(@RequestParam List<Long> ids) {
+        List<StockNewsDto> stockNewsInIds = stockNewsService.getStockNewsInIds(ids);
+        return CommonResponse.success(stockNewsInIds);
+    }
 }

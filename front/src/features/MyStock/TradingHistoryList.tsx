@@ -53,7 +53,7 @@ const TradingHistoryList = ({ stock }: { stock: TransactionDto }) => {
 
   // 거래 내역 클릭 시 상세 페이지로 이동
   const handleNavigate = () => {
-    navigate(`/stock-detail/${stock.stockCode}/daily-chart`, {
+    navigate(`/stock-detail/${stock.stockCode}/day-chart`, {
       state: { stock },
     });
   };

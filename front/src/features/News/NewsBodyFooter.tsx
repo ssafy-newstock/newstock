@@ -18,7 +18,7 @@ const NewsBodyFooterWriter = styled.div`
 const LineSVG = styled.div`
   width: 0.09rem;
   height: 1.3rem;
-  background: #e0e0e0;
+  background-color: #828282;
 `;
 
 const NewsBodyFooterDate = styled.div`

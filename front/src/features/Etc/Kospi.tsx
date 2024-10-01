@@ -24,8 +24,7 @@ const KospiGraphWrapper = styled.div`
   height: 412px;
   padding: 24px;
   align-self: stretch;
-  border: 1px solid var(--Apex-Grey-200, #bbc5ca);
-  background-color: var(--Apex-White-100, #fff);
+  background-color: ${({ theme }) => theme.newsBackgroundColor};
 
   /* Shadows/Drop Shadow 2 */
   box-shadow: 0px 3px 8px 0px rgba(34, 34, 34, 0.24);

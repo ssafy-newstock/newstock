@@ -2,7 +2,7 @@ package com.ssafy.stock.global.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.stock.domain.entity.Redis.StocksPriceLiveRedis;
-import com.ssafy.stock.domain.repository.StocksPriceLiveRedisRepository;
+import com.ssafy.stock.domain.repository.redis.StocksPriceLiveRedisRepository;
 import com.ssafy.stock.domain.service.helper.StockConverter;
 import com.ssafy.stock.domain.service.response.StockPricesResponseDto;
 import lombok.RequiredArgsConstructor;

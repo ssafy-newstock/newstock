@@ -1,7 +1,6 @@
 package com.ssafy.stock.domain.controller;
 
 import com.ssafy.stock.domain.entity.Redis.StockIndustryRedis;
-import com.ssafy.stock.domain.entity.Redis.StocksPriceLiveRedis;
 import com.ssafy.stock.domain.entity.Redis.StocksPriceRedis;
 import com.ssafy.stock.domain.service.StockIndustryService;
 import com.ssafy.stock.domain.service.StockService;
@@ -47,9 +46,9 @@ public class StockController{
      */
     @GetMapping("/price-list")
     public ResponseEntity<?> getStockPriceList(){
-        Iterable<StocksPriceRedis> stocksPriceRedis = stockService.getStocksPriceRedis();
+        List<StockPricesResponseDto> response = stockService.getStocksPrice();
         return ResponseEntity.ok()
-                .body(stocksPriceRedis);
+                .body(response);
     }
 
     /**
@@ -58,9 +57,9 @@ public class StockController{
      */
     @GetMapping("/price-list/live")
     public ResponseEntity<?> getStockPriceLiveList(){
-        Iterable<StocksPriceLiveRedis> stocksPriceLiveRedis = stockService.getStocksPriceLiveRedis();
+        List<StockPricesResponseDto> response = stockService.getStocksPriceLive();
         return ResponseEntity.ok()
-                .body(stocksPriceLiveRedis);
+                .body(response);
     }
 
     /**
@@ -169,11 +168,38 @@ public class StockController{
         return ResponseEntity.ok(success(stockMyPage));
     }
 
+    @GetMapping("/my-holding")
+    public ResponseEntity<?> getStockMyHolding(@RequestHeader("authorization") String token){
+        Long memberId = stockTransactionService.getMemberId(token);
+        List<StockMyPageHoldingDto> response = stockService.getStockMyPageHoldingDtoList(memberId);
 
-    @GetMapping("/stock-code/name")
-    public ResponseEntity<?> getStockName(@RequestParam List<String> stockCodeList){
-        List<StockCodeToNameResponse> stockNameList = stockService.getStockName(stockCodeList);
+        return ResponseEntity.ok(success(response));
+    }
 
-        return ResponseEntity.ok(success(stockNameList));
+    @GetMapping("/my-holding/{stockCode}")
+    public ResponseEntity<?> getStockMyHolding(@RequestHeader("authorization") String token,
+                                                @PathVariable String stockCode){
+        Long memberId = stockTransactionService.getMemberId(token);
+        StockMyPageHoldingDto stockHoldingDtoList = stockService.getStockHoldingDtoList(memberId, stockCode);
+
+        StockHoldingResponse response = modelMapper.map(stockHoldingDtoList, StockHoldingResponse.class);
+
+        return ResponseEntity.ok(success(response));
+    }
+
+    @GetMapping("/my-transaction")
+    public ResponseEntity<?> getStockMyTransaction(@RequestHeader("authorization") String token){
+        Long memberId = stockTransactionService.getMemberId(token);
+        List<StockMyPageTransactionDto> response = stockService.getStockMyPageTransactionDtoList(memberId);
+
+        return ResponseEntity.ok(success(response));
+    }
+
+    @GetMapping("/my-favorite")
+    public ResponseEntity<?> getStockMyFavorite(@RequestHeader("authorization") String token){
+        Long memberId = stockTransactionService.getMemberId(token);
+        List<StockFavoriteDto> response = stockService.getStockMyPageFavoriteDtoList(memberId);
+
+        return ResponseEntity.ok(success(response));
     }
 }

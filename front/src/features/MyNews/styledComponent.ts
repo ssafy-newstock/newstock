@@ -70,10 +70,11 @@ export const CenterContentSectionBeforeDiv = styled.div`
 `;
 
 export const CenterContentSection = styled.div`
+  position: relative;
   display: flex;
   width: 100%;
   overflow-x: auto; /* 수평 스크롤을 활성화 */
-  padding: 0.9375rem 0.625rem;
+  padding: 0.9375rem 2rem;
   margin: 0.625rem 0rem 1.875rem 0rem;
   flex-direction: row; /* 수평으로 자식 요소를 나열 */
   align-items: flex-start;
@@ -137,13 +138,10 @@ export const CardContextDiv = styled.div`
   margin-left: 0.625rem;
 `;
 
-export const CardBottomContainer = styled.div.withConfig({
-  shouldForwardProp: (prop) => prop !== 'hasKeyword',
-})<{ hasKeyword: boolean }>`
+export const CardBottomContainer = styled.div`
   display: flex;
   align-items: center;
-  justify-content: ${({ hasKeyword }) =>
-    hasKeyword ? 'space-between' : 'flex-end'};
+  justify-content: space-between;
   width: 100%;
 `;
 
@@ -169,4 +167,36 @@ export const CardKeywordFontStyle = styled.p`
   color: #fff;
   font-size: 1.25rem;
   line-height: 1.875rem;
+`;
+
+// 왼쪽 버튼
+export const NewsSectionButtonLeft = styled.button`
+  position: absolute;
+  left: 0;
+  top: 50%; // 상단에서 50%로 위치 설정
+  transform: translateY(-50%); // 중앙 정렬
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: auto; // height는 100%가 아닌 auto로
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 1;
+`;
+
+// 오른쪽 버튼
+export const NewsSectionButtonRight = styled.button`
+  position: absolute;
+  right: 0;
+  top: 50%; // 상단에서 50%로 위치 설정
+  transform: translateY(-50%); // 중앙 정렬
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: auto; // height는 100%가 아닌 auto로
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 1;
 `;

@@ -25,8 +25,7 @@ export const CenterContentDiv = styled.div`
 
 export const CenterNewsDiv = styled.div`
   display: flex;
-  padding: 1.6rem 1.5rem;
-  margin: 1.25rem 0;
+  padding: 1.5rem 1.5rem 0rem 1.5rem;
   align-items: flex-start;
   justify-content: space-between;
   align-self: stretch;
@@ -34,28 +33,28 @@ export const CenterNewsDiv = styled.div`
   background-color: ${({ theme }) => theme.newsBackgroundColor};
   box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.1);
   width: 100%;
-  height: 14rem;
+  height: 12rem;
   cursor: pointer;
 `;
 
 export const CenterNewsLeftDiv = styled.div`
   display: flex;
-  width: 785px;
+  width: 85%;
   flex-direction: column;
   align-items: flex-start;
-  gap: 10px;
+  gap: 0.625rem;
 `;
 
 export const CenterNewsLeftTopDiv = styled.div`
   display: flex;
-  padding: 10px 0px;
+  padding: 0.625rem 0rem 0rem 0rem;
   align-items: center;
-  gap: 30px;
+  gap: 2rem;
 `;
 
 export const CenterNewsRightImg = styled.img`
-  width: 8.75rem;
-  height: 8.75rem;
+  width: 9rem;
+  height: 9rem;
 `;
 
 export const CenterNewsRightDiv = styled.div`
@@ -71,11 +70,11 @@ export const CenterNewsRightDiv = styled.div`
 export const CenterNewsContextDiv = styled.div`
   display: flex;
   width: 100%;
-  padding: 0.9375rem 0.625rem;
+  padding: 1.5rem;
   flex-direction: column;
   gap: 0.625rem;
   flex-wrap: wrap;
-  border-radius: 1.25rem;
-  box-shadow: 0rem 0.25rem 0.25rem 0rem rgba(0, 0, 0, 0.25);
+  border-radius: 2rem;
+  box-shadow: 0rem 0.25rem 0.25rem 0rem rgba(0, 0, 0, 0.1);
   background: ${({ theme }) => theme.newsBackgroundColor};
 `;

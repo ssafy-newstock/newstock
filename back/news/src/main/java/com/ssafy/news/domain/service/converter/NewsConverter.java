@@ -6,7 +6,6 @@ import com.ssafy.news.domain.entity.industry.IndustryNews;
 import com.ssafy.news.domain.entity.stock.StockKeyword;
 import com.ssafy.news.domain.entity.stock.StockNews;
 import com.ssafy.news.domain.entity.stock.StockNewsStockCode;
-import com.ssafy.news.domain.service.client.response.StockCodeToNameResponse;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -24,9 +23,9 @@ public class NewsConverter {
 
 
     // 종목 뉴스 목록을 프리뷰 DTO로 변환
-    public static StockNewsDto convertStockToPreviewDto(StockNews content, List<StockCodeToNameResponse> stockNewsStockCodeDtos) {
+    public static StockNewsDto convertStockToPreviewDto(StockNews content, List<String> stockCodes) {
         List<String> stockKeywords = convertKeywordToDto(content.getStockKeywords());
-        return StockNewsDto.of(content, stockNewsStockCodeDtos, stockKeywords);
+        return StockNewsDto.of(content, stockCodes, stockKeywords);
     }
 
 

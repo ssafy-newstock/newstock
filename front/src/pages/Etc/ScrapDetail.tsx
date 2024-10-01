@@ -31,7 +31,14 @@ interface CardData {
 
 const ScrapDetailPage: React.FC = () => {
   const [selectedCard, setSelectedCard] = useState<CardData | null>(null);
+  const [selectedDateRange, setSelectedDateRange] = useState<
+    [Date | null, Date | null]
+  >([null, null]);
 
+  // 날짜 범위 변경 핸들러
+  const handleDateRangeChange = (dates: [Date | null, Date | null]) => {
+    setSelectedDateRange(dates);
+  };
   return (
     <>
       <LeftNews />
@@ -48,9 +55,12 @@ const ScrapDetailPage: React.FC = () => {
       </Center>
       <Right>
         <RightDiv>
-          <RightTitle />
+          <RightTitle onDateRangeChange={handleDateRangeChange} />
           <ScrapHr />
-          <RightContent onCardClick={setSelectedCard} />
+          <RightContent
+            onCardClick={setSelectedCard}
+            selectedDateRange={selectedDateRange}
+          />
         </RightDiv>
       </Right>
     </>
