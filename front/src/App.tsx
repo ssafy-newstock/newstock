@@ -105,7 +105,7 @@ const App = () => {
           <Outlet context={{ setIsOpen }} />
           <RightVacantWrapper isOpen={isOpen} />
         </Content>
-        {!isLogin && <StockModal isOpen={isOpen} setIsOpen={setIsOpen} />}
+        {isLogin && <StockModal isOpen={isOpen} setIsOpen={setIsOpen} />}
       </Main>
       {/* 웹소켓 연결 */}
       <WebSocketComponent />
