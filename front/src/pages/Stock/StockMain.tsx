@@ -1,6 +1,5 @@
 import { Suspense, useMemo, useState } from 'react';
 import { Center } from '@components/Center';
-import LeftStock from '@components/LeftStock';
 import { categoryImage } from '@features/Stock/category';
 import {
   HrTag,
@@ -19,7 +18,6 @@ import RealTimeStock, {
 import CategoryStock from '@features/Stock/StockMain/CategoryStock';
 import More from '@features/Stock/More';
 import { ICategoryStock, IFavoriteStock, IStock } from '@features/Stock/types';
-import { RightVacant } from '@components/RightVacant';
 import { useNavigate } from 'react-router-dom';
 import Modal from '@features/Stock/SectionStock/Modal';
 import useCategoryStockStore from '@store/useCategoryStockStore';
@@ -30,6 +28,7 @@ import useAllStockStore from '@store/useAllStockStore';
 import useAuthStore from '@store/useAuthStore';
 import LoadingSpinner from '@components/LoadingSpinner';
 import { toast } from 'react-toastify';
+import Left from '@components/Left';
 
 // 새로운 컴포넌트: FavoriteStockSection
 const FavoriteStockSection = () => {
@@ -134,7 +133,7 @@ const StockMainPage = () => {
 
   return (
     <>
-      <LeftStock />
+      <Left />
       <Center style={{ padding: '1rem' }}>
         <Suspense fallback={<LoadingSpinner />}>
           <FavoriteStockSection />
@@ -198,7 +197,6 @@ const StockMainPage = () => {
           </CategoryGridColumn>
         </Suspense>
       </Center>
-      <RightVacant />
       {selectedCategory && (
         <Modal onClose={closeModal} category={selectedCategory} />
       )}

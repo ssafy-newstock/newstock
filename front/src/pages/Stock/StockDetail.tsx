@@ -1,5 +1,4 @@
 import { Center } from '@components/Center';
-import LeftStock from '@components/LeftStock';
 import {
   DetailPageButton,
   DividedSection,
@@ -22,7 +21,6 @@ import { formatNumber } from '@utils/formatNumber';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import blueLogo from '@assets/Stock/blueLogo.png';
 import TradeForm from '@features/Stock/StockDetail/TradeForm';
-import { RightVacant } from '@components/RightVacant';
 import { authRequest } from '@api/axiosInstance';
 import { HeartFill } from '@features/Stock/HeartFill';
 import { Heart } from '@features/Stock/Heart';
@@ -31,6 +29,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import useAllStockStore from '@store/useAllStockStore';
 import useTop10StockStore from '@store/useTop10StockStore';
 import LoadingPage from '@components/LodingPage';
+import Left from '@components/Left';
 
 const StockDetailPage = () => {
   const location = useLocation();
@@ -169,7 +168,7 @@ const StockDetailPage = () => {
 
   return (
     <>
-      <LeftStock />
+      <Left />
       <Center style={{ padding: '1rem' }}>
         <div
           style={{
@@ -251,7 +250,7 @@ const StockDetailPage = () => {
             >
               <DetailPageButton>1개월</DetailPageButton>
             </Link>
-            
+
             <Link
               to={`/stock-detail/${stock.stockCode}/three-month-chart`}
               state={{ stock }}
@@ -279,7 +278,6 @@ const StockDetailPage = () => {
             >
               <DetailPageButton>5년</DetailPageButton>
             </Link>
-
           </div>
           <Text style={{ marginRight: '1rem' }}>{stock.stockIndustry}</Text>
         </div>
@@ -291,7 +289,6 @@ const StockDetailPage = () => {
           stockCode={stock.stockCode}
         />
       </Center>
-      <RightVacant />
     </>
   );
 };

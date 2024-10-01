@@ -1,5 +1,4 @@
 import { Center } from '@components/Center';
-import LeftStock from '@components/LeftStock';
 import CenterTitle from '@features/MyStock/CenterTitle';
 import SectionTitle from '@features/MyStock/SectionTitle';
 import { CenterDiv, MyStockHr } from '@features/MyStock/myStockStyledComponent';
@@ -18,7 +17,7 @@ import TradingHistoryList, {
   TradingHistoryFirstRow,
 } from '@features/MyStock/TradingHistoryList';
 import FavoriteStockList from '@features/MyStock/FavoriteStockList';
-import { RightVacant } from '@components/RightVacant';
+import Left from '@components/Left';
 
 interface StockHolding {
   stockId: number;
@@ -80,7 +79,7 @@ const MyStock: React.FC = () => {
 
   return (
     <>
-      <LeftStock />
+      <Left />
       <Center>
         <CenterDiv>
           <CenterTitle title={'관심 종목'} />
@@ -126,7 +125,6 @@ const MyStock: React.FC = () => {
           </div>
         </CenterDiv>
       </Center>
-      <RightVacant />
     </>
   );
 };

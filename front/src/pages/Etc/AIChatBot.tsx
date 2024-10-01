@@ -6,6 +6,7 @@ import darkUserImg from '@assets/Chat/darkUser.png';
 import AINews from '@features/Etc/AINews';
 import WelcomeMessage from '@features/Etc/WelcomeMessage';
 import CalendarIcon from '@features/MyNews/CalendarIcon';
+import Left from '@components/Left';
 
 // import 'react-datepicker/dist/react-datepicker.css'; // 날짜 선택 UI를 위한 CSS
 // import DatePicker from 'react-datepicker';
@@ -202,6 +203,7 @@ const AIChatBotPage: React.FC = () => {
     <>
       {/* left는 없애고, 관련 뉴스는 채팅을 쳤을 때 제공하도록 하는게 나을듯? */}
       {/* <LeftNews /> */}
+      <Left />
       <Center>
         <ChatCenter>
           <ChatOuterWrapper>

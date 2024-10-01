@@ -1,6 +1,4 @@
 import { Center } from '@components/Center';
-import LeftStock from '@components/LeftStock';
-import { RightVacant } from '@components/RightVacant';
 import {
   HrTag,
   StockGridRow,
@@ -19,6 +17,7 @@ import { Suspense, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import useCategoryStockStore from '@store/useCategoryStockStore';
 import LoadingSpinner from '@components/LoadingSpinner';
+import Left from '@components/Left';
 
 // 밑줄 스타일
 const Underline = styled.div<{ $activeIndex: number }>`
@@ -60,7 +59,11 @@ const SectionStockPage = () => {
   };
 
   // 정렬 함수
-  const sortData = (key: keyof ICategoryStock, ascending: boolean = false, index: number) => {
+  const sortData = (
+    key: keyof ICategoryStock,
+    ascending: boolean = false,
+    index: number
+  ) => {
     setActiveButtonIndex(index); // 선택된 버튼 인덱스 저장
     setSortKey(key);
     setIsAscending(ascending);
@@ -87,7 +90,7 @@ const SectionStockPage = () => {
 
   return (
     <>
-      <LeftStock />
+      <Left />
       <Center style={{ padding: '1rem' }}>
         <StockHeader>전체 카테고리</StockHeader>
         <HrTag />
@@ -139,7 +142,6 @@ const SectionStockPage = () => {
           </StockGridRow>
         </DividedSection>
       </Center>
-      <RightVacant />
       {selectedCategory && (
         <Modal onClose={closeModal} category={selectedCategory} />
       )}
