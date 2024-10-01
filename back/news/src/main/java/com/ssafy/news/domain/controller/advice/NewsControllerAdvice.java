@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.format.DateTimeParseException;
+
 @RestControllerAdvice
 @Slf4j
 public class NewsControllerAdvice {
@@ -46,4 +48,11 @@ public class NewsControllerAdvice {
         log.error(e.getMessage());
         return new ResponseEntity<>(CommonResponse.failure(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(DateTimeParseException.class)
+    public ResponseEntity<?> handleParseDateException(DateTimeParseException e) {
+        log.error(e.getMessage());
+        return new ResponseEntity<>(CommonResponse.failure("날짜 형식에 맞게 입력해주세요"), HttpStatus.BAD_REQUEST);
+    }
+
 }
