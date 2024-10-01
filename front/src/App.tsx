@@ -16,6 +16,7 @@ import { axiosInstance } from '@api/axiosInstance';
 import StockModal from '@features/MyStockModal/StockModal';
 import { useState } from 'react';
 import useAuthStore from '@store/useAuthStore';
+import Left from '@components/Left';
 
 // const Container = styled.div`
 //   display: flex;
@@ -100,10 +101,11 @@ const App = () => {
       <Main isOpen={isOpen}>
         <Header isOpen={isOpen} />
         <Content isOpen={isOpen}>
-          <Outlet />
+          <Left />
+          <Outlet context={{ setIsOpen }} />
           <RightVacantWrapper isOpen={isOpen} />
         </Content>
-        {isLogin && <StockModal isOpen={isOpen} setIsOpen={setIsOpen} />}
+        {!isLogin && <StockModal isOpen={isOpen} setIsOpen={setIsOpen} />}
       </Main>
       {/* 웹소켓 연결 */}
       <WebSocketComponent />
