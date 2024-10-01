@@ -19,16 +19,6 @@ def connect_db() -> pymysql.connections.Connection:
     Returns:
         pymysql.connections.Connection: MySQL 데이터베이스 연결 객체.
     """
-    # 데이터베이스 연결 설정
-    # connection = pymysql.connect(
-    #     host='svc.sel4.cloudtype.app',  # 데이터베이스 호스트
-    #     port=32142,                      # 데이터베이스 포트
-    #     user='root',                     # 사용자 이름
-    #     password='root',                 # 비밀번호
-    #     db='stock',                      # 연결할 데이터베이스 이름
-    #     charset='utf8mb4',               # 문자 인코딩
-    #     cursorclass=DictCursor           # 반환할 커서 클래스
-    # )
     connection = pymysql.connect(
         host=os.getenv('MYSQL_DB_HOST'),      # 데이터베이스 호스트
         port=int(os.getenv('MYSQL_DB_PORT')),  # 데이터베이스 포트
