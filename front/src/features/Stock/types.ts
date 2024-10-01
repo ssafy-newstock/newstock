@@ -132,3 +132,7 @@ export interface CategoryModalProps {
   onClose: () => void;
   category: ICategoryStock;
 }
+
+export interface ChartLinkProps {
+  stock: IStock;
+}
