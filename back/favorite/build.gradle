@@ -42,3 +42,7 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+bootJar {
+    archiveBaseName = 'favorite'
+}

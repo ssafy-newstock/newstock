@@ -20,6 +20,33 @@ pipeline {
             }
         }
 
+        stage('Build and Push Docker Image for Auth') {
+//             when {
+//                 expression { env.NEWS_CHANGED == 'true' }
+//             }
+            steps {
+                script {
+                    sh """
+                        docker build -t ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstockauth:${IMAGE_TAG} back/auth/
+                        docker push ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstockauth:${IMAGE_TAG}
+                    """
+                }
+            }
+        }
+
+        stage('Build and Push Docker Image for Favorite') {
+//             when {
+//                 expression { env.NEWS_CHANGED == 'true' }
+//             }
+            steps {
+                script {
+                    sh """
+                        docker build -t ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstockfavorite:${IMAGE_TAG} back/favorite/
+                        docker push ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstockfavorite:${IMAGE_TAG}
+                    """
+                }
+            }
+        }
         stage('Build and Push Docker Image for Member') {
             steps {
                 script {
@@ -78,15 +105,43 @@ pipeline {
             }
         }
 
-        stage('Build and Push Docker Image for Auth') {
+        stage('Update Kubernetes Deployment for Auth') {
 //             when {
-//                 expression { env.NEWS_CHANGED == 'true' }
+//                 expression { env.MEMBER_CHANGED == 'true' }
 //             }
             steps {
                 script {
+                    def deploymentPath = 'k8s/backend/deployment-auth.yaml'  // deploymentPath 정의
                     sh """
-                        docker build -t ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstockauth:${IMAGE_TAG} back/auth/
-                        docker push ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstockauth:${IMAGE_TAG}
+                        sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
+                        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f ${deploymentPath}
+                    """
+                }
+            }
+        }
+
+        stage('Update Kubernetes Deployment for Auth') {
+//             when {
+//                 expression { env.MEMBER_CHANGED == 'true' }
+//             }
+            steps {
+                script {
+                    def deploymentPath = 'k8s/backend/deployment-auth-local.yaml'  // deploymentPath 정의
+                    sh """
+                        sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
+                        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f ${deploymentPath}
+                    """
+                }
+            }
+        }
+
+        stage('Update Kubernetes Deployment for Favorite') {
+            steps {
+                script {
+                    def deploymentPath = 'k8s/backend/deployment-favorite.yaml'  // deploymentPath 정의
+                    sh """
+                        sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
+                        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f ${deploymentPath}
                     """
                 }
             }
@@ -152,20 +207,7 @@ pipeline {
             }
         }
 
-        stage('Update Kubernetes Deployment for Auth') {
-//             when {
-//                 expression { env.MEMBER_CHANGED == 'true' }
-//             }
-            steps {
-                script {
-                    def deploymentPath = 'k8s/backend/deployment-auth.yaml'  // deploymentPath 정의
-                    sh """
-                        sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
-                        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f ${deploymentPath}
-                    """
-                }
-            }
-        }
+
     }
 
     post {
