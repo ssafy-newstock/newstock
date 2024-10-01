@@ -47,7 +47,6 @@ const EmotionSummaryWrapper = styled.div`
 const DailyReportPage: React.FC = () => {
   return (
     <>
-      <Left />
       <Center>
         <DailyReportCenter>
           <DailyReportWrapper>

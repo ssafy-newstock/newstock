@@ -5,7 +5,6 @@ import NewsMainHeader from '@features/News/NewsMainHeader';
 import NewsMainBody from '@features/News/NewsMainBody';
 // import newsData from '@api/dummyData/20240907.json';
 import { getNewsData, translateIndustry } from '@api/dummyData/DummyData';
-import Left from '@components/Left';
 
 // 스타일드 컴포넌트 정의
 const NewsMainCenter = styled.div`
@@ -38,7 +37,6 @@ const NewsMainPage: React.FC = () => {
 
   return (
     <>
-      <Left />
       <Center>
         <NewsMainCenter>
           {/* 시황 뉴스 헤더 텍스트 */}

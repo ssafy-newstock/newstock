@@ -17,7 +17,6 @@ import { Suspense, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import useCategoryStockStore from '@store/useCategoryStockStore';
 import LoadingSpinner from '@components/LoadingSpinner';
-import Left from '@components/Left';
 
 // 밑줄 스타일
 const Underline = styled.div<{ $activeIndex: number }>`
@@ -90,7 +89,6 @@ const SectionStockPage = () => {
 
   return (
     <>
-      <Left />
       <Center style={{ padding: '1rem' }}>
         <StockHeader>전체 카테고리</StockHeader>
         <HrTag />

@@ -28,7 +28,6 @@ import useAllStockStore from '@store/useAllStockStore';
 import useAuthStore from '@store/useAuthStore';
 import LoadingSpinner from '@components/LoadingSpinner';
 import { toast } from 'react-toastify';
-import Left from '@components/Left';
 
 // 새로운 컴포넌트: FavoriteStockSection
 const FavoriteStockSection = () => {
@@ -133,7 +132,6 @@ const StockMainPage = () => {
 
   return (
     <>
-      <Left />
       <Center style={{ padding: '1rem' }}>
         <Suspense fallback={<LoadingSpinner />}>
           <FavoriteStockSection />

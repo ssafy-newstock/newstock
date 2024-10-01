@@ -3,7 +3,6 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { Center } from '@components/Center';
 import { Outlet } from 'react-router-dom';
-import Left from '@components/Left';
 
 const SubNewsMainCenter = styled.div`
   display: flex;
@@ -110,8 +109,6 @@ const SubNewsMainPage: React.FC = () => {
 
   return (
     <>
-      <Left />
-
       <Center>
         <SubNewsMainCenter>
           <SubNewsHeaderWrapper>

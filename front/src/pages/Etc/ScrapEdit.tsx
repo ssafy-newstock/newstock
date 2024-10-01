@@ -1,5 +1,4 @@
 import { Center } from '@components/Center';
-import Left from '@components/Left';
 import styled from 'styled-components';
 
 const CenterDiv = styled.div`
@@ -12,7 +11,6 @@ const CenterDiv = styled.div`
 const ScrapEditPage = () => {
   return (
     <>
-      <Left />
       <Center>
         <CenterDiv></CenterDiv>
       </Center>

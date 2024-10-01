@@ -29,7 +29,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import useAllStockStore from '@store/useAllStockStore';
 import useTop10StockStore from '@store/useTop10StockStore';
 import LoadingPage from '@components/LodingPage';
-import Left from '@components/Left';
 
 const StockDetailPage = () => {
   const location = useLocation();
@@ -168,7 +167,6 @@ const StockDetailPage = () => {
 
   return (
     <>
-      <Left />
       <Center style={{ padding: '1rem' }}>
         <div
           style={{

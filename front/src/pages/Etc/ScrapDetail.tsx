@@ -11,7 +11,6 @@ import {
   RightDiv,
   ScrapHr,
 } from '@features/Scrap/scrapStyledComponent';
-import Left from '@components/Left';
 
 interface NewsItem {
   title: string;
@@ -41,7 +40,6 @@ const ScrapDetailPage: React.FC = () => {
   };
   return (
     <>
-      <Left />
       <Center>
         {selectedCard ? (
           <CenterDiv>

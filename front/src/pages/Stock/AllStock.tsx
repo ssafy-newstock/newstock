@@ -24,7 +24,6 @@ import useAllStockStore from '@store/useAllStockStore';
 import SearchIcon from '@features/Stock/AllStock/SearchIcon';
 import useTop10StockStore from '@store/useTop10StockStore';
 import LoadingSpinner from '@components/LoadingSpinner';
-import Left from '@components/Left';
 
 const Underline = styled.div<{ $sortBy: string }>`
   position: absolute;
@@ -166,7 +165,6 @@ const AllStockPage: React.FC = () => {
 
   return (
     <>
-      <Left />
       <Center style={{ padding: '1rem' }}>
         <StockHeader>전체 종목</StockHeader>
         <HrTag />
