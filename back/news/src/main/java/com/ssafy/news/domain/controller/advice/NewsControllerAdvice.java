@@ -31,24 +31,6 @@ public class NewsControllerAdvice {
         return new ResponseEntity<>(CommonResponse.failure(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(ScrapNotFoundException.class)
-    public ResponseEntity<?> handleNotFoundScrap(ScrapNotFoundException e) {
-        log.error(e.getMessage());
-        return new ResponseEntity<>(CommonResponse.failure(e.getMessage()), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(ScrapPermissionException.class)
-    public ResponseEntity<?> handleNoPermissionScrap(ScrapPermissionException e) {
-        log.error(e.getMessage());
-        return new ResponseEntity<>(CommonResponse.failure(e.getMessage()), HttpStatus.UNAUTHORIZED);
-    }
-
-    @ExceptionHandler(ScrapContentNotEmptyException.class)
-    public ResponseEntity<?> handleScrapEmptyException(ScrapContentNotEmptyException e) {
-        log.error(e.getMessage());
-        return new ResponseEntity<>(CommonResponse.failure(e.getMessage()), HttpStatus.BAD_REQUEST);
-    }
-
     @ExceptionHandler(DateTimeParseException.class)
     public ResponseEntity<?> handleParseDateException(DateTimeParseException e) {
         log.error(e.getMessage());
