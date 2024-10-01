@@ -17,7 +17,7 @@ export const useFavoriteStockQuery = (
   } = {}
 ): UseSuspenseQueryResult<IApiFavorite, Error> => {
   return useSuspenseQuery<IApiFavorite, Error>({
-    queryKey: ['favoriteStockData'],
+    queryKey: ['favoriteStockList'],
     queryFn: fetchFavoriteStock,
     staleTime: 1000 * 60 * 1, // 기본값 0(신선한 데이터)
     gcTime: 1000 * 60 * 5, // 기본값 5분

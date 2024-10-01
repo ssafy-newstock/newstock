@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 export const StockHeader = styled.div`
   font-size: 1.5rem;
@@ -8,7 +8,7 @@ export const StockHeader = styled.div`
 export const StockHeaderWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  `
+`;
 
 export const DividedSection = styled.div`
   margin: 1.5rem 0rem;
@@ -50,6 +50,25 @@ export const StockCardColumn = styled.div`
   cursor: pointer;
 `;
 
+const pulseAnimation = keyframes`
+  0% {
+    background-color: rgba(255, 255, 255, 0.6); // 시작 색상
+  }
+  50% {
+    background-color: rgba(240, 240, 240, 0.8); // 중간 색상
+  }
+  100% {
+    background-color: rgba(255, 255, 255, 0.6); // 종료 색상
+  }
+`;
+
+export const StockCardColumnSkeleton = styled(StockCardColumn)`
+  animation: ${pulseAnimation} 3s infinite;
+  opacity: 0.4;
+  cursor: none;
+  height: 7rem;
+`;
+
 export const StockCardTitle = styled.div`
   display: flex;
   width: 100%;
@@ -80,7 +99,7 @@ export const StockImage = styled.img`
 export const StockImageDetail = styled(StockImage)`
   width: 3rem;
   height: 3rem;
-`
+`;
 
 export const StckPrice = styled.div`
   font-size: 1rem;
@@ -114,6 +133,12 @@ export const StockCardRow = styled.div`
   background-color: ${({ theme }) => theme.stockBackgroundColor};
   box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
   cursor: pointer;
+`;
+
+export const StockCardRowSkeleton = styled(StockCardRow)`
+  animation: ${pulseAnimation} 3s infinite;
+  opacity: 0.4;
+  height: 2.5rem;
 `;
 
 export const CategoryCardRow = styled(StockCardRow)`
@@ -164,7 +189,7 @@ export const CategoryCardColumn = styled.div`
   cursor: pointer;
 `;
 
-export const CategoryImgWrapper = styled.div<{$bgColor:string}>`
+export const CategoryImgWrapper = styled.div<{ $bgColor: string }>`
   flex-shrink: 0;
   display: flex;
   justify-content: center;
@@ -211,7 +236,7 @@ export const SortButton = styled.button`
   padding: 0;
   margin: 0;
   position: relative;
-  color: ${({theme})=>theme.textColor};
+  color: ${({ theme }) => theme.textColor};
 `;
 
 export const SearchInputWrapper = styled.div`
