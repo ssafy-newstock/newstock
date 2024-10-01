@@ -272,12 +272,13 @@ def calculate_cosine_similarity(other_whole_close_price_array: np.array, base_co
             other_norm = np.linalg.norm(other_vector)  # ||B||
 
             # 코사인 유사도 계산
-            cosine_similarity = dot_product / (base_norm * other_norm) if base_norm and other_norm else 0
+            cosine_similarity = dot_product / (base_norm * other_norm) if base_norm and other_norm else np.array(0).reshape(1, 1)
 
             # 최댓값 및 인덱스 갱신
             if cosine_similarity[0, 0] > max_similarities[i]:
                 max_similarities[i] = cosine_similarity[0, 0]
                 max_indices[i] = start
+
 
     return max_similarities, max_indices
 def extract_base_similarity(base_similarity_score: int,
