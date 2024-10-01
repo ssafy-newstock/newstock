@@ -20,6 +20,9 @@ import {
 import ChartLink from '@features/Stock/StockDetail/ChartLink';
 import LikeButton from '@features/Stock/StockDetail/LikeButton';
 import StockInfo from '@features/Stock/StockDetail/StockInfo';
+import StockHolding from '@features/Stock/StockDetail/StockHolding';
+import { Suspense } from 'react';
+import StockHodingSkeleton from '@features/Stock/StockDetail/StockHodingSkeleton';
 
 const StockDetailPage = () => {
   const location = useLocation();
@@ -44,7 +47,7 @@ const StockDetailPage = () => {
           {stockDetail && <StockInfo stockDetail={stockDetail} />}
           {/* 좋아요, 유사도 버튼 */}
           <FlexGap $gap="1rem">
-            <LikeButton stockCode={stock.stockCode} />
+            {stock && <LikeButton stockCode={stock.stockCode} />}
             {!showButton && <DetailPageButton>유사도 분석</DetailPageButton>}
           </FlexGap>
         </FlexBetweenEnd>
@@ -63,6 +66,12 @@ const StockDetailPage = () => {
           price={stockDetail?.stckPrpr ?? stock.stckPrpr}
           stockCode={stock.stockCode}
         />
+
+        <DividedSection>
+          <Suspense fallback={<StockHodingSkeleton/>}>
+            <StockHolding stockCode={stock.stockCode} />
+          </Suspense>
+        </DividedSection>
       </Center>
       <RightVacant />
     </>

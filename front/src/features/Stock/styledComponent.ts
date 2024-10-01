@@ -36,6 +36,10 @@ export const StockGridRow = styled.div`
   gap: 0.25rem;
 `;
 
+export const HoldingStockGridRow = styled(StockGridRow)`
+  grid-template-rows: repeat(2, minmax(2.5rem, 2.5rem));
+`;
+
 export const StockCardColumn = styled.div`
   display: flex;
   flex-direction: column;
@@ -111,6 +115,10 @@ export const StockPrev = styled.div<{ $isPositive: boolean }>`
     $isPositive ? theme.stockBlue : theme.stockRed};
 `;
 
+export const HoldingStockPrev = styled(StockPrev)`
+  font-size: 1rem;
+`;
+
 export const SpanTag = styled.span`
   font-size: 0.8rem;
   color: ${({ theme }) => theme.textColor};
@@ -125,7 +133,7 @@ export const HeartWrapper = styled.div`
 
 export const StockCardRow = styled.div`
   display: grid;
-  grid-template-columns: 2fr 1fr 1.5fr 1fr 1fr; /* 각 열의 너비를 설정 */
+  grid-template-columns: 2fr 1fr 1.5fr 1fr 1fr;
   text-align: center;
   align-items: center;
   width: 100%;
@@ -134,6 +142,17 @@ export const StockCardRow = styled.div`
   background-color: ${({ theme }) => theme.stockBackgroundColor};
   box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
   cursor: pointer;
+`;
+
+export const HoldingStockCardRow = styled(StockCardRow)`
+  grid-template-columns: 4fr 4fr 4fr 4fr 4fr;
+  cursor: default;
+`;
+
+export const HoldingStockCardRowSkeleton = styled(HoldingStockCardRow)`
+  animation: ${pulseAnimation} 3s infinite;
+  opacity: 0.4;
+  height: 2.5rem;
 `;
 
 export const StockCardRowSkeleton = styled(StockCardRow)`
