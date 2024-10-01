@@ -1,7 +1,5 @@
 import styled from 'styled-components';
-import {
-  StockPrev,
-} from '@features/Stock/styledComponent';
+import { StockPrev } from '@features/Stock/styledComponent';
 
 import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
@@ -49,21 +47,29 @@ interface IStockDetail {
 
 interface NewsBodyHeaderProps {
   header: string;
-  stockDetail: IStockDetail;
+  stockDetail?: IStockDetail;
 }
 
 const StockNewsMainBodyHeader: React.FC<NewsBodyHeaderProps> = ({
   header,
   stockDetail,
 }) => {
+  // stockDetail이 존재하는지 확인하여 렌더링
+  if (!stockDetail) {
+    return <p>Loading stock data...</p>; // 데이터가 없을 경우 표시
+  }
+
   return (
     <NewsBodyHeaderWrapper>
       <NewsBodyHeaderText>{header}</NewsBodyHeaderText>
       <NewsBodyStockPriceWrapper>
         <StockPrice>{formatNumber(stockDetail.stckPrpr)}원 </StockPrice>
         {/* <StockChange>-300 (-0.3%)</StockChange> */}
-        <StockPrev $isPositive={stockDetail.prdyVrss.toString().startsWith('-')}>
-          {formatChange(formatNumber(stockDetail.prdyVrss))} ({stockDetail.prdyCtrt}
+        <StockPrev
+          $isPositive={stockDetail.prdyVrss.toString().startsWith('-')}
+        >
+          {formatChange(formatNumber(stockDetail.prdyVrss))} (
+          {stockDetail.prdyCtrt}
           %)
         </StockPrev>
       </NewsBodyStockPriceWrapper>

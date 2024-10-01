@@ -85,6 +85,7 @@ const StockNewsDetailPage: React.FC = () => {
               sentiment={detailNews.sentiment}
               tagList={detailNews?.stockKeywords}
               stockNewsStockCodes={detailNews?.stockNewsStockCodes}
+              id={detailNews.id}
             />
           )}
           {detailNews && (

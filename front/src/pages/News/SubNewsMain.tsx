@@ -163,6 +163,8 @@ const SubNewsMainPage: React.FC = () => {
           context={{
             selectedCategory,
             onBookmarkSuccess: handleBookmarkSuccess,
+            bookmarkUpdated,
+            resetBookmarkUpdated,
           }}
         />
       </Center>
@@ -171,6 +173,7 @@ const SubNewsMainPage: React.FC = () => {
         <SubNewsMainRight>
           <BookmarkedNews
             bookmarkUpdated={bookmarkUpdated}
+            onBookmarkSuccess={handleBookmarkSuccess}
             resetBookmarkUpdated={resetBookmarkUpdated}
           />
         </SubNewsMainRight>
