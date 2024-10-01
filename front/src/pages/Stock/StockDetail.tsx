@@ -27,10 +27,9 @@ import { authRequest } from '@api/axiosInstance';
 import { HeartFill } from '@features/Stock/HeartFill';
 import { Heart } from '@features/Stock/Heart';
 import useAuthStore from '@store/useAuthStore';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useAllStockStore from '@store/useAllStockStore';
 import useTop10StockStore from '@store/useTop10StockStore';
-import LoadingPage from '@components/LodingPage';
 import {
   DivTag,
   FlexBetweenEnd,
@@ -38,6 +37,9 @@ import {
   FlexGap,
   FlexGapEnd,
 } from '@components/styledComponent';
+import { useFavoriteStockQuery } from '@hooks/useFavortiteStockQuery';
+import { toast } from 'react-toastify';
+import { useEffect, useState } from 'react';
 
 const StockDetailPage = () => {
   const location = useLocation();
@@ -49,109 +51,60 @@ const StockDetailPage = () => {
   const stockDetail =
     allStock?.find((s) => s.stockCode === stock.stockCode) ||
     top10Stock?.find((s) => s.stockCode === stock.stockCode);
-  console.log('stockDetail', stockDetail);
 
   // 로그인 여부 확인
   const { isLogin } = useAuthStore();
 
   // 관심 종목 관련 API 호출
-  const {
-    data: favoriteStockList,
-    isLoading,
-    error,
-  } = useQuery<IFavoriteStock[]>({
-    queryKey: ['favoriteStockList'],
-    queryFn: async () => {
-      const response = await authRequest.get('/stock/favorite');
-      return response.data.data;
-    },
+  const { data: favoriteStockList } = useFavoriteStockQuery({
     // 초기 데이터 설정 -> 타입 설정시 undefined 고려할 필요 없어짐
     // initialData: [],
     enabled: isLogin,
+    onSuccess: () => {
+      toast.success('관심 주식 목록을 불러왔습니다.');
+    },
+    onError: () => {
+      toast.error('관심 주식 목록을 불러오지 못했습니다.');
+    },
   });
+  // 관심 종목 상태 관리
+  const [isFavorite, setIsFavorite] = useState(false);
 
-  const isFavorite = favoriteStockList?.some(
-    (fav) => fav.stockCode === stock.stockCode
-  );
+  useEffect(() => {
+    if (favoriteStockList?.data) {
+      setIsFavorite(
+        favoriteStockList.data.some((fav) => fav.stockCode === stock.stockCode)
+      );
+    }
+  }, [favoriteStockList, stock.stockCode]);
 
   const queryClient = useQueryClient();
 
   // 좋아요 주식 추가 mutation
-  const { mutate: addFavoriteStock } = useMutation<
-    void,
-    Error,
-    string,
-    IMutationContext
-  >({
+  const { mutate: addFavoriteStock } = useMutation<void, Error, string>({
     mutationFn: async (stockCode: string) => {
       await authRequest.post(`/stock/favorite/${stockCode}`);
     },
-    onMutate: async (stockCode: string) => {
-      await queryClient.cancelQueries({ queryKey: ['favoriteStockList'] });
-
-      const previousFavoriteList = queryClient.getQueryData<IFavoriteStock[]>([
-        'favoriteStockList',
-      ]);
-
-      queryClient.setQueryData<IFavoriteStock[]>(
-        ['favoriteStockList'],
-        (old) => [
-          ...(old || []),
-          { stockCode, stockFavoriteId: 0, stockId: 0, stockName: '' },
-        ]
-      );
-
-      return { previousFavoriteList };
-    },
-    onError: (err, _stockCode, context) => {
-      console.log('주식 좋아요 에러', err);
-      if (context?.previousFavoriteList) {
-        queryClient.setQueryData<IFavoriteStock[]>(
-          ['favoriteStockList'],
-          context.previousFavoriteList
-        );
-      }
-    },
-    onSettled: () => {
+    onSuccess: () => {
+      setIsFavorite(true); // 성공 시 이모티콘 업데이트
       queryClient.invalidateQueries({ queryKey: ['favoriteStockList'] });
+    },
+    onError: (err) => {
+      console.log('주식 좋아요 에러', err);
     },
   });
 
   // 좋아요 주식 제거 mutation
-  const { mutate: removeFavoriteStock } = useMutation<
-    void,
-    Error,
-    string,
-    IMutationContext
-  >({
+  const { mutate: removeFavoriteStock } = useMutation<void, Error, string>({
     mutationFn: async (stockCode: string) => {
       await authRequest.delete(`/stock/favorite/${stockCode}`);
     },
-    onMutate: async (stockCode: string) => {
-      await queryClient.cancelQueries({ queryKey: ['favoriteStockList'] });
-
-      const previousFavoriteList = queryClient.getQueryData<IFavoriteStock[]>([
-        'favoriteStockList',
-      ]);
-
-      queryClient.setQueryData<IFavoriteStock[]>(
-        ['favoriteStockList'],
-        (old) => old?.filter((stock) => stock.stockCode !== stockCode) || []
-      );
-
-      return { previousFavoriteList };
-    },
-    onError: (err, _stockCode, context) => {
-      console.log('주식 좋아요 취소 에러', err);
-      if (context?.previousFavoriteList) {
-        queryClient.setQueryData<IFavoriteStock[]>(
-          ['favoriteStockList'],
-          context.previousFavoriteList
-        );
-      }
-    },
-    onSettled: () => {
+    onSuccess: () => {
+      setIsFavorite(false); // 성공 시 이모티콘 업데이트
       queryClient.invalidateQueries({ queryKey: ['favoriteStockList'] });
+    },
+    onError: (err) => {
+      console.log('주식 좋아요 취소 에러', err);
     },
   });
 
@@ -165,14 +118,6 @@ const StockDetailPage = () => {
     return url;
   };
 
-  if (isLoading) {
-    return <LoadingPage />;
-  }
-
-  // 에러 발생 시 콘솔 출력
-  if (error) {
-    console.error('관심 주식 조회 에러', error);
-  }
 
   return (
     <>
@@ -223,7 +168,7 @@ const StockDetailPage = () => {
             {showButton && <DetailPageButton>유사도 분석</DetailPageButton>}
           </FlexGap>
         </FlexBetweenEnd>
-        <HrTag/>
+        <HrTag />
         <FlexBetweenStart>
           <FlexGap $gap="1rem">
             <Link
