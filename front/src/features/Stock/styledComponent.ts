@@ -120,6 +120,7 @@ export const HeartWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 `;
 
 export const StockCardRow = styled.div`
