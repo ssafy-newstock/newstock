@@ -1,18 +1,11 @@
-package com.ssafy.news.domain.service;
+package com.ssafy.newsscrap.domain.service;
 
-import com.ssafy.news.domain.entity.dto.StockNewsDto;
-import com.ssafy.news.domain.entity.dto.StockScrapDto;
-import com.ssafy.news.domain.entity.scrap.StockScrap;
-import com.ssafy.news.domain.entity.stock.StockKeyword;
-import com.ssafy.news.domain.entity.stock.StockNews;
-import com.ssafy.news.domain.entity.stock.StockNewsStockCode;
-import com.ssafy.news.domain.repository.StockNewsRepository;
-import com.ssafy.news.domain.repository.StockScrapRepository;
-import com.ssafy.news.domain.service.converter.NewsConverter;
-import com.ssafy.news.global.exception.ScrapContentNotEmptyException;
-import com.ssafy.news.global.exception.ScrapNotFoundException;
-import com.ssafy.news.global.exception.ScrapPermissionException;
-import com.ssafy.news.global.util.TokenProvider;
+import com.ssafy.newsscrap.domain.entity.StockScrap;
+import com.ssafy.newsscrap.domain.entity.dto.StockScrapDto;
+import com.ssafy.newsscrap.domain.repository.StockScrapRepository;
+import com.ssafy.newsscrap.global.exception.ScrapContentNotEmptyException;
+import com.ssafy.newsscrap.global.exception.ScrapNotFoundException;
+import com.ssafy.newsscrap.global.exception.ScrapPermissionException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -21,15 +14,12 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class StockScrapService {
-    private final StockNewsRepository stockNewsRepository;
     private final StockScrapRepository stockScrapRepository;
-    private final TokenProvider tokenProvider;
 
     @Transactional
     public void writeScrap(Long memberId, StockScrapDto dto) {
@@ -98,22 +88,6 @@ public class StockScrapService {
     public List<Long> getScrapInStockNewsIn(final List<StockScrapDto> myStockScraps) {
         return myStockScraps.stream()
                 .map(StockScrapDto::getNewsId)
-                .collect(Collectors.toList());
-    }
-
-    public List<StockNewsDto> getStockNewsInIds(final List<Long> scrapInStockNewsIds) {
-        List<StockNews> industryNewsByIdIn = stockNewsRepository.findAllByIdIn(scrapInStockNewsIds);
-
-        return industryNewsByIdIn.stream()
-                        .map(stockNews -> {
-                            Set<StockNewsStockCode> entityStockCodes = stockNews.getStockNewsStockCodes();
-                            Set<StockKeyword> entityKeywords = stockNews.getStockKeywords();
-
-                            List<String> stockCodes = NewsConverter.convertStockCodeToDto(entityStockCodes);
-                            List<String> keywords = NewsConverter.convertKeywordToDto(entityKeywords);
-
-                            return StockNewsDto.of(stockNews, stockCodes, keywords);
-                        })
                 .collect(Collectors.toList());
     }
 }

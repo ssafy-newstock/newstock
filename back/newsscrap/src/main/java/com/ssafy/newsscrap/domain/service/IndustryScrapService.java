@@ -1,12 +1,12 @@
-package com.ssafy.news.domain.service;
+package com.ssafy.newsscrap.domain.service;
 
-import com.ssafy.news.domain.entity.dto.IndustryScrapDto;
-import com.ssafy.news.domain.entity.scrap.IndustryScrap;
-import com.ssafy.news.domain.repository.IndustryScrapRepository;
-import com.ssafy.news.global.exception.ScrapContentNotEmptyException;
-import com.ssafy.news.global.exception.ScrapNotFoundException;
-import com.ssafy.news.global.exception.ScrapPermissionException;
-import com.ssafy.news.global.util.TokenProvider;
+import com.ssafy.newsscrap.domain.entity.IndustryScrap;
+import com.ssafy.newsscrap.domain.entity.dto.IndustryScrapDto;
+import com.ssafy.newsscrap.domain.repository.IndustryScrapRepository;
+import com.ssafy.newsscrap.global.common.TokenProvider;
+import com.ssafy.newsscrap.global.exception.ScrapContentNotEmptyException;
+import com.ssafy.newsscrap.global.exception.ScrapNotFoundException;
+import com.ssafy.newsscrap.global.exception.ScrapPermissionException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class IndustryScrapService {
     private final IndustryScrapRepository industryScrapRepository;
-    private final TokenProvider tokenProvider;
 
     @Transactional
     public void writeScrap(Long memberId, IndustryScrapDto dto) {
