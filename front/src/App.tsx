@@ -10,9 +10,13 @@ import useCategoryStockStore from '@store/useCategoryStockStore';
 import useTop10StockStore from '@store/useTop10StockStore';
 import { useQuery } from '@tanstack/react-query';
 import WebSocketComponent from '@components/WebSocketComponent';
-import { ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { axiosInstance } from '@api/axiosInstance';
+import { useTop10StockQuery } from '@hooks/useTop10StockQuery';
+import { useEffect } from 'react';
+import { useAllStockQuery } from '@hooks/useAllStockQuery';
+import { useCategoryStockQuery } from '@hooks/useCategoryStockQuery';
 
 const Container = styled.div`
   display: flex;
@@ -42,67 +46,42 @@ const App = () => {
   const { setCategoryStock } = useCategoryStockStore();
   const { setTop10Stock } = useTop10StockStore();
 
-  // 최초 데이터 조회 - React Query 사용
-  useQuery({
-    queryKey: ['top10StockData'],
-    queryFn: async () => {
-      const response = await axiosInstance.get('/stock/price-list/live');
-      setTop10Stock(response.data.data);
-      return response.data.data;
-    },
-  });
+  const { data: top10Stock } = useTop10StockQuery();
+  const { data: allStock } = useAllStockQuery();
+  const { data: categoryStock } = useCategoryStockQuery();
 
-  useQuery({
-    queryKey: ['industryData'],
-    queryFn: async () => {
-      const response = await axiosInstance.get('/stock/industry-list');
-      setCategoryStock(response.data.data);
-      return response.data.data;
-    },
-  });
-
-  useQuery({
-    queryKey: ['allStockData'],
-    queryFn: async () => {
-      const response = await axiosInstance.get('/stock/price-list');
-      setAllStock(response.data.data);
-      return response.data.data;
-    },
-  });
-
-  //   에러 처리 ErroBoundary, Suspense 사용
-  //   <ErrorBoundary fallback=<ErrorComponent/>
-  //  <Suspense fallback=<Skeleton/>
-  //  <component/>
-  //  </Suspense>
-  //  <ErrorBoundary>
+  useEffect(() => {
+    top10Stock && setTop10Stock(top10Stock.data);
+    allStock && setAllStock(allStock.data);
+    categoryStock && setCategoryStock(categoryStock.data);
+  }, [top10Stock, allStock, categoryStock]);
 
   return (
     <ThemeProvider theme={currentTheme}>
       <GlobalStyle />
-        <Container>
-          <Navbar />
-          <Main>
-            <Header />
-            <Content>
-              <Outlet />
-            </Content>
-          </Main>
-        </Container>
-        {/* 웹소켓 연결 */}
-        <WebSocketComponent />
-        {/* 토스트 메세지 */}
-        <ToastContainer
-          position="bottom-right"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick={true}
-          rtl={false}
-          pauseOnFocusLoss={false}
-          draggable={true}
-          pauseOnHover={false}
-        />
+      <Container>
+        <Navbar />
+        <Main>
+          <Header />
+          <Content>
+            <Outlet />
+          </Content>
+        </Main>
+      </Container>
+      {/* 웹소켓 연결 */}
+      <WebSocketComponent />
+      {/* 토스트 메세지 */}
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={true}
+        rtl={false}
+        pauseOnFocusLoss={false}
+        draggable={true}
+        pauseOnHover={false}
+      />
     </ThemeProvider>
   );
 };
