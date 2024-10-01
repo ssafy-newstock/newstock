@@ -1,0 +1,18 @@
+spring:
+  profiles:
+    include: feign
+  application:
+    name: favorite
+  datasource:
+    url: jdbc:mysql://svc.sel4.cloudtype.app:30947/favorite
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: ssafy
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+server:
+  port: 8005
