@@ -19,18 +19,6 @@ public class NewsControllerAdvice {
         return new ResponseEntity<>(CommonResponse.failure(e.getMessage()), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(AlreadyFavoriteNews.class)
-    public ResponseEntity<?> handleAlreadyNews(AlreadyFavoriteNews e) {
-        log.error(e.getMessage());
-        return new ResponseEntity<>(CommonResponse.failure(e.getMessage()), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(NotExistFavoriteNews.class)
-    public ResponseEntity<?> handleNotExistFavoriteNews(NotExistFavoriteNews e) {
-        log.error(e.getMessage());
-        return new ResponseEntity<>(CommonResponse.failure(e.getMessage()), HttpStatus.BAD_REQUEST);
-    }
-
     @ExceptionHandler(DateTimeParseException.class)
     public ResponseEntity<?> handleParseDateException(DateTimeParseException e) {
         log.error(e.getMessage());

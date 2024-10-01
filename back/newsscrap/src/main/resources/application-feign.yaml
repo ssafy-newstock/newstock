@@ -1,0 +1,8 @@
+auth-client:
+  url: http://newstock-stock-auth-service:8000/api/auth
+
+stock-news-client:
+  url: http://newstock-stock-news-service:8002/api/news/stock
+
+industry-news-client:
+  url: http://newstock-stock-news-service:8002/api/news/industry
