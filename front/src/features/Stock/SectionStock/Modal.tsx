@@ -25,7 +25,7 @@ import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CategoryModalProps } from '@features/Stock/types';
 import { mapIndustryNames } from '@features/Stock/SectionStock/modal/mapIndustryNames';
-import { FlexGapRow } from '@components/styledComponent';
+import { FlexGapColumn } from '@components/styledComponent';
 
 const Modal: React.FC<CategoryModalProps> = ({ onClose, category }) => {
   const navigate = useNavigate();
@@ -69,7 +69,7 @@ const Modal: React.FC<CategoryModalProps> = ({ onClose, category }) => {
     <CategoryModalOverlay onClick={onClose}>
       <CategoryModalContent onClick={(e) => e.stopPropagation()}>
         {category && (
-          <FlexGapRow gap="0.4rem">
+          <FlexGapColumn $gap="0.4rem">
             <CategoryImgWrapper $bgColor={imageUrl.bgColor}>
               <img src={imageUrl.url} alt="" />
             </CategoryImgWrapper>
@@ -150,7 +150,7 @@ const Modal: React.FC<CategoryModalProps> = ({ onClose, category }) => {
                 <Text>{formatNumber(stock.acmlVol)}주</Text>
               </StockCardRow>
             ))}
-          </FlexGapRow>
+          </FlexGapColumn>
         )}
 
         <CategoryCloseButton onClick={onClose}>X</CategoryCloseButton>

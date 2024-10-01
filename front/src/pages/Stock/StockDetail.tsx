@@ -179,7 +179,7 @@ const StockDetailPage = () => {
       <LeftStock />
       <Center style={{ padding: '1rem' }}>
         <FlexBetweenEnd>
-          <FlexGapEnd gap="1rem">
+          <FlexGapEnd $gap="1rem">
             <StockTitle>
               <StockImageDetail
                 src={getStockImageUrl()}
@@ -207,7 +207,7 @@ const StockDetailPage = () => {
             </StockPrev>
           </FlexGapEnd>
 
-          <FlexGap gap="1rem">
+          <FlexGap $gap="1rem">
             {isLogin &&
               (isFavorite ? (
                 <HeartFill
@@ -225,7 +225,7 @@ const StockDetailPage = () => {
         </FlexBetweenEnd>
         <HrTag/>
         <FlexBetweenStart>
-          <FlexGap gap="1rem">
+          <FlexGap $gap="1rem">
             <Link
               to={`/stock-detail/${stock.stockCode}/day-chart`}
               state={{ stock }}

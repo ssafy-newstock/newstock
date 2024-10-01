@@ -31,7 +31,7 @@ const AllCategoryStock: React.FC<ICategory> = ({
 }) => {
   return (
     <CategoryCardRow onClick={onClick}>
-      <FlexGapStastCenter gap="1rem">
+      <FlexGapStastCenter $gap="1rem">
           <CategoryImgWrapper $bgColor={imageBgColor}>
             <CategoryImg src={String(imageUrl)} alt="Category Image" />
           </CategoryImgWrapper>

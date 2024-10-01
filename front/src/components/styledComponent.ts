@@ -7,9 +7,9 @@ export const Flex = styled.div`
   display: flex;
 `;
 
-export const FlexGap = styled.div<{ gap: string }>`
+export const FlexGap = styled.div<{ $gap: string }>`
   display: flex;
-  gap: ${({ gap }) => gap};
+  gap: ${({ $gap }) => $gap};
 `;
 
 export const FlexGapEnd = styled(FlexGap)`
@@ -21,8 +21,8 @@ export const FlexGapStastCenter = styled(FlexGap)`
   align-items: center;
 `;
 
-export const FlexGapRow = styled(FlexGap)`
-  flex-direction: row;
+export const FlexGapColumn = styled(FlexGap)`
+  flex-direction: column;
 `;
 
 export const FlexBetween = styled(Flex)`
