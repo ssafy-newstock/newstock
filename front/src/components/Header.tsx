@@ -10,13 +10,14 @@ import { authRequest } from '@api/axiosInstance';
 import { formatUnit } from '@utils/formatUnit';
 import usePointStore from '@store/usePointStore';
 
-const HeaderContainer = styled.div`
-  width: 100%;
+const HeaderContainer = styled.div<{ isOpen: boolean }>`
+  width: ${({ isOpen }) => (isOpen ? 'calc(100% - 360px)' : '100%')};
   height: 5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2.5rem;
+  transition: width 0.3s ease;
 `;
 
 const NewStock = styled.div`
@@ -114,7 +115,11 @@ const PointWrapper = styled(motion.div)`
   }
 `;
 
-const Header = () => {
+interface HeaderProps {
+  isOpen: boolean;
+}
+
+const Header: React.FC<HeaderProps> = ({ isOpen }) => {
   const { memberName } = useAuthStore();
   const { theme, toggleTheme } = useThemeStore();
   const isDarkMode = theme === 'dark';
@@ -220,7 +225,7 @@ const Header = () => {
 
   return (
     <>
-      <HeaderContainer>
+      <HeaderContainer isOpen={isOpen}>
         <NewStock>NewStock</NewStock>
         <HeaderRight>
           <Slider onClick={toggleTheme}>
@@ -278,32 +283,30 @@ const Header = () => {
                 onMouseOver={handleMouseOver}
                 onMouseOut={handleMouseOut}
               >
-                <User>
+                <User style={{ gap: '0.3125rem' }}>
+                  <StyledIcon
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                  >
+                    <g fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <ellipse
+                        cx="9.5"
+                        cy="9.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        rx="9.5"
+                        ry="9.5"
+                        transform="matrix(-1 0 0 1 20 2)"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M13 8.8a3.58 3.58 0 0 0-2.25-.8C8.679 8 7 9.79 7 12s1.679 4 3.75 4c.844 0 1.623-.298 2.25-.8"
+                      />
+                    </g>
+                  </StyledIcon>
                   {!isHovering ? (
-                    <>
-                      <StyledIcon
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                      >
-                        <g fill="none" stroke="currentColor" strokeWidth="1.5">
-                          <ellipse
-                            cx="9.5"
-                            cy="9.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            rx="9.5"
-                            ry="9.5"
-                            transform="matrix(-1 0 0 1 20 2)"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M13 8.8a3.58 3.58 0 0 0-2.25-.8C8.679 8 7 9.79 7 12s1.679 4 3.75 4c.844 0 1.623-.298 2.25-.8"
-                          />
-                        </g>
-                      </StyledIcon>
-                      <UserName>{formatUnit(point)}원</UserName>
-                    </>
+                    <UserName>{formatUnit(point)}원</UserName>
                   ) : (
                     <UserName>{point.toLocaleString()}원</UserName>
                   )}
