@@ -4,12 +4,14 @@ import pymysql
 from pymysql.cursors import DictCursor
 import pandas as pd
 from dotenv import load_dotenv
-
+from exception import StockInfoEmptyException
 
 # .env파일 로드
 load_dotenv(os.path.join('core', '.env'))
 
-logging.basicConfig(level=logging.INFO)
+# 로깅 설정
+logging.basicConfig(level=logging.INFO,
+                    format='%(levelname)s:  %(asctime)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 # MySQL DB Connection
@@ -69,10 +71,22 @@ def get_stock_data(stock_code: str, start_date=None, end_date=None) -> pd.DataFr
         cursor.execute(query, params)
 
         # 결과를 pandas DataFrame으로 반환
-        return pd.DataFrame(cursor.fetchall(), columns=['stock_code', 
-                                                        'stock_candle_day', 'Close', 'High', 'Low', 'Open'])
+        df = pd.DataFrame(cursor.fetchall(), columns=['stock_code', 
+                                                       'stock_candle_day', 'Close', 'High', 'Low', 'Open'])
+
+        # 빈 데이터프레임 체크
+        if df.empty:
+            raise StockInfoEmptyException(stock_code, start_date, end_date)
+
+        return df
+    
     except Exception as e:
         logger.error(e)
+        # 예외 발생 시 StockInfoEmptyException을 다시 던지도록 수정
+        if isinstance(e, StockInfoEmptyException):
+            raise e  # 예외를 재발생시킴
+        else:
+            raise  # 다른 예외는 다시 발생시킴
 
     finally:
         # 커서와 연결을 항상 닫음
