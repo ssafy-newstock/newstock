@@ -83,7 +83,7 @@ public class StockSchedulerService {
 
         for (StocksPriceRedis stockPriceRedis : stocksPriceRedis) {
             Stocks stock = stocksRepository.findByStockCodeWithStockPrice(stockPriceRedis.getStockCode())
-                    .orElseThrow(() -> new StockNotFoundException());
+                    .orElseThrow(() -> new StockNotFoundException(stockPriceRedis.getStockCode()));
 
             StocksPrice findStockPrice = stock.getStockPrice();
 
@@ -108,7 +108,7 @@ public class StockSchedulerService {
 
         for (StocksPriceLiveRedis stockPriceLiveRedis : stocksPriceLiveRedis) {
             Stocks stock = stocksRepository.findByStockCodeWithStockPrice(stockPriceLiveRedis.getStockCode())
-                    .orElseThrow(() -> new StockNotFoundException());
+                    .orElseThrow(() -> new StockNotFoundException(stockPriceLiveRedis.getStockCode()));
 
             StocksPrice findStockPrice = stock.getStockPrice();
 

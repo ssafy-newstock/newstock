@@ -180,7 +180,9 @@ public class StockController{
     public ResponseEntity<?> getStockMyHolding(@RequestHeader("authorization") String token,
                                                 @PathVariable String stockCode){
         Long memberId = stockTransactionService.getMemberId(token);
-        List<StockMyPageHoldingDto> response = stockService.getStockHoldingDtoList(memberId, stockCode);
+        StockMyPageHoldingDto stockHoldingDtoList = stockService.getStockHoldingDtoList(memberId, stockCode);
+
+        StockHoldingResponse response = modelMapper.map(stockHoldingDtoList, StockHoldingResponse.class);
 
         return ResponseEntity.ok(success(response));
     }
