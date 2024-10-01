@@ -1,6 +1,6 @@
 spring:
   profiles:
-    include: oauth
+    include: oauth, feign
   datasource:
     url: jdbc:mysql://svc.sel4.cloudtype.app:30947/newstockmember
     driver-class-name: com.mysql.cj.jdbc.Driver

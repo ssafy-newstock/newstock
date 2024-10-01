@@ -8,8 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(name = "industryNewsClient", url = "http://newstock-stock-news-service/api/news/industry")
-//@FeignClient(name = "industryNewsClient", url = "http://localhost:8002/api/news/industry")
+@FeignClient(name = "industryNewsClient", url = "${industry-news-client.url}")
 public interface IndustryNewsClient {
     @GetMapping("/{id}")
     CommonResponse<?> getIndustryNewsById(@PathVariable("id") Long id);

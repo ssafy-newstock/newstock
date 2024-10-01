@@ -1,0 +1,2 @@
+member-client:
+  url : http://newstock-stock-member-service:8001/api/member

@@ -1,0 +1,3 @@
+auth-client:
+  url: http://newstock-stock-auth-service:8000/api/auth
+
