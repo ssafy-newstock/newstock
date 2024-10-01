@@ -11,13 +11,13 @@ import { formatUnit } from '@utils/formatUnit';
 import usePointStore from '@store/usePointStore';
 
 const HeaderContainer = styled.div<{ isOpen: boolean }>`
-  width: ${({ isOpen }) => (isOpen ? 'calc(100% - 360px)' : '100%')};
+  width: ${({ isOpen }) => (isOpen ? 'calc(100% - 400px)' : '100%')};
   height: 5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2.5rem;
-  transition: width 0.3s ease;
+  transition: width 0.5s ease;
 `;
 
 const NewStock = styled.div`

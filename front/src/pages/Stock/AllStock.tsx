@@ -20,7 +20,6 @@ import {
   SortButton,
 } from '@features/Stock/styledComponent';
 import { IStock } from '@features/Stock/types';
-import { RightVacant } from '@components/RightVacant';
 import useAllStockStore from '@store/useAllStockStore';
 import SearchIcon from '@features/Stock/AllStock/SearchIcon';
 import useTop10StockStore from '@store/useTop10StockStore';

@@ -70,7 +70,7 @@ const DropdownMenu = styled.div<{ isOpen: boolean; maxHeight: number }>`
   flex-direction: column;
   overflow: hidden;
   max-height: ${({ isOpen, maxHeight }) => (isOpen ? `${maxHeight}px` : '0')};
-  transition: max-height 0.3s ease;
+  transition: max-height 0.5s ease;
   margin-bottom: 10px;
   margin-left: 3px;
 `;

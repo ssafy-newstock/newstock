@@ -3,21 +3,21 @@ import styled from 'styled-components';
 export const ModalContainer = styled.div<{ isOpen: boolean }>`
   position: fixed;
   right: ${({ isOpen }) =>
-    isOpen ? '0' : '-360px'}; /* 모달이 열리면 0, 닫히면 -360px */
+    isOpen ? '0' : '-400px'}; /* 모달이 열리면 0, 닫히면 -360px */
   display: flex;
   flex-direction: row;
-  width: 360px; /* 고정된 너비 */
+  width: 400px; /* 고정된 너비 */
   height: 100%;
   background-color: ${({ theme }) => theme.backgroundColor};
   box-shadow: -3px 0px 10px rgba(0, 0, 0, 0.1);
-  transition: right 0.3s ease; /* 슬라이드 애니메이션 */
+  transition: right 0.5s ease; /* 슬라이드 애니메이션 */
 `;
 
 export const ModalButton = styled.button<{ isOpen: boolean }>`
   position: fixed;
   top: 45%;
   right: ${({ isOpen }) =>
-    isOpen ? '360px' : '0'}; /* 모달이 열리면 360px 왼쪽으로 이동 */
+    isOpen ? '400px' : '0'}; /* 모달이 열리면 360px 왼쪽으로 이동 */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -29,9 +29,9 @@ export const ModalButton = styled.button<{ isOpen: boolean }>`
   border-radius: 0.625rem 0 0 0.625rem;
   cursor: pointer;
   transition:
-    right 0.3s ease,
-    background-color 0.1s ease,
-    height 0.1s ease;
+    right 0.5s ease,
+    background-color 0.5s ease,
+    height 0.5s ease;
 
   &:hover {
     background-color: ${({ theme }) => theme.buttonHoverColor};

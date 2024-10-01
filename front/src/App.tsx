@@ -13,9 +13,9 @@ import WebSocketComponent from '@components/WebSocketComponent';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { axiosInstance } from '@api/axiosInstance';
-import { RightVacant } from '@components/RightVacant';
 import StockModal from '@features/MyStockModal/StockModal';
 import { useState } from 'react';
+import useAuthStore from '@store/useAuthStore';
 
 // const Container = styled.div`
 //   display: flex;
@@ -28,15 +28,25 @@ const Main = styled.div<{ isOpen: boolean }>`
   flex-direction: column;
   width: 100%; /* 기본 너비는 100%로 설정 */
   height: 100vh;
-  transition: width 0.3s ease; /* right 대신 width에 transition 적용 */
+  transition: width 0.5s ease;
 `;
 
 const Content = styled.div<{ isOpen: boolean }>`
   display: flex;
   height: 100%;
   flex-direction: row;
-  width: ${({ isOpen }) => (isOpen ? 'calc(100% - 360px)' : '100%')};
-  transition: right 0.3s ease;
+  width: 100%; /* 기본적으로 100% 너비 */
+  transition: all 0.5s ease;
+`;
+const RightVacantWrapper = styled.div<{ isOpen: boolean }>`
+  width: ${({ isOpen }) =>
+    isOpen ? '580px' : '180px'}; /* isOpen에 따라 width 조정 */
+  opacity: ${({ isOpen }) =>
+    isOpen ? '0' : '1'}; /* isOpen에 따라 opacity 조정 */
+  transition:
+    width 0.5s ease,
+    opacity 0.5s ease; /* 너비와 불투명도를 함께 전환 */
+  overflow: hidden; /* 애니메이션 시 내용이 넘치지 않도록 설정 */
 `;
 
 const App = () => {
@@ -47,6 +57,7 @@ const App = () => {
   const { setCategoryStock } = useCategoryStockStore();
   const { setTop10Stock } = useTop10StockStore();
   const [isOpen, setIsOpen] = useState(false);
+  const { isLogin } = useAuthStore();
   // 최초 데이터 조회 - React Query 사용
   useQuery({
     queryKey: ['top10StockData'],
@@ -90,9 +101,9 @@ const App = () => {
         <Header isOpen={isOpen} />
         <Content isOpen={isOpen}>
           <Outlet />
-          {!isOpen && <RightVacant />}
+          <RightVacantWrapper isOpen={isOpen} />
         </Content>
-        <StockModal isOpen={isOpen} setIsOpen={setIsOpen} />
+        {isLogin && <StockModal isOpen={isOpen} setIsOpen={setIsOpen} />}
       </Main>
       {/* 웹소켓 연결 */}
       <WebSocketComponent />
