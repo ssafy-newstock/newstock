@@ -3,29 +3,38 @@ package com.ssafy.news.domain.service;
 import com.ssafy.news.domain.entity.dto.StockNewsDto;
 import com.ssafy.news.domain.entity.stock.StockKeyword;
 import com.ssafy.news.domain.entity.stock.StockNews;
+import com.ssafy.news.domain.entity.stock.StockNewsRedis;
 import com.ssafy.news.domain.entity.stock.StockNewsStockCode;
+import com.ssafy.news.domain.repository.StockNewsRedisRepository;
 import com.ssafy.news.domain.repository.StockNewsRepository;
 import com.ssafy.news.domain.service.converter.NewsConverter;
+import com.ssafy.news.global.util.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.ssafy.news.domain.service.converter.NewsConverter.*;
 import static com.ssafy.news.domain.service.validator.NewsValidator.validateNewsContent;
 import static com.ssafy.news.domain.service.validator.NewsValidator.validateNewsListContent;
 
+@Slf4j
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
-@Slf4j
 public class StockNewsService {
     private final StockNewsRepository stockNewsRepository;
+    private final TokenProvider tokenProvider;
+    private final StockNewsRedisRepository stockNewsRedisRepository;
+    private final NewsSchedulerService newsSchedulerService;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     /**
      * 최근 4개의 주식 뉴스를 조회하는 메소드
@@ -113,5 +122,40 @@ public class StockNewsService {
                     return StockNewsDto.of(stockNews, stockCodes, keywords);
                 })
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * 종목 뉴스 조회 확인 메소드
+     * @param newsId
+     * @param token
+     */
+    @Transactional
+    public void checkReadStockNews(Long newsId, String token) {
+        if (token != null && !token.isEmpty()) {
+            Long memberId = tokenProvider.getMemberId(token);
+
+            stockNewsRedisRepository.findById(newsId + "|" + memberId)
+                    .ifPresentOrElse(
+                            stockNewsRedis -> {},
+                            () -> {
+                                stockNewsRedisRepository.save(new StockNewsRedis(newsId, memberId));
+
+                                // Member 서버에 회원 포인트 증가 이벤트 요청
+                                Map<String, Object> message = new HashMap<>();
+                                message.put("memberId", memberId);
+                                message.put("stockNewsId", newsId);
+
+                                kafkaTemplate.send("read-stock-news", message);
+                            });
+        }
+    }
+
+    /**
+     * 종목 뉴스 조회 기록 삭제 스케줄러
+     * 매일 자정
+     */
+    @Scheduled(cron = "0 0 0 * * *")
+    private void deleteReadStockNews(){
+        newsSchedulerService.deleteStockNewsRedis();
     }
 }
