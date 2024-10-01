@@ -33,8 +33,11 @@ public class IndustryNewsController {
     }
 
     @GetMapping("/{id}")
-    public CommonResponse<?> getIndustryNewsById(@PathVariable("id") Long id) {
+    public CommonResponse<?> getIndustryNewsById(@PathVariable("id") Long id,
+                                                    @RequestHeader(value = "authorization",required = false) String token) {
         IndustryNewsDto industryNews = industryNewsService.getIndustryNews(id);
+        industryNewsService.checkReadIndustryNews(id, token);
+
         return CommonResponse.success(industryNews);
     }
 
