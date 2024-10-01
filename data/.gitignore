@@ -165,3 +165,5 @@ scrap_venv/
 #data 제거
 /notebook/data
 /notebook/jdbc
+
+/notebook/model
