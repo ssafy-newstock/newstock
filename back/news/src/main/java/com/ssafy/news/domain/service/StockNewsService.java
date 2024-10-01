@@ -1,9 +1,11 @@
 package com.ssafy.news.domain.service;
 
 import com.ssafy.news.domain.entity.dto.StockNewsDto;
+import com.ssafy.news.domain.entity.stock.StockKeyword;
 import com.ssafy.news.domain.entity.stock.StockNews;
 import com.ssafy.news.domain.entity.stock.StockNewsStockCode;
 import com.ssafy.news.domain.repository.StockNewsRepository;
+import com.ssafy.news.domain.service.converter.NewsConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +30,7 @@ public class StockNewsService {
     /**
      * 최근 4개의 주식 뉴스를 조회하는 메소드
      * 특정 주식이 아닌 전체 뉴스 중 4개를 조회함
+     *
      * @return
      */
     public List<StockNewsDto> getRecentStockNewsTop4() {
@@ -48,6 +51,7 @@ public class StockNewsService {
     /**
      * 주식 코드를 기준으로 최근 뉴스 preview 객체 리스트를 반환해주는 메소드
      * 만약 주식 코드가 없다면 전체 주식 코드를 기준으로 반환
+     *
      * @param stockCode
      * @param page
      * @param size
@@ -80,6 +84,7 @@ public class StockNewsService {
 
     /**
      * ID를 기준으로 종목 뉴스 상세 정보를 조회하는 메소드
+     *
      * @param id
      * @return
      */
@@ -92,5 +97,21 @@ public class StockNewsService {
         List<String> stockCodes = convertStockCodeToDto(stockNews.getStockNewsStockCodes());
 
         return StockNewsDto.of(stockNews, stockCodes, keywords);
+    }
+
+    public List<StockNewsDto> getStockNewsInIds(final List<Long> scrapInStockNewsIds) {
+        List<StockNews> industryNewsByIdIn = stockNewsRepository.findAllByIdIn(scrapInStockNewsIds);
+
+        return industryNewsByIdIn.stream()
+                .map(stockNews -> {
+                    Set<StockNewsStockCode> entityStockCodes = stockNews.getStockNewsStockCodes();
+                    Set<StockKeyword> entityKeywords = stockNews.getStockKeywords();
+
+                    List<String> stockCodes = NewsConverter.convertStockCodeToDto(entityStockCodes);
+                    List<String> keywords = NewsConverter.convertKeywordToDto(entityKeywords);
+
+                    return StockNewsDto.of(stockNews, stockCodes, keywords);
+                })
+                .collect(Collectors.toList());
     }
 }

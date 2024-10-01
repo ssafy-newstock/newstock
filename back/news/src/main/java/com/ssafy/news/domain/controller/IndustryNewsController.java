@@ -37,4 +37,10 @@ public class IndustryNewsController {
         IndustryNewsDto industryNews = industryNewsService.getIndustryNews(id);
         return CommonResponse.success(industryNews);
     }
+
+    @GetMapping("/bulk")
+    public CommonResponse<?> getIndustryNewsInIds(@RequestParam List<Long> ids) {
+        List<IndustryNewsDto> industryNewsInIds = industryNewsService.getIndustryNewsInIds(ids);
+        return CommonResponse.success(industryNewsInIds);
+    }
 }
