@@ -5,7 +5,6 @@ import DailyReportHeader from '@features/Etc/DailyReportHeader';
 import Kospi from '@features/Etc/Kospi';
 import EmotionAnalysis from './EmotionAnalysis';
 import SummaryNews from '@features/Etc/SummaryNews';
-import Left from '@components/Left';
 
 const DailyReportCenter = styled.div`
   display: flex;
