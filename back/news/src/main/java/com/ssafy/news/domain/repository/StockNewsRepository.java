@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface StockNewsRepository extends JpaRepository<StockNews, Long> {
     @Query("select s from StockNews s order by s.uploadDatetime desc")
     Page<StockNews> findAllStockNews(Pageable pageable);
@@ -17,4 +19,7 @@ public interface StockNewsRepository extends JpaRepository<StockNews, Long> {
             "WHERE sc.stockCode = :stockCode " +
             "ORDER BY sn.uploadDatetime DESC")
     Page<StockNews> findAllByStockCode(@Param("stockCode") String stockCode, Pageable pageable);
+
+    List<StockNews> findAllByIdIn(List<Long> ids);
+
 }

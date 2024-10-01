@@ -23,7 +23,7 @@ public interface IndustryNewsRepository extends JpaRepository<IndustryNews, Long
             "ORDER BY ins.uploadDatetime DESC")
     Page<IndustryNewsDto> findAllIndustryNewsPreview(Pageable pageable);
 
-    List<IndustryNewsDto> findAllByIdIn(List<Long> ids);
+    List<IndustryNews> findAllByIdIn(List<Long> ids);
 
 //    List<IndustryNews>
 }
