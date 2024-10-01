@@ -11,15 +11,12 @@ import {
   StockTitle,
   Text,
   TextLarge,
+  NoneButton,
 } from '@features/Stock/styledComponent';
-import {
-  IFavoriteStock,
-  IMutationContext,
-  IStock,
-} from '@features/Stock/types';
+import { IFavoriteStock, IStock } from '@features/Stock/types';
 import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
-import { Link, Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import blueLogo from '@assets/Stock/blueLogo.png';
 import TradeForm from '@features/Stock/StockDetail/TradeForm';
 import { RightVacant } from '@components/RightVacant';
@@ -40,12 +37,14 @@ import {
 import { useFavoriteStockQuery } from '@hooks/useFavortiteStockQuery';
 import { toast } from 'react-toastify';
 import { useEffect, useState } from 'react';
+import ChartLink from '@features/Stock/StockDetail/ChartLink';
 
 const StockDetailPage = () => {
   const location = useLocation();
   const { stock } = location.state as { stock: IStock };
   const { allStock } = useAllStockStore();
   const { top10Stock } = useTop10StockStore();
+  const [isDisabled, setIsDisabled] = useState(false);
 
   // 주식 상세 정보
   const stockDetail =
@@ -81,30 +80,91 @@ const StockDetailPage = () => {
   const queryClient = useQueryClient();
 
   // 좋아요 주식 추가 mutation
-  const { mutate: addFavoriteStock } = useMutation<void, Error, string>({
+  const { mutate: addFavoriteStock } = useMutation<
+    void,
+    Error,
+    string,
+    { previousFavoriteStockList?: IFavoriteStock[] }
+  >({
     mutationFn: async (stockCode: string) => {
+      setIsDisabled(true);
       await authRequest.post(`/stock/favorite/${stockCode}`);
     },
-    onSuccess: () => {
-      setIsFavorite(true); // 성공 시 이모티콘 업데이트
-      queryClient.invalidateQueries({ queryKey: ['favoriteStockList'] });
+    onMutate: async (stockCode) => {
+      await queryClient.cancelQueries({ queryKey: ['favoriteStockList'] });
+      const previousFavoriteStockList = queryClient.getQueryData<
+        IFavoriteStock[]
+      >(['favoriteStockList']);
+
+      queryClient.setQueryData(['favoriteStockList'], (old: any) => ({
+        ...old,
+        data: [
+          ...old.data,
+          { stockCode }, // 추가된 주식 코드
+        ],
+      }));
+
+      return { previousFavoriteStockList };
     },
-    onError: (err) => {
-      console.log('주식 좋아요 에러', err);
+    onError: (_err, _stockCode, context) => {
+      // 오류 발생 시 이전 상태로 복구
+      if (context?.previousFavoriteStockList) {
+        queryClient.setQueryData(
+          ['favoriteStockList'],
+          context.previousFavoriteStockList
+        );
+      }
+      toast.error('주식 좋아요 추가에 실패했습니다.');
+      setIsDisabled(false);
+    },
+    onSuccess: () => {
+      toast.success('주식이 관심 목록에 추가되었습니다.');
+      queryClient.invalidateQueries({ queryKey: ['favoriteStockList'] });
+      setIsDisabled(false);
     },
   });
 
   // 좋아요 주식 제거 mutation
-  const { mutate: removeFavoriteStock } = useMutation<void, Error, string>({
+  const { mutate: removeFavoriteStock } = useMutation<
+    void,
+    Error,
+    string,
+    { previousFavoriteStockList?: IFavoriteStock[] }
+  >({
     mutationFn: async (stockCode: string) => {
+      setIsDisabled(true);
       await authRequest.delete(`/stock/favorite/${stockCode}`);
     },
-    onSuccess: () => {
-      setIsFavorite(false); // 성공 시 이모티콘 업데이트
-      queryClient.invalidateQueries({ queryKey: ['favoriteStockList'] });
+    onMutate: async (stockCode) => {
+      await queryClient.cancelQueries({ queryKey: ['favoriteStockList'] });
+      const previousFavoriteStockList = queryClient.getQueryData<
+        IFavoriteStock[]
+      >(['favoriteStockList']);
+
+      queryClient.setQueryData(['favoriteStockList'], (old: any) => ({
+        ...old,
+        data: old.data.filter(
+          (fav: IFavoriteStock) => fav.stockCode !== stockCode
+        ), // 제거된 주식 코드
+      }));
+
+      return { previousFavoriteStockList };
     },
-    onError: (err) => {
-      console.log('주식 좋아요 취소 에러', err);
+    onError: (_err, _stockCode, context) => {
+      // 오류 발생 시 이전 상태로 복구
+      if (context?.previousFavoriteStockList) {
+        queryClient.setQueryData(
+          ['favoriteStockList'],
+          context.previousFavoriteStockList
+        );
+      }
+      toast.error('주식 좋아요 제거에 실패했습니다.');
+      setIsDisabled(false);
+    },
+    onSuccess: () => {
+      toast.success('주식이 관심 목록에서 제거되었습니다.');
+      queryClient.invalidateQueries({ queryKey: ['favoriteStockList'] });
+      setIsDisabled(false);
     },
   });
 
@@ -117,7 +177,6 @@ const StockDetailPage = () => {
     const url = `https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stock.stockCode}.png`;
     return url;
   };
-
 
   return (
     <>
@@ -153,73 +212,26 @@ const StockDetailPage = () => {
           </FlexGapEnd>
 
           <FlexGap $gap="1rem">
-            {isLogin &&
-              (isFavorite ? (
-                <HeartFill
-                  cancleFavoriteStock={() =>
-                    removeFavoriteStock(stock.stockCode)
+            {isLogin && (
+              <NoneButton
+                disabled={isDisabled}
+                onClick={() => {
+                  if (isFavorite) {
+                    removeFavoriteStock(stock.stockCode);
+                  } else {
+                    addFavoriteStock(stock.stockCode);
                   }
-                />
-              ) : (
-                <Heart
-                  favoriteStock={() => addFavoriteStock(stock.stockCode)}
-                />
-              ))}
+                }}
+              >
+                {isFavorite ? <HeartFill /> : <Heart />}
+              </NoneButton>
+            )}
             {showButton && <DetailPageButton>유사도 분석</DetailPageButton>}
           </FlexGap>
         </FlexBetweenEnd>
         <HrTag />
         <FlexBetweenStart>
-          <FlexGap $gap="1rem">
-            <Link
-              to={`/stock-detail/${stock.stockCode}/day-chart`}
-              state={{ stock }}
-            >
-              <DetailPageButton>1일</DetailPageButton>
-            </Link>
-
-            <Link
-              to={`/stock-detail/${stock.stockCode}/week-chart`}
-              state={{ stock }}
-            >
-              <DetailPageButton>1주</DetailPageButton>
-            </Link>
-
-            <Link
-              to={`/stock-detail/${stock.stockCode}/month-chart`}
-              state={{ stock }}
-            >
-              <DetailPageButton>1개월</DetailPageButton>
-            </Link>
-
-            <Link
-              to={`/stock-detail/${stock.stockCode}/three-month-chart`}
-              state={{ stock }}
-            >
-              <DetailPageButton>3개월</DetailPageButton>
-            </Link>
-
-            <Link
-              to={`/stock-detail/${stock.stockCode}/year-chart`}
-              state={{ stock }}
-            >
-              <DetailPageButton>1년</DetailPageButton>
-            </Link>
-
-            <Link
-              to={`/stock-detail/${stock.stockCode}/three-year-chart`}
-              state={{ stock }}
-            >
-              <DetailPageButton>3년</DetailPageButton>
-            </Link>
-
-            <Link
-              to={`/stock-detail/${stock.stockCode}/five-year-chart`}
-              state={{ stock }}
-            >
-              <DetailPageButton>5년</DetailPageButton>
-            </Link>
-          </FlexGap>
+          <ChartLink stock={stock} />
           <Text style={{ marginRight: '1rem' }}>{stock.stockIndustry}</Text>
         </FlexBetweenStart>
         <DividedSection>

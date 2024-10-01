@@ -400,3 +400,9 @@ export const CategoryCloseButton = styled.button`
   :hover {
   }
 `;
+
+export const NoneButton = styled.button`
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+`;
