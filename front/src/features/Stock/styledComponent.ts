@@ -287,6 +287,7 @@ export const ColumnWrapper = styled.div`
 `;
 
 export const InputWrapper = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -313,6 +314,7 @@ export const InputTag = styled.input`
 `;
 
 export const TradeButtonWrapper = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 1rem;

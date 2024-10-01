@@ -12,13 +12,14 @@ import {
   InputLabel,
 } from '@features/Stock/styledComponent';
 import { FormValues, TradeFormProps } from '@features/Stock/types';
+import { FlexGap } from '@components/styledComponent';
 
 const BuyForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(true);
   const [modalAmount, setModalAmount] = useState(0);
-  const [modalPrice, setModalPrice] = useState(0); 
+  const [modalPrice, setModalPrice] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
 
   const {
@@ -77,7 +78,7 @@ const BuyForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
     <ColumnWrapper>
       <InputWrapper>
         <InputRow>
-          <InputLabel>거래가:</InputLabel>
+          <InputLabel>시장가:</InputLabel>
           <Controller
             name="price"
             control={control}
@@ -120,17 +121,28 @@ const BuyForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
           />
         </InputRow>
       </InputWrapper>
-      <InputWrapper>
-        <InputRow>
-          <InputLabel>매수가: </InputLabel>
-          <InputTag type="text" value={totalPrice.toLocaleString()} disabled />
-        </InputRow>
-      </InputWrapper>
-      <TradeButtonWrapper>
-        <TradeButton type="button" $variant="buy" onClick={handleSubmit(onSubmit)}>
-          Buy
-        </TradeButton>
-      </TradeButtonWrapper>
+      <FlexGap $gap="1rem">
+        <InputWrapper>
+          <InputRow>
+            <InputLabel>매수가: </InputLabel>
+            <InputTag
+              type="text"
+              value={totalPrice.toLocaleString()}
+              disabled
+            />
+          </InputRow>
+        </InputWrapper>
+
+        <TradeButtonWrapper>
+          <TradeButton
+            type="button"
+            $variant="buy"
+            onClick={handleSubmit(onSubmit)}
+          >
+            판매
+          </TradeButton>
+        </TradeButtonWrapper>
+      </FlexGap>
       <TradeModal
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}

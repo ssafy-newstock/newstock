@@ -12,6 +12,7 @@ import {
   InputLabel,
 } from '@features/Stock/styledComponent';
 import { FormValues, TradeFormProps } from '@features/Stock/types';
+import { FlexGap } from '@components/styledComponent';
 
 // 가독성, 타입 안정성을 위해 enum 사용
 // enum TradeType {
@@ -27,7 +28,6 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
   const [modalPrice, setModalPrice] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
 
-
   // const [a, setA] = useState({
   //   price: 0,
   //   sum: 0
@@ -39,7 +39,6 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
   //     price: 1
   //   }))
   // })
-
 
   const {
     control,
@@ -97,7 +96,7 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
     <ColumnWrapper>
       <InputWrapper>
         <InputRow>
-          <InputLabel>거래가:</InputLabel>
+          <InputLabel>시장가:</InputLabel>
           <Controller
             name="price"
             control={control}
@@ -112,6 +111,7 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
           />
         </InputRow>
       </InputWrapper>
+
       <InputWrapper>
         <InputRow>
           <InputLabel>수량:</InputLabel>
@@ -140,17 +140,28 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
           />
         </InputRow>
       </InputWrapper>
-      <InputWrapper>
-        <InputRow>
-          <InputLabel>매도가: </InputLabel>
-          <InputTag type="text" value={totalPrice.toLocaleString()} disabled />
-        </InputRow>
-      </InputWrapper>
-      <TradeButtonWrapper>
-        <TradeButton type="button" $variant="sell" onClick={handleSubmit(onSubmit)}>
-          Sell
-        </TradeButton>
-      </TradeButtonWrapper>
+      <FlexGap $gap="1rem">
+        <InputWrapper>
+          <InputRow>
+            <InputLabel>매도가: </InputLabel>
+            <InputTag
+              type="text"
+              value={totalPrice.toLocaleString()}
+              disabled
+            />
+          </InputRow>
+        </InputWrapper>
+
+        <TradeButtonWrapper>
+          <TradeButton
+            type="button"
+            $variant="sell"
+            onClick={handleSubmit(onSubmit)}
+          >
+            구매
+          </TradeButton>
+        </TradeButtonWrapper>
+      </FlexGap>
       <TradeModal
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
