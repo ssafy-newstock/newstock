@@ -1,7 +1,7 @@
-package com.ssafy.news.domain.controller.response;
+package com.ssafy.newsscrap.domain.controller.response;
 
-import com.ssafy.news.domain.entity.dto.StockNewsDto;
-import com.ssafy.news.domain.entity.dto.StockScrapDto;
+import com.ssafy.newsscrap.domain.entity.dto.StockScrapDto;
+import com.ssafy.newsscrap.domain.service.client.response.StockNewsDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
