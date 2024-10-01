@@ -1,11 +1,14 @@
 package com.ssafy.news.domain.entity.scrap;
 
 import com.ssafy.news.domain.entity.dto.StockScrapDto;
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class StockScrap extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
