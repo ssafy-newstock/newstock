@@ -1,6 +1,6 @@
-package com.ssafy.news.domain.repository;
+package com.ssafy.favorite.domain.repository;
 
-import com.ssafy.news.domain.entity.favorite.FavoriteIndustryNews;
+import com.ssafy.favorite.domain.entity.FavoriteIndustryNews;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,7 +14,6 @@ public interface FavoriteIndustryNewsRepository extends JpaRepository<FavoriteIn
 
     @Query("select fin " +
             "from FavoriteIndustryNews fin " +
-            "join fetch fin.industryNews ind " +
             "where fin.memberId = :memberId " +
             "order by fin.createdDate desc ")
     Page<FavoriteIndustryNews> findAllFavoriteNewsByMemberId(@Param("memberId") Long memberId, Pageable pageable);
