@@ -1,6 +1,6 @@
-package com.ssafy.news.domain.repository;
+package com.ssafy.newsscrap.domain.repository;
 
-import com.ssafy.news.domain.entity.scrap.IndustryScrap;
+import com.ssafy.newsscrap.domain.entity.IndustryScrap;
 import feign.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
