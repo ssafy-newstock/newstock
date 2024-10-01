@@ -122,7 +122,7 @@ const LikeButton = ({ stockCode }: { stockCode: string }) => {
       setIsDisabled(false);
     },
     onSuccess: () => {
-      toast.success('주식이 관심 목록에서 제거되었습니다.');
+      toast.info('주식이 관심 목록에서 제거되었습니다.');
       queryClient.invalidateQueries({ queryKey: ['favoriteStockList'] });
       setIsDisabled(false);
     },

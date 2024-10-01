@@ -1,19 +1,22 @@
-import { HrTag, StockCardColumnSkeleton, StockGridColumn, StockHeader } from '@features/Stock/styledComponent';
+import {
+  HrTag,
+  StockCardColumnSkeleton,
+  StockGridColumn,
+  StockHeader,
+} from '@features/Stock/styledComponent';
 
 const FavoriteStockSkeleton = () => {
   return (
     <>
-    <StockHeader>관심 종목</StockHeader>
-    <HrTag />
+      <StockHeader>관심 종목</StockHeader>
+      <HrTag />
       <StockGridColumn>
-        <StockCardColumnSkeleton></StockCardColumnSkeleton>
-        <StockCardColumnSkeleton></StockCardColumnSkeleton>
-        <StockCardColumnSkeleton></StockCardColumnSkeleton>
-        <StockCardColumnSkeleton></StockCardColumnSkeleton>
-        <StockCardColumnSkeleton></StockCardColumnSkeleton>
+        {Array.from({ length: 6 }).map((_, index) => (
+          <StockCardColumnSkeleton key={index} />
+        ))}
       </StockGridColumn>
-      </>
+    </>
   );
-}
+};
 
 export default FavoriteStockSkeleton;
