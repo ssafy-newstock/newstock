@@ -347,21 +347,24 @@ def extract_other_similarity(other_similarity_scores: np.array,
 
     # similarity에서 가장 큰 5가지 뽑기.
     other_top_5_code_idx = np.argsort(other_similarity_scores)[-5:][::-1]
+    other_top_5_date_index = other_index_results[other_top_5_code_idx]
     # stock_code 기준으로 그룹화하여 각각의 DataFrame으로 저장
     grouped = other_stock_whole_price_df.groupby('stock_code')
 
     # 각 그룹을 개별 DataFrame으로 저장
     stock_dfs = {stock_code: group.reset_index(drop=True) for stock_code, group in grouped}
-
     similar_stocks = []
     
     # 각각의 idx마다
-    for code_idx, date_idx in zip(other_top_5_code_idx, other_index_results):
+    print(len(other_index_results))
+    print(other_top_5_code_idx)
+    print(other_index_results)
+    print(other_top_5_date_index)
+    for code_idx, date_idx in zip(other_top_5_code_idx, other_top_5_date_index):
         stock_code = other_stock_whole_price_df['stock_code'].unique()[code_idx]  # Get the stock code
-
+        
         # 유사한 데이터 프레임 가져오기
         similar_df = stock_dfs[stock_code][date_idx: date_idx + window_size].reset_index(drop=True)
-
         # Start and end dates
         start_date = similar_df.loc[0, 'stock_candle_day']
         end_date = similar_df.loc[len(similar_df) - 1, 'stock_candle_day']
