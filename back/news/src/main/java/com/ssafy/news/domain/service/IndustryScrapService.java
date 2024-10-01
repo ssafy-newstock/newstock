@@ -28,7 +28,7 @@ public class IndustryScrapService {
     public void writeScrap(String token, IndustryScrapDto dto) {
         Long memberId = tokenProvider.getMemberId(token);
 
-        if (StringUtils.isEmpty(dto.getTitle()) || StringUtils.isEmpty(dto.getContent())) {
+        if (StringUtils.hasText(dto.getTitle()) || StringUtils.hasText(dto.getContent())) {
             throw new ScrapContentNotEmptyException();
         }
         IndustryScrap entity = IndustryScrap.of(dto, memberId);
@@ -48,7 +48,7 @@ public class IndustryScrapService {
         }
 
         // 본문이 비어있으면 오류
-        if (StringUtils.isEmpty(dto.getTitle()) || StringUtils.isEmpty(dto.getContent())) {
+        if (StringUtils.hasText(dto.getTitle()) || StringUtils.hasText(dto.getContent())) {
             throw new ScrapContentNotEmptyException();
         }
 
