@@ -7,9 +7,10 @@ import com.ssafy.stock.domain.entity.StocksHoldings;
 import com.ssafy.stock.domain.entity.StocksTransactions;
 import com.ssafy.stock.domain.error.custom.MemberIdNotFoundException;
 import com.ssafy.stock.domain.error.custom.OverSellLimitException;
-import com.ssafy.stock.domain.error.custom.StockHoldingNotFoundException;
 import com.ssafy.stock.domain.error.custom.StockNotFoundException;
-import com.ssafy.stock.domain.repository.*;
+import com.ssafy.stock.domain.repository.StockHoldingRepository;
+import com.ssafy.stock.domain.repository.StockTransactionRepository;
+import com.ssafy.stock.domain.repository.StocksRepository;
 import com.ssafy.stock.domain.repository.redis.StocksPriceLiveRedisRepository;
 import com.ssafy.stock.domain.repository.redis.StocksPriceRedisRepository;
 import com.ssafy.stock.domain.service.request.MemberPointUpdateRequest;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Slf4j
 @Transactional(readOnly = true)
@@ -46,7 +48,7 @@ public class StockTransactionService {
     @Transactional
     public StockTransactionDto buyStock(Long memberId, StockTransactionRequest stockTransactionRequest) {
         Stocks stock = stocksRepository.findByStockCode(stockTransactionRequest.getStockCode())
-                .orElseThrow(StockNotFoundException::new);
+                .orElseThrow(() -> new StockNotFoundException(stockTransactionRequest.getStockCode()));
 
         Long currentPrice = getCurrentPrice(stockTransactionRequest.getStockCode()); // 현재 가격
         Long buyAmount = stockTransactionRequest.getStockTransactionAmount();   // 구매 수
@@ -94,10 +96,10 @@ public class StockTransactionService {
     @Transactional
     public StockTransactionDto sellStock(Long memberId, StockTransactionRequest stockTransactionRequest) {
         Stocks stock = stocksRepository.findByStockCode(stockTransactionRequest.getStockCode())
-                .orElseThrow(StockNotFoundException::new);
+                .orElseThrow(() -> new StockNotFoundException(stockTransactionRequest.getStockCode()));
 
         StocksHoldings stockHolding = stockHoldingRepository.findByMemberIdAndStockId(memberId, stock.getId()).
-                orElseThrow(StockHoldingNotFoundException::new);
+                orElseThrow(() -> new StockNotFoundException(stockTransactionRequest.getStockCode()));
 
 
         Long currentPrice = getCurrentPrice(stockTransactionRequest.getStockCode()); // 현재 가격
@@ -148,14 +150,16 @@ public class StockTransactionService {
         // 주식 현재가 Redis 조회
         // TOP10 주식
         if (KISSocketHandler.stockNameMap.containsKey(stockCode)) {
-            StocksPriceLiveRedis stocksPriceLiveRedis = stocksPriceLiveRedisRepository.findById(stockCode)
-                    .orElseThrow(StockNotFoundException::new);
-            currentPrice = stocksPriceLiveRedis.getStckPrpr(); // 현재 가격
+            Optional<StocksPriceLiveRedis> stocksPriceLiveRedis = stocksPriceLiveRedisRepository.findById(stockCode);
+            if(stocksPriceLiveRedis.isPresent()){
+                currentPrice = stocksPriceLiveRedis.get().getStckPrpr(); // 현재 가격
+            }
         // 나머지 코스피 주식 전체
         } else {
-            StocksPriceRedis stocksPriceRedis = stocksPriceRedisRepository.findById(stockCode)
-                    .orElseThrow(StockNotFoundException::new);
-            currentPrice = stocksPriceRedis.getStckPrpr(); // 현재 가격
+            Optional<StocksPriceRedis> stocksPriceRedis = stocksPriceRedisRepository.findById(stockCode);
+            if(stocksPriceRedis.isPresent()){
+                currentPrice = stocksPriceRedis.get().getStckPrpr(); // 현재 가격
+            }
         }
 
         // Redis 조회 실패시 DBMS 조회
