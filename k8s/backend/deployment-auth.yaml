@@ -21,11 +21,12 @@ spec:
         - containerPort: 8000  # 스프링 부트 애플리케이션의 기본 포트
         resources:
           requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
             memory: "512Mi"
             cpu: "500m"
-          limits:
-            memory: "1Gi"
-            cpu: "1"
+
 
 
         env:

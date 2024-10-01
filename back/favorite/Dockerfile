@@ -5,7 +5,7 @@ FROM gradle:7.5.1-jdk17 AS build
 WORKDIR /app
 
 # Gradle 캐시를 활용하기 위해 필요한 파일만 먼저 복사합니다.
-COPY build.gradle settings.gradle /app/
+COPY build.gradle /app/
 
 # 종속성을 다운로드합니다.
 RUN gradle dependencies --no-daemon || true
@@ -20,7 +20,7 @@ RUN gradle clean build --no-daemon --stacktrace
 FROM openjdk:17-jdk-slim
 
 # 빌드된 jar 파일을 Docker 이미지에 복사합니다.
-COPY --from=build /app/build/libs/test-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /app/build/libs/favorite-0.0.1-SNAPSHOT.jar app.jar
 
 # 애플리케이션을 실행합니다.
 ENTRYPOINT ["java", "-jar", "/app.jar"]

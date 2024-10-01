@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: newstock-stock-member
+  name: newstock-stock-favorite
   labels:
-    app: newstock-stock-member
+    app: newstock-stock-favorite
 spec:
-  replicas: 1  # 원하는 레플리카 수 설정
+  replicas: 1 # 원하는 레플리카 수 설정
   selector:
     matchLabels:
-      app: newstock-stock-member
+      app: newstock-stock-favorite
   template:
     metadata:
       labels:
-        app: newstock-stock-member
+        app: newstock-stock-favorite
     spec:
       containers:
-      - name: newstock-stock-member-container
-        image: ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstockmember:TAG_PLACEHOLDER
+      - name: newstock-stock-favorite-container
+        image: ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstockfavorite:TAG_PLACEHOLDER
         ports:
-        - containerPort: 8001  # 스프링 부트 애플리케이션의 기본 포트
+        - containerPort: 8005  # 스프링 부트 애플리케이션의 기본 포트
         resources:
           requests:
             memory: "256Mi"
@@ -26,8 +26,6 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "500m"
-
-
 
         env:
         - name: JAVA_OPTS
@@ -38,12 +36,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: newstock-stock-member-service
+  name: newstock-stock-favorite-service
 spec:
   selector:
-    app: newstock-stock-member
+    app: newstock-stock-favorite
   ports:
     - protocol: TCP
-      port: 8001           # 클러스터 내부에서 접근할 서비스 포트
-      targetPort: 8001    # 컨테이너 내부 포트
+      port: 8005           # 클러스터 내부에서 접근할 서비스 포트
+      targetPort: 8005    # 컨테이너 내부 포트
   type: ClusterIP      # 외부에서 접근할 수 있는 서비스 타입 (필요시 ClusterIP로 변경 가능)

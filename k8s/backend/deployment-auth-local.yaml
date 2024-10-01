@@ -16,16 +16,17 @@ spec:
     spec:
       containers:
       - name: newstock-stock-auth-container
-        image: ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstockauth:fe4bcaa
+        image: ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstockauth:TAG_PLACEHOLDER
         ports:
         - containerPort: 8000  # 스프링 부트 애플리케이션의 기본 포트
         resources:
           requests:
             memory: "256Mi"
-            cpu: "250m"
+            cpu: "200m"
           limits:
             memory: "512Mi"
             cpu: "500m"
+
 
         env:
         - name: JAVA_OPTS
