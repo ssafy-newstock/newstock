@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.ssafy.news.domain.service.validator.NewsValidator.validateNewsContent;
 import static com.ssafy.news.domain.service.validator.NewsValidator.validateNewsListContent;
@@ -63,6 +64,7 @@ public class IndustryNewsService {
 
     /**
      * ID를 통해 시황 뉴스의 상세 정보를 조회하는 메소드
+     *
      * @param id
      * @return
      */
@@ -72,4 +74,10 @@ public class IndustryNewsService {
         return IndustryNewsDto.of(findNews.get());
     }
 
+    public List<IndustryNewsDto> getIndustryNewsInIds(List<Long> industryIds) {
+        List<IndustryNews> industryNewsByIdIn = industryNewsRepository.findAllByIdIn(industryIds);
+        return industryNewsByIdIn.stream()
+                .map(IndustryNewsDto::of)
+                .collect(Collectors.toList());
+    }
 }
