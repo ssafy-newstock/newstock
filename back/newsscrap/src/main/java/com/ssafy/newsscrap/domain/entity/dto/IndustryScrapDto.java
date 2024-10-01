@@ -1,7 +1,7 @@
-package com.ssafy.news.domain.entity.dto;
+package com.ssafy.newsscrap.domain.entity.dto;
 
-import com.ssafy.news.domain.entity.scrap.IndustryScrap;
-import lombok.*;
+import com.ssafy.newsscrap.domain.entity.IndustryScrap;
+import lombok.Data;
 
 @Data
 public class IndustryScrapDto {

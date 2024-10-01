@@ -1,6 +1,6 @@
-package com.ssafy.news.domain.entity.scrap;
+package com.ssafy.newsscrap.domain.entity;
 
-import com.ssafy.news.domain.entity.dto.StockScrapDto;
+import com.ssafy.newsscrap.domain.entity.dto.IndustryScrapDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -9,16 +9,16 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class StockScrap extends BaseEntity{
+public class IndustryScrap extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "stock_news_scrap_id")
+    @Column(name = "industry_news_scrap_id")
     private Long id;
 
-    @Column(name = "stock_news_scrap_title")
+    @Column(name = "industry_news_scrap_title")
     private String title;
 
-    @Column(name = "stock_news_scrap_content")
+    @Column(name = "industry_news_scrap_content")
     private String content;
 
     private Long memberId;
@@ -28,8 +28,8 @@ public class StockScrap extends BaseEntity{
 
     private String newsType;
 
-    public static StockScrap of(StockScrapDto dto, Long memberId) {
-        StockScrap entity = new StockScrap();
+    public static IndustryScrap of(IndustryScrapDto dto, Long memberId) {
+        IndustryScrap entity = new IndustryScrap();
         entity.title = dto.getTitle();
         entity.content = dto.getContent();
         entity.memberId = memberId;
@@ -38,7 +38,7 @@ public class StockScrap extends BaseEntity{
         return entity;
     }
 
-    public void updateContent(final StockScrapDto dto) {
+    public void updateContent(final IndustryScrapDto dto) {
         this.title = dto.getTitle();
         this.content = dto.getContent();
         this.newsId = dto.getNewsId();

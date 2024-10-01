@@ -1,6 +1,6 @@
-package com.ssafy.news.domain.entity.dto;
+package com.ssafy.newsscrap.domain.entity.dto;
 
-import com.ssafy.news.domain.entity.scrap.StockScrap;
+import com.ssafy.newsscrap.domain.entity.StockScrap;
 import lombok.Data;
 
 @Data
