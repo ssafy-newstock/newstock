@@ -1,13 +1,13 @@
-package com.ssafy.news.domain.controller;
+package com.ssafy.newsscrap.domain.controller;
 
-import com.ssafy.news.domain.controller.response.IndustryNewsScrapListResponse;
-import com.ssafy.news.domain.controller.response.IndustryNewsScrapResponse;
-import com.ssafy.news.domain.entity.dto.IndustryNewsDto;
-import com.ssafy.news.domain.entity.dto.IndustryScrapDto;
-import com.ssafy.news.domain.service.IndustryNewsService;
-import com.ssafy.news.domain.service.IndustryScrapService;
-import com.ssafy.news.global.common.CommonResponse;
-import com.ssafy.news.global.util.TokenProvider;
+import com.ssafy.newsscrap.domain.controller.response.StockNewsScrapListResponse;
+import com.ssafy.newsscrap.domain.controller.response.StockNewsScrapResponse;
+import com.ssafy.newsscrap.domain.entity.dto.StockScrapDto;
+import com.ssafy.newsscrap.domain.service.StockNewsFeignService;
+import com.ssafy.newsscrap.domain.service.StockScrapService;
+import com.ssafy.newsscrap.domain.service.client.response.StockNewsDto;
+import com.ssafy.newsscrap.global.common.CommonResponse;
+import com.ssafy.newsscrap.global.common.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -17,28 +17,28 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/news/scrap/industry")
+@RequestMapping("/api/news/scrap/stock")
 @RequiredArgsConstructor
 @Slf4j
-public class IndustryScrapController {
-    private final IndustryScrapService industryScrapService;
-    private final IndustryNewsService industryNewsService;
+public class StockScrapController {
+    private final StockScrapService stockScrapService;
+    private final StockNewsFeignService stockNewsFeignService;
     private final TokenProvider tokenProvider;
 
     @GetMapping("/{scrapId}")
     public CommonResponse<?> getScrap(
             @PathVariable Long scrapId) {
-        IndustryScrapDto scrapDto = industryScrapService.getScrap(scrapId);
-        IndustryNewsDto industryNews = industryNewsService.getIndustryNews(scrapDto.getNewsId());
+        StockScrapDto scrapDto = stockScrapService.getScrap(scrapId);
+        StockNewsDto stockNewsDto = stockNewsFeignService.getIndustryNews(scrapDto.getNewsId());
 
-        IndustryNewsScrapResponse response = new IndustryNewsScrapResponse(scrapDto, industryNews);
+        StockNewsScrapResponse response = new StockNewsScrapResponse(scrapDto, stockNewsDto);
 
         return CommonResponse.success(response);
     }
 
     @GetMapping("")
     public CommonResponse<?> getMyScraps(
-            @RequestHeader("authorization") String token,
+            @RequestHeader(value = "authorization",required = false) String token,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size,
             @RequestParam(value = "startDate", required = false) String startDate,
@@ -49,12 +49,12 @@ public class IndustryScrapController {
         LocalDate start = startDate != null ? LocalDate.parse(startDate, DateTimeFormatter.ISO_DATE) : LocalDate.now().minusWeeks(1);
         LocalDate end = endDate != null ? LocalDate.parse(endDate, DateTimeFormatter.ISO_DATE) : LocalDate.now();
 
-        List<IndustryScrapDto> myStockScraps = industryScrapService.getMyIndustryScraps(memberId, page, size, start, end);
-        List<Long> scrapInStockNewsIds = industryScrapService.getScrapInIndustryNewsIn(myStockScraps);
+        List<StockScrapDto> myStockScraps = stockScrapService.getMyStockScraps(memberId, page, size, start, end);
+        List<Long> scrapInStockNewsIds = stockScrapService.getScrapInStockNewsIn(myStockScraps);
 
-        List<IndustryNewsDto> industryNews = industryNewsService.getIndustryNewsInIds(scrapInStockNewsIds);
+        List<StockNewsDto> stockNewsInIds = stockNewsFeignService.getIndustryNewsInIds(scrapInStockNewsIds);
 
-        IndustryNewsScrapListResponse response = new IndustryNewsScrapListResponse(myStockScraps, industryNews);
+        StockNewsScrapListResponse response = new StockNewsScrapListResponse(myStockScraps, stockNewsInIds);
 
         return CommonResponse.success(response);
     }
@@ -62,10 +62,10 @@ public class IndustryScrapController {
     @PostMapping("/write")
     public CommonResponse<?> writeScrap(
             @RequestHeader("authorization") String token,
-            @ModelAttribute IndustryScrapDto requestDto) {
+            @ModelAttribute StockScrapDto requestDto) {
         Long memberId = tokenProvider.getMemberId(token);
         log.info("scrap: {}", requestDto);
-        industryScrapService.writeScrap(memberId, requestDto);
+        stockScrapService.writeScrap(memberId, requestDto);
 
         return CommonResponse.success("성공");
     }
@@ -74,9 +74,9 @@ public class IndustryScrapController {
     public CommonResponse<?> editScrap(
             @PathVariable("scrapId") Long scrapId,
             @RequestHeader("authorization") String token,
-            @ModelAttribute IndustryScrapDto requestDto) {
+            @ModelAttribute StockScrapDto requestDto) {
         Long memberId = tokenProvider.getMemberId(token);
-        industryScrapService.editScrap(memberId, scrapId, requestDto);
+        stockScrapService.editScrap(memberId, scrapId, requestDto);
 
         return CommonResponse.success("성공");
     }
@@ -86,7 +86,7 @@ public class IndustryScrapController {
             @PathVariable("scrapId") Long scrapId,
             @RequestHeader("authorization") String token) {
         Long memberId = tokenProvider.getMemberId(token);
-        industryScrapService.deleteScrap(memberId, scrapId);
+        stockScrapService.deleteScrap(memberId, scrapId);
 
         return CommonResponse.success("성공");
     }
