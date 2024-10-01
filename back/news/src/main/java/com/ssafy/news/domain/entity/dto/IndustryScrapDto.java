@@ -3,10 +3,7 @@ package com.ssafy.news.domain.entity.dto;
 import com.ssafy.news.domain.entity.scrap.IndustryScrap;
 import lombok.*;
 
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString
+@Data
 public class IndustryScrapDto {
     private String title;
     private Long newsId;
