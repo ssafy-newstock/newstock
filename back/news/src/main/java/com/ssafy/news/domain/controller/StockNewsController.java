@@ -49,10 +49,10 @@ public class StockNewsController {
     }
 
     @GetMapping("/{id}")
-    public CommonResponse<?> getStockNews(@PathVariable("id") Long id) {
+    public CommonResponse<?> getStockNews(@PathVariable("id") Long id,
+                                            @RequestHeader(value = "authorization", required = false) String token) {
         StockNewsDto stockNews = stockNewsService.getStockNewsDetail(id);
-
-        // 모델 매퍼가 List 까지 변환해주진 않기에 생략함
+        stockNewsService.checkReadStockNews(id, token);
 
         return CommonResponse.success(stockNews);
     }
