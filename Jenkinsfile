@@ -120,7 +120,7 @@ pipeline {
             }
         }
 
-        stage('Update Kubernetes Deployment for Auth') {
+        stage('Update Kubernetes Deployment for Auth-local') {
 //             when {
 //                 expression { env.MEMBER_CHANGED == 'true' }
 //             }
