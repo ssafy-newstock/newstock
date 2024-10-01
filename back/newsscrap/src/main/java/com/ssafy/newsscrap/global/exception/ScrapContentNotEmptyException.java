@@ -1,4 +1,4 @@
-package com.ssafy.news.global.exception;
+package com.ssafy.newsscrap.global.exception;
 
 public class ScrapContentNotEmptyException extends RuntimeException {
     public ScrapContentNotEmptyException() {

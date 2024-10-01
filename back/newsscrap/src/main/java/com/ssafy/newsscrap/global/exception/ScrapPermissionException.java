@@ -1,4 +1,4 @@
-package com.ssafy.news.global.exception;
+package com.ssafy.newsscrap.global.exception;
 
 public class ScrapPermissionException extends RuntimeException {
     public ScrapPermissionException() {
