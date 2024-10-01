@@ -1,14 +1,20 @@
 package com.ssafy.news.domain.controller;
 
+import com.ssafy.news.domain.controller.response.IndustryNewsScrapListResponse;
 import com.ssafy.news.domain.controller.response.IndustryNewsScrapResponse;
 import com.ssafy.news.domain.entity.dto.IndustryNewsDto;
 import com.ssafy.news.domain.entity.dto.IndustryScrapDto;
 import com.ssafy.news.domain.service.IndustryNewsService;
 import com.ssafy.news.domain.service.IndustryScrapService;
 import com.ssafy.news.global.common.CommonResponse;
+import com.ssafy.news.global.util.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/news/scrap/industry")
@@ -17,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class IndustryScrapController {
     private final IndustryScrapService industryScrapService;
     private final IndustryNewsService industryNewsService;
+    private final TokenProvider tokenProvider;
 
     @GetMapping("/{scrapId}")
     public CommonResponse<?> getScrap(
@@ -29,13 +36,36 @@ public class IndustryScrapController {
         return CommonResponse.success(response);
     }
 
+    @GetMapping("")
+    public CommonResponse<?> getMyScraps(
+            @RequestHeader("authorization") String token,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "startDate", required = false) String startDate,
+            @RequestParam(value = "endDate", required = false) String endDate) {
+        Long memberId = tokenProvider.getMemberId(token);
+        log.info("memberId = {}", memberId);
+        // 기본값으로 일주일 전 날짜와 오늘 날짜 설정
+        LocalDate start = startDate != null ? LocalDate.parse(startDate, DateTimeFormatter.ISO_DATE) : LocalDate.now().minusWeeks(1);
+        LocalDate end = endDate != null ? LocalDate.parse(endDate, DateTimeFormatter.ISO_DATE) : LocalDate.now();
+
+        List<IndustryScrapDto> myStockScraps = industryScrapService.getMyIndustryScraps(memberId, page, size, start, end);
+        List<Long> scrapInStockNewsIds = industryScrapService.getScrapInIndustryNewsIn(myStockScraps);
+
+        List<IndustryNewsDto> industryNews = industryNewsService.getIndustryNewsInIds(scrapInStockNewsIds);
+
+        IndustryNewsScrapListResponse response = new IndustryNewsScrapListResponse(myStockScraps, industryNews);
+
+        return CommonResponse.success(response);
+    }
+
     @PostMapping("/write")
     public CommonResponse<?> writeScrap(
             @RequestHeader("authorization") String token,
             @ModelAttribute IndustryScrapDto requestDto) {
-
+        Long memberId = tokenProvider.getMemberId(token);
         log.info("scrap: {}", requestDto);
-        industryScrapService.writeScrap(token, requestDto);
+        industryScrapService.writeScrap(memberId, requestDto);
 
         return CommonResponse.success("성공");
     }
@@ -45,7 +75,8 @@ public class IndustryScrapController {
             @PathVariable("scrapId") Long scrapId,
             @RequestHeader("authorization") String token,
             @ModelAttribute IndustryScrapDto requestDto) {
-        industryScrapService.editScrap(token, scrapId, requestDto);
+        Long memberId = tokenProvider.getMemberId(token);
+        industryScrapService.editScrap(memberId, scrapId, requestDto);
 
         return CommonResponse.success("성공");
     }
@@ -54,7 +85,8 @@ public class IndustryScrapController {
     public CommonResponse<?> deleteScrap(
             @PathVariable("scrapId") Long scrapId,
             @RequestHeader("authorization") String token) {
-        industryScrapService.deleteScrap(token, scrapId);
+        Long memberId = tokenProvider.getMemberId(token);
+        industryScrapService.deleteScrap(memberId, scrapId);
 
         return CommonResponse.success("성공");
     }
