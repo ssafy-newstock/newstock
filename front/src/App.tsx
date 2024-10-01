@@ -13,7 +13,6 @@ import WebSocketComponent from '@components/WebSocketComponent';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { axiosInstance } from '@api/axiosInstance';
-import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 
 const Container = styled.div`
   display: flex;
@@ -34,16 +33,6 @@ const Content = styled.div`
   height: 100%;
   flex-direction: row;
 `;
-
-function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
-  return (
-    <div role="alert">
-      <p>Something went wrong:</p>
-      <pre>{error.message}</pre>
-      <button onClick={resetErrorBoundary}>Try again</button>
-    </div>
-  );
-}
 
 const App = () => {
   const { theme } = useThemeStore();
@@ -91,13 +80,6 @@ const App = () => {
   return (
     <ThemeProvider theme={currentTheme}>
       <GlobalStyle />
-      {/* 에러 바운더리 */}
-      <ErrorBoundary
-        FallbackComponent={ErrorFallback}
-        onReset={() => {
-          console.log('ErrorBoundary reset, retrying...');
-        }}
-      >
         <Container>
           <Navbar />
           <Main>
@@ -121,7 +103,6 @@ const App = () => {
           draggable={true}
           pauseOnHover={false}
         />
-      </ErrorBoundary>
     </ThemeProvider>
   );
 };
