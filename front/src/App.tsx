@@ -12,9 +12,12 @@ import WebSocketComponent from '@components/WebSocketComponent';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useTop10StockQuery } from '@hooks/useTop10StockQuery';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAllStockQuery } from '@hooks/useAllStockQuery';
 import { useCategoryStockQuery } from '@hooks/useCategoryStockQuery';
+import useAuthStore from '@store/useAuthStore';
+import Left from '@components/Left';
+import StockModal from '@features/MyStockModal/StockModal';
 
 // const Container = styled.div`
 //   display: flex;
@@ -51,6 +54,8 @@ const RightVacantWrapper = styled.div<{ isOpen: boolean }>`
 const App = () => {
   const { theme } = useThemeStore();
   const currentTheme = theme === 'light' ? lightTheme : darkTheme;
+  const [isOpen, setIsOpen] = useState(false);
+  const { isLogin } = useAuthStore();
 
   const { setAllStock } = useAllStockStore();
   const { setCategoryStock } = useCategoryStockStore();
