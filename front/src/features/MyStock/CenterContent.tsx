@@ -7,8 +7,12 @@ import {
   MetricsContainer,
   MetricItem,
   CenterContentBottomDiv,
+  NoDiv,
 } from '@features/MyStock/myStockCenterStyledComponent';
-import { TextP_22 } from '@features/MyStock/myStockStyledComponent';
+import {
+  TextP_20_NOTGRAY,
+  TextP_22,
+} from '@features/MyStock/myStockStyledComponent';
 import styled from 'styled-components';
 
 const CenterContent: React.FC = () => {
@@ -41,33 +45,39 @@ const CenterContent: React.FC = () => {
 
   return (
     <CenterContentDiv>
-      <CenterContentBottomDiv>
-        <MetricsContainer>
-          <MetricItem>
-            <TextP_22>총 매수 {totalPurchase.toLocaleString()}원</TextP_22>
-          </MetricItem>
-          <MetricItem>
-            {/* 평가손익에 색상 적용 */}
-            <ColoredText $profitStatus={profitStatus}>
-              평가손익 {totalPnl.toLocaleString()}원
-            </ColoredText>
-          </MetricItem>
-          <MetricItem>
-            <TextP_22>총 평가 {totalValuation.toLocaleString()}원</TextP_22>
-          </MetricItem>
-          <MetricItem>
-            {/* 수익률에 색상 적용 */}
-            <ColoredText $profitStatus={profitStatus}>
-              수익률 {roi.toFixed(2)}%
-            </ColoredText>
-          </MetricItem>
-        </MetricsContainer>
-        {/* 총 평가를 위한 도넛 차트 */}
-        <DonutChart type="valuation" />
+      {stockData.length > 0 ? (
+        <CenterContentBottomDiv>
+          <MetricsContainer>
+            <MetricItem>
+              <TextP_22>총 매수 {totalPurchase.toLocaleString()}원</TextP_22>
+            </MetricItem>
+            <MetricItem>
+              {/* 평가손익에 색상 적용 */}
+              <ColoredText $profitStatus={profitStatus}>
+                평가손익 {totalPnl.toLocaleString()}원
+              </ColoredText>
+            </MetricItem>
+            <MetricItem>
+              <TextP_22>총 평가 {totalValuation.toLocaleString()}원</TextP_22>
+            </MetricItem>
+            <MetricItem>
+              {/* 수익률에 색상 적용 */}
+              <ColoredText $profitStatus={profitStatus}>
+                수익률 {roi.toFixed(2)}%
+              </ColoredText>
+            </MetricItem>
+          </MetricsContainer>
+          {/* 총 평가를 위한 도넛 차트 */}
+          <DonutChart type="valuation" />
 
-        {/* 보유 갯수를 위한 도넛 차트 */}
-        <DonutChart type="count" />
-      </CenterContentBottomDiv>
+          {/* 보유 갯수를 위한 도넛 차트 */}
+          <DonutChart type="count" />
+        </CenterContentBottomDiv>
+      ) : (
+        <NoDiv>
+          <TextP_20_NOTGRAY>보유하고 있는 주식이 없습니다.</TextP_20_NOTGRAY>
+        </NoDiv>
+      )}
     </CenterContentDiv>
   );
 };

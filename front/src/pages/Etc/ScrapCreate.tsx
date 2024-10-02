@@ -1,4 +1,3 @@
-import LeftNews from '@components/LeftNews';
 import { Center } from '@components/Center';
 import { Right } from '@components/Right';
 import CenterContent from '@features/Scrap/create/CenterContent';
@@ -19,7 +18,6 @@ const ScrapCreatePage = () => {
   };
   return (
     <>
-      <LeftNews />
       <Center>
         <CenterDiv>
           <CenterContent />

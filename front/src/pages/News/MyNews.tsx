@@ -1,9 +1,7 @@
-import LeftNews from '@components/LeftNews';
 import CenterTitle from '@features/MyNews/CenterTitle';
 import CenterContent from '@features/MyNews/CenterContent';
 import { CenterDiv, CenterHr } from '@features/MyNews/styledComponent';
 import { Center } from '@components/Center';
-import { RightVacant } from '@components/RightVacant';
 import { useState } from 'react';
 
 const MyNewsPage = () => {
@@ -15,9 +13,9 @@ const MyNewsPage = () => {
   const handleDateRangeChange = (dates: [Date | null, Date | null]) => {
     setSelectedDateRange(dates);
   };
+
   return (
     <>
-      <LeftNews />
       <Center>
         <CenterDiv>
           {/* handleDateRangeChange를 통해 CenterTitle에서 선택한 날짜 범위를 가져옴 */}
@@ -27,7 +25,6 @@ const MyNewsPage = () => {
           <CenterContent selectedDateRange={selectedDateRange} />
         </CenterDiv>
       </Center>
-      <RightVacant />
     </>
   );
 };
