@@ -29,7 +29,7 @@ import MyStockPage from '@pages/Stock/MyStock';
 import AllStockPage from '@pages/Stock/AllStock';
 import SectionStockPage from '@pages/Stock/SectionStock';
 import Auth from '@pages/Auth';
-import MyStockSkeleton from '@features/MyStock/MyStockSkeleton';
+import MyStockSkeleton from '@features/MyStock/skeleton/MyStockSkeleton';
 
 const router = createBrowserRouter([
   {
