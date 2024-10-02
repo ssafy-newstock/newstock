@@ -8,7 +8,10 @@ import {
   NeutralIcon as BaseNeutralIcon,
   NeutralIconText,
 } from '@features/News/PNSubicon';
-import { bookmarkedIcon } from '../NewsIconTag';
+import { bookmarkedIcon, unbookmarkedIcon } from '../NewsIconTag';
+import { useEffect, useState } from 'react';
+import { axiosInstance } from '@api/axiosInstance';
+import { useOutletContext } from 'react-router-dom';
 
 const EconNewsDetailHeaderWrapper = styled.div`
   display: flex;
@@ -95,6 +98,7 @@ interface EconNewsDetailHeaderProps {
   media: string;
   uploadDate: string;
   sentiment: string;
+  id: number;
 }
 
 const EconNewsDetailHeader: React.FC<EconNewsDetailHeaderProps> = ({
@@ -102,7 +106,58 @@ const EconNewsDetailHeader: React.FC<EconNewsDetailHeaderProps> = ({
   media,
   uploadDate,
   sentiment,
+  id,
 }) => {
+  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
+
+  // bookmark 상태가 변경되면 다시 갱신하는 함수
+  const { onBookmarkSuccess, bookmarkUpdated } = useOutletContext<{
+    onBookmarkSuccess: () => void;
+    bookmarkUpdated: boolean;
+  }>();
+
+  // 북마크 상태를 불러오는 함수
+  const loadBookmarkState = async () => {
+    try {
+      const response = await axiosInstance.get(
+        '/api/news/favorite/industry/list'
+      );
+      const bookmarkedNews = response.data.data;
+      const isBookmarkedNews = bookmarkedNews.some(
+        (newsItem: { id: number }) => newsItem.id === id
+      );
+      setIsBookmarked(isBookmarkedNews);
+    } catch (error) {
+      console.error('Failed to load bookmark state: ', error);
+    }
+  };
+
+  // 페이지 로드 시 북마크 상태를 불러옴
+  useEffect(() => {
+    loadBookmarkState();
+  }, [id]);
+
+  // 북마크 상태가 업데이트되면 다시 갱신
+  useEffect(() => {
+    if (bookmarkUpdated) {
+      loadBookmarkState();
+    }
+  }, [bookmarkUpdated]);
+
+  const handleBookmarkClick = async () => {
+    try {
+      if (isBookmarked) {
+        await axiosInstance.delete(`/api/news/favorite/industry/${id}`);
+      } else {
+        await axiosInstance.post(`/api/news/favorite/industry/${id}`);
+      }
+      setIsBookmarked(!isBookmarked);
+      onBookmarkSuccess(); // 북마크 상태 갱신 요청
+    } catch (error) {
+      console.error('Failed to update bookmark: ', error);
+    }
+  };
+
   const date = uploadDate.split('T')[0].replace(/-/g, '.');
 
   // 감정 분석에 따른 아이콘 설정
@@ -141,8 +196,9 @@ const EconNewsDetailHeader: React.FC<EconNewsDetailHeaderProps> = ({
             <NewsAuthorInfoText>{date}</NewsAuthorInfoText>
           </NewsInfoInnerWrapper>
           <NewsInfoInnerWrapper>
-            {/* <NewsTag># 삼성전자</NewsTag> */}
-            {bookmarkedIcon}
+            <div onClick={handleBookmarkClick} style={{ cursor: 'pointer' }}>
+              {isBookmarked ? bookmarkedIcon : unbookmarkedIcon}
+            </div>
           </NewsInfoInnerWrapper>
         </NewsInfoOuterWrapper>
 

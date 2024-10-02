@@ -81,6 +81,7 @@ const EconomicNewsDetailPage: React.FC = () => {
               media={detailNews.media}
               uploadDate={detailNews.uploadDatetime}
               sentiment={detailNews.sentiment}
+              id={detailNews.id}
             />
           )}
           {detailNews && (

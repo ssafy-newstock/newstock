@@ -84,6 +84,8 @@ const StockNewsDetailPage: React.FC = () => {
               uploadDate={detailNews.uploadDatetime}
               sentiment={detailNews.sentiment}
               tagList={detailNews?.stockKeywords}
+              stockNewsStockCodes={detailNews?.stockNewsStockCodes}
+              id={detailNews.id}
             />
           )}
           {detailNews && (

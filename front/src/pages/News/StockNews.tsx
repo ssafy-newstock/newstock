@@ -239,8 +239,10 @@ const StockNewsPage: React.FC = () => {
                     sentiment={news.sentiment}
                   />
                   <EconSubNewsBody
+                    id={news.id}
                     thumbnail={news.thumbnail}
                     onShowSummaryChange={handleShowSummaryChange}
+                    keywords={news.stockKeywords}
                   />
                 </StockNewsWrapper>
               </StockNewsOuterWrapper>
