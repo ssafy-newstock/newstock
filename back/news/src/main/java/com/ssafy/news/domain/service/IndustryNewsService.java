@@ -124,8 +124,9 @@ public class IndustryNewsService {
      * 시황 뉴스 조회 기록 삭제 스케줄러
      * 매일 자정
      */
+    @Transactional
     @Scheduled(cron = "0 0 0 * * *")
-    private void deleteReadIndustryNews(){
+    public void deleteReadIndustryNews(){
         newsSchedulerService.deleteIndustryNewsRedis();
     }
 }

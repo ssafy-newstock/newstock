@@ -154,8 +154,9 @@ public class StockNewsService {
      * 종목 뉴스 조회 기록 삭제 스케줄러
      * 매일 자정
      */
+    @Transactional
     @Scheduled(cron = "0 0 0 * * *")
-    private void deleteReadStockNews(){
+    public void deleteReadStockNews(){
         newsSchedulerService.deleteStockNewsRedis();
     }
 }
