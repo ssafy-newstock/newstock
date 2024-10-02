@@ -1,6 +1,41 @@
+// api.ts (기존 파일에 추가)
+import { authRequest } from '@api/axiosInstance';
+export interface SellStockRequest {
+  stockCode: string;
+  stockTransactionAmount: number;
+  stockTransactionType: 'SELL';
+}
+
+export interface ApiError {
+  message: string;
+}
+
+export const sellStock = async (data: SellStockRequest) => {
+  await authRequest.post('/stock/transaction/sell', data);
+};
+
+// hooks/useSellStock.ts
+import { useMutation } from '@tanstack/react-query';
+
+export interface SellStockVariables {
+  stockCode: string;
+  amount: number;
+}
+
+export const useSellStock = () => {
+  return useMutation<void, ApiError, SellStockVariables>({
+    mutationFn: ({ stockCode, amount }) => 
+      sellStock({
+        stockCode,
+        stockTransactionAmount: amount,
+        stockTransactionType: 'SELL',
+      }),
+  });
+};
+
+// SellForm.tsx
 import React, { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { authRequest } from '@api/axiosInstance';
 import TradeModal from '@features/Stock/StockDetail/TradeModal';
 import {
   ColumnWrapper,
@@ -12,50 +47,30 @@ import {
   InputLabel,
 } from '@features/Stock/styledComponent';
 import { FormValues, TradeFormProps } from '@features/Stock/types';
-
-// 가독성, 타입 안정성을 위해 enum 사용
-// enum TradeType {
-//   BUY = 'BUY',
-//   SELL = 'SELL',
-// }
+import { FlexGap } from '@components/styledComponent';
 
 const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
   const [isModalOpen, setModalOpen] = useState(false);
-  const [modalMessage, setModalMessage] = useState('');
-  const [isSuccess, setIsSuccess] = useState(true);
-  const [modalAmount, setModalAmount] = useState(0);
-  const [modalPrice, setModalPrice] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [modalAmount, setModalAmount] = useState(0);
 
-
-  // const [a, setA] = useState({
-  //   price: 0,
-  //   sum: 0
-  // })
-
-  // useEffect(() => {
-  //   setA((prev) => ({
-  //     ...prev,
-  //     price: 1
-  //   }))
-  // })
-
+  const mutation = useSellStock();
 
   const {
     control,
     handleSubmit,
-    reset,
+    reset: resetForm,
     setValue,
     watch,
     formState: { errors },
   } = useForm<FormValues>({
     defaultValues: {
-      price: price,
+      price,
       amount: 0,
     },
   });
 
-  const amount = watch('amount'); // amount 값 가져오기(실시간)
+  const amount = watch('amount');
 
   useEffect(() => {
     setValue('price', price);
@@ -65,46 +80,47 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
     setTotalPrice(Number(price) * Number(amount));
   }, [amount, price]);
 
-  const onSubmit = async (data: FormValues) => {
-    const sellData = {
-      price: data.price,
-      amount: Number(data.amount),
-    };
-    console.log('Sell Data:', sellData);
-    // 매도 로직
-    try {
-      // 매도 API 요청
-      const response = await authRequest.post('/stock/transaction/sell', {
-        stockCode: stockCode,
-        stockTransactionAmount: sellData.amount,
-        stockTransactionType: 'SELL',
-      });
-      console.log('Sell Response:', response.data);
-      setModalMessage('주식을 성공적으로 매도했습니다.');
-      setIsSuccess(true);
-    } catch (error) {
-      console.error('Sell Error:', error);
-      setModalMessage('보유 주식이 부족합니다.');
-      setIsSuccess(false);
-    }
-    setModalAmount(sellData.amount); // 입력한 amount 값을 설정
-    setModalPrice(sellData.price); // 입력한 price 값을 설정
-    setModalOpen(true);
-    reset({ price: price, amount: 0 }); // 폼 리셋
+  const onSubmit = (formData: FormValues) => {
+    const sellAmount = Number(formData.amount);
+    setModalAmount(sellAmount);
+    
+    mutation.mutate(
+      {
+        stockCode,
+        amount: sellAmount,
+      },
+      {
+        onSuccess: () => {
+          setModalOpen(true);
+          resetForm({ price, amount: 0 });
+        },
+        onError: () => {
+          setModalOpen(true);
+        },
+      }
+    );
+  };
+
+  const getModalMessage = () => {
+    if (mutation.isPending) return '처리중...';
+    if (mutation.isError) return '매도 실패: 보유 주식이 부족합니다.';
+    if (mutation.isSuccess) return `${modalAmount}주를 ${price.toLocaleString()}원에 매도했습니다.`;
+    return '';
   };
 
   return (
     <ColumnWrapper>
       <InputWrapper>
         <InputRow>
-          <InputLabel>거래가:</InputLabel>
+          <InputLabel>시장가:</InputLabel>
           <Controller
             name="price"
             control={control}
             render={({ field }) => (
               <InputTag
                 {...field}
-                type="number"
+                type="text"
+                value={Number(field.value).toLocaleString()}
                 placeholder="Enter sell price"
                 disabled
               />
@@ -122,7 +138,7 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
               required: 'Sell amount is required',
               min: {
                 value: 1,
-                message: 'Sell amount must be at least 1',
+                message: '1주 이상을 선택해주세요.',
               },
             }}
             render={({ field }) => (
@@ -131,6 +147,7 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
                   {...field}
                   type="number"
                   placeholder="Enter sell amount"
+                  disabled={mutation.isPending}
                 />
                 {errors.amount && (
                   <p style={{ color: 'red' }}>{errors.amount.message}</p>
@@ -140,23 +157,38 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
           />
         </InputRow>
       </InputWrapper>
-      <InputWrapper>
-        <InputRow>
-          <InputLabel>매도가: </InputLabel>
-          <InputTag type="text" value={totalPrice.toLocaleString()} disabled />
-        </InputRow>
-      </InputWrapper>
-      <TradeButtonWrapper>
-        <TradeButton type="button" $variant="sell" onClick={handleSubmit(onSubmit)}>
-          Sell
-        </TradeButton>
-      </TradeButtonWrapper>
+      <FlexGap $gap="1rem">
+        <InputWrapper>
+          <InputRow>
+            <InputLabel>매도가: </InputLabel>
+            <InputTag
+              type="text"
+              value={totalPrice.toLocaleString()}
+              disabled
+            />
+          </InputRow>
+        </InputWrapper>
+
+        <TradeButtonWrapper>
+          <TradeButton
+            type="button"
+            $variant="sell"
+            onClick={handleSubmit(onSubmit)}
+            disabled={mutation.isPending}
+          >
+            {mutation.isPending ? '처리중...' : '매도'}
+          </TradeButton>
+        </TradeButtonWrapper>
+      </FlexGap>
       <TradeModal
         isOpen={isModalOpen}
-        onClose={() => setModalOpen(false)}
-        message={modalMessage}
-        sellSuccess={isSuccess}
-        price={modalPrice}
+        onClose={() => {
+          setModalOpen(false);
+          mutation.reset();
+        }}
+        message={getModalMessage()}
+        sellSuccess={mutation.isSuccess}
+        price={price}
         amount={modalAmount}
       />
     </ColumnWrapper>
