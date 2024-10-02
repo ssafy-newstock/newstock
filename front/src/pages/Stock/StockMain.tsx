@@ -15,7 +15,6 @@ import RealTimeStock, {
 import CategoryStock from '@features/Stock/StockMain/CategoryStock';
 import More from '@features/Stock/More';
 import { ICategoryStock, IStock } from '@features/Stock/types';
-import { RightVacant } from '@components/RightVacant';
 import { useNavigate } from 'react-router-dom';
 import Modal from '@features/Stock/SectionStock/Modal';
 import useCategoryStockStore from '@store/useCategoryStockStore';

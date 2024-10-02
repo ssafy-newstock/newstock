@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import CenterNewsCard from '@features/MyNews/CenterNewsCard';
 import {
   CenterContentSection,
