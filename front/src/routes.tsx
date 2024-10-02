@@ -29,6 +29,7 @@ import MyStockPage from '@pages/Stock/MyStock';
 import AllStockPage from '@pages/Stock/AllStock';
 import SectionStockPage from '@pages/Stock/SectionStock';
 import Auth from '@pages/Auth';
+import MyStockSkeleton from '@features/MyStock/MyStockSkeleton';
 
 const router = createBrowserRouter([
   {
@@ -86,6 +87,7 @@ const router = createBrowserRouter([
         ],
       },
       { path: 'my-stock', element: <MyStockPage /> },
+      { path: 'skeleton', element: <MyStockSkeleton /> },
     ],
   },
 ]);

@@ -13,7 +13,6 @@ import { RightVacant } from "@components/RightVacant";
 const MyStockSkeleton = () => {
   return (
     <>
-      <LeftStock />
       <Center>
         <CenterDiv>
           <CenterTitle title={'관심 종목'} />
@@ -23,6 +22,7 @@ const MyStockSkeleton = () => {
           </StockGridColumn>
           <CenterTitle title={'나의 자산'} />
           <MyStockHr />
+          {/* 여기 수정하고 리액트 쿼리 바꾸기 */}
           <CenterContent />
           <Flex>
             <CenterHistoryDiv>
