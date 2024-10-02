@@ -18,7 +18,8 @@ export const GlobalStyle = createGlobalStyle`
     padding: 0;
     border: 0;
     font-size: 100%;
-    font: inherit;
+    /* font : inherit; */
+    font-family: "Toss Product Sans"; 
     vertical-align: baseline;
   }
   article, aside, details, figcaption, figure, 

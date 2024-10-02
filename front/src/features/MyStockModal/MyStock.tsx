@@ -29,8 +29,6 @@ const StockHoldingCardDiv = styled.div`
   align-items: center;
   align-self: stretch;
   border-radius: 30px;
-  background-color: ${({ theme }) => theme.newsBackgroundColor};
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.1);
   margin: 0rem 0.5rem;
 `;
 
@@ -100,9 +98,6 @@ const MyStock: React.FC = () => {
               <StockHoldingCardRightDiv>
                 {matchedStock && (
                   <>
-                    <TextP_16_NOTGRAY>
-                      {matchedStock.stckPrpr?.toLocaleString()}원
-                    </TextP_16_NOTGRAY>
                     <ColoredText $color={color}>
                       {(
                         (stock.stockHoldingBuyPrice +

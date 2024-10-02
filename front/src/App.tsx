@@ -40,12 +40,12 @@ const Content = styled.div<{ isOpen: boolean }>`
   transition: all 0.5s ease;
 `;
 const RightVacantWrapper = styled.div<{ isOpen: boolean }>`
-  width: ${({ isOpen }) =>
-    isOpen ? '580px' : '180px'}; /* isOpen에 따라 width 조정 */
+  min-width: ${({ isOpen }) =>
+    isOpen ? '580px' : '300px'}; /* isOpen에 따라 width 조정 */
   opacity: ${({ isOpen }) =>
     isOpen ? '0' : '1'}; /* isOpen에 따라 opacity 조정 */
   transition:
-    width 0.5s ease,
+    min-width 0.5s ease,
     opacity 0.5s ease; /* 너비와 불투명도를 함께 전환 */
   overflow: hidden; /* 애니메이션 시 내용이 넘치지 않도록 설정 */
 `;

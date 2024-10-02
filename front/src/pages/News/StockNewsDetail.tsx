@@ -5,6 +5,9 @@ import StockNewsDetailBody from '@features/News/StockNewsDetail/StockNewsDetailB
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import usePointStore from '@store/usePointStore';
+import SockJS from 'sockjs-client';
+import Stomp from 'stompjs';
 
 const SubCenter = styled.div`
   display: flex;
@@ -59,6 +62,42 @@ const fetchDetailNewsData = async (id: string): Promise<NewsItem | null> => {
 const StockNewsDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [detailNews, setDetailNews] = useState<NewsItem | null>(null);
+  const { point, setPoint } = usePointStore();
+
+  useEffect(() => {
+    const socket = new SockJS('https://newstock.info/api/member/websocket');
+    const client = Stomp.over(socket);
+
+    client.connect(
+      {},
+      () => {
+        console.log('WebSocket connected in StockNewsDetailPage');
+
+        client.subscribe(
+          `/api/sub/member/info/point/increase/${id}`,
+          (response) => {
+            const newPoint = response.body;
+            console.log('콘솔 확인', newPoint);
+            setPoint((point) => point + newPoint);
+            console.log(`Received new points: ${newPoint}`);
+          }
+        );
+
+        client.send('/api/sub/member/info/point', {}, JSON.stringify({ id }));
+      },
+      (error) => {
+        console.error('WebSocket connection error:', error);
+      }
+    );
+
+    return () => {
+      if (client && client.connected) {
+        client.disconnect(() => {
+          console.log('WebSocket disconnected in StockNewsDetailPage');
+        });
+      }
+    };
+  }, [id, setPoint]);
 
   useEffect(() => {
     const loadNews = async () => {

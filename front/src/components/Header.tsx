@@ -4,11 +4,10 @@ import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import useAuthStore from '@store/useAuthStore';
 import Login from '@components/Login';
-import SockJS from 'sockjs-client';
-import Stomp from 'stompjs';
 import { authRequest } from '@api/axiosInstance';
 import { formatUnit } from '@utils/formatUnit';
 import usePointStore from '@store/usePointStore';
+import useSocketStore from '@store/useSocketStore';
 
 const HeaderContainer = styled.div<{ isOpen: boolean }>`
   width: ${({ isOpen }) => (isOpen ? 'calc(100% - 400px)' : '100%')};
@@ -21,6 +20,7 @@ const HeaderContainer = styled.div<{ isOpen: boolean }>`
 `;
 
 const NewStock = styled.div`
+  font-family: Inter;
   font-size: 3rem;
   font-weight: 800;
   color: ${({ theme }) => theme.highlightColor};
@@ -165,47 +165,32 @@ const Header: React.FC<HeaderProps> = ({ isOpen }) => {
   }, [isLogin, memberId]);
 
   useEffect(() => {
-    const socket = new SockJS('https://newstock.info/api/member/websocket');
+    const client = useSocketStore.getState().client;
 
-    const client = Stomp.over(socket);
+    if (client && memberId) {
+      const subscription = client.subscribe(
+        `/api/sub/member/info/point/${memberId}`,
+        (message) => {
+          const newPoint = message.body;
+          console.log('Received message in Header:', newPoint);
+          setPoint(Number(newPoint));
+        }
+      );
 
-    client.debug = (msg) => {
-      console.log('STOMP debug:', msg);
-    };
+      client.send(
+        '/api/sub/member/info/point',
+        {},
+        JSON.stringify({ memberId })
+      );
 
-    client.connect(
-      {},
-      () => {
-        console.log('WebSocket connected');
-
-        client.subscribe(
-          `/api/sub/member/info/point/${memberId}`,
-          (response) => {
-            console.log('Received message:', response);
-            const newPoint = response.body; // 서버에서 전달받은 포인트
-            setPoint(Number(newPoint));
-          }
-        );
-
-        client.send(
-          '/api/sub/member/info/point',
-          {},
-          JSON.stringify({ memberId })
-        );
-      },
-      (error) => {
-        console.error('WebSocket connection error:', error);
-      }
-    );
-
-    return () => {
-      if (client && client.connected) {
-        client.disconnect(() => {
-          console.log('WebSocket disconnected');
-        });
-      }
-    };
-  }, [isLogin, memberId]);
+      // 구독 해제 및 WebSocket 해제 처리
+      return () => {
+        if (subscription) {
+          subscription.unsubscribe();
+        }
+      };
+    }
+  }, [memberId]); // 의존성 배열에서 setPoint 제거
 
   // API 생성 후 대체
   // const handleLogout = async () => {

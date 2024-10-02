@@ -18,8 +18,8 @@ const WebSocketComponent: React.FC = () => {
   const connectWebSocket = (): Client => {
     const socket = new SockJS('https://newstock.info/api/stock/websocket');
     const stompClient = Stomp.over(socket);
-
     // 웹소켓 연결
+
     const onConnect = () => {
       console.log('WebSocket Connected');
 

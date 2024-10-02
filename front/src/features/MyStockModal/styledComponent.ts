@@ -79,5 +79,6 @@ export const IconDiv = styled.div`
 `;
 
 export const TextP_12 = styled.p`
-  font-size: 0.6rem;
+  font-size: 0.72rem;
+  /* font-weight: bold; */
 `;
