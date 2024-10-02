@@ -12,10 +12,8 @@ const HeaderWrapper = styled.div`
 
 const NewsHeaderText = styled.div`
   color: ${({ theme }) => theme.textColor};
-  font-family: Inter;
   font-weight: 600;
   font-size: 2rem;
-  font-style: normal;
 `;
 
 const MoreInfoTextWrapper = styled.div`
@@ -27,9 +25,7 @@ const MoreInfoTextWrapper = styled.div`
 
 const MoreInfoText = styled.div`
   color: #828282;
-  font-family: Inter;
   font-size: 1.25rem;
-  font-style: normal;
   line-height: 1.9rem;
 `;
 
