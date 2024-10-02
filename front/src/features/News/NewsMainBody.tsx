@@ -33,15 +33,28 @@ const NewsBody = styled.div`
   gap: 0.3rem;
   align-self: stretch;
 `;
+interface IStockDetail {
+  stockCode: string;
+  stockName: string;
+  stockIndustry: string;
+  stckPrpr: number;
+  prdyVrss: number;
+  prdyCtrt: number;
+  acmlVol: number;
+  acmlTrPbmn: number;
+}
+
 
 interface NewsMainBodyProps {
   title: string;
   description: string;
   media: string;
   date: string;
+  stockDetail?: IStockDetail;
   header: string;
   newsType: string;
-  newsId: string;
+  id: number;
+  sentiment: string;
 }
 
 const NewsMainBody: React.FC<NewsMainBodyProps> = ({
@@ -49,30 +62,32 @@ const NewsMainBody: React.FC<NewsMainBodyProps> = ({
   description,
   media,
   date,
+  stockDetail,
   header,
   newsType,
-  newsId,
+  id,
+  sentiment,
 }) => {
   const isEconomicNews = newsType === '시황';
   const navigate = useNavigate();
 
-  const handleNewsClick = (newsId: string, newsType: string) => {
+  const handleNewsClick = (id: number, newsType: string) => {
     if (newsType.trim() === '시황') {
-      navigate(`/subnews-main/economic-news/${newsId}`);
+      navigate(`/subnews-main/economic-news/${id}`);
     } else {
-      navigate(`/subnews-main/stock-news/${newsId}`);
+      navigate(`/subnews-main/stock-news/${id}`);
     }
   };
 
   return (
-    <NewsBodyInnerWrapper onClick={() => handleNewsClick(newsId, newsType)}>
+    <NewsBodyInnerWrapper onClick={() => handleNewsClick(id, newsType)}>
       <NewsBody>
         {isEconomicNews ? (
           <EconNewsMainBodyHeader header={header} />
         ) : (
-          <StockNewsMainBodyHeader header={header} />
+          <StockNewsMainBodyHeader header={header} stockDetail={stockDetail!} />
         )}
-        <NewsBodyTitle title={title} />
+        <NewsBodyTitle title={title} sentiment={sentiment} />
         <NewsBodyContent content={description} />
         <NewsBodyFooter media={media} date={date} />
       </NewsBody>

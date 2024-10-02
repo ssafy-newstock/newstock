@@ -39,6 +39,7 @@ export const NeutralIconText = styled.p`
   font-style: normal;
   font-weight: 400;
   line-height: 1.875rem; /* 93.75% */
+  text-align: center;
 `;
 
 export const NegativeIcon = styled.div`
@@ -59,4 +60,40 @@ export const NegativeIconText = styled.p`
   font-style: normal;
   font-weight: 400;
   line-height: 1.875rem; /* 93.75% */
+  text-align: center;
 `;
+
+import React from 'react';
+
+interface SentimentIconProps {
+  sentiment: string;
+}
+
+const SentimentIcon: React.FC<SentimentIconProps> = ({ sentiment }) => {
+  let IconComponent;
+  let IconText;
+
+  switch (sentiment) {
+    case '0': // 부정적
+      IconComponent = NegativeIcon;
+      IconText = <NegativeIconText>부정</NegativeIconText>;
+      break;
+    case '1': // 중립적
+      IconComponent = NeutralIcon;
+      IconText = <NeutralIconText>중립</NeutralIconText>;
+      break;
+    case '2': // 긍정적
+      IconComponent = PositiveIcon;
+      IconText = <PositiveIconText>긍정</PositiveIconText>;
+      break;
+    default:
+      IconComponent = NeutralIcon; // 기본값으로 중립 아이콘을 사용
+      IconText = <NeutralIconText>중립</NeutralIconText>;
+      break;
+  }
+
+  return <IconComponent>{IconText}</IconComponent>;
+};
+
+export default SentimentIcon;
+

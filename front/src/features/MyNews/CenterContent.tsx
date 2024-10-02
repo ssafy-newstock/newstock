@@ -84,6 +84,8 @@ const CenterContent: React.FC<CenterContentProps> = ({ selectedDateRange }) => {
     <CenterContentDiv>
       <NewsSection title={'시황 뉴스'} datas={filteredEconomicNews} />
       <NewsSection title={'종목 뉴스'} datas={filteredStockNews} />
+      <NewsSection title={'시황 스크랩'} datas={filteredStockNews} />
+      <NewsSection title={'종목 스크랩'} datas={filteredStockNews} />
     </CenterContentDiv>
   );
 };

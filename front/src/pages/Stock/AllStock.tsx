@@ -1,7 +1,12 @@
-import React, { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import styled from 'styled-components';
 import { Center } from '@components/Center';
-import LeftStock from '@components/LeftStock';
 import AllStock, { AllStockFirstRow } from '@features/Stock/AllStock/AllStock';
 import {
   HrTag,
@@ -12,10 +17,9 @@ import {
   SearchInput,
   IconWrapper,
   ButtonWrapper,
-  SortButton
+  SortButton,
 } from '@features/Stock/styledComponent';
 import { IStock } from '@features/Stock/types';
-import { RightVacant } from '@components/RightVacant';
 import useAllStockStore from '@store/useAllStockStore';
 import SearchIcon from '@features/Stock/AllStock/SearchIcon';
 import useTop10StockStore from '@store/useTop10StockStore';
@@ -78,7 +82,9 @@ const AllStockPage: React.FC = () => {
   const { allStock } = useAllStockStore();
   const { top10Stock } = useTop10StockStore();
 
-  const [sortBy, setSortBy] = useState<'stckPrpr' | 'prdyCtrt' | 'acmlTrPbmn' | 'acmlVol'>('stckPrpr');
+  const [sortBy, setSortBy] = useState<
+    'stckPrpr' | 'prdyCtrt' | 'acmlTrPbmn' | 'acmlVol'
+  >('stckPrpr');
   const [query, setQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [inputPage, setInputPage] = useState('1');
@@ -88,22 +94,25 @@ const AllStockPage: React.FC = () => {
     return (top10Stock || []).concat(allStock || []);
   }, [allStock, top10Stock]);
 
-  const sortData = useCallback((data: IStock[]) => {
-    return [...data].sort((a, b) => {
-      switch (sortBy) {
-        case 'stckPrpr':
-          return b.stckPrpr - a.stckPrpr;
-        case 'prdyCtrt':
-          return b.prdyCtrt - a.prdyCtrt;
-        case 'acmlTrPbmn':
-          return b.acmlTrPbmn - a.acmlTrPbmn;
-        case 'acmlVol':
-          return b.acmlVol - a.acmlVol;
-        default:
-          return 0;
-      }
-    });
-  }, [sortBy]);
+  const sortData = useCallback(
+    (data: IStock[]) => {
+      return [...data].sort((a, b) => {
+        switch (sortBy) {
+          case 'stckPrpr':
+            return b.stckPrpr - a.stckPrpr;
+          case 'prdyCtrt':
+            return b.prdyCtrt - a.prdyCtrt;
+          case 'acmlTrPbmn':
+            return b.acmlTrPbmn - a.acmlTrPbmn;
+          case 'acmlVol':
+            return b.acmlVol - a.acmlVol;
+          default:
+            return 0;
+        }
+      });
+    },
+    [sortBy]
+  );
 
   const filteredAndSortedStocks = useMemo(() => {
     const filtered = wholeStock.filter((stock) =>
@@ -143,7 +152,9 @@ const AllStockPage: React.FC = () => {
     setInputPage(e.target.value);
   };
 
-  const handlePageInputKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handlePageInputKeyPress = (
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
     if (e.key === 'Enter') {
       const pageNumber = parseInt(inputPage, 10);
       if (!isNaN(pageNumber)) {
@@ -154,7 +165,6 @@ const AllStockPage: React.FC = () => {
 
   return (
     <>
-      <LeftStock />
       <Center style={{ padding: '1rem' }}>
         <StockHeader>전체 종목</StockHeader>
         <HrTag />
@@ -174,7 +184,9 @@ const AllStockPage: React.FC = () => {
         <ButtonWrapper>
           <SortButton onClick={() => setSortBy('stckPrpr')}>현재가</SortButton>
           <SortButton onClick={() => setSortBy('prdyCtrt')}>등락률</SortButton>
-          <SortButton onClick={() => setSortBy('acmlTrPbmn')}>거래금</SortButton>
+          <SortButton onClick={() => setSortBy('acmlTrPbmn')}>
+            거래금
+          </SortButton>
           <SortButton onClick={() => setSortBy('acmlVol')}>거래량</SortButton>
           <Underline $sortBy={sortBy} />
         </ButtonWrapper>
@@ -191,28 +203,27 @@ const AllStockPage: React.FC = () => {
         </DividedSection>
 
         <PaginationWrapper>
-          <PageButton 
-            onClick={() => handlePageChange(currentPage - 1)} 
+          <PageButton
+            onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
           >
             이전
           </PageButton>
-          <PageInput 
-            type="text" 
+          <PageInput
+            type="text"
             value={inputPage}
             onChange={handlePageInputChange}
             onKeyPress={handlePageInputKeyPress}
           />
           <span> / {totalPages}</span>
-          <PageButton 
-            onClick={() => handlePageChange(currentPage + 1)} 
+          <PageButton
+            onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
           >
             다음
           </PageButton>
         </PaginationWrapper>
       </Center>
-      <RightVacant />
     </>
   );
 };

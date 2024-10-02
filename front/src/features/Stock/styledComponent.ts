@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 export const StockHeader = styled.div`
   font-size: 1.5rem;
@@ -8,7 +8,7 @@ export const StockHeader = styled.div`
 export const StockHeaderWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  `
+`;
 
 export const DividedSection = styled.div`
   margin: 1.5rem 0rem;
@@ -36,6 +36,10 @@ export const StockGridRow = styled.div`
   gap: 0.25rem;
 `;
 
+export const HoldingStockGridRow = styled(StockGridRow)`
+  grid-template-rows: repeat(2, minmax(2.5rem, 2.5rem));
+`;
+
 export const StockCardColumn = styled.div`
   display: flex;
   flex-direction: column;
@@ -48,6 +52,25 @@ export const StockCardColumn = styled.div`
   background-color: ${({ theme }) => theme.stockBackgroundColor};
   box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
   cursor: pointer;
+`;
+
+const pulseAnimation = keyframes`
+  0% {
+    background-color: rgba(255, 255, 255, 0.6); // 시작 색상
+  }
+  50% {
+    background-color: rgba(240, 240, 240, 0.8); // 중간 색상
+  }
+  100% {
+    background-color: rgba(255, 255, 255, 0.6); // 종료 색상
+  }
+`;
+
+export const StockCardColumnSkeleton = styled(StockCardColumn)`
+  animation: ${pulseAnimation} 3s infinite;
+  opacity: 0.4;
+  cursor: none;
+  height: 7rem;
 `;
 
 export const StockCardTitle = styled.div`
@@ -80,7 +103,7 @@ export const StockImage = styled.img`
 export const StockImageDetail = styled(StockImage)`
   width: 3rem;
   height: 3rem;
-`
+`;
 
 export const StckPrice = styled.div`
   font-size: 1rem;
@@ -92,6 +115,10 @@ export const StockPrev = styled.div<{ $isPositive: boolean }>`
     $isPositive ? theme.stockBlue : theme.stockRed};
 `;
 
+export const HoldingStockPrev = styled(StockPrev)`
+  font-size: 1rem;
+`;
+
 export const SpanTag = styled.span`
   font-size: 0.8rem;
   color: ${({ theme }) => theme.textColor};
@@ -101,11 +128,12 @@ export const HeartWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 `;
 
 export const StockCardRow = styled.div`
   display: grid;
-  grid-template-columns: 2fr 1fr 1.5fr 1fr 1fr; /* 각 열의 너비를 설정 */
+  grid-template-columns: 2fr 1fr 1.5fr 1fr 1fr;
   text-align: center;
   align-items: center;
   width: 100%;
@@ -114,6 +142,28 @@ export const StockCardRow = styled.div`
   background-color: ${({ theme }) => theme.stockBackgroundColor};
   box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
   cursor: pointer;
+`;
+
+export const HoldingStockCardRow = styled(StockCardRow)`
+  grid-template-columns: 4fr 4fr 4fr 4fr 4fr;
+  cursor: default;
+`;
+
+export const HoldingStockCardRowNone = styled(StockCardRow)`
+  grid-template-columns: 1fr;
+  cursor: default;
+`;
+
+export const HoldingStockCardRowSkeleton = styled(HoldingStockCardRow)`
+  animation: ${pulseAnimation} 3s infinite;
+  opacity: 0.4;
+  height: 2.5rem;
+`;
+
+export const StockCardRowSkeleton = styled(StockCardRow)`
+  animation: ${pulseAnimation} 3s infinite;
+  opacity: 0.4;
+  height: 2.5rem;
 `;
 
 export const CategoryCardRow = styled(StockCardRow)`
@@ -164,7 +214,7 @@ export const CategoryCardColumn = styled.div`
   cursor: pointer;
 `;
 
-export const CategoryImgWrapper = styled.div<{$bgColor:string}>`
+export const CategoryImgWrapper = styled.div<{ $bgColor: string }>`
   flex-shrink: 0;
   display: flex;
   justify-content: center;
@@ -211,7 +261,7 @@ export const SortButton = styled.button`
   padding: 0;
   margin: 0;
   position: relative;
-  color: ${({theme})=>theme.textColor};
+  color: ${({ theme }) => theme.textColor};
 `;
 
 export const SearchInputWrapper = styled.div`
@@ -262,6 +312,7 @@ export const ColumnWrapper = styled.div`
 `;
 
 export const InputWrapper = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -288,6 +339,7 @@ export const InputTag = styled.input`
 `;
 
 export const TradeButtonWrapper = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -306,3 +358,78 @@ export const TradeButton = styled.button<{ $variant: 'buy' | 'sell' }>`
   }
 `;
 
+export const TradeModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+export const TradeModalContent = styled.div`
+  background-color: white;
+  padding: 1rem;
+  border-radius: 1rem;
+  min-width: 15rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+`;
+
+export const TradeCloseButton = styled.button`
+  background-color: #f0f0f0;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+  cursor: pointer;
+  &:hover {
+    background-color: #ccc;
+  }
+`;
+
+export const CategoryModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const CategoryModalContent = styled.div`
+  background: ${({ theme }) => theme.stockBackgroundColor};
+  padding: 1rem;
+  border-radius: 1rem;
+  position: relative;
+  max-width: 1000px;
+  width: 100%;
+`;
+
+export const CategoryCloseButton = styled.button`
+  color: ${({ theme }) => theme.textColor};
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  :hover {
+  }
+`;
+
+export const NoneButton = styled.button`
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+`;

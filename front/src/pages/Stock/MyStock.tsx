@@ -1,8 +1,11 @@
 import { Center } from '@components/Center';
-import LeftStock from '@components/LeftStock';
 import CenterTitle from '@features/MyStock/CenterTitle';
 import SectionTitle from '@features/MyStock/SectionTitle';
-import { CenterDiv, MyStockHr } from '@features/MyStock/myStockStyledComponent';
+import {
+  CenterDiv,
+  MyStockHr,
+  TextP_20_NOTGRAY,
+} from '@features/MyStock/myStockStyledComponent';
 import CenterContent from '@features/MyStock/CenterContent';
 
 import { useMyStockData } from '@hooks/useStockHoldings';
@@ -12,13 +15,16 @@ import StockHoldingList, {
 import {
   CenterHistoryDiv,
   MyStockGridRow,
+  NoDiv,
   StockGridColumn,
 } from '@features/MyStock/myStockCenterStyledComponent';
 import TradingHistoryList, {
   TradingHistoryFirstRow,
 } from '@features/MyStock/TradingHistoryList';
 import FavoriteStockList from '@features/MyStock/FavoriteStockList';
-import { RightVacant } from '@components/RightVacant';
+
+import { Flex } from '@components/styledComponent';
+import { useOutletContext } from 'react-router-dom';
 
 interface StockHolding {
   stockId: number;
@@ -48,8 +54,12 @@ interface stockFavoriteDto {
   stockName: string;
 }
 
+interface OutletContext {
+  setIsOpen: (isOpen: boolean) => void;
+}
 const MyStock: React.FC = () => {
   const { data } = useMyStockData();
+  const { setIsOpen } = useOutletContext<OutletContext>();
   const FavoriteData = data?.stockFavoriteDtoList || [];
   console.log(FavoriteData);
   // 보유 내역 총액 계산 함수
@@ -76,36 +86,51 @@ const MyStock: React.FC = () => {
       )
       .slice(0, 10) || [];
 
-  const handleMoreClick = () => {};
+  const handleMoreClick = () => {
+    setIsOpen(true);
+  };
 
   return (
     <>
-      <LeftStock />
       <Center>
         <CenterDiv>
           <CenterTitle title={'관심 종목'} />
           <MyStockHr />
-          <StockGridColumn>
-            {FavoriteData?.map((stock: stockFavoriteDto) => (
-              <FavoriteStockList key={stock.stockId} stock={stock} />
-            ))}
-          </StockGridColumn>
+          {FavoriteData.length > 0 ? (
+            <StockGridColumn>
+              {FavoriteData.map((stock: stockFavoriteDto) => (
+                <FavoriteStockList key={stock.stockId} stock={stock} />
+              ))}
+            </StockGridColumn>
+          ) : (
+            <NoDiv>
+              <TextP_20_NOTGRAY>관심 종목이 없습니다.</TextP_20_NOTGRAY>
+            </NoDiv>
+          )}
           <CenterTitle title={'나의 자산'} />
           <MyStockHr />
           <CenterContent />
-          <div style={{ display: 'flex', flexDirection: 'row' }}>
+          <Flex>
             <CenterHistoryDiv>
               <SectionTitle
                 title="내 주식 TOP 10"
                 onMoreClick={() => handleMoreClick()}
               />
               <MyStockHr />
-              <MyStockGridRow>
-                <StockHoldingsFirstRow />
-                {stockDataTop10.map((stock: StockHolding) => (
-                  <StockHoldingList key={stock.stockId} stock={stock} />
-                ))}
-              </MyStockGridRow>
+              {stockDataTop10.length > 0 ? (
+                <MyStockGridRow>
+                  <StockHoldingsFirstRow />
+                  {stockDataTop10.map((stock: StockHolding) => (
+                    <StockHoldingList key={stock.stockId} stock={stock} />
+                  ))}
+                </MyStockGridRow>
+              ) : (
+                <NoDiv>
+                  <TextP_20_NOTGRAY>
+                    보유하고 있는 주식이 없습니다.
+                  </TextP_20_NOTGRAY>
+                </NoDiv>
+              )}
             </CenterHistoryDiv>
             <CenterHistoryDiv>
               <SectionTitle
@@ -113,20 +138,25 @@ const MyStock: React.FC = () => {
                 onMoreClick={() => handleMoreClick()}
               />
               <MyStockHr />
-              <MyStockGridRow>
-                <TradingHistoryFirstRow />
-                {TradingDataTop10.map((stock: TransactionDto) => (
-                  <TradingHistoryList
-                    key={stock.stockTransactionDate}
-                    stock={stock}
-                  />
-                ))}
-              </MyStockGridRow>
+              {TradingDataTop10.length > 0 ? (
+                <MyStockGridRow>
+                  <TradingHistoryFirstRow />
+                  {TradingDataTop10.map((stock: TransactionDto) => (
+                    <TradingHistoryList
+                      key={stock.stockTransactionDate}
+                      stock={stock}
+                    />
+                  ))}
+                </MyStockGridRow>
+              ) : (
+                <NoDiv>
+                  <TextP_20_NOTGRAY>거래 내역이 없습니다.</TextP_20_NOTGRAY>
+                </NoDiv>
+              )}
             </CenterHistoryDiv>
-          </div>
+          </Flex>
         </CenterDiv>
       </Center>
-      <RightVacant />
     </>
   );
 };

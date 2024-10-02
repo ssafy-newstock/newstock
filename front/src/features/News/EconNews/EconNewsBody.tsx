@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { PositiveIcon, PositiveIconText } from '@features/News/PNSubicon';
+import SentimentIcon from '@features/News/PNSubicon';
 
 const EconomicNewsBody = styled.div`
   display: flex;
@@ -74,6 +74,7 @@ interface EconNewsBodyProps {
   content: string;
   media: string;
   date: string;
+  sentiment: string;
 }
 
 const EconNewsBody: React.FC<EconNewsBodyProps> = ({
@@ -81,14 +82,14 @@ const EconNewsBody: React.FC<EconNewsBodyProps> = ({
   content,
   media,
   date,
+  sentiment,
 }) => {
-  const formattedDate = date?.split(' ')[0].replace(/-/g, '.') || '날짜 불명';
+  const formattedDate = date.split('T')[0].replace(/-/g, '.');
+
   return (
     <EconomicNewsBody>
       <EconomicNewsHeader>
-        <PositiveIcon>
-          <PositiveIconText>긍정</PositiveIconText>
-        </PositiveIcon>
+        <SentimentIcon sentiment={sentiment} /> {/* SentimentIcon 사용 */}
         <EconomicNewsTitle>
           <EconomicNewsTitleText>{title}</EconomicNewsTitleText>
         </EconomicNewsTitle>

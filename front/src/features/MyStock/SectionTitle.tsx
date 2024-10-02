@@ -8,7 +8,7 @@ import { UiwRight } from '@features/MyStock/Icon';
 
 interface SectionTitleProps {
   title: string;
-  onMoreClick: () => void;
+  onMoreClick?: () => void;
 }
 
 const SectionTitle: React.FC<SectionTitleProps> = ({ title, onMoreClick }) => {
