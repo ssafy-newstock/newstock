@@ -194,12 +194,4 @@ public class StockController{
 
         return ResponseEntity.ok(success(response));
     }
-
-    @GetMapping("/my-favorite")
-    public ResponseEntity<?> getStockMyFavorite(@RequestHeader("authorization") String token){
-        Long memberId = stockTransactionService.getMemberId(token);
-        List<StockFavoriteDto> response = stockService.getStockMyPageFavoriteDtoList(memberId);
-
-        return ResponseEntity.ok(success(response));
-    }
 }

@@ -82,6 +82,13 @@ public class MemberService {
         simpMessageSendingOperations.convertAndSend("/api/sub/member/info/point/" + memberId, point);
     }
 
+    @Transactional
+    public void increaseMyPoint(Long memberId, Long point) {
+        Member member = findMember(memberId);
+        member.increaseMemberPoint(point);
+        simpMessageSendingOperations.convertAndSend("/api/sub/member/info/point/increase" + memberId, point);
+    }
+
     /**
      * 주식이 매수되었을 때 포인트를 업데이트하는 메소드
      *

@@ -4,6 +4,7 @@ import com.ssafy.news.domain.entity.dto.StockNewsDto;
 import com.ssafy.news.domain.service.StockNewsService;
 import com.ssafy.news.global.common.CommonResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -52,9 +53,16 @@ public class StockNewsController {
     public CommonResponse<?> getStockNews(@PathVariable("id") Long id) {
         StockNewsDto stockNews = stockNewsService.getStockNewsDetail(id);
 
-        // 모델 매퍼가 List 까지 변환해주진 않기에 생략함
-
         return CommonResponse.success(stockNews);
+    }
+
+    @GetMapping("/{id}/read")
+    public ResponseEntity<?> checkReadStockNews(@PathVariable("id") Long id,
+                                                @RequestHeader(value = "authorization",required = false) String token) {
+        stockNewsService.checkReadStockNews(id, token);
+
+        return ResponseEntity.noContent()
+                .build();
     }
 
     @GetMapping("/bulk")
