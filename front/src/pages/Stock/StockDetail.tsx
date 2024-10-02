@@ -4,6 +4,7 @@ import {
   DetailPageButton,
   DividedSection,
   HrTag,
+  StockHeader,
   Text,
 } from '@features/Stock/styledComponent';
 import { IStock } from '@features/Stock/types';
@@ -22,7 +23,9 @@ import LikeButton from '@features/Stock/StockDetail/LikeButton';
 import StockInfo from '@features/Stock/StockDetail/StockInfo';
 import StockHolding from '@features/Stock/StockDetail/StockHolding';
 import { Suspense } from 'react';
-import StockHodingSkeleton from '@features/Stock/StockDetail/StockHodingSkeleton';
+import StockHodingSkeleton from '@features/Stock/StockDetail/StockHoldingSkeleton';
+import { ErrorBoundary } from 'react-error-boundary';
+import StockHoldingError from '@features/Stock/StockDetail/StockHoldingError';
 
 const StockDetailPage = () => {
   const location = useLocation();
@@ -68,9 +71,12 @@ const StockDetailPage = () => {
         />
 
         <DividedSection>
-          <Suspense fallback={<StockHodingSkeleton/>}>
-            <StockHolding stockCode={stock.stockCode} />
-          </Suspense>
+          <StockHeader>나의 {stock?.stockName} 보유 내역</StockHeader>
+          <ErrorBoundary FallbackComponent={StockHoldingError}>
+            <Suspense fallback={<StockHodingSkeleton />}>
+              <StockHolding stockCode={stock.stockCode} />
+            </Suspense>
+          </ErrorBoundary>
         </DividedSection>
       </Center>
       <RightVacant />

@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import App from './App';
-import NotFound from '@pages/NotFound';
+// import NotFound from '@pages/NotFound';
 import OnBoardingPage from '@pages/OnBoarding';
 import NewsMainPage from '@pages/News/NewsMain';
 import EconomicNewsPage from '@pages/News/EconomicNews';
@@ -34,7 +34,7 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
-    errorElement: <NotFound />,
+    // errorElement: <NotFound />,
     children: [
       { index: true, element: <Navigate to="/onboarding" replace /> },
       { path: 'onboarding', element: <OnBoardingPage /> },

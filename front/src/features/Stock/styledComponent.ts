@@ -149,6 +149,11 @@ export const HoldingStockCardRow = styled(StockCardRow)`
   cursor: default;
 `;
 
+export const HoldingStockCardRowNone = styled(StockCardRow)`
+  grid-template-columns: 1fr;
+  cursor: default;
+`;
+
 export const HoldingStockCardRowSkeleton = styled(HoldingStockCardRow)`
   animation: ${pulseAnimation} 3s infinite;
   opacity: 0.4;
