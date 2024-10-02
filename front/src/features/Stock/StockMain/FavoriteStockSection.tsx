@@ -18,6 +18,9 @@ const FavoriteStockSection = () => {
   const { allStock } = useAllStockStore();
   const { top10Stock } = useTop10StockStore();
 
+  // 로그인 상태가 아닐 경우 렌더링 중단
+  if (!isLogin) return null;
+
   const { data: favoriteStockList } = useFavoriteStockQuery({
     enabled: isLogin,
     onSuccess: () => {
@@ -30,14 +33,12 @@ const FavoriteStockSection = () => {
 
   // favoriteStock의 stockId를 Set으로 만들어 빠른 검색 가능
   const favoriteStockCode: Set<string> = useMemo(() => {
-    return isLogin
-      ? new Set(
+    return new Set(
           favoriteStockList?.data?.map(
             (stock: IFavoriteStock) => stock.stockCode
           )
-        )
-      : new Set();
-  }, [isLogin, favoriteStockList]);
+        );
+  }, [favoriteStockList]);
 
   // 관심 주식 목록 필터링
   const filterFavoriteStocks = (
@@ -49,16 +50,14 @@ const FavoriteStockSection = () => {
 
   // 관심 주식 목록
   const favoriteStock = useMemo(() => {
-    if (!isLogin) return [];
     const favoriteAllStock = filterFavoriteStocks(allStock, favoriteStockCode);
     const favoriteTop10Stock = filterFavoriteStocks(
       top10Stock,
       favoriteStockCode
     );
     return [...favoriteAllStock, ...favoriteTop10Stock];
-  }, [isLogin, allStock, top10Stock, favoriteStockCode]);
+  }, [allStock, top10Stock, favoriteStockCode]);
 
-  if (!isLogin) return null;
 
   return (
     <>
