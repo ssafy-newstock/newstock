@@ -4,6 +4,7 @@ import com.ssafy.news.domain.entity.dto.StockNewsDto;
 import com.ssafy.news.domain.service.StockNewsService;
 import com.ssafy.news.global.common.CommonResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -49,12 +50,19 @@ public class StockNewsController {
     }
 
     @GetMapping("/{id}")
-    public CommonResponse<?> getStockNews(@PathVariable("id") Long id,
-                                            @RequestHeader(value = "authorization", required = false) String token) {
+    public CommonResponse<?> getStockNews(@PathVariable("id") Long id) {
         StockNewsDto stockNews = stockNewsService.getStockNewsDetail(id);
-        stockNewsService.checkReadStockNews(id, token);
 
         return CommonResponse.success(stockNews);
+    }
+
+    @GetMapping("/{id}/read")
+    public ResponseEntity<?> checkReadStockNews(@PathVariable("id") Long id,
+                                                @RequestHeader(value = "authorization",required = false) String token) {
+        stockNewsService.checkReadStockNews(id, token);
+
+        return ResponseEntity.noContent()
+                .build();
     }
 
     @GetMapping("/bulk")
