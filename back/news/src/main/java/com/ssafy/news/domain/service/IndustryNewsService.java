@@ -3,24 +3,38 @@ package com.ssafy.news.domain.service;
 
 import com.ssafy.news.domain.entity.dto.IndustryNewsDto;
 import com.ssafy.news.domain.entity.industry.IndustryNews;
+import com.ssafy.news.domain.entity.industry.IndustryNewsRedis;
+import com.ssafy.news.domain.repository.IndustryNewsRedisRepository;
 import com.ssafy.news.domain.repository.IndustryNewsRepository;
+import com.ssafy.news.global.util.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.ssafy.news.domain.service.validator.NewsValidator.validateNewsContent;
 import static com.ssafy.news.domain.service.validator.NewsValidator.validateNewsListContent;
 
+@Slf4j
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
-@Slf4j
 public class IndustryNewsService {
     private final IndustryNewsRepository industryNewsRepository;
+    private final IndustryNewsRedisRepository industryNewsRedisRepository;
+    private final TokenProvider tokenProvider;
+    private final NewsSchedulerService newsSchedulerService;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     /**
      * 최신 뉴스 4가지만을 조회하는 메소드
@@ -63,6 +77,7 @@ public class IndustryNewsService {
 
     /**
      * ID를 통해 시황 뉴스의 상세 정보를 조회하는 메소드
+     *
      * @param id
      * @return
      */
@@ -72,4 +87,46 @@ public class IndustryNewsService {
         return IndustryNewsDto.of(findNews.get());
     }
 
+    public List<IndustryNewsDto> getIndustryNewsInIds(List<Long> industryIds) {
+        List<IndustryNews> industryNewsByIdIn = industryNewsRepository.findAllByIdIn(industryIds);
+        return industryNewsByIdIn.stream()
+                .map(IndustryNewsDto::of)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 시황 뉴스 조회 확인 메소드
+     * @param newsId
+     * @param token
+     */
+    @Transactional
+    public void checkReadIndustryNews(Long newsId, String token) {
+        if (token != null && !token.isEmpty()) {
+            Long memberId = tokenProvider.getMemberId(token);
+
+            industryNewsRedisRepository.findById(newsId + "|" + memberId)
+                    .ifPresentOrElse(
+                            industryNewsRedis -> {},
+                            () -> {
+                                industryNewsRedisRepository.save(new IndustryNewsRedis(newsId, memberId));
+
+                                // Member 서버에 회원 포인트 증가 이벤트 요청
+                                Map<String, Object> message = new HashMap<>();
+                                message.put("memberId", memberId);
+                                message.put("industryNewsId", newsId);
+
+                                kafkaTemplate.send("read-industry-news", message);
+                            });
+        }
+    }
+
+    /**
+     * 시황 뉴스 조회 기록 삭제 스케줄러
+     * 매일 자정
+     */
+    @Transactional
+    @Scheduled(cron = "0 0 0 * * *")
+    public void deleteReadIndustryNews(){
+        newsSchedulerService.deleteIndustryNewsRedis();
+    }
 }

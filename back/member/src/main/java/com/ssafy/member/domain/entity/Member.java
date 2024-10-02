@@ -50,6 +50,10 @@ public class Member extends BaseTimeEntity {
     public void updateMemberPoint(Long point) {
         this.point = point;
     }
+
+    public void increaseMemberPoint(Long point){
+        this.point += point;
+    }
 }
 
 

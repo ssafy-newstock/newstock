@@ -37,7 +37,7 @@ spec:
             name: newstock-stock-stock-service
             port:
               number: 8003
-      - path: /api/newsscrap(/|$)(.*)
+      - path: /api/news/scrap(/|$)(.*)
         pathType: ImplementationSpecific
         backend:
           service:

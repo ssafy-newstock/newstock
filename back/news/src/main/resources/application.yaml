@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    include: feign
   application:
     name: news
   datasource:
@@ -12,6 +14,12 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
+  kafka:
+    bootstrap-servers: kafka-service:9092
+  data:
+    redis:
+      host: redis-service
+      port: 6379
 
 server:
   port: 8002

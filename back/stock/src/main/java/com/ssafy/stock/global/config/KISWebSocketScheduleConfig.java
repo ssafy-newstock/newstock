@@ -22,7 +22,7 @@ public class KISWebSocketScheduleConfig {
     }
 
     // 주식 장 종료 후 웹소켓 연결 종료
-    @Scheduled(cron = "0 30 15 ? * MON-FRI", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 32 15 ? * MON-FRI", zone = "Asia/Seoul")
     public void stopWebSocketConnection() {
         log.info("한국투자증권 웹소켓 연결 종료");
         webSocketConnectionManager.stop();
