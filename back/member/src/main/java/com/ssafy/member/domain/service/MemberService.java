@@ -86,7 +86,7 @@ public class MemberService {
     public void increaseMyPoint(Long memberId, Long point) {
         Member member = findMember(memberId);
         member.increaseMemberPoint(point);
-        simpMessageSendingOperations.convertAndSend("/api/sub/member/info/point/increase" + memberId, point);
+        simpMessageSendingOperations.convertAndSend("/api/sub/member/info/point/increase/" + memberId, point);
     }
 
     /**
