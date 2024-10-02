@@ -26,7 +26,7 @@ public class MemberConsumer {
     @KafkaListener(topics = "read-industry-news", groupId = "develop")
     private void handleReadIndustryNewsEvent(Map<String, Object> message){
         Long memberId = ((Number) message.get("memberId")).longValue();
-        Long newsId = ((Number) message.get("newsId")).longValue();
+        Long newsId = ((Number) message.get("industryNewsId")).longValue();
 
         log.info(memberId + "번 회원이 시황뉴스 " + newsId + " 번을 읽어 100,000 포인트를 얻었습니다.");
         memberService.increaseMyPoint(memberId, 100000L);
@@ -35,7 +35,7 @@ public class MemberConsumer {
     @KafkaListener(topics = "read-stock-news", groupId = "develop")
     private void handleReadStockNewsEvent(Map<String, Object> message){
         Long memberId = ((Number) message.get("memberId")).longValue();
-        Long newsId = ((Number) message.get("newsId")).longValue();
+        Long newsId = ((Number) message.get("stockNewsId")).longValue();
 
         log.info(memberId + "번 회원이 종목뉴스 " + newsId + " 번을 읽어 100,000 포인트를 얻었습니다.");
         memberService.increaseMyPoint(memberId, 100000L);
