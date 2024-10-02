@@ -1,6 +1,5 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import App from './App';
-import About from '@pages/About';
 import NotFound from '@pages/NotFound';
 import OnBoardingPage from '@pages/OnBoarding';
 import NewsMainPage from '@pages/News/NewsMain';
@@ -17,11 +16,17 @@ import ScrapDetailPage from '@pages/Etc/ScrapDetail';
 import ScrapEditPage from '@pages/Etc/ScrapEdit';
 import StockMainPage from '@pages/Stock/StockMain';
 import StockDetailPage from '@pages/Stock/StockDetail';
-import StockDailyChart from '@pages/Stock/StockDailyChart';
-import StockLiveUpdates from '@pages/Stock/StockLiveUpdates';
+import DayChart from '@pages/Stock/Chart/DayChart';
+import WeekChart from '@pages/Stock/Chart/WeekChart';
+
+import MonthChart from '@pages/Stock/Chart/MonthChart';
+import ThreeMonthChart from '@pages/Stock/Chart/ThreeMonthChart';
+import YearChart from '@pages/Stock/Chart/YearChart';
+import ThreeYearChart from '@pages/Stock/Chart/ThreeYearChart';
+import FiveYearChart from '@pages/Stock/Chart/FiveYearChart';
+
 import MyStockPage from '@pages/Stock/MyStock';
 import AllStockPage from '@pages/Stock/AllStock';
-import FavoriteStockPage from '@pages/Stock/FavoriteStock';
 import SectionStockPage from '@pages/Stock/SectionStock';
 import Auth from '@pages/Auth';
 
@@ -31,9 +36,11 @@ const router = createBrowserRouter([
     element: <App />,
     errorElement: <NotFound />,
     children: [
-      // { index: true, element: <Navigate to="/newsMain" replace /> },
+      { index: true, element: <Navigate to="/onboarding" replace /> },
       { path: 'onboarding', element: <OnBoardingPage /> },
       { path: 'login/oauth2/code/*', element: <Auth /> },
+
+      // 뉴스 관련
       { path: 'news-main', element: <NewsMainPage /> },
       {
         path: 'subnews-main',
@@ -48,29 +55,37 @@ const router = createBrowserRouter([
           { path: 'stock-news/:id', element: <StockNewsDetailPage /> },
         ],
       },
+      // 기타 기능
       { path: 'daily-report', element: <DailyReportPage /> },
       { path: 'ai-chat-bot', element: <AIChatBotPage /> },
+
+      // 스크랩 관련
       { path: 'my-news', element: <MyNewsPage /> },
       { path: 'scrap-detail', element: <ScrapDetailPage /> },
       { path: 'scrap-create', element: <ScrapCreatePage /> },
       { path: 'scrap-edit', element: <ScrapEditPage /> },
+
+      //주식 관련
       { path: 'stock-main', element: <StockMainPage /> },
       { path: 'all-stock', element: <AllStockPage /> },
-      { path: 'favorite-stock', element: <FavoriteStockPage /> },
       { path: 'section-stock', element: <SectionStockPage /> },
       {
         path: 'stock-detail/:stockCode',
         element: <StockDetailPage />,
         children: [
-          { path: 'daily-chart', element: <StockDailyChart /> },
+          { path: 'day-chart', element: <DayChart /> },
           {
-            path: 'live-updates',
-            element: <StockLiveUpdates />,
+            path: 'week-chart',
+            element: <WeekChart />,
           },
+          { path: 'month-chart', element: <MonthChart /> },
+          { path: 'three-month-chart', element: <ThreeMonthChart /> },
+          { path: 'year-chart', element: <YearChart /> },
+          { path: 'three-year-chart', element: <ThreeYearChart /> },
+          { path: 'five-year-chart', element: <FiveYearChart /> },
         ],
       },
       { path: 'my-stock', element: <MyStockPage /> },
-      { path: 'about', element: <About /> },
     ],
   },
 ]);

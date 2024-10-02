@@ -1,6 +1,4 @@
 import { Center } from '@components/Center';
-import LeftStock from '@components/LeftStock';
-import { RightVacant } from '@components/RightVacant';
 import {
   HrTag,
   StockGridRow,
@@ -15,9 +13,10 @@ import AllCategoryStock, {
 } from '@features/Stock/SectionStock/AllCategoryStock';
 import { ICategoryStock } from '@features/Stock/types';
 import Modal from '@features/Stock/SectionStock/Modal';
-import { useState } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import useCategoryStockStore from '@store/useCategoryStockStore';
+import LoadingSpinner from '@components/LoadingSpinner';
 
 // 밑줄 스타일
 const Underline = styled.div<{ $activeIndex: number }>`
@@ -35,40 +34,46 @@ const Underline = styled.div<{ $activeIndex: number }>`
 const SectionStockPage = () => {
   const { categoryStock } = useCategoryStockStore();
   // 모달 관련
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] =
     useState<ICategoryStock | null>(null);
 
-  // 정렬 상태 관리 (asc, desc를 구분하거나, 기본 정렬 방식으로 변경 가능)
+  // 정렬 상태 관리
   const [sortedCategoryStock, setSortedCategoryStock] = useState<
     ICategoryStock[] | null
   >(null);
+
+  // 현재 정렬 키와 방향 저장
+  const [sortKey, setSortKey] = useState<keyof ICategoryStock>('bstpNmixPrpr');
+  const [isAscending, setIsAscending] = useState<boolean>(false);
 
   // 밑줄 표시할 버튼 인덱스 상태
   const [activeButtonIndex, setActiveButtonIndex] = useState<number>(0);
 
   const openModal = (category: ICategoryStock) => {
     setSelectedCategory(category);
-    setIsModalOpen(true);
   };
 
   const closeModal = () => {
     setSelectedCategory(null);
-    setIsModalOpen(false);
   };
 
-  // 정렬 함수: 문자열을 숫자로 변환한 후 정렬
+  // 정렬 함수
   const sortData = (
     key: keyof ICategoryStock,
-    isAscending: boolean = false,
+    ascending: boolean = false,
     index: number
   ) => {
     setActiveButtonIndex(index); // 선택된 버튼 인덱스 저장
+    setSortKey(key);
+    setIsAscending(ascending);
+  };
 
+  // Effect: categoryStock이 변경될 때마다 정렬 수행
+  useEffect(() => {
     if (categoryStock) {
       const sortedData = [...categoryStock].sort((a, b) => {
-        const valueA = parseFloat(a[key]);
-        const valueB = parseFloat(b[key]);
+        const valueA = parseFloat(a[sortKey]);
+        const valueB = parseFloat(b[sortKey]);
 
         if (!isNaN(valueA) && !isNaN(valueB)) {
           return isAscending ? valueA - valueB : valueB - valueA;
@@ -77,14 +82,13 @@ const SectionStockPage = () => {
       });
       setSortedCategoryStock(sortedData);
     }
-  };
+  }, [categoryStock, sortKey, isAscending]); // categoryStock, sortKey, isAscending이 변경될 때마다 실행
 
   // 렌더링할 데이터 선택
   const dataToRender = sortedCategoryStock || categoryStock;
 
   return (
     <>
-      <LeftStock />
       <Center style={{ padding: '1rem' }}>
         <StockHeader>전체 카테고리</StockHeader>
         <HrTag />
@@ -107,35 +111,36 @@ const SectionStockPage = () => {
         <DividedSection>
           <StockGridRow>
             <AllCategoryFirstRow />
-            {dataToRender?.map((category: ICategoryStock, index: number) => {
-              // 기본 이미지 객체
-              const defaultImage = {
-                url: 'default-image-url',
-                bgColor: 'default-bg-color',
-              };
-              // 카테고리 이미지 객체를 찾고, 없으면 기본 이미지 사용
-              const imageUrl =
-                category.industryName in categoryImage
-                  ? categoryImage[
-                      category.industryName as keyof typeof categoryImage
-                    ]
-                  : defaultImage; // 기본 이미지 객체로 처리
+            <Suspense fallback={<LoadingSpinner />}>
+              {dataToRender?.map((category: ICategoryStock, index: number) => {
+                // 기본 이미지 객체
+                const defaultImage = {
+                  url: 'default-image-url',
+                  bgColor: 'default-bg-color',
+                };
+                // 카테고리 이미지 객체를 찾고, 없으면 기본 이미지 사용
+                const imageUrl =
+                  category.industryName in categoryImage
+                    ? categoryImage[
+                        category.industryName as keyof typeof categoryImage
+                      ]
+                    : defaultImage; // 기본 이미지 객체로 처리
 
-              return (
-                <AllCategoryStock
-                  key={index}
-                  category={category}
-                  imageUrl={imageUrl.url}
-                  imageBgColor={imageUrl.bgColor}
-                  onClick={() => openModal(category)}
-                />
-              );
-            })}
+                return (
+                  <AllCategoryStock
+                    key={index}
+                    category={category}
+                    imageUrl={imageUrl.url}
+                    imageBgColor={imageUrl.bgColor}
+                    onClick={() => openModal(category)}
+                  />
+                );
+              })}
+            </Suspense>
           </StockGridRow>
         </DividedSection>
       </Center>
-      <RightVacant />
-      {isModalOpen && selectedCategory && (
+      {selectedCategory && (
         <Modal onClose={closeModal} category={selectedCategory} />
       )}
     </>

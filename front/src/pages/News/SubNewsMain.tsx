@@ -2,7 +2,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import styled from 'styled-components';
 import { Center } from '@components/Center';
-import LeftNews from '@components/LeftNews';
 import { Outlet } from 'react-router-dom';
 
 const SubNewsMainCenter = styled.div`
@@ -121,8 +120,6 @@ const SubNewsMainPage: React.FC = () => {
 
   return (
     <>
-      <LeftNews />
-
       <Center>
         <SubNewsMainCenter>
           <SubNewsHeaderWrapper>

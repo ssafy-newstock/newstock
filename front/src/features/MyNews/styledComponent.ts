@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 export const CenterDiv = styled.div`
+  height: 100%;
   padding: 1rem;
   align-items: flex-start;
   gap: 0.625rem;
@@ -16,7 +17,7 @@ export const CenterTitleDiv = styled.div`
 `;
 
 export const CenterTitleFontStyle = styled.p`
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 600;
 `;
 
@@ -46,12 +47,12 @@ export const CenterHr = styled.hr`
 `;
 
 export const CenterContentDiv = styled.div`
+  display: flex;
   width: 100%;
-  flex-direction: column;
-  padding: 0rem 0.125rem;
+  height: 100%;
+  flex-direction: row;
   margin: 1rem 0rem;
   align-items: flex-start;
-  gap: 2rem;
   align-self: stretch;
 `;
 
@@ -64,35 +65,37 @@ export const FontStyle = styled.p`
 export const CenterContentSectionBeforeDiv = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 0rem 1rem;
   align-items: flex-start;
   justify-content: flex-start;
 `;
 
 export const CenterContentSection = styled.div`
+  position: relative;
   display: flex;
   width: 100%;
-  overflow-x: auto; /* 수평 스크롤을 활성화 */
-  padding: 0.9375rem 0.625rem;
-  margin: 0.625rem 0rem 1.875rem 0rem;
-  flex-direction: row; /* 수평으로 자식 요소를 나열 */
-  align-items: flex-start;
-  border-radius: 1.25rem;
-  background: ${({ theme }) => theme.centerContentSectionBackgroundColor};
-  white-space: nowrap; /* 자식 요소가 한 줄로 나열되도록 함 */
-  scroll-behavior: smooth; /* 부드러운 스크롤 */
-
-  /* 스크롤바를 숨기고 싶다면 아래를 추가 */
+  height: 100%;
+  overflow: auto;
   &::-webkit-scrollbar {
-    display: none;
+    width: 0;
+    height: 0;
   }
+  padding: 0.9375rem 1rem;
+  margin: 0.625rem 0rem 1.875rem 0rem;
+  flex-direction: column;
+  align-items: flex-start;
+  border-radius: 1rem;
+  background: ${({ theme }) => theme.centerContentSectionBackgroundColor};
 `;
 
-export const CenterContentSectionRowDiv = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 0rem 1rem;
-  padding: 0.625rem 0.625rem;
+export const CenterContentSectionDiv = styled.div`
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(20rem, 1fr)
+  ); /* 그리드 형식으로 카드 배치 */
+  gap: 1rem;
+  width: 100%;
+  padding: 0.625rem;
 `;
 
 export const CenterContentSectionTitle = styled.p`
@@ -106,7 +109,7 @@ export const CardContainer = styled.div`
   display: flex;
   padding: 0.375rem 0rem;
   width: 20rem;
-  height: 9.375rem;
+  height: 10rem; /* 모든 카드의 높이를 일정하게 유지 */
   flex-direction: column;
   align-items: flex-start;
   gap: 0.625rem;
@@ -115,6 +118,7 @@ export const CardContainer = styled.div`
   background: ${({ theme }) => theme.newsBackgroundColor};
   box-shadow: 0rem 0.25rem 0.25rem 0rem rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
+  overflow: hidden; /* 내용이 넘치면 잘리도록 설정 */
 `;
 
 export const CardTitleFontStyle = styled.p`
@@ -166,4 +170,12 @@ export const CardKeywordFontStyle = styled.p`
   color: #fff;
   font-size: 1.25rem;
   line-height: 1.875rem;
+`;
+
+export const NewsSectionContainer = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
 `;

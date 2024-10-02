@@ -1,8 +1,5 @@
 import styled from 'styled-components';
-import LeftNews from '@components/LeftNews';
 import { Center } from '@components/Center';
-import { Right } from '@components/Right';
-import BookmarkedNews from '@features/News/BookmarkedNews';
 
 import DailyReportHeader from '@features/Etc/DailyReportHeader';
 import Kospi from '@features/Etc/Kospi';
@@ -46,21 +43,9 @@ const EmotionSummaryWrapper = styled.div`
   gap: 10px;
 `;
 
-const DailyReportRight = styled.div`
-  display: flex;
-  width: 100%;
-  height: 100%;
-  padding: 1.25rem;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1.25rem;
-  align-self: stretch;
-`;
-
 const DailyReportPage: React.FC = () => {
   return (
     <>
-      <LeftNews />
       <Center>
         <DailyReportCenter>
           <DailyReportWrapper>
@@ -74,12 +59,6 @@ const DailyReportPage: React.FC = () => {
           </DailyReportWrapper>
         </DailyReportCenter>
       </Center>
-
-      <Right>
-        <DailyReportRight>
-          <BookmarkedNews />
-        </DailyReportRight>
-      </Right>
     </>
   );
 };

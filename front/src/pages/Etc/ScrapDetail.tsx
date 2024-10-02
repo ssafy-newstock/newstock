@@ -1,4 +1,3 @@
-import LeftNews from '@components/LeftNews';
 import RightTitle from '@features/Scrap/detail/RightTitle';
 import RightContent from '@features/Scrap/detail/RightContent';
 import CenterTitle from '@features/Scrap/detail/CenterTitle';
@@ -31,10 +30,16 @@ interface CardData {
 
 const ScrapDetailPage: React.FC = () => {
   const [selectedCard, setSelectedCard] = useState<CardData | null>(null);
+  const [selectedDateRange, setSelectedDateRange] = useState<
+    [Date | null, Date | null]
+  >([null, null]);
 
+  // 날짜 범위 변경 핸들러
+  const handleDateRangeChange = (dates: [Date | null, Date | null]) => {
+    setSelectedDateRange(dates);
+  };
   return (
     <>
-      <LeftNews />
       <Center>
         {selectedCard ? (
           <CenterDiv>
@@ -48,9 +53,12 @@ const ScrapDetailPage: React.FC = () => {
       </Center>
       <Right>
         <RightDiv>
-          <RightTitle />
+          <RightTitle onDateRangeChange={handleDateRangeChange} />
           <ScrapHr />
-          <RightContent onCardClick={setSelectedCard} />
+          <RightContent
+            onCardClick={setSelectedCard}
+            selectedDateRange={selectedDateRange}
+          />
         </RightDiv>
       </Right>
     </>

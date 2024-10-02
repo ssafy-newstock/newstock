@@ -4,14 +4,20 @@ import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import useAuthStore from '@store/useAuthStore';
 import Login from '@components/Login';
+import SockJS from 'sockjs-client';
+import Stomp from 'stompjs';
+import { authRequest } from '@api/axiosInstance';
+import { formatUnit } from '@utils/formatUnit';
+import usePointStore from '@store/usePointStore';
 
-const HeaderContainer = styled.div`
-  width: 100%;
+const HeaderContainer = styled.div<{ isOpen: boolean }>`
+  width: ${({ isOpen }) => (isOpen ? 'calc(100% - 400px)' : '100%')};
   height: 5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2.5rem;
+  transition: width 0.5s ease;
 `;
 
 const NewStock = styled.div`
@@ -109,12 +115,11 @@ const PointWrapper = styled(motion.div)`
   }
 `;
 
-import SockJS from 'sockjs-client';
-import Stomp from 'stompjs';
-import { axiosInstance } from '@api/axiosInstance';
-import { formatUnit } from '@utils/formatUnit';
-import usePointStore from '@store/usePointStore';
-const Header = () => {
+interface HeaderProps {
+  isOpen: boolean;
+}
+
+const Header: React.FC<HeaderProps> = ({ isOpen }) => {
   const { memberName } = useAuthStore();
   const { theme, toggleTheme } = useThemeStore();
   const isDarkMode = theme === 'dark';
@@ -149,7 +154,7 @@ const Header = () => {
   };
   useEffect(() => {
     const fetchUserPoint = async (): Promise<void> => {
-      const response = await axiosInstance.get(`/api/member/${memberId}/point`);
+      const response = await authRequest.get(`/member/${memberId}/point`);
       setPoint(response.data.point);
     };
 
@@ -220,7 +225,7 @@ const Header = () => {
 
   return (
     <>
-      <HeaderContainer>
+      <HeaderContainer isOpen={isOpen}>
         <NewStock>NewStock</NewStock>
         <HeaderRight>
           <Slider onClick={toggleTheme}>
@@ -271,13 +276,14 @@ const Header = () => {
               transition={{ type: 'spring', stiffness: 300, damping: 20 }} // 스프링 애니메이션 적용
             />
           </Slider>
-          {isLogin && point && (
-            <PointWrapper
-              onMouseOver={handleMouseOver}
-              onMouseOut={handleMouseOut}
-            >
-              {!isHovering ? (
-                <User>
+          {isLogin && point !== null ? (
+            <>
+              {/* 포인트 출력 */}
+              <PointWrapper
+                onMouseOver={handleMouseOver}
+                onMouseOut={handleMouseOut}
+              >
+                <User style={{ gap: '0.3125rem' }}>
                   <StyledIcon
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -299,18 +305,15 @@ const Header = () => {
                       />
                     </g>
                   </StyledIcon>
-                  <UserName>{formatUnit(point)}원</UserName>
+                  {!isHovering ? (
+                    <UserName>{formatUnit(point)}원</UserName>
+                  ) : (
+                    <UserName>{point.toLocaleString()}원</UserName>
+                  )}
                 </User>
-              ) : (
-                <User>
-                  <UserName>{point.toLocaleString()}원</UserName>
-                </User>
-              )}
-            </PointWrapper>
-          )}
-          <User>
-            {isLogin && point ? (
-              <>
+              </PointWrapper>
+
+              <User>
                 <UserName>{memberName}</UserName>
                 <Icon
                   xmlns="http://www.w3.org/2000/svg"
@@ -325,11 +328,13 @@ const Header = () => {
                     fill="currentColor"
                   />
                 </Icon>
-              </>
-            ) : (
+              </User>
+            </>
+          ) : (
+            <User>
               <LoginAlert onClick={openLogin}>로그인 해주세요</LoginAlert>
-            )}
-          </User>
+            </User>
+          )}
         </HeaderRight>
       </HeaderContainer>
       {/* 로그인 모달 */}

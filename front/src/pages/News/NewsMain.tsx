@@ -1,7 +1,6 @@
 // 메인 페이지
 import styled from 'styled-components';
 import { Center } from '@components/Center';
-import LeftNews from '@components/LeftNews';
 import NewsMainHeader from '@features/News/NewsMainHeader';
 import NewsMainBody from '@features/News/NewsMainBody';
 import { translateIndustry } from '@api/dummyData/DummyData';
@@ -89,7 +88,6 @@ const NewsMainPage: React.FC = () => {
 
   return (
     <>
-      <LeftNews />
       <Center>
         <NewsMainCenter>
           {/* 시황 뉴스 헤더 텍스트 */}

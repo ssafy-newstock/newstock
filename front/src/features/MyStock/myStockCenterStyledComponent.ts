@@ -123,3 +123,11 @@ export const CenterHistoryDiv = styled.div`
   border-radius: 1.25rem;
   background: ${({ theme }) => theme.centerContentSectionBackgroundColor};
 `;
+
+export const NoDiv = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+`;

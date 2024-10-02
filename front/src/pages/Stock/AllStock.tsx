@@ -1,20 +1,29 @@
+import React, {
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import styled from 'styled-components';
 import { Center } from '@components/Center';
-import LeftStock from '@components/LeftStock';
 import AllStock, { AllStockFirstRow } from '@features/Stock/AllStock/AllStock';
 import {
   HrTag,
   StockGridRow,
   StockHeader,
   DividedSection,
+  SearchInputWrapper,
+  SearchInput,
+  IconWrapper,
+  ButtonWrapper,
+  SortButton,
 } from '@features/Stock/styledComponent';
 import { IStock } from '@features/Stock/types';
-import { RightVacant } from '@components/RightVacant';
-import { useMemo, useState } from 'react';
-import { ButtonWrapper, SortButton } from '@features/Stock/styledComponent';
-import styled from 'styled-components';
 import useAllStockStore from '@store/useAllStockStore';
 import SearchIcon from '@features/Stock/AllStock/SearchIcon';
 import useTop10StockStore from '@store/useTop10StockStore';
+import LoadingSpinner from '@components/LoadingSpinner';
 
 const Underline = styled.div<{ $sortBy: string }>`
   position: absolute;
@@ -39,86 +48,127 @@ const Underline = styled.div<{ $sortBy: string }>`
   transition: left 0.3s ease;
 `;
 
-const SearchInputWrapper = styled.div`
-  position: relative;
-  width: 100%;
-`;
-
-const SearchInput = styled.input`
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
-  padding: 0.5rem 1rem 0.5rem 2.5rem;
-  width: 100%;
-  border-radius: 1rem;
-  border: none;
-  background-color: ${({ theme }) => theme.stockBackgroundColor};
-  color: ${({ theme }) => theme.textColor};
-  font-size: 1rem;
-`;
-
-const IconWrapper = styled.div`
-  position: absolute;
-  left: 1rem;
-  top: 1.5rem;
-  transform: translateY(-50%);
+const PaginationWrapper = styled.div`
   display: flex;
+  justify-content: center;
   align-items: center;
-  pointer-events: none;
+  margin-top: 1rem;
+`;
+
+const PageButton = styled.button`
+  margin: 0 0.5rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  background-color: ${({ theme }) => theme.buttonBackgroundColor};
+  color: ${({ theme }) => theme.buttonTextColor};
+  border-radius: 1rem;
+  cursor: pointer;
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
+const PageInput = styled.input`
+  width: 50px;
+  margin: 0 0.5rem;
+  padding: 0.5rem;
+  text-align: center;
+  border: none;
+  border-radius: 1rem;
 `;
 
 const AllStockPage: React.FC = () => {
   const { allStock } = useAllStockStore();
   const { top10Stock } = useTop10StockStore();
 
-  const wholeStock = useMemo(() => {
-    return (allStock || []).concat(top10Stock || []);
-  }, [allStock, top10Stock]);
-
   const [sortBy, setSortBy] = useState<
     'stckPrpr' | 'prdyCtrt' | 'acmlTrPbmn' | 'acmlVol'
   >('stckPrpr');
+  const [query, setQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [inputPage, setInputPage] = useState('1');
+  const itemsPerPage = 15;
 
-  const [query, setQuery] = useState(''); // 검색어 상태
-  const [filteredStocks, setFilteredStocks] = useState<IStock[]>(allStock); // 필터링된 주식 목록
+  const wholeStock = useMemo(() => {
+    return (top10Stock || []).concat(allStock || []);
+  }, [allStock, top10Stock]);
+
+  const sortData = useCallback(
+    (data: IStock[]) => {
+      return [...data].sort((a, b) => {
+        switch (sortBy) {
+          case 'stckPrpr':
+            return b.stckPrpr - a.stckPrpr;
+          case 'prdyCtrt':
+            return b.prdyCtrt - a.prdyCtrt;
+          case 'acmlTrPbmn':
+            return b.acmlTrPbmn - a.acmlTrPbmn;
+          case 'acmlVol':
+            return b.acmlVol - a.acmlVol;
+          default:
+            return 0;
+        }
+      });
+    },
+    [sortBy]
+  );
+
+  const filteredAndSortedStocks = useMemo(() => {
+    const filtered = wholeStock.filter((stock) =>
+      stock.stockName.toLowerCase().includes(query.toLowerCase())
+    );
+    return sortData(filtered);
+  }, [wholeStock, query, sortData]);
+
+  const totalPages = Math.ceil(filteredAndSortedStocks.length / itemsPerPage);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages || 1);
+      setInputPage(totalPages.toString() || '1');
+    }
+  }, [totalPages, currentPage]);
+
+  const currentItems = useMemo(() => {
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    return filteredAndSortedStocks.slice(indexOfFirstItem, indexOfLastItem);
+  }, [currentPage, filteredAndSortedStocks, itemsPerPage]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setQuery(value);
-
-    // 검색어에 맞게 주식 목록 필터링
-    const filtered = wholeStock.filter((stock) =>
-      stock.stockName.includes(value)
-    );
-    setFilteredStocks(filtered);
+    setQuery(e.target.value);
+    setCurrentPage(1);
+    setInputPage('1');
   };
 
-  const sortData = (data: IStock[]) => {
-    return data.sort((a, b) => {
-      switch (sortBy) {
-        case 'stckPrpr':
-          return b.stckPrpr - a.stckPrpr;
-        case 'prdyCtrt':
-          return b.prdyCtrt - a.prdyCtrt;
-        case 'acmlTrPbmn':
-          return b.acmlTrPbmn - a.acmlTrPbmn;
-        case 'acmlVol':
-          return b.acmlVol - a.acmlVol;
-        default:
-          return 0;
+  const handlePageChange = (pageNumber: number) => {
+    const newPage = Math.max(1, Math.min(pageNumber, totalPages));
+    setCurrentPage(newPage);
+    setInputPage(newPage.toString());
+  };
+
+  const handlePageInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputPage(e.target.value);
+  };
+
+  const handlePageInputKeyPress = (
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === 'Enter') {
+      const pageNumber = parseInt(inputPage, 10);
+      if (!isNaN(pageNumber)) {
+        handlePageChange(pageNumber);
       }
-    });
+    }
   };
-
-  const sortedStockData = sortData([...filteredStocks]);
 
   return (
     <>
-      <LeftStock />
       <Center style={{ padding: '1rem' }}>
         <StockHeader>전체 종목</StockHeader>
         <HrTag />
 
-        {/* 검색창 추가 */}
         <SearchInputWrapper>
           <IconWrapper>
             <SearchIcon />
@@ -131,7 +181,6 @@ const AllStockPage: React.FC = () => {
           />
         </SearchInputWrapper>
 
-        {/* 정렬 버튼 추가 */}
         <ButtonWrapper>
           <SortButton onClick={() => setSortBy('stckPrpr')}>현재가</SortButton>
           <SortButton onClick={() => setSortBy('prdyCtrt')}>등락률</SortButton>
@@ -145,13 +194,36 @@ const AllStockPage: React.FC = () => {
         <DividedSection>
           <StockGridRow>
             <AllStockFirstRow />
-            {sortedStockData.map((stock: IStock, index: number) => (
-              <AllStock key={index} stock={stock} />
-            ))}
+            <Suspense fallback={<LoadingSpinner />}>
+              {currentItems.map((stock: IStock, index: number) => (
+                <AllStock key={`${stock.stockCode}-${index}`} stock={stock} />
+              ))}
+            </Suspense>
           </StockGridRow>
         </DividedSection>
+
+        <PaginationWrapper>
+          <PageButton
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            이전
+          </PageButton>
+          <PageInput
+            type="text"
+            value={inputPage}
+            onChange={handlePageInputChange}
+            onKeyPress={handlePageInputKeyPress}
+          />
+          <span> / {totalPages}</span>
+          <PageButton
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            다음
+          </PageButton>
+        </PaginationWrapper>
       </Center>
-      <RightVacant />
     </>
   );
 };

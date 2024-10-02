@@ -9,10 +9,8 @@ import com.ssafy.stock.domain.error.custom.MemberIdNotFoundException;
 import com.ssafy.stock.domain.error.custom.OverSellLimitException;
 import com.ssafy.stock.domain.error.custom.StockHoldingNotFoundException;
 import com.ssafy.stock.domain.error.custom.StockNotFoundException;
-import com.ssafy.stock.domain.repository.StockHoldingRepository;
-import com.ssafy.stock.domain.repository.StockTransactionRepository;
-import com.ssafy.stock.domain.repository.StocksPriceLiveRedisRepository;
-import com.ssafy.stock.domain.repository.StocksRepository;
+import com.ssafy.stock.domain.repository.*;
+import com.ssafy.stock.domain.repository.redis.StocksPriceLiveRedisRepository;
 import com.ssafy.stock.domain.repository.redis.StocksPriceRedisRepository;
 import com.ssafy.stock.domain.service.request.MemberPointUpdateRequest;
 import com.ssafy.stock.domain.service.request.StockTransactionRequest;
@@ -50,7 +48,7 @@ public class StockTransactionService {
         Stocks stock = stocksRepository.findByStockCode(stockTransactionRequest.getStockCode())
                 .orElseThrow(StockNotFoundException::new);
 
-        Long currentPrice = checkTopTenStock(stockTransactionRequest.getStockCode()); // 현재 가격
+        Long currentPrice = getCurrentPrice(stockTransactionRequest.getStockCode()); // 현재 가격
         Long buyAmount = stockTransactionRequest.getStockTransactionAmount();   // 구매 수
         Long totalPrice = currentPrice * buyAmount; // 총 가격
 
@@ -102,7 +100,7 @@ public class StockTransactionService {
                 orElseThrow(StockHoldingNotFoundException::new);
 
 
-        Long currentPrice = checkTopTenStock(stockTransactionRequest.getStockCode()); // 현재 가격
+        Long currentPrice = getCurrentPrice(stockTransactionRequest.getStockCode()); // 현재 가격
         Long sellAmount = stockTransactionRequest.getStockTransactionAmount();   // 판매 수
         Long totalPrice = currentPrice * sellAmount; // 총 가격
 
@@ -141,13 +139,13 @@ public class StockTransactionService {
     }
 
     /**
-     * 주식 Top 10 확인 메소드
-     * StockCode 를 통해 해당 주식이 Top10 여부 확인
+     * StockCode 를 통해 해당 주식 현재가 조회
      * @param stockCode
      * @return
      */
-    public Long checkTopTenStock(String stockCode) {
-        Long currentPrice;
+    public Long getCurrentPrice(String stockCode) {
+        Long currentPrice = null;
+        // 주식 현재가 Redis 조회
         // TOP10 주식
         if (KISSocketHandler.stockNameMap.containsKey(stockCode)) {
             StocksPriceLiveRedis stocksPriceLiveRedis = stocksPriceLiveRedisRepository.findById(stockCode)
@@ -159,6 +157,14 @@ public class StockTransactionService {
                     .orElseThrow(StockNotFoundException::new);
             currentPrice = stocksPriceRedis.getStckPrpr(); // 현재 가격
         }
+
+        // Redis 조회 실패시 DBMS 조회
+        if(currentPrice == null){
+            Stocks stock = stocksRepository.findByStockCodeWithStockPrice(stockCode)
+                    .orElseThrow(StockNotFoundException::new);
+            currentPrice = stock.getStockPrice().getStckPrpr();
+        }
+
         return currentPrice;
     }
     

@@ -5,28 +5,32 @@ import axios, {
   InternalAxiosRequestConfig,
 } from 'axios';
 
-const baseUrl = 'https://newstock.info';
+// 인증이 필요 없는 요청
+// axiosInstance.get('/public-endpoint');
 
-// getJWTHeader 함수 : JWT 토큰(accessToken)을 받아 Authorization 헤더 객체를 생성
-// 파라미터 : jwt토큰(accessToken) 넣어줘야함
-// 반환값 : { Authorization: "Bearer 토큰"}
-const getJWTHeader = (accessToken: string) => {
-  return { Authorization: `Bearer ${accessToken}` };
-};
+// 인증이 필요한 요청
+// authRequest.get('/protected-endpoint');
+// axiosInstance.get('/protected-endpoint', { useAuth: true });
+// authRequest.post('/protected-endpoint', data);
 
-// config 객체에 baseURL 설정
-const config = { baseURL: baseUrl };
+// 응답 타입을 지정하고 싶다면
+// interface User {
+//   id: number;
+//   name: string;
+// }
+// authRequest.get<User>('/user/profile').then(response => {
+//   const user = response.data; // user는 User 타입
+// });
 
-// axios.create()로 기본 설정이 적용된 axios 인스턴스 생성
+
+const baseUrl = 'https://newstock.info/api';
+
+interface CustomAxiosRequestConfig extends AxiosRequestConfig {
+  useAuth?: boolean;
+}
+
+const config: CustomAxiosRequestConfig = { baseURL: baseUrl };
 export const axiosInstance = axios.create(config);
-
-// 인증 필요없는 요청
-// axios.get(`${baseUrl}/endpoint`, ...);
-// axios.post(`${baseUrl}/endpoint`, ...);
-
-// JWT 인증이 필요한 요청
-// axiosInstance.get('/endpoint');
-// axiosInstance.post('/endpoint');
 
 // refreshToken을 사용하여 새로운 accessToken을 요청하는 함수
 const refreshToken = async (): Promise<string> => {
@@ -39,10 +43,8 @@ const refreshToken = async (): Promise<string> => {
       }
     );
     const accessToken = response.headers.authorization.replace(/^Bearer\s/, '');
-
     // 새로운 accessToken을 sessionStorage에 저장
     sessionStorage.setItem('accessToken', accessToken);
-
     return accessToken;
   } catch (error) {
     console.error('refreshToken을 사용한 accessToken 갱신 실패', error);
@@ -52,14 +54,17 @@ const refreshToken = async (): Promise<string> => {
 
 // 요청 인터셉터 설정: 모든 요청에 대해 헤더에 accessToken을 추가
 axiosInstance.interceptors.request.use(
-  (config: InternalAxiosRequestConfig<{ headers: string }>) => {
-    const accessToken = sessionStorage.getItem('accessToken');
-
-    // config.headers 초기화
+  (config: InternalAxiosRequestConfig) => {
+    const customConfig = config as CustomAxiosRequestConfig;
     config.headers = config.headers || {};
-    if (accessToken !== null) {
-      config.headers['Authorization'] = `Bearer ${accessToken}`;
+
+    if (customConfig.useAuth) {
+      const accessToken = sessionStorage.getItem('accessToken');
+      if (accessToken !== null) {
+        config.headers['Authorization'] = `Bearer ${accessToken}`;
+      }
     }
+
     return config;
   },
   (error: AxiosError) => Promise.reject(error)
@@ -69,20 +74,20 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError) => {
-    const originalRequest = error.config as AxiosRequestConfig & {
+    const originalRequest = error.config as CustomAxiosRequestConfig & {
       _retry?: boolean;
     };
-
-    // 401 에러이고, 재시도하지 않은 요청일 때만
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      originalRequest.useAuth
+    ) {
       originalRequest._retry = true;
-
       try {
         const newAccessToken = await refreshToken();
-        originalRequest.headers = {
-          ...originalRequest.headers,
-          ...getJWTHeader(newAccessToken),
-        };
+        if (originalRequest.headers) {
+          originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+        }
         return axiosInstance(originalRequest);
       } catch (err) {
         console.error('accessToken 갱신 실패 후 재시도 중 에러:', error);
@@ -92,3 +97,51 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+// axiosInstance의 메서드 타입을 확장하여 CustomAxiosRequestConfig를 사용하도록 합니다.
+interface CustomAxiosInstance {
+  get<T = any, R = AxiosResponse<T>>(
+    url: string,
+    config?: CustomAxiosRequestConfig
+  ): Promise<R>;
+  post<T = any, R = AxiosResponse<T>>(
+    url: string,
+    data?: any,
+    config?: CustomAxiosRequestConfig
+  ): Promise<R>;
+  put<T = any, R = AxiosResponse<T>>(
+    url: string,
+    data?: any,
+    config?: CustomAxiosRequestConfig
+  ): Promise<R>;
+  delete<T = any, R = AxiosResponse<T>>(
+    url: string,
+    config?: CustomAxiosRequestConfig
+  ): Promise<R>;
+  // 필요한 다른 메서드들도 여기에 추가할 수 있습니다.
+}
+
+// axiosInstance를 CustomAxiosInstance로 타입 단언
+const customAxiosInstance = axiosInstance as CustomAxiosInstance;
+
+// 인증이 필요한 요청을 위한 헬퍼 함수
+export const authRequest = {
+  get: <T = any, R = AxiosResponse<T>>(
+    url: string,
+    config: CustomAxiosRequestConfig = {}
+  ) => customAxiosInstance.get<T, R>(url, { ...config, useAuth: true }),
+  post: <T = any, R = AxiosResponse<T>>(
+    url: string,
+    data?: any,
+    config: CustomAxiosRequestConfig = {}
+  ) => customAxiosInstance.post<T, R>(url, data, { ...config, useAuth: true }),
+  put: <T = any, R = AxiosResponse<T>>(
+    url: string,
+    data?: any,
+    config: CustomAxiosRequestConfig = {}
+  ) => customAxiosInstance.put<T, R>(url, data, { ...config, useAuth: true }),
+  delete: <T = any, R = AxiosResponse<T>>(
+    url: string,
+    config: CustomAxiosRequestConfig = {}
+  ) => customAxiosInstance.delete<T, R>(url, { ...config, useAuth: true }),
+};
