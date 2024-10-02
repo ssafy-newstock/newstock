@@ -1,4 +1,8 @@
 import styled from 'styled-components';
+import { StockPrev } from '@features/Stock/styledComponent';
+
+import { formatChange } from '@utils/formatChange';
+import { formatNumber } from '@utils/formatNumber';
 
 const StockNewsOuter = styled.div`
   width: 100%;
@@ -23,22 +27,52 @@ const StockNewsPrice = styled.div`
   gap: 0.3rem;
 `;
 
-const StockNewsPriceText = styled.p`
-  color: #006dff;
-  font-family: Inter;
+const CustomStockPrev = styled(StockPrev)`
   font-size: 1.5rem;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 1.875rem;
 `;
 
-const StockNewsHeader: React.FC = () => {
+interface IStockDetail {
+  stockCode: string;
+  stockName: string;
+  stockIndustry: string;
+  stckPrpr: number;
+  prdyVrss: number;
+  prdyCtrt: number;
+  acmlVol: number;
+  acmlTrPbmn: number;
+}
+
+interface StockNewsHeaderProps {
+  header: string;
+  stockDetail: IStockDetail;
+}
+
+const StockNewsHeader: React.FC<StockNewsHeaderProps> = ({
+  header,
+  stockDetail,
+}) => {
+  if (!stockDetail) {
+    console.log('stockDetail이 아직 정의되지 않음.');
+    return null; // 또는 로딩 상태 등을 반환할 수 있습니다.
+  } else {
+    console.log('스톡디테일 : ', stockDetail);
+  }
+
   return (
     <StockNewsOuter>
-      <StockNewsCorpText>삼성전자</StockNewsCorpText>
+      <StockNewsCorpText>{header}</StockNewsCorpText>
       <StockNewsPrice>
-        <StockNewsCorpText>75,500원</StockNewsCorpText>
-        <StockNewsPriceText>-300 (-0.3%)</StockNewsPriceText>
+        <StockNewsCorpText>
+          {formatNumber(stockDetail.stckPrpr)}원
+        </StockNewsCorpText>
+        {/* <StockNewsPriceText>-300 (-0.3%)</StockNewsPriceText> */}
+        <CustomStockPrev
+          $isPositive={stockDetail.prdyVrss.toString().startsWith('-')}
+        >
+          {formatChange(formatNumber(stockDetail.prdyVrss))} (
+          {stockDetail.prdyCtrt}
+          %)
+        </CustomStockPrev>
       </StockNewsPrice>
     </StockNewsOuter>
   );

@@ -24,7 +24,7 @@ export const RightTitleBottomFilterDiv = styled.div`
 
 export const ScrapCardDiv = styled.div`
   display: flex;
-  width: 26rem;
+  width: 100%;
   padding: 0.9375rem 0.625rem;
   align-items: center;
   align-content: flex-start;
@@ -52,6 +52,7 @@ export const ScrapCardLeftDiv = styled.div`
 
 export const ScrapCardRightDiv = styled.div`
   display: flex;
+  width: 100%;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;

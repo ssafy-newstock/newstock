@@ -1,10 +1,8 @@
 import styled from 'styled-components';
 
 export const TitleP = styled.p`
-  font-size: 2rem;
-  font-weight: 600;
-  margin-top: auto;
-  margin-bottom: auto;
+  font-size: 1.5rem;
+  font-weight: bold;
 `;
 
 export const TextP_16 = styled.p`

@@ -1,5 +1,4 @@
 import { Center } from '@components/Center';
-import LeftStock from '@components/LeftStock';
 import {
   DetailPageButton,
   DividedSection,
@@ -43,7 +42,6 @@ const StockDetailPage = () => {
 
   return (
     <>
-      <LeftStock />
       <Center style={{ padding: '1rem' }}>
         <FlexBetweenEnd>
           {/* 주식 정보 */}
@@ -79,7 +77,6 @@ const StockDetailPage = () => {
           </ErrorBoundary>
         </DividedSection>
       </Center>
-      <RightVacant />
     </>
   );
 };

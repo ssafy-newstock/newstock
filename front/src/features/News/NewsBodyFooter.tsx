@@ -35,7 +35,7 @@ interface NewsBodyFooterProps {
 }
 
 const NewsBodyFooter: React.FC<NewsBodyFooterProps> = ({ media, date }) => {
-  const formattedDate = date.split(' ')[0].replace(/-/g, '.');
+  const formattedDate = date.split('T')[0].replace(/-/g, '.');
 
   return (
     <NewsBodyFooterWrapper>

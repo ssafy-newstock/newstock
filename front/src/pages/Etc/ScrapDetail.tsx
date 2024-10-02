@@ -1,4 +1,3 @@
-import LeftNews from '@components/LeftNews';
 import RightTitle from '@features/Scrap/detail/RightTitle';
 import RightContent from '@features/Scrap/detail/RightContent';
 import CenterTitle from '@features/Scrap/detail/CenterTitle';
@@ -41,7 +40,6 @@ const ScrapDetailPage: React.FC = () => {
   };
   return (
     <>
-      <LeftNews />
       <Center>
         {selectedCard ? (
           <CenterDiv>

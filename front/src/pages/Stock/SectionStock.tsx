@@ -1,6 +1,4 @@
 import { Center } from '@components/Center';
-import LeftStock from '@components/LeftStock';
-import { RightVacant } from '@components/RightVacant';
 import {
   HrTag,
   StockGridRow,
@@ -60,7 +58,11 @@ const SectionStockPage = () => {
   };
 
   // 정렬 함수
-  const sortData = (key: keyof ICategoryStock, ascending: boolean = false, index: number) => {
+  const sortData = (
+    key: keyof ICategoryStock,
+    ascending: boolean = false,
+    index: number
+  ) => {
     setActiveButtonIndex(index); // 선택된 버튼 인덱스 저장
     setSortKey(key);
     setIsAscending(ascending);
@@ -87,7 +89,6 @@ const SectionStockPage = () => {
 
   return (
     <>
-      <LeftStock />
       <Center style={{ padding: '1rem' }}>
         <StockHeader>전체 카테고리</StockHeader>
         <HrTag />
@@ -139,7 +140,6 @@ const SectionStockPage = () => {
           </StockGridRow>
         </DividedSection>
       </Center>
-      <RightVacant />
       {selectedCategory && (
         <Modal onClose={closeModal} category={selectedCategory} />
       )}

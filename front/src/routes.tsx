@@ -48,11 +48,11 @@ const router = createBrowserRouter([
         children: [
           { path: 'economic-news', element: <EconomicNewsPage /> },
           {
-            path: 'economic-news/:newsId',
+            path: 'economic-news/:id',
             element: <EconomicNewsDetailPage />,
           },
           { path: 'stock-news', element: <StockNewsPage /> },
-          { path: 'stock-news/:newsId', element: <StockNewsDetailPage /> },
+          { path: 'stock-news/:id', element: <StockNewsDetailPage /> },
         ],
       },
       // 기타 기능
@@ -64,7 +64,7 @@ const router = createBrowserRouter([
       { path: 'scrap-detail', element: <ScrapDetailPage /> },
       { path: 'scrap-create', element: <ScrapCreatePage /> },
       { path: 'scrap-edit', element: <ScrapEditPage /> },
-      
+
       //주식 관련
       { path: 'stock-main', element: <StockMainPage /> },
       { path: 'all-stock', element: <AllStockPage /> },
@@ -78,11 +78,11 @@ const router = createBrowserRouter([
             path: 'week-chart',
             element: <WeekChart />,
           },
-          {path:'month-chart',element:<MonthChart/>},
-          {path:'three-month-chart',element:<ThreeMonthChart/>},
-          {path:'year-chart',element:<YearChart/>},
-          {path:'three-year-chart',element:<ThreeYearChart/>},
-          {path:'five-year-chart',element:<FiveYearChart/>},
+          { path: 'month-chart', element: <MonthChart /> },
+          { path: 'three-month-chart', element: <ThreeMonthChart /> },
+          { path: 'year-chart', element: <YearChart /> },
+          { path: 'three-year-chart', element: <ThreeYearChart /> },
+          { path: 'five-year-chart', element: <FiveYearChart /> },
         ],
       },
       { path: 'my-stock', element: <MyStockPage /> },

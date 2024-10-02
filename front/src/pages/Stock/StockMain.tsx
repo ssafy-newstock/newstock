@@ -1,6 +1,5 @@
 import { Suspense, useState } from 'react';
 import { Center } from '@components/Center';
-import LeftStock from '@components/LeftStock';
 import { categoryImage } from '@features/Stock/category';
 import {
   HrTag,
@@ -53,7 +52,6 @@ const StockMainPage = () => {
 
   return (
     <>
-      <LeftStock />
       <Center style={{ padding: '1rem' }}>
         <Suspense fallback={<FavoriteStockSkeleton />}>
           <FavoriteStockSection />
@@ -117,7 +115,6 @@ const StockMainPage = () => {
             })}
         </CategoryGridColumn>
       </Center>
-      <RightVacant />
       {selectedCategory && (
         <Modal onClose={closeModal} category={selectedCategory} />
       )}
