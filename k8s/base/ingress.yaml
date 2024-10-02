@@ -44,3 +44,11 @@ spec:
             name: newstock-stock-newsscrap-service
             port:
               number: 8004
+      - path: /api/news/favorite(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: newstock-stock-favorite-service
+            port:
+              number: 8005
+
