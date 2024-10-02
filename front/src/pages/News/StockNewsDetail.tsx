@@ -2,6 +2,9 @@
 import styled from 'styled-components';
 import StockNewsDetailHeader from '@features/News/StockNewsDetail/StockNewsDetailHeader';
 import StockNewsDetailBody from '@features/News/StockNewsDetail/StockNewsDetailBody';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 const SubCenter = styled.div`
   display: flex;
@@ -26,15 +29,71 @@ const NewsWrapper = styled.div`
   box-shadow: 0rem 0.25rem 0.25rem rgba(0, 0, 0, 0.1);
 `;
 
+interface NewsItem {
+  id: number;
+  title: string;
+  article: string;
+  content: string;
+  media: string;
+  sentiment: string;
+  thumbnail?: string;
+  uploadDatetime: string;
+  imageUrl?: string;
+  subtitle?: string;
+  stockKeywords: string[];
+  stockNewsStockCodes?: string[];
+}
+
+const fetchDetailNewsData = async (id: string): Promise<NewsItem | null> => {
+  try {
+    const response = await axios.get(
+      `https://newstock.info/api/news/stock/${id}`
+    );
+    return response.data.data;
+  } catch (error) {
+    console.error('Failed to fetch EconomicDetailNews: ', error);
+    return null;
+  }
+};
+
 const StockNewsDetailPage: React.FC = () => {
-  // const { newsId } = useParams();
+  const { id } = useParams<{ id: string }>();
+  const [detailNews, setDetailNews] = useState<NewsItem | null>(null);
+
+  useEffect(() => {
+    const loadNews = async () => {
+      if (id) {
+        // id가 존재하는 경우에만 데이터를 가져옴
+        const detailNewsData = await fetchDetailNewsData(id);
+        setDetailNews(detailNewsData);
+      } else {
+        console.error('No id provided in the URL'); // id가 없는 경우 오류 처리
+      }
+    };
+    loadNews();
+  }, [id]);
 
   return (
     <div>
       <SubCenter>
         <NewsWrapper>
-          <StockNewsDetailHeader />
-          <StockNewsDetailBody />
+          {detailNews && (
+            <StockNewsDetailHeader
+              title={detailNews.title}
+              media={detailNews.media}
+              uploadDate={detailNews.uploadDatetime}
+              sentiment={detailNews.sentiment}
+              tagList={detailNews?.stockKeywords}
+              stockNewsStockCodes={detailNews?.stockNewsStockCodes}
+              id={detailNews.id}
+            />
+          )}
+          {detailNews && (
+            <StockNewsDetailBody
+              subtitle={detailNews.subtitle}
+              article={detailNews.article}
+            />
+          )}
         </NewsWrapper>
       </SubCenter>
     </div>

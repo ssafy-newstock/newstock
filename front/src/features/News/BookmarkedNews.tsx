@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { ArrowIcon, bookmarkedIcon, NewsTag } from './NewsIconTag';
-import { getNewsData } from '@api/dummyData/DummyData';
+import { axiosInstance } from '@api/axiosInstance';
+import { useEffect, useState } from 'react';
 
 const BookmarkedNewsHeader = styled.div`
   display: flex;
@@ -88,19 +89,114 @@ const BookmarkedNewsFooter = styled.div`
   align-items: stretch;
 `;
 
-const BookmarkedNews: React.FC = () => {
+// API 호출 함수 추가: stock 및 industry 뉴스 모두 불러옴
+const fetchBookmarkedNews = async () => {
+  try {
+    const [industryResponse, stockResponse] = await Promise.all([
+      axiosInstance.get('/api/news/favorite/industry/list'),
+      axiosInstance.get('/api/news/favorite/stock/list'),
+    ]);
+
+    const industryData = industryResponse.data.data || [];
+    const stockData = stockResponse.data.data || [];
+
+    // industryData와 stockData를 합쳐서 반환
+    return [...industryData, ...stockData];
+  } catch (error) {
+    console.error('Failed to fetch bookmarked news:', error);
+    throw error;
+  }
+};
+
+// 북마크 삭제 함수 (industry 뉴스)
+const deleteBookmark = async (id: number, isStockNews: boolean) => {
+  try {
+    const url = isStockNews
+      ? `/api/news/favorite/stock/${id}`
+      : `/api/news/favorite/industry/${id}`;
+    const response = await axiosInstance.delete(url);
+    if (response.data.success) {
+      alert('북마크가 성공적으로 삭제되었습니다.');
+    }
+  } catch (error) {
+    console.error('Failed to delete bookmark:', error);
+    alert('북마크 삭제에 실패했습니다.');
+  }
+};
+
+// 인터페이스 정의
+interface NewsItem {
+  id: number;
+  title: string;
+  article: string;
+  description: string;
+  industry: string;
+  media: string;
+  sentiment: string;
+  subtitle: string;
+  thumbnail?: string;
+  uploadDatetime: string;
+  stockKeywords: string[];
+}
+
+const BookmarkedNews: React.FC<{
+  bookmarkUpdated: boolean;
+  resetBookmarkUpdated: () => void;
+  onBookmarkSuccess: () => void;
+}> = ({ bookmarkUpdated, resetBookmarkUpdated, onBookmarkSuccess }) => {
+  const [bookmarkedNews, setBookmarkedNews] = useState<NewsItem[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
-  const { economic } = getNewsData();
-  const bookmarkedNews = economic.data.slice(0, 3);
-  // const bookmarkedNews: BookmarkedNewsItem[] = bookmarkedNewsData.data;
+
+  // 북마크 리스트를 다시 불러오는 함수
+  const reloadBookmarkedNews = async () => {
+    setLoading(true);
+    try {
+      const data = await fetchBookmarkedNews();
+      setBookmarkedNews(data);
+    } catch (error) {
+      console.error('Failed to load bookmarked news', error);
+    } finally {
+      setLoading(false); // 데이터가 로드되면 로딩 상태 해제
+    }
+  };
+
+  useEffect(() => {
+    reloadBookmarkedNews(); // 첫 로드 시 관심 뉴스 불러오기
+
+    if (bookmarkUpdated) {
+      reloadBookmarkedNews(); // 북마크 업데이트 발생 시 다시 로드
+      resetBookmarkUpdated(); // 상태 초기화
+    }
+  }, [bookmarkUpdated, resetBookmarkUpdated]);
 
   const handleInterestNewsClick = () => {
     navigate(`/my-news`);
   };
 
-  const handleNewsClick = (stockId: string) => {
-    navigate(`/subnews-main/economic-news/${stockId}`);
+  // 뉴스 클릭 이벤트에서 stockNews와 industryNews를 구분하여 navigate
+  const handleNewsClick = (id: number, isStockNews: boolean) => {
+    const url = isStockNews
+      ? `/subnews-main/stock-news/${id}`
+      : `/subnews-main/economic-news/${id}`;
+    navigate(url);
   };
+
+  // 북마크 삭제 이벤트 핸들러 추가
+  const handleBookmarkClick = async (
+    id: number,
+    event: React.MouseEvent,
+    isStockNews: boolean
+  ) => {
+    event.stopPropagation(); // 이벤트 전파 중지
+    await deleteBookmark(id, isStockNews); // 북마크 삭제 요청
+    reloadBookmarkedNews(); // 북마크 리스트 갱신
+    onBookmarkSuccess(); // 북마크 삭제 후 상태 업데이트
+  };
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <>
@@ -114,26 +210,36 @@ const BookmarkedNews: React.FC = () => {
         </BookmarkedNewsHeaderSVG>
       </BookmarkedNewsHeader>
 
-      {bookmarkedNews.map((news, index) => (
-        <BookmarkedNewsWrapper
-          key={index}
-          onClick={() => handleNewsClick(news.newsId)}
-        >
-          <BookmarkedNewsTitle>{news.title}</BookmarkedNewsTitle>
-          <BookmarkedNewsMiddle>
-            <BookmarkedNewsMiddleText>{news.media}</BookmarkedNewsMiddleText>
-            <BookmarkedNewsMiddleLine />
-            <BookmarkedNewsMiddleText>
-              {news.uploadDatetime.split(' ')[0].replace(/-/g, '.')}
-            </BookmarkedNewsMiddleText>
-          </BookmarkedNewsMiddle>
+      {bookmarkedNews.length > 0 ? (
+        bookmarkedNews.map((news, index) => (
+          <BookmarkedNewsWrapper
+            key={index}
+            onClick={() => handleNewsClick(news.id, !!news.stockKeywords)}
+          >
+            <BookmarkedNewsTitle>{news.title}</BookmarkedNewsTitle>
+            <BookmarkedNewsMiddle>
+              <BookmarkedNewsMiddleText>{news.media}</BookmarkedNewsMiddleText>
+              <BookmarkedNewsMiddleLine />
+              <BookmarkedNewsMiddleText>
+                {news.uploadDatetime.split(' ')[0].replace(/-/g, '.')}
+              </BookmarkedNewsMiddleText>
+            </BookmarkedNewsMiddle>
 
-          <BookmarkedNewsFooter>
-            <NewsTag $tagName="싸피"># 싸피</NewsTag>
-            {bookmarkedIcon}
-          </BookmarkedNewsFooter>
-        </BookmarkedNewsWrapper>
-      ))}
+            <BookmarkedNewsFooter>
+              <NewsTag $tagName="관심"># 관심</NewsTag>
+              <div
+                onClick={(e) =>
+                  handleBookmarkClick(news.id, e, !!news.stockKeywords)
+                }
+              >
+                {bookmarkedIcon}
+              </div>
+            </BookmarkedNewsFooter>
+          </BookmarkedNewsWrapper>
+        ))
+      ) : (
+        <p>북마크된 뉴스가 없습니다.</p>
+      )}
     </>
   );
 };

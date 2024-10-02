@@ -3,10 +3,15 @@ import styled from 'styled-components';
 import {
   PositiveIcon as BasePositiveIcon,
   PositiveIconText,
+  NegativeIcon as BaseNegativeIcon,
+  NegativeIconText,
+  NeutralIcon as BaseNeutralIcon,
+  NeutralIconText,
 } from '@features/News/PNSubicon';
-import { bookmarkedIcon } from '../NewsIconTag';
-import { useParams } from 'react-router-dom';
-import { getNewsData } from '@api/dummyData/DummyData';
+import { bookmarkedIcon, unbookmarkedIcon } from '../NewsIconTag';
+import { useEffect, useState } from 'react';
+import { axiosInstance } from '@api/axiosInstance';
+import { useOutletContext } from 'react-router-dom';
 
 const EconNewsDetailHeaderWrapper = styled.div`
   display: flex;
@@ -80,36 +85,120 @@ const PositiveIcon = styled(BasePositiveIcon)`
   position: absolute;
 `;
 
-const EconNewsDetailHeader: React.FC = () => {
-  const { newsId } = useParams();
-  const { economic } = getNewsData();
+const NegativeIcon = styled(BaseNegativeIcon)`
+  position: absolute;
+`;
 
-  const news = economic.data.find((newsItem) => newsItem.newsId === newsId);
-  const title = news ? news.title : '제목 없음';
-  const media = news ? news.media : '미디어 없음';
-  const date = news
-    ? news.uploadDatetime.split(' ')[0].replace(/-/g, '.')
-    : '시간 없음';
+const NeutralIcon = styled(BaseNeutralIcon)`
+  position: absolute;
+`;
 
+interface EconNewsDetailHeaderProps {
+  title: string;
+  media: string;
+  uploadDate: string;
+  sentiment: string;
+  id: number;
+}
+
+const EconNewsDetailHeader: React.FC<EconNewsDetailHeaderProps> = ({
+  title,
+  media,
+  uploadDate,
+  sentiment,
+  id,
+}) => {
+  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
+
+  // bookmark 상태가 변경되면 다시 갱신하는 함수
+  const { onBookmarkSuccess, bookmarkUpdated } = useOutletContext<{
+    onBookmarkSuccess: () => void;
+    bookmarkUpdated: boolean;
+  }>();
+
+  // 북마크 상태를 불러오는 함수
+  const loadBookmarkState = async () => {
+    try {
+      const response = await axiosInstance.get(
+        '/api/news/favorite/industry/list'
+      );
+      const bookmarkedNews = response.data.data;
+      const isBookmarkedNews = bookmarkedNews.some(
+        (newsItem: { id: number }) => newsItem.id === id
+      );
+      setIsBookmarked(isBookmarkedNews);
+    } catch (error) {
+      console.error('Failed to load bookmark state: ', error);
+    }
+  };
+
+  // 페이지 로드 시 북마크 상태를 불러옴
+  useEffect(() => {
+    loadBookmarkState();
+  }, [id]);
+
+  // 북마크 상태가 업데이트되면 다시 갱신
+  useEffect(() => {
+    if (bookmarkUpdated) {
+      loadBookmarkState();
+    }
+  }, [bookmarkUpdated]);
+
+  const handleBookmarkClick = async () => {
+    try {
+      if (isBookmarked) {
+        await axiosInstance.delete(`/api/news/favorite/industry/${id}`);
+      } else {
+        await axiosInstance.post(`/api/news/favorite/industry/${id}`);
+      }
+      setIsBookmarked(!isBookmarked);
+      onBookmarkSuccess(); // 북마크 상태 갱신 요청
+    } catch (error) {
+      console.error('Failed to update bookmark: ', error);
+    }
+  };
+
+  const date = uploadDate.split('T')[0].replace(/-/g, '.');
+
+  // 감정 분석에 따른 아이콘 설정
+  let IconComponent;
+  let IconText;
+
+  switch (sentiment) {
+    case '0': // 부정적
+      IconComponent = NegativeIcon;
+      IconText = <NegativeIconText>부정</NegativeIconText>;
+      break;
+    case '1': // 중립적
+      IconComponent = NeutralIcon;
+      IconText = <NeutralIconText>중립</NeutralIconText>;
+      break;
+    case '2': // 긍정적
+      IconComponent = PositiveIcon;
+      IconText = <PositiveIconText>긍정</PositiveIconText>;
+      break;
+    default:
+      IconComponent = NeutralIcon; // 기본값으로 중립 아이콘을 사용
+      IconText = <NeutralIconText>중립</NeutralIconText>;
+      break;
+  }
   return (
     <>
       <EconNewsDetailHeaderWrapper>
         <EconNewsTitleWrapper>
-          <PositiveIcon>
-            <PositiveIconText>긍정</PositiveIconText>
-          </PositiveIcon>
+          <IconComponent>{IconText}</IconComponent>
           <EconNewsTitleText>{title}</EconNewsTitleText>
         </EconNewsTitleWrapper>
 
         <NewsInfoOuterWrapper>
           <NewsInfoInnerWrapper>
             <NewsMediaText>{media}</NewsMediaText>
-            <NewsAuthorInfoText>박선홍 기자</NewsAuthorInfoText>
             <NewsAuthorInfoText>{date}</NewsAuthorInfoText>
           </NewsInfoInnerWrapper>
           <NewsInfoInnerWrapper>
-            {/* <NewsTag># 삼성전자</NewsTag> */}
-            {bookmarkedIcon}
+            <div onClick={handleBookmarkClick} style={{ cursor: 'pointer' }}>
+              {isBookmarked ? bookmarkedIcon : unbookmarkedIcon}
+            </div>
           </NewsInfoInnerWrapper>
         </NewsInfoOuterWrapper>
 

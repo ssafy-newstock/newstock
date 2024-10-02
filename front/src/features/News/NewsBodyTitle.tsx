@@ -2,10 +2,10 @@ import styled from 'styled-components';
 import {
   PositiveIcon as BasePositiveIcon,
   PositiveIconText,
-  // NegativeIcon,
-  // NegativeIconText,
-  // NeutralIcon,
-  // NeutralIconText,
+  NegativeIcon as BaseNegativeIcon,
+  NegativeIconText,
+  NeutralIcon as BaseNeutralIcon,
+  NeutralIconText,
 } from '@features/News/PNicon';
 
 const NewsBodyTitleWrapper = styled.div`
@@ -37,16 +37,47 @@ const PositiveIcon = styled(BasePositiveIcon)`
   top: 0.3rem;
 `;
 
+const NegativeIcon = styled(BaseNegativeIcon)`
+  position: absolute;
+  top: 0.3rem;
+`;
+
+const NeutralIcon = styled(BaseNeutralIcon)`
+  position: absolute;
+  top: 0.3rem;
+`;
+
 interface NewsBodyTitleProps {
   title: string;
+  sentiment: string;
 }
 
-const NewsBodyTitle: React.FC<NewsBodyTitleProps> = ({ title }) => {
+const NewsBodyTitle: React.FC<NewsBodyTitleProps> = ({ title, sentiment }) => {
+  let IconComponent;
+  let IconText;
+
+  switch (sentiment) {
+    case '0': // 부정적
+      IconComponent = NegativeIcon;
+      IconText = <NegativeIconText>부정</NegativeIconText>;
+      break;
+    case '1': // 중립적
+      IconComponent = NeutralIcon;
+      IconText = <NeutralIconText>중립</NeutralIconText>;
+      break;
+    case '2': // 긍정적
+      IconComponent = PositiveIcon;
+      IconText = <PositiveIconText>긍정</PositiveIconText>;
+      break;
+    default:
+      IconComponent = NeutralIcon; // 기본값으로 중립 아이콘을 사용
+      IconText = <NeutralIconText>중립</NeutralIconText>;
+      break;
+  }
+
   return (
     <NewsBodyTitleWrapper>
-      <PositiveIcon>
-        <PositiveIconText>긍정</PositiveIconText>
-      </PositiveIcon>
+      <IconComponent>{IconText}</IconComponent>
       <NewsBodyTitleText>{title}</NewsBodyTitleText>
     </NewsBodyTitleWrapper>
   );

@@ -1,6 +1,4 @@
 import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
-import { getNewsData } from '@api/dummyData/DummyData';
 
 const StockNewsDetailBodyWrapper = styled.div`
   display: flex;
@@ -87,20 +85,25 @@ const processArticle = (article: string) => {
   return content;
 };
 
-const StockNewsDetailBody: React.FC = () => {
-  const { newsId } = useParams();
-  const { stock } = getNewsData();
+interface StockNewsDetailBodyProps {
+  subtitle?: string;
+  article: string;
+}
 
-  const news = stock.data.find((newsItem) => newsItem.newsId === newsId);
-
-  const contentWithImages = news ? processArticle(news.article) : [];
+const StockNewsDetailBody: React.FC<StockNewsDetailBodyProps> = ({
+  subtitle,
+  article,
+}) => {
+  const contentWithImages = article ? processArticle(article) : [];
 
   return (
     <>
       <StockNewsDetailBodyWrapper>
         <NewsSubTitleWrapper>
           <NewsSubTitleLine />
-          <NewsSubTitleText>{news?.subtitle ?? '제목 없음'}</NewsSubTitleText>
+          {subtitle && (
+            <NewsSubTitleText>{subtitle ?? '제목 없음'}</NewsSubTitleText>
+          )}
         </NewsSubTitleWrapper>
 
         {contentWithImages.map((item, index) => {

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { PositiveIcon, PositiveIconText } from '@features/News/PNSubicon';
+import SentimentIcon from '@features/News/PNSubicon';
 import { NewsTag } from '../NewsIconTag';
 
 const StockNewsBodyWrapper = styled.div`
@@ -86,6 +86,7 @@ interface StockNewsBodyProps {
   media: string;
   date: string;
   keywords: string[];
+  sentiment: string;
 }
 
 const StockNewsBody: React.FC<StockNewsBodyProps> = ({
@@ -94,14 +95,14 @@ const StockNewsBody: React.FC<StockNewsBodyProps> = ({
   media,
   date,
   keywords,
+  sentiment,
 }) => {
-  const formattedDate = date?.split(' ')[0].replace(/-/g, '.') || '날짜 불명';
+  const formattedDate = date.split('T')[0].replace(/-/g, '.');
+
   return (
     <StockNewsBodyWrapper>
       <StockNewsTitleWrapper>
-        <PositiveIcon>
-          <PositiveIconText>긍정</PositiveIconText>
-        </PositiveIcon>
+        <SentimentIcon sentiment={sentiment} /> {/* SentimentIcon 사용 */}
         <StockNewsTitle>
           <StockNewsTitleText>{title}</StockNewsTitleText>
         </StockNewsTitle>
@@ -115,11 +116,15 @@ const StockNewsBody: React.FC<StockNewsBodyProps> = ({
       </StockNewsFooter>
 
       <BookmarkedNewsTagWrapper>
-        {keywords.map((keyword, index) => (
-          <NewsTag key={index} $tagName={keyword}>
-            # {keyword}
-          </NewsTag>
-        ))}
+        {Array.isArray(keywords) && keywords.length > 0 ? (
+          keywords.map((keyword, index) => (
+            <NewsTag key={index} $tagName={keyword}>
+              # {keyword}
+            </NewsTag>
+          ))
+        ) : (
+          <p>키워드 없음</p> // 키워드가 없을 경우 처리
+        )}
       </BookmarkedNewsTagWrapper>
     </StockNewsBodyWrapper>
   );
