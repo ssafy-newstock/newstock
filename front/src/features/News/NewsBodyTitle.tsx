@@ -17,11 +17,9 @@ const NewsBodyTitleWrapper = styled.div`
 `;
 
 const NewsBodyTitleText = styled.p`
-  color: ${({ theme }) => theme.highlightColor};
-  font-family: Inter;
-  font-size: 1.5rem;
-  font-style: normal;
-  font-weight: 400;
+  color: ${({ theme }) => theme.textColor};
+  font-size: 1.3rem;
+  font-weight: 600;
   line-height: 2rem;
   text-indent: 3.8rem;
 
@@ -34,17 +32,17 @@ const NewsBodyTitleText = styled.p`
 
 const PositiveIcon = styled(BasePositiveIcon)`
   position: absolute;
-  top: 0.3rem;
+  top: 0.15rem;
 `;
 
 const NegativeIcon = styled(BaseNegativeIcon)`
   position: absolute;
-  top: 0.3rem;
+  top: 0.15rem;
 `;
 
 const NeutralIcon = styled(BaseNeutralIcon)`
   position: absolute;
-  top: 0.3rem;
+  top: 0.15rem;
 `;
 
 interface NewsBodyTitleProps {

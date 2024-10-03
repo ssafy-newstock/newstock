@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 
 const NewsBodyHeaderText = styled.div`
-  color: #828282;
-  font-family: Inter;
-  font-size: 1rem;
-  font-style: normal;
+  color: ${({ theme }) => theme.editorTextColor};
+  font-size: 1.2rem;
+  font-weight: 600;
   line-height: 1.9rem;
+  margin-bottom: 1.5rem;
 `;
 
 interface NewsBodyHeaderProps {

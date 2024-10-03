@@ -53,7 +53,6 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    font-weight: 400;
     font-family: 'Inter', sans-serif;
     /* font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; */
     background-color: ${({ theme }) => theme.backgroundColor};
