@@ -72,16 +72,15 @@ const fetchMyStockHoldingData = async (): Promise<StockHolding[]> => {
 // 거래 내역 데이터를 가져오는 함수
 const fetchMyTransactionData = async (): Promise<TransactionDto[]> => {
   const response = await authRequest.get<TransactionApiResponse>(
-    '/api/stock/my-transaction'
+    '/stock/my-transaction'
   );
   return response.data.data;
 };
 
 // 찜 목록 데이터를 가져오는 함수
 const fetchMyStockFavoriteData = async (): Promise<StockFavoriteDto[]> => {
-  const response = await authRequest.get<StockFavoriteApiResponse>(
-    '/api/stock/favorite'
-  );
+  const response =
+    await authRequest.get<StockFavoriteApiResponse>('/stock/favorite');
   return response.data.data;
 };
 
