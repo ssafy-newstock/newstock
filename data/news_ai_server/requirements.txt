@@ -7,3 +7,9 @@ boto3
 pandas
 numpy
 pymysql
+
+jaydebeapi
+langchain
+langchain-community
+openai
+langchain_openai
