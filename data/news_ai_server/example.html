@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Client</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #form {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"],
+        input[type="date"] {
+            padding: 10px;
+            margin: 5px;
+            width: calc(33% - 20px); /* 전체 너비의 1/3로 설정 */
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #responseA {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 14px;
+            color: #333;
+        }
+
+        #news-container {
+            margin-top: 20px;
+        }
+
+        .news-item {
+            border: 1px solid #ccc;
+            background-color: #fff;
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .news-thumbnail {
+            width: 100px;
+            height: 100px;
+            margin-right: 20px;
+        }
+
+        .news-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .news-content {
+            flex: 1;
+        }
+
+        .news-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .news-meta {
+            font-size: 12px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <h1>WebSocket Client</h1>
+    <form id="form">
+        <input type="text" id="base_stock_code" placeholder="Base Stock Code" required>
+        <input type="date" id="start_date" placeholder="Start Date" value="2024-02-01" required>
+        <input type="date" id="end_date" placeholder="End Date" value="2024-03-01" required>
+        <button type="submit">Send</button>
+    </form>
+    <div id="responseA"></div>
+    <div id="news-container"></div>
+
+    <script>
+        const form = document.getElementById('form');
+        const responseElementA = document.getElementById('responseA');
+        const newsContainer = document.getElementById('news-container');
+        const socket = new WebSocket("ws://localhost:8001/summary/ws");
+
+        let fullResponse = ''; // 전체 응답을 저장할 변수
+        
+        socket.onopen = function(event) {
+            console.log("WebSocket is connected.");
+        };
+
+        socket.onmessage = function(event) {
+            const message = event.data;
+
+            try {
+                const jsonMessage = JSON.parse(message);
+
+                if (jsonMessage.related_news) {
+                    // 뉴스 리스트 초기화
+                    newsContainer.innerHTML = '';
+
+                    jsonMessage.related_news.forEach(news => {
+                        const newsDiv = document.createElement('div');
+                        newsDiv.classList.add('news-item');
+
+                        // 썸네일 이미지 설정
+                        const thumbnailDiv = document.createElement('div');
+                        thumbnailDiv.classList.add('news-thumbnail');
+                        const thumbnailImg = document.createElement('img');
+                        thumbnailImg.src = news.thumbnail || 'https://via.placeholder.com/100'; // 썸네일이 없으면 기본 이미지
+                        thumbnailDiv.appendChild(thumbnailImg);
+
+                        // 뉴스 내용 설정
+                        const contentDiv = document.createElement('div');
+                        contentDiv.classList.add('news-content');
+                        const titleDiv = document.createElement('div');
+                        titleDiv.classList.add('news-title');
+                        titleDiv.textContent = news.title;
+
+                        const metaDiv = document.createElement('div');
+                        metaDiv.classList.add('news-meta');
+                        metaDiv.textContent = `업로드 날짜: ${news.upload_datetime} | 미디어: ${news.media}`;
+
+                        contentDiv.appendChild(titleDiv);
+                        contentDiv.appendChild(metaDiv);
+
+                        newsDiv.appendChild(thumbnailDiv);
+                        newsDiv.appendChild(contentDiv);
+
+                        newsContainer.appendChild(newsDiv);
+                    });
+                } else {
+                    fullResponse += message;
+                    responseElementA.textContent = 'Response:\n' + fullResponse;
+                }
+            } catch (error) {
+                console.error("Failed to parse message:", error);
+                fullResponse += message;
+                responseElementA.textContent = 'Response:\n' + fullResponse;
+            }
+        };
+
+        socket.onerror = function(error) {
+            console.error("WebSocket Error:", error);
+        };
+
+        socket.onclose = function(event) {
+            console.log("WebSocket is closed now.");
+        };
+
+        form.onsubmit = function(event) {
+            event.preventDefault();
+            const baseStockCode = document.getElementById('base_stock_code').value;
+            const startDate = document.getElementById('start_date').value;
+            const endDate = document.getElementById('end_date').value;
+
+            const message = JSON.stringify({
+                base_stock_code: baseStockCode,
+                start_date: startDate,
+                end_date: endDate
+            });
+
+            socket.send(message);
+        };
+    </script>
+</body>
+</html>
