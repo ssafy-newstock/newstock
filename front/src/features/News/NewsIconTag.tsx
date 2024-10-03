@@ -37,17 +37,15 @@ interface NewsTagProps {
 // 태그 스타일링
 export const NewsTag = styled.div<NewsTagProps>`
   display: flex;
-  padding: 0.3rem;
+  padding: 0 0.3rem;
   justify-content: center;
   align-items: center;
-  gap: 0.625rem;
   border-radius: 0.3rem;
   /* background-color: ${({ theme }) => theme.grayTextColor}; */
   color: ${({ theme }) => theme.editorTextColor};
-  font-family: Inter;
-  font-size: 1.25rem;
-  font-style: normal;
+  font-size: 0.8rem;
   line-height: 1.875rem;
+  font-weight: 600;
 
   background-color: ${({ theme, $tagName }) => {
     const index = getTagIndex($tagName, theme.tagColors.length);
@@ -58,6 +56,8 @@ export const NewsTag = styled.div<NewsTagProps>`
 // 북마크 스타일링
 const UnbookmarkedIcon = styled.svg`
   cursor: pointer;
+  width: 1.5rem;
+  height: 1.5rem;
   &:hover path {
     fill: #006dff;
   }
@@ -65,8 +65,8 @@ const UnbookmarkedIcon = styled.svg`
 export const bookmarkedIcon = (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="36"
-    height="36"
+    width="1.5rem"
+    height="1.5rem"
     viewBox="0 0 36 36"
     fill="none"
     style={{ cursor: 'pointer' }}
@@ -81,8 +81,8 @@ export const bookmarkedIcon = (
 export const unbookmarkedIcon = (
   <UnbookmarkedIcon
     xmlns="http://www.w3.org/2000/svg"
-    width="36"
-    height="36"
+    width="1.5rem"
+    height="1.5rem"
     viewBox="0 0 36 36"
     fill="none"
   >

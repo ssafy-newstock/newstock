@@ -11,9 +11,7 @@ const NewsBodyContentText = styled.div`
   width: 17rem;
   /* flex-shrink: 0; */
   color: #828282;
-  font-family: Inter;
   font-size: 0.94rem;
-  font-style: normal;
   line-height: 1.6rem;
 
   display: -webkit-box;

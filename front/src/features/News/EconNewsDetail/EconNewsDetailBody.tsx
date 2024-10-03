@@ -26,7 +26,6 @@ const NewsSubTitleText = styled.p`
   color: ${({ theme }) => theme.grayTextColor};
   width: 60%;
   font-size: 1.25rem;
-  font-style: normal;
   line-height: 1.875rem; /* 150% */
 `;
 
