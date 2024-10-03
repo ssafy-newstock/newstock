@@ -66,6 +66,8 @@ const App = () => {
     categoryStock && setCategoryStock(categoryStock.data);
   }, [top10Stock, allStock, categoryStock]);
 
+  const isOnboarding = location.pathname === '/onboarding';
+
   // Modal 열기/닫기 기능 추가
   return (
     <ThemeProvider theme={currentTheme}>
@@ -73,9 +75,9 @@ const App = () => {
       <Main>
         <Header isOpen={isOpen} />
         <Content>
-          <Left />
+          {!isOnboarding && <Left />}
           <Outlet context={{ setIsOpen }} />
-          <RightVacantWrapper $isOpen={isOpen} />
+          {!isOnboarding && <RightVacantWrapper $isOpen={isOpen} />}
         </Content>
         {isLogin && <StockModal isOpen={isOpen} setIsOpen={setIsOpen} />}
       </Main>
