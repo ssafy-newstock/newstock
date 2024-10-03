@@ -4,6 +4,7 @@ import EconNewsDetailHeader from '@features/News/EconNewsDetail/EconNewsDetailHe
 import EconNewsDetailBody from '@features/News/EconNewsDetail/EconNewsDetailBody';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import NewsDetailSkeleton from '@features/News/skeleton/NewsDetailSkeleton';
 
 const SubCenter = styled.div`
   display: flex;
@@ -74,8 +75,8 @@ const EconomicNewsDetailPage: React.FC = () => {
   return (
     <div>
       <SubCenter>
-        <NewsWrapper>
-          {detailNews && (
+        {detailNews ? (
+          <NewsWrapper>
             <EconNewsDetailHeader
               title={detailNews.title}
               media={detailNews.media}
@@ -83,14 +84,14 @@ const EconomicNewsDetailPage: React.FC = () => {
               sentiment={detailNews.sentiment}
               id={detailNews.id}
             />
-          )}
-          {detailNews && (
             <EconNewsDetailBody
               subtitle={detailNews.subtitle}
               article={detailNews.article}
             />
-          )}
-        </NewsWrapper>
+          </NewsWrapper>
+        ) : (
+          <NewsDetailSkeleton />
+        )}
       </SubCenter>
     </div>
   );

@@ -58,3 +58,16 @@ export const RowNewsCardSkeleton = styled.div`
   background-color: ${({ theme }) => theme.newsBackgroundColor};
   animation: ${pulseAnimation} 3s infinite;
 `;
+
+export const NewsDetailCardSkeleton = styled.div`
+width: 98%;
+height: 100vh;
+padding: 1.6rem 1.25rem;
+gap: 0.625rem;
+align-self: stretch;
+border-radius: 2rem;
+background-color: ${({ theme }) => theme.newsBackgroundColor};
+box-shadow: 0rem 0.25rem 0.25rem rgba(0, 0, 0, 0.1);
+animation: ${pulseAnimation} 3s infinite;
+
+`;
