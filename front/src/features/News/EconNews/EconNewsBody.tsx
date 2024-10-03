@@ -8,6 +8,7 @@ import NewsSummary from '@features/News/NewsSummary';
 import { Overlay, Background, Modal } from '@components/ModalComponents';
 import { useOutletContext } from 'react-router-dom';
 import { axiosInstance } from '@api/axiosInstance';
+import { toast } from 'react-toastify';
 
 const EconomicNewsBody = styled.div`
   display: flex;
@@ -58,7 +59,7 @@ const EconomicNewsContent = styled.p`
   color: #828282;
   font-size: 1rem;
   line-height: 2rem;
-  width: 85%;
+  width: 100%;
 `;
 
 const EconomicNewsFooter = styled.div`
@@ -109,12 +110,13 @@ const registerIndustryBookmark = async (id: number) => {
     const response = await axiosInstance.post(
       `/api/news/favorite/industry/${id}`
     );
+    console.log('API Response:', response); // 응답 확인
     if (response.data.success) {
-      alert('북마크가 성공적으로 등록되었습니다.');
+      toast.success('북마크가 성공적으로 등록되었습니다.');
     }
   } catch (error) {
     console.error('Failed to register bookmark: ', error);
-    alert('북마크 등록에 실패했습니다.');
+    toast.error('북마크 등록에 실패했습니다.');
   }
 };
 
@@ -125,11 +127,11 @@ const deleteIndustryBookmark = async (id: number) => {
       `/api/news/favorite/industry/${id}`
     );
     if (response.data.success) {
-      alert('북마크가 성공적으로 삭제되었습니다.');
+      toast.success('북마크가 성공적으로 삭제되었습니다.');
     }
   } catch (error) {
     console.error('Failed to delete bookmark: ', error);
-    alert('북마크 삭제에 실패했습니다.');
+    toast.error('북마크 삭제에 실패했습니다.');
   }
 };
 
@@ -138,8 +140,13 @@ const fetchBookmarkedNews = async (): Promise<number[]> => {
     const response = await axiosInstance.get(
       '/api/news/favorite/industry/list'
     );
-    const data: NewsItem[] = response.data.data;
-    return data.map((newsItem: NewsItem) => newsItem.id);
+
+    if (response.data && response.data.data) {
+      const data: NewsItem[] = response.data.data;
+      return data.map((newsItem: NewsItem) => newsItem.id);
+    } else {
+      return [];
+    }
   } catch (error) {
     console.error('Failed to fetch bookmarked news:', error);
     return [];
@@ -234,9 +241,11 @@ const EconNewsBody: React.FC<EconNewsBodyProps> = ({
 
   const handleBookmarkIconClick = async (event: React.MouseEvent) => {
     event.stopPropagation(); // 상위 클릭 이벤트 중지
+    console.log('Bookmark icon clicked');
 
     if (!isBookmarked) {
       try {
+        console.log('Trying to register bookmark');
         await registerIndustryBookmark(id);
         setIsBookmarked(true);
         onBookmarkSuccess(); // 콜백 함수 호출 (북마크 성공 알림)
@@ -246,6 +255,7 @@ const EconNewsBody: React.FC<EconNewsBodyProps> = ({
     } else {
       // 북마크 삭제
       try {
+        console.log('Trying to delete bookmark');
         await deleteIndustryBookmark(id);
         setIsBookmarked(false);
         onBookmarkSuccess(); // 북마크 삭제 후 리스트 갱신
@@ -254,6 +264,11 @@ const EconNewsBody: React.FC<EconNewsBodyProps> = ({
       }
     }
   };
+
+  // 상태가 변경될 때마다 콘솔에 출력
+  useEffect(() => {
+    console.log('Updated bookmark state:', isBookmarked);
+  }, [isBookmarked]);
 
   useEffect(() => {
     const fetchBookmarks = async () => {

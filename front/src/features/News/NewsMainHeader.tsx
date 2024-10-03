@@ -5,9 +5,11 @@ import { useNavigate } from 'react-router-dom';
 const HeaderWrapper = styled.div`
   display: flex;
   padding: 1.5rem 0;
-  justify-content: space-between;
-  align-items: center;
+  /* justify-content: space-between; */
+  justify-content: flex-start; /* 왼쪽 정렬로 설정 */
   align-self: stretch;
+  align-items: baseline;
+  min-width: 90rem;
 `;
 
 const NewsHeaderText = styled.div`
@@ -21,6 +23,7 @@ const MoreInfoTextWrapper = styled.div`
   padding: 0.5rem 0;
   align-items: center;
   gap: 0.3rem;
+  margin-left: auto; /* 오른쪽 끝으로 밀림 */
 `;
 
 const MoreInfoText = styled.div`

@@ -28,6 +28,7 @@ const NewsMainCenter = styled.div`
   width: 95%;
   // 화면 퍼지는거 보기 싫어서 일단 최댓값 박아둠.
   max-width: 100rem;
+  min-width: 90rem;
   /* padding: 1.25rem 3rem; */
   padding: 1rem;
   flex-direction: column;

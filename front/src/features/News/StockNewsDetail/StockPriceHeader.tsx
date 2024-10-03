@@ -1,8 +1,9 @@
 import styled from 'styled-components';
-import { StockPrev } from '@features/Stock/styledComponent';
+import { StockPrev, StockImage } from '@features/Stock/styledComponent';
 
 import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
+import blueLogo from '@assets/Stock/blueLogo.png';
 
 const StockNewsOuter = styled.div`
   width: 100%;
@@ -13,11 +14,24 @@ const StockNewsOuter = styled.div`
   align-self: stretch;
 `;
 
+const StockCorp = styled.div`
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+`;
+
 const StockNewsCorpText = styled.p`
   color: ${({ theme }) => theme.textColor};
   font-size: 1.5rem;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.875rem;
+  white-space: nowrap; /* 텍스트가 줄바꿈되지 않도록 설정 */
+`;
+
+const CustomStockImage = styled(StockImage)`
+  width: 2.25rem;
+  height: 2.25rem;
+  margin-right: 0.7rem;
 `;
 
 const StockNewsPrice = styled.div`
@@ -58,7 +72,16 @@ const StockPriceHeader: React.FC<StockPriceHeaderProps> = ({
 
   return (
     <StockNewsOuter>
-      <StockNewsCorpText>{header}</StockNewsCorpText>
+      <StockCorp>
+        <CustomStockImage
+          src={`https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stockDetail.stockCode}.png`}
+          alt="stock image"
+          onError={(e) => {
+            e.currentTarget.src = blueLogo;
+          }} // 이미지 로드 실패 시 기본 이미지로 대체
+        />
+        <StockNewsCorpText>{header}</StockNewsCorpText>
+      </StockCorp>
       <StockNewsPrice>
         <StockNewsCorpText>
           {formatNumber(stockDetail.stckPrpr)}원

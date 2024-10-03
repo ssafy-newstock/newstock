@@ -13,13 +13,16 @@ const SubCenter = styled.div`
   flex-direction: column;
   align-items: flex-start;
   align-self: stretch;
-  max-width: 106rem;
+  max-width: 100rem;
+  min-width: 90rem;
   width: 100%;
+  margin-top: 2rem;
 `;
 
 const NewsWrapper = styled.div`
   display: flex;
-  padding: 1.6rem 1.25rem;
+  /* padding: 1.6rem 1.25rem; */
+  padding: 3rem 2rem;
   flex-direction: column;
   align-items: flex-start;
   gap: 0.625rem;
@@ -27,6 +30,7 @@ const NewsWrapper = styled.div`
   border-radius: 2rem;
   background-color: ${({ theme }) => theme.newsBackgroundColor};
   box-shadow: 0rem 0.25rem 0.25rem rgba(0, 0, 0, 0.1);
+  width: 90%;
 `;
 
 interface NewsItem {
