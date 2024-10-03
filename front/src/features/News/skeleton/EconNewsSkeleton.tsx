@@ -1,6 +1,13 @@
+import { NewsContainerSkeleton, RowNewsCardSkeleton } from "./styledComponent";
+
+
 const EconNewsSkeleton = () => {
   return (
-    <h1></h1>
+    <NewsContainerSkeleton>
+      {Array.from({ length: 4 }).map((_, index) => (
+        <RowNewsCardSkeleton key={index} />
+      ))}
+    </NewsContainerSkeleton>
   );
 };
 

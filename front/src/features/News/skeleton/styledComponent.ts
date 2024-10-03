@@ -34,3 +34,27 @@ export const NewsCardSkeleton = styled.div`
   animation: ${pulseAnimation} 3s infinite;
 
 `;
+
+export const NewsContainerSkeleton = styled.div`
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+  max-width: 100rem;
+  width: 100%;
+`;
+
+export const RowNewsCardSkeleton = styled.div`
+  margin: 0 0 2.5rem 0;
+  /* align-self: stretch; */
+  border-radius: 2rem;
+  height: 100px;
+  width: 85%;
+  height: 100%;
+  gap: 2rem;
+  background-color: ${({ theme }) => theme.newsBackgroundColor};
+  animation: ${pulseAnimation} 3s infinite;
+`;

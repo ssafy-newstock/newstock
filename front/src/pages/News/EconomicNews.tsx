@@ -9,6 +9,7 @@ import {
 } from '@api/dummyData/DummyData';
 
 import axios, { AxiosResponse } from 'axios';
+import EconNewsSkeleton from '@features/News/skeleton/EconNewsSkeleton';
 
 const SubCenter = styled.div`
   display: flex;
@@ -219,6 +220,7 @@ const EconomicNewsPage: React.FC = () => {
 
   return (
     <>
+    {loading && <EconNewsSkeleton />}
       <SubCenter>
         {newsList.map((news) => (
           <EconomicNewsWrapper
