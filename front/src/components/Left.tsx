@@ -21,13 +21,13 @@ const MenuSection = styled.div`
   gap: 10px;
   margin-bottom: 30px;
 `;
-const MenuSectionG = styled.div<{ isOpen: boolean }>`
+const MenuSectionG = styled.div<{ $isOpen: boolean }>`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
   gap: 10px;
-  margin-bottom: ${({ isOpen }) => (isOpen ? `10px` : '30px')};
+  margin-bottom: ${({ $isOpen }) => ($isOpen ? `10px` : '30px')};
   transition: margin-bottom 0.5s ease;
 `;
 const MenuSectionGG = styled.div`
@@ -132,7 +132,7 @@ const Left: React.FC = () => {
       <MenuSectionG
         onClick={() => setStockDropdown(!stockDropdown)}
         style={{ cursor: 'pointer' }}
-        isOpen={stockDropdown}
+        $isOpen={stockDropdown}
       >
         <StockFrame>
           <svg
@@ -282,7 +282,7 @@ const Left: React.FC = () => {
       <MenuSectionG
         onClick={() => setNewsDropdown(!newsDropdown)}
         style={{ cursor: 'pointer' }}
-        isOpen={newsDropdown}
+        $isOpen={newsDropdown}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
