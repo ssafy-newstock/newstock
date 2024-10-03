@@ -5,9 +5,10 @@ import StockNewsDetailBody from '@features/News/StockNewsDetail/StockNewsDetailB
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { authRequest } from '@api/axiosInstance';
 import usePointStore from '@store/usePointStore';
-import SockJS from 'sockjs-client';
-import Stomp from 'stompjs';
+import useSocketStore from '@store/useSocketStore';
+import useAuthStore from '@store/useAuthStore';
 
 const SubCenter = styled.div`
   display: flex;
@@ -62,42 +63,7 @@ const fetchDetailNewsData = async (id: string): Promise<NewsItem | null> => {
 const StockNewsDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [detailNews, setDetailNews] = useState<NewsItem | null>(null);
-  const { point, setPoint } = usePointStore();
-
-  useEffect(() => {
-    const socket = new SockJS('https://newstock.info/api/member/websocket');
-    const client = Stomp.over(socket);
-
-    client.connect(
-      {},
-      () => {
-        console.log('WebSocket connected in StockNewsDetailPage');
-
-        client.subscribe(
-          `/api/sub/member/info/point/increase/${id}`,
-          (response) => {
-            const newPoint = response.body;
-            console.log('콘솔 확인', newPoint);
-            setPoint((point) => point + newPoint);
-            console.log(`Received new points: ${newPoint}`);
-          }
-        );
-
-        client.send('/api/sub/member/info/point', {}, JSON.stringify({ id }));
-      },
-      (error) => {
-        console.error('WebSocket connection error:', error);
-      }
-    );
-
-    return () => {
-      if (client && client.connected) {
-        client.disconnect(() => {
-          console.log('WebSocket disconnected in StockNewsDetailPage');
-        });
-      }
-    };
-  }, [id, setPoint]);
+  const { client, connectSocket } = useSocketStore();
 
   useEffect(() => {
     const loadNews = async () => {
@@ -111,6 +77,52 @@ const StockNewsDetailPage: React.FC = () => {
     };
     loadNews();
   }, [id]);
+
+  const { setPlusPoint } = usePointStore();
+  const { memberId } = useAuthStore();
+
+  // 요청 메시지를 WebSocket으로 전송
+
+  useEffect(() => {
+    const fetchEconomicDetail = async () => {
+      await authRequest.get(`/news/stock/${id}/read`);
+      console.log('API 요청이 성공적으로 전송되었습니다.');
+    };
+
+    // 5초 뒤에 요청 보내기
+    const timeoutId = setTimeout(() => {
+      console.log('5초 뒤에 요청을 전송합니다...');
+      fetchEconomicDetail();
+    }, 5000); // 5000 밀리초 = 5초
+
+    return () => {
+      clearTimeout(timeoutId); // 컴포넌트가 언마운트 될 때 타임아웃 클리어
+    };
+  }, [id]);
+
+  useEffect(() => {
+    // WebSocket 연결
+    connectSocket();
+
+    if (client && memberId) {
+      const subscription = client.subscribe(
+        `/api/sub/member/info/point/increase/${memberId}`,
+        (response) => {
+          const parsedData = JSON.parse(response.body);
+          const plusPoint = parsedData.point;
+          console.log(`Received new points: ${plusPoint}`);
+          setPlusPoint((prevPoint) =>
+            prevPoint !== null ? prevPoint + plusPoint : plusPoint
+          );
+        }
+      );
+
+      return () => {
+        // 구독 해제
+        subscription.unsubscribe();
+      };
+    }
+  }, [client, memberId]);
 
   return (
     <div>
