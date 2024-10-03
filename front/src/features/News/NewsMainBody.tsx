@@ -8,10 +8,11 @@ import StockNewsMainBodyHeader from './StockNewsMain/StockNewsMainBodyHeader';
 
 const NewsBodyInnerWrapper = styled.div`
   display: flex;
-  width: 21rem;
-  padding: 0.8rem 0.9rem;
+  /* width: 21rem; */
+  height: auto;
+  padding: 1.5rem 1.2rem;
   flex-direction: column;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
   border-radius: 1.25rem;
   background-color: ${({ theme }) => theme.newsBackgroundColor};
@@ -43,7 +44,6 @@ interface IStockDetail {
   acmlVol: number;
   acmlTrPbmn: number;
 }
-
 
 interface NewsMainBodyProps {
   title: string;

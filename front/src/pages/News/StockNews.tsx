@@ -2,34 +2,35 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import StockNewsBody from '@features/News/StockNews/StockNewsBody';
-import StockNewsHeader from '@features/News/StockNews/StockNewsHeader';
 import EconSubNewsBody from '@features/News/EconNews/EconSubNewsBody';
 import axios, { AxiosResponse } from 'axios';
 import useAllStockStore from '@store/useAllStockStore';
 import useTop10StockStore from '@store/useTop10StockStore';
+import StockNewsSkeleton from '@features/News/skeleton/StockNewsSkeleton';
 
 const SubCenter = styled.div`
   display: flex;
-  width: 100%;
   padding: 1rem;
   flex-direction: column;
   align-items: flex-start;
   align-self: stretch;
-  max-width: 106rem;
-  width: 100%;
+  max-width: 100rem;
+  min-width: 90rem;
+  width: 90%;
 `;
 
-const StockNewsOuterWrapper = styled.div<{ $showSummary: boolean }>`
+const StockNewsWrapper = styled.div<{ $showSummary: boolean }>`
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  padding: 1.6rem 1.5rem;
   margin: 0 0 2.5rem 0;
-  box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.1);
-  background-color: ${({ theme }) => theme.newsBackgroundColor};
-  border-radius: 2rem;
+  align-items: center;
+  justify-content: space-between;
   align-self: stretch;
+  border-radius: 2rem;
+  /* background-color: ${({ theme }) => theme.newsBackgroundColor}; */
+  /* box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.1); */
+  width: 98%;
+  gap: 2rem;
+
   cursor: pointer;
 
   transition: ${({ $showSummary }) =>
@@ -38,17 +39,6 @@ const StockNewsOuterWrapper = styled.div<{ $showSummary: boolean }>`
   &:hover {
     transform: ${({ $showSummary }) => ($showSummary ? 'none' : 'scale(1.02)')};
   }
-`;
-
-const StockNewsWrapper = styled.div`
-  display: flex;
-  /* padding: 1.6rem 1.5rem; */
-  /* margin: 1.25rem 0; */
-  align-items: flex-start;
-  justify-content: space-between;
-  align-self: stretch;
-  width: 100%;
-  /* height: 18rem; */
 `;
 
 const ObserverTrigger = styled.div`
@@ -208,9 +198,11 @@ const StockNewsPage: React.FC = () => {
   };
 
   return (
+    <>
+    {loading && <StockNewsSkeleton/>}
     <SubCenter>
       {newsList.length > 0
-        ? newsList.map((news, index) => {
+        ? newsList.map((news) => {
             // stockNewsStockCodes의 첫 번째 stockCode를 기반으로 stockDetail 찾기
             const stockCode = news.stockNewsStockCodes?.[0];
             const stockDetail =
@@ -219,33 +211,25 @@ const StockNewsPage: React.FC = () => {
             const stockName = stockDetail?.stockName || 'Unknown Stock';
 
             return (
-              <StockNewsOuterWrapper
-                key={index}
+              <StockNewsWrapper
+                key={news.id}
                 onClick={() => handleNewsClick(news.id)}
                 $showSummary={showSummary}
               >
-                {/* stockName을 전달 */}
-                <StockNewsHeader
+                <EconSubNewsBody thumbnail={news.thumbnail} />
+                <StockNewsBody
+                  id={news.id}
+                  title={news.title}
+                  content={news.content}
+                  media={news.media}
+                  date={news.uploadDatetime}
+                  keywords={news.stockKeywords}
+                  sentiment={news.sentiment}
+                  onShowSummaryChange={handleShowSummaryChange}
                   header={stockName}
                   stockDetail={stockDetail!}
                 />
-                <StockNewsWrapper>
-                  <StockNewsBody
-                    title={news.title}
-                    content={news.content}
-                    media={news.media}
-                    date={news.uploadDatetime}
-                    keywords={news.stockKeywords}
-                    sentiment={news.sentiment}
-                  />
-                  <EconSubNewsBody
-                    id={news.id}
-                    thumbnail={news.thumbnail}
-                    onShowSummaryChange={handleShowSummaryChange}
-                    keywords={news.stockKeywords}
-                  />
-                </StockNewsWrapper>
-              </StockNewsOuterWrapper>
+              </StockNewsWrapper>
             );
           })
         : !loading && <p>No news available</p>}
@@ -256,6 +240,7 @@ const StockNewsPage: React.FC = () => {
       )}
       <ObserverTrigger ref={observerRef} />
     </SubCenter>
+    </>
   );
 };
 

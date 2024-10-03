@@ -4,14 +4,13 @@ import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import useAuthStore from '@store/useAuthStore';
 import Login from '@components/Login';
-import SockJS from 'sockjs-client';
-import Stomp from 'stompjs';
 import { authRequest } from '@api/axiosInstance';
 import { formatUnit } from '@utils/formatUnit';
 import usePointStore from '@store/usePointStore';
+import useSocketStore from '@store/useSocketStore';
 
-const HeaderContainer = styled.div<{ isOpen: boolean }>`
-  width: ${({ isOpen }) => (isOpen ? 'calc(100% - 400px)' : '100%')};
+const HeaderContainer = styled.div<{ $isOpen: boolean }>`
+  width: ${({ $isOpen }) => ($isOpen ? 'calc(100% - 400px)' : '100%')};
   height: 5rem;
   display: flex;
   justify-content: space-between;
@@ -21,6 +20,7 @@ const HeaderContainer = styled.div<{ isOpen: boolean }>`
 `;
 
 const NewStock = styled.div`
+  font-family: Inter;
   font-size: 3rem;
   font-weight: 800;
   color: ${({ theme }) => theme.highlightColor};
@@ -128,6 +128,8 @@ const Header: React.FC<HeaderProps> = ({ isOpen }) => {
   // 유저 포인트 상태
   const { point, setPoint } = usePointStore();
   const [isHovering, setIsHovering] = useState(false);
+  // 유저 상태
+  const { isLogin, logout, memberId } = useAuthStore();
 
   const handleMouseOver = () => {
     setIsHovering(true);
@@ -146,12 +148,11 @@ const Header: React.FC<HeaderProps> = ({ isOpen }) => {
     setLoginOpen(false);
   };
 
-  const { isLogin, logout, memberId } = useAuthStore();
-
   const handleLogout = () => {
     logout();
     sessionStorage.removeItem('accessToken');
   };
+
   useEffect(() => {
     const fetchUserPoint = async (): Promise<void> => {
       const response = await authRequest.get(`/member/${memberId}/point`);
@@ -164,48 +165,29 @@ const Header: React.FC<HeaderProps> = ({ isOpen }) => {
     }
   }, [isLogin, memberId]);
 
+  const { client, connectSocket } = useSocketStore();
   useEffect(() => {
-    const socket = new SockJS('https://newstock.info/api/member/websocket');
+    // WebSocket 연결을 시도
+    connectSocket();
 
-    const client = Stomp.over(socket);
+    if (client && memberId) {
+      // 구독 설정
+      const subscription = client.subscribe(
+        `/api/sub/member/info/point/${memberId}`,
+        (message) => {
+          const newPoint = message.body;
+          console.log('Received new point:', newPoint);
+          setPoint(Number(newPoint));
+        }
+      );
 
-    client.debug = (msg) => {
-      console.log('STOMP debug:', msg);
-    };
-
-    client.connect(
-      {},
-      () => {
-        console.log('WebSocket connected');
-
-        client.subscribe(
-          `/api/sub/member/info/point/${memberId}`,
-          (response) => {
-            console.log('Received message:', response);
-            const newPoint = response.body; // 서버에서 전달받은 포인트
-            setPoint(Number(newPoint));
-          }
-        );
-
-        client.send(
-          '/api/sub/member/info/point',
-          {},
-          JSON.stringify({ memberId })
-        );
-      },
-      (error) => {
-        console.error('WebSocket connection error:', error);
-      }
-    );
-
-    return () => {
-      if (client && client.connected) {
-        client.disconnect(() => {
-          console.log('WebSocket disconnected');
-        });
-      }
-    };
-  }, [isLogin, memberId]);
+      return () => {
+        if (subscription) {
+          subscription.unsubscribe(); // 구독 해제
+        }
+      };
+    }
+  }, [client, memberId]);
 
   // API 생성 후 대체
   // const handleLogout = async () => {
@@ -225,7 +207,7 @@ const Header: React.FC<HeaderProps> = ({ isOpen }) => {
 
   return (
     <>
-      <HeaderContainer isOpen={isOpen}>
+      <HeaderContainer $isOpen={isOpen}>
         <NewStock>NewStock</NewStock>
         <HeaderRight>
           <Slider onClick={toggleTheme}>

@@ -29,7 +29,7 @@ export const buyStock = async (data: BuyStockRequest): Promise<BuyStockResponse>
 };
 
 // hooks/useBuyStock.ts
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export interface BuyStockVariables {
   stockCode: string;
@@ -77,6 +77,7 @@ const BuyForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
   const [totalPrice, setTotalPrice] = useState(0);
 
   const mutation = useBuyStock();
+  const queryClient = useQueryClient();
 
   const {
     control,
@@ -112,6 +113,7 @@ const BuyForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
         onSuccess: () => {
           setModalOpen(true);
           resetForm({ price, amount: 0 });
+          queryClient.invalidateQueries({queryKey:['my-Holding', stockCode]});
         },
         onError: () => {
           setModalOpen(true);

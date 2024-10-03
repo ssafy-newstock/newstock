@@ -8,32 +8,29 @@ const BookmarkedNewsHeader = styled.div`
   display: flex;
   align-items: center;
   align-self: stretch;
-  gap: 0.625rem;
+  gap: 0.5rem;
 `;
 
 const BookmarkedNewsHeaderText = styled.p`
   color: ${({ theme }) => theme.textColor};
-  font-family: Inter;
-  font-size: 1.25rem;
-  font-style: normal;
+  font-size: 1rem;
   line-height: 1.875rem;
 `;
 
 const BookmarkedNewsHeaderSVG = styled.div`
-  width: 0.5rem;
+  width: 0.3rem;
   height: 1rem;
 `;
 
 const BookmarkedNewsWrapper = styled.div`
   display: flex;
   width: 100%;
-  height: 10rem;
-  padding: 1rem 1.3rem;
+  padding: 0.8rem 1rem;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
   align-self: stretch;
-  gap: 0.625rem;
+  gap: 0.5rem;
   background-color: ${({ theme }) => theme.newsBackgroundColor};
   border-radius: 1.25rem;
   box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.1);
@@ -48,9 +45,8 @@ const BookmarkedNewsWrapper = styled.div`
 
 const BookmarkedNewsTitle = styled.p`
   color: ${({ theme }) => theme.textColor};
-  font-family: Inter;
-  font-size: 1.25rem;
-  font-style: normal;
+  font-size: 1rem;
+  font-weight: 600;
   line-height: 1.25rem;
   width: 80%;
   white-space: nowrap;
@@ -60,24 +56,22 @@ const BookmarkedNewsTitle = styled.p`
 
 const BookmarkedNewsMiddle = styled.div`
   display: flex;
-  padding: 0 0.625rem;
+  padding: 0 0.5rem;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
   align-self: stretch;
 `;
 
 const BookmarkedNewsMiddleText = styled.p`
   /* color: #828282; */
   color: ${({ theme }) => theme.grayTextColor};
-  font-family: Inter;
-  font-size: 1.125rem;
-  font-style: normal;
+  font-size: 0.8rem;
   line-height: 1.875rem;
 `;
 
 const BookmarkedNewsMiddleLine = styled.div`
   width: 0.09rem;
-  height: 1.75rem;
+  height: 1.25rem;
   background: #e0e0e0;
 `;
 

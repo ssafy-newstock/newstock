@@ -1,12 +1,12 @@
 import styled from 'styled-components';
-import StockNewsHeader from '@features/News/StockNews/StockNewsHeader';
+import StockPriceHeader from '@features/News/StockNewsDetail/StockPriceHeader';
 import {
   PositiveIcon as BasePositiveIcon,
-  PositiveIconText,
+  PositiveIconText as BasePositiveIconText,
   NegativeIcon as BaseNegativeIcon,
-  NegativeIconText,
+  NegativeIconText as BaseNegativeIconText,
   NeutralIcon as BaseNeutralIcon,
-  NeutralIconText,
+  NeutralIconText as BaseNeutralIconText,
 } from '@features/News/PNSubicon';
 import { NewsTag, bookmarkedIcon, unbookmarkedIcon } from '../NewsIconTag';
 import { useEffect, useState } from 'react';
@@ -22,8 +22,7 @@ const StockNewsDetailHeaderWrapper = styled.div`
   flex-direction: column;
   justify-content: flex-end;
   align-items: flex-start;
-  /* gap: 1.25rem; */
-  gap: 1rem;
+  gap: 1.25rem;
 `;
 
 const HeaderGapWrapper = styled.div<{ $gapSize: number }>`
@@ -44,9 +43,7 @@ const StockNewsTitleWrapper = styled.div`
 const StockNewsTitleText = styled.p`
   /* color: #0448a5; */
   color: ${({ theme }) => theme.textColor};
-  font-family: Inter;
   font-size: 2rem;
-  font-style: normal;
   font-weight: 600;
   line-height: 1.6;
   text-indent: 6.5rem;
@@ -71,7 +68,6 @@ const NewsMediaText = styled.p`
   color: ${({ theme }) => theme.textColor};
   /* color: #828282; */
   font-size: 1rem;
-  font-style: normal;
   line-height: 1.875rem; /* 176.471% */
 `;
 
@@ -79,7 +75,6 @@ const NewsAuthorInfoText = styled.p`
   color: ${({ theme }) => theme.grayTextColor};
   /* color: #828282; */
   font-size: 1rem;
-  font-style: normal;
   line-height: 1.875rem; /* 176.471% */
 `;
 
@@ -92,14 +87,41 @@ const Border = styled.div`
 
 const PositiveIcon = styled(BasePositiveIcon)`
   position: absolute;
+  width: 6rem;
+  height: 3rem;
+  padding: 0.3rem;
+  border: 0.125rem solid #ea1212;
+`;
+
+const PositiveIconText = styled(BasePositiveIconText)`
+  font-size: 2rem;
+  font-weight: 500;
 `;
 
 const NegativeIcon = styled(BaseNegativeIcon)`
   position: absolute;
+  width: 6rem;
+  height: 3rem;
+  padding: 0.3rem;
+  border: 0.125rem solid #006dff;
+`;
+
+const NegativeIconText = styled(BaseNegativeIconText)`
+  font-size: 2rem;
+  font-weight: 500;
 `;
 
 const NeutralIcon = styled(BaseNeutralIcon)`
   position: absolute;
+  width: 6rem;
+  height: 3rem;
+  padding: 0.3rem;
+  border: 0.125rem solid #828282;
+`;
+
+const NeutralIconText = styled(BaseNeutralIconText)`
+  font-size: 2rem;
+  font-weight: 500;
 `;
 
 interface StockNewsDetailHeaderProps {
@@ -206,7 +228,7 @@ const StockNewsDetailHeader: React.FC<StockNewsDetailHeaderProps> = ({
     <>
       <StockNewsDetailHeaderWrapper>
         <HeaderGapWrapper $gapSize={1.25}>
-          <StockNewsHeader header={stockName} stockDetail={stockDetail!} />
+          <StockPriceHeader header={stockName} stockDetail={stockDetail!} />
           <StockNewsTitleWrapper>
             {/* <PositiveIcon>
               <PositiveIconText>긍정</PositiveIconText>

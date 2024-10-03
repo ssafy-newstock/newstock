@@ -1,5 +1,17 @@
 import { StockCardRow, StockGridRow } from '@features/Stock/styledComponent';
-import styled from 'styled-components';
+import styled, {keyframes} from 'styled-components';
+
+const pulseAnimation = keyframes`
+  0% {
+    background-color: rgba(255, 255, 255, 0.6); // 시작 색상
+  }
+  50% {
+    background-color: rgba(240, 240, 240, 0.8); // 중간 색상
+  }
+  100% {
+    background-color: rgba(255, 255, 255, 0.6); // 종료 색상
+  }
+`;
 
 export const CenterContentDiv = styled.div`
   display: flex;
@@ -39,8 +51,21 @@ export const MetricItem = styled.div`
   align-items: center;
 `;
 
+export const MetricItemSkeleton = styled(MetricItem)`
+  animation: ${pulseAnimation} 1.5s infinite;
+  min-height: 3rem;
+  min-width: 20rem;
+  opacity: 0.4;
+`;
+
 export const MyStockCardRow = styled(StockCardRow)`
   grid-template-columns: 1.9fr 1fr 1fr 0.9fr 0.7fr 1fr; /* 각 열의 너비를 설정 */
+`;
+
+export const MyStockCartRowSkeleton = styled(MyStockCardRow)`
+  animation: ${pulseAnimation} 1.5s infinite;
+  min-height: 3rem;
+  opacity: 0.4;
 `;
 
 export const MyStockGridRow = styled(StockGridRow)`

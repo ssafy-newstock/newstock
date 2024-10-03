@@ -9,6 +9,7 @@ import useAllStockStore from '@store/useAllStockStore';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import useTop10StockStore from '@store/useTop10StockStore';
+import NewsMainSkeleton from '@features/News/skeleton/NewsMainSkeleton';
 
 interface NewsData {
   id: number;
@@ -27,12 +28,13 @@ const NewsMainCenter = styled.div`
   display: flex;
   width: 95%;
   // 화면 퍼지는거 보기 싫어서 일단 최댓값 박아둠.
-  max-width: 106rem;
+  max-width: 100rem;
+  min-width: 90rem;
   /* padding: 1.25rem 3rem; */
   padding: 1rem;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.625rem;
+  gap: 0.5rem;
   flex: 1 0 0;
   align-self: stretch;
 `;
@@ -92,6 +94,7 @@ const NewsMainPage: React.FC = () => {
         <NewsMainCenter>
           {/* 시황 뉴스 헤더 텍스트 */}
           <NewsMainHeader newsType="시황" />
+          {economicNews.length === 0 && <NewsMainSkeleton/>}
           <NewsMainBodyWrapper>
             {economicNews.map((news, index) => (
               <NewsMainBody
@@ -109,6 +112,7 @@ const NewsMainPage: React.FC = () => {
             ))}
           </NewsMainBodyWrapper>
           <NewsMainHeader newsType="종목" />
+          {stockNews.length === 0 && <NewsMainSkeleton/>}
           <NewsMainBodyWrapper>
             {stockNews.map((news, index) => {
               // stockNewsStockCodes의 첫 번째 stockCode에 해당하는 stockName을 찾음
@@ -117,7 +121,6 @@ const NewsMainPage: React.FC = () => {
                 allStock?.find((s) => s.stockCode === stockCode) ||
                 top10Stock?.find((s) => s.stockCode === stockCode);
               // const stockName = stockDetail?.stockName;
-
               return (
                 <NewsMainBody
                   key={index}

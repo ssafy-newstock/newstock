@@ -57,6 +57,7 @@ const useStockHoldingQuery = (
   return useSuspenseQuery<IApiStockHolding, Error>({
     queryKey: ['my-Holding', stockCode],
     queryFn: () => fetchStockHolding(stockCode),
+    retry: 1,
     ...options,
   });
 };

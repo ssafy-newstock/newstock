@@ -46,9 +46,9 @@ const HistoryIcon: React.FC = () => (
     <g
       fill="none"
       stroke="currentColor"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
     >
       <path d="M5.636 18.364A9 9 0 1 0 3 12.004V14" />
       <path d="m1 12l2 2l2-2m6-4v5h5" />
@@ -61,11 +61,11 @@ const HeartIcon: React.FC = () => (
     xmlns="http://www.w3.org/2000/svg"
     width="2rem"
     height="2rem"
-    viewBox="0 0 256 256"
+    viewBox="0 0 24 24"
   >
     <path
       fill="currentColor"
-      d="M240 102c0 70-103.79 126.66-108.21 129a8 8 0 0 1-7.58 0C119.79 228.66 16 172 16 102a62.07 62.07 0 0 1 62-62c20.65 0 38.73 8.88 50 23.89C139.27 48.88 157.35 40 178 40a62.07 62.07 0 0 1 62 62"
+      d="m12.1 18.55l-.1.1l-.11-.1C7.14 14.24 4 11.39 4 8.5C4 6.5 5.5 5 7.5 5c1.54 0 3.04 1 3.57 2.36h1.86C13.46 6 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5c0 2.89-3.14 5.74-7.9 10.05M16.5 3c-1.74 0-3.41.81-4.5 2.08C10.91 3.81 9.24 3 7.5 3C4.42 3 2 5.41 2 8.5c0 3.77 3.4 6.86 8.55 11.53L12 21.35l1.45-1.32C18.6 15.36 22 12.27 22 8.5C22 5.41 19.58 3 16.5 3"
     />
   </svg>
 );
@@ -91,15 +91,10 @@ const RankIcon: React.FC = () => (
     height="2rem"
     viewBox="0 0 48 48"
   >
-    <g
-      fill="none"
-      stroke="currentColor"
-      stroke-linejoin="round"
-      stroke-width="4"
-    >
-      <path stroke-linecap="round" d="M17 18H4v24h13z" />
+    <g fill="none" stroke="currentColor" strokeLinejoin="round" strokeWidth="4">
+      <path strokeLinecap="round" d="M17 18H4v24h13z" />
       <path d="M30 6H17v36h13z" />
-      <path stroke-linecap="round" d="M43 26H30v16h13z" />
+      <path strokeLinecap="round" d="M43 26H30v16h13z" />
     </g>
   </svg>
 );

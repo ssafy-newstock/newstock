@@ -1,37 +1,52 @@
 import styled from 'styled-components';
-import { StockPrev } from '@features/Stock/styledComponent';
-
+import {
+  StockPrev,
+  StockTitle,
+  StockImage,
+} from '@features/Stock/styledComponent';
 import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
+import blueLogo from '@assets/Stock/blueLogo.png';
+
 const NewsBodyHeaderWrapper = styled.div`
   display: flex;
-  width: 18rem;
-  justify-content: space-between;
-  align-items: flex-end;
+  flex-direction: column; /* 세로로 쌓이게 설정 */
+  width: 100%;
 `;
 
-const NewsBodyHeaderText = styled.div`
-  color: #828282;
-  font-family: Inter;
-  font-size: 1rem;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 1.9rem;
+// const NewsBodyHeaderText = styled.div`
+//   color: ${({ theme }) => theme.editorTextColor};
+//   font-size: 1.2rem;
+//   font-weight: 600;
+//   line-height: 1.9rem;
+//   align-self: flex-start; /* 왼쪽 정렬 */
+// `;
+
+const CustomStockTitle = styled(StockTitle)`
+  font-size: 1.2rem;
+  color: ${({ theme }) => theme.editorTextColor};
+  font-weight: 600;
+`;
+
+const CustomStockImage = styled(StockImage)`
+  width: 1.8rem;
+  height: 1.8rem;
+  margin-right: 0.2rem;
 `;
 
 const NewsBodyStockPriceWrapper = styled.div`
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 0.3rem; /* 가격과 변화량 사이에 간격 */
+  align-self: flex-end; /*오른쪽 정렬*/
+  margin-bottom: 1rem;
 `;
 
 const StockPrice = styled.span`
   color: ${({ theme }) => theme.editorTextColor};
-  font-family: Inter;
-  font-size: 0.75rem;
-  font-style: normal;
-  font-weight: 400;
+  font-size: 1.4rem;
   line-height: 0.75rem;
+  /* line-height: 1.4rem; */
 `;
 
 interface IStockDetail {
@@ -61,10 +76,19 @@ const StockNewsMainBodyHeader: React.FC<NewsBodyHeaderProps> = ({
 
   return (
     <NewsBodyHeaderWrapper>
-      <NewsBodyHeaderText>{header}</NewsBodyHeaderText>
+      <CustomStockTitle>
+        <CustomStockImage
+          src={`https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stockDetail.stockCode}.png`}
+          alt="stock image"
+          onError={(e) => {
+            e.currentTarget.src = blueLogo;
+          }} // 이미지 로드 실패 시 기본 이미지로 대체
+        />
+        {header}
+      </CustomStockTitle>
+      {/* <NewsBodyHeaderText>{header}</NewsBodyHeaderText> */}
       <NewsBodyStockPriceWrapper>
-        <StockPrice>{formatNumber(stockDetail.stckPrpr)}원 </StockPrice>
-        {/* <StockChange>-300 (-0.3%)</StockChange> */}
+        <StockPrice>{formatNumber(stockDetail.stckPrpr)}원</StockPrice>
         <StockPrev
           $isPositive={stockDetail.prdyVrss.toString().startsWith('-')}
         >

@@ -18,7 +18,8 @@ export const GlobalStyle = createGlobalStyle`
     padding: 0;
     border: 0;
     font-size: 100%;
-    font: inherit;
+    /* font : inherit; */
+    font-family: "Toss Product Sans"; 
     vertical-align: baseline;
   }
   article, aside, details, figcaption, figure, 
@@ -53,7 +54,6 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    font-weight: 400;
     font-family: 'Inter', sans-serif;
     /* font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; */
     background-color: ${({ theme }) => theme.backgroundColor};

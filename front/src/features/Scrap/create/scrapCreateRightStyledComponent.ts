@@ -59,6 +59,5 @@ export const RightNewsCardTagP = styled.p`
   color: ${({ theme }) => theme.buttonTextColor};
   padding: 0.3125rem;
   font-size: 1rem;
-  font-weight: 400;
   /* line-height: 1.875rem;  */
 `;

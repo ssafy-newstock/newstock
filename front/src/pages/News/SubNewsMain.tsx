@@ -6,41 +6,37 @@ import { Outlet } from 'react-router-dom';
 
 const SubNewsMainCenter = styled.div`
   display: flex;
-  /* padding: 1.25rem 1.5rem; */
-  padding: 1rem;
+  padding: 1.25rem;
   flex-direction: column;
   align-items: flex-start;
   align-self: stretch;
-  max-width: 106rem;
-  /* min-width: 1024px; */
-  /* width: 64rem; */
+  max-width: 100rem;
+  min-width: 90rem;
+
   width: 100%;
 `;
 const SubNewsHeaderWrapper = styled.div`
   display: flex;
-  padding: 1.6rem 0;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.6rem;
+  gap: 0.15rem;
   align-self: stretch;
 `;
 
 const SubNewsHeaderText = styled.p`
   color: ${({ theme }) => theme.textColor};
-  font-family: Inter;
-  font-size: 2rem;
-  font-style: normal;
+  font-size: 1.5rem;
   font-weight: 600;
   line-height: 1.9rem;
 `;
-const SubNewsBoarder = styled.div`
+const SubNewsBoarder = styled.hr`
   display: flex;
-  margin: 0.625rem 0 0.19rem 0;
+  margin: 0.625rem 0 0 0;
   justify-content: center;
   align-items: center;
   gap: 0.625rem;
-  width: 100%;
-  height: 0.19rem;
+  width: 90%;
+  height: 0.1rem;
   background-color: ${({ theme }) => theme.textColor};
 `;
 
@@ -48,16 +44,17 @@ const CategoryWrapper = styled.div`
   display: flex;
   justify-content: space-evenly;
   align-items: center;
+  justify-content: flex-start;
+  align-items: start;
   width: 98%;
-  gap: 1.25rem;
+  gap: 1.5rem;
   flex-wrap: nowrap;
   white-space: nowrap;
   overflow: hidden; /* 넘친 카테고리들을 가리도록 설정 */
 `;
 
 const CategoryText = styled.p<{ $isSelected: boolean }>`
-  font-family: Inter;
-  font-size: 1rem;
+  font-size: 0.8rem;
   font-weight: ${({ $isSelected }) => ($isSelected ? '600' : '400')};
   line-height: 1.9rem; /* 187.5% */
   color: ${({ $isSelected, theme }) =>

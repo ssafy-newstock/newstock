@@ -27,7 +27,6 @@ const DateWrapper = styled.div`
 
 // const DateText = styled.p`
 //   color: #828282;
-//   font-family: Inter;
 //   font-size: 1rem;
 //   line-height: 1.875rem;
 // `;

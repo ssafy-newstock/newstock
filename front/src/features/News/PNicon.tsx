@@ -15,10 +15,7 @@ export const PositiveIcon = styled.div`
 
 export const PositiveIconText = styled.p`
   color: #e31837;
-  font-family: Inter;
   font-size: 0.75rem;
-  font-style: normal;
-  font-weight: 400;
   line-height: 1.9rem; /* 250% */
 `;
 
@@ -37,10 +34,7 @@ export const NeutralIcon = styled.div`
 
 export const NeutralIconText = styled.p`
   color: #828282;
-  font-family: Inter;
   font-size: 0.75rem;
-  font-style: normal;
-  font-weight: 400;
   line-height: 1.9rem; /* 250% */
 `;
 
@@ -59,9 +53,6 @@ export const NegativeIcon = styled.div`
 
 export const NegativeIconText = styled.p`
   color: #006dff;
-  font-family: Inter;
   font-size: 0.75rem;
-  font-style: normal;
-  font-weight: 400;
   line-height: 1.9rem; /* 250% */
 `;
