@@ -8,6 +8,7 @@ import NewsSummary from '@features/News/NewsSummary';
 import { Overlay, Background, Modal } from '@components/ModalComponents';
 import { useOutletContext } from 'react-router-dom';
 import { axiosInstance } from '@api/axiosInstance';
+import { toast } from 'react-toastify';
 
 const EconomicNewsBody = styled.div`
   display: flex;
@@ -111,11 +112,11 @@ const registerIndustryBookmark = async (id: number) => {
     );
     console.log('API Response:', response); // 응답 확인
     if (response.data.success) {
-      alert('북마크가 성공적으로 등록되었습니다.');
+      toast.success('북마크가 성공적으로 등록되었습니다.');
     }
   } catch (error) {
     console.error('Failed to register bookmark: ', error);
-    alert('북마크 등록에 실패했습니다.');
+    toast.error('북마크 등록에 실패했습니다.');
   }
 };
 
@@ -126,11 +127,11 @@ const deleteIndustryBookmark = async (id: number) => {
       `/api/news/favorite/industry/${id}`
     );
     if (response.data.success) {
-      alert('북마크가 성공적으로 삭제되었습니다.');
+      toast.success('북마크가 성공적으로 삭제되었습니다.');
     }
   } catch (error) {
     console.error('Failed to delete bookmark: ', error);
-    alert('북마크 삭제에 실패했습니다.');
+    toast.error('북마크 삭제에 실패했습니다.');
   }
 };
 

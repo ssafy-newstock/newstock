@@ -40,8 +40,7 @@ const CancelButton = styled.div`
 interface ILoginProps {
   closeLogin?: () => void;
 }
-// const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
-const REDIRECT_URI = 'http://localhost:5173';
+const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
 
 const kakao_client_id = import.meta.env.VITE_KAKAO_CLIENT_ID;
 const kakao_client_secret = import.meta.env.VITE_KAKAO_CLIENT_SECRET;

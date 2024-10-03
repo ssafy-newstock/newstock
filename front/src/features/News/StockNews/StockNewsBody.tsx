@@ -7,7 +7,7 @@ import NewsSummary from '@features/News/NewsSummary';
 import { Overlay, Background, Modal } from '@components/ModalComponents';
 import { useOutletContext } from 'react-router-dom';
 import { axiosInstance } from '@api/axiosInstance';
-
+import { toast } from 'react-toastify';
 import { NewsTag } from '../NewsIconTag';
 
 const StockNewsBodyWrapper = styled.div`
@@ -93,11 +93,11 @@ const registerStockBookmark = async (id: number) => {
   try {
     const response = await axiosInstance.post(`/api/news/favorite/stock/${id}`);
     if (response.data.success) {
-      alert('종목 뉴스가 북마크에 성공적으로 등록되었습니다.');
+      toast.success('북마크가 성공적으로 등록되었습니다.');
     }
   } catch (error) {
     console.error('Failed to register bookmark: ', error);
-    alert('종목 뉴스 북마크 등록에 실패했습니다.');
+    toast.error('북마크 등록에 실패했습니다.');
   }
 };
 
@@ -108,11 +108,11 @@ const deleteStockBookmark = async (id: number) => {
       `/api/news/favorite/stock/${id}`
     );
     if (response.data.success) {
-      alert('종목 뉴스 북마크가 성공적으로 삭제되었습니다.');
+      toast.success('북마크가 성공적으로 삭제되었습니다.');
     }
   } catch (error) {
     console.error('Failed to delete bookmark: ', error);
-    alert('종목 뉴스 북마크 삭제에 실패했습니다.');
+    toast.error('북마크 삭제에 실패했습니다.');
   }
 };
 

@@ -75,7 +75,10 @@ const StockPriceHeader: React.FC<StockPriceHeaderProps> = ({
       <StockCorp>
         <CustomStockImage
           src={`https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stockDetail.stockCode}.png`}
-          alt={blueLogo}
+          alt="stock image"
+          onError={(e) => {
+            e.currentTarget.src = blueLogo;
+          }} // 이미지 로드 실패 시 기본 이미지로 대체
         />
         <StockNewsCorpText>{header}</StockNewsCorpText>
       </StockCorp>
