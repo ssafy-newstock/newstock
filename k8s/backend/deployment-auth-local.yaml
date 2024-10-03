@@ -99,7 +99,7 @@ spec:
         - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KAKAO_CLIENT_SECRET
           value: "HejdyxEs5f2Sak2vZZbCINXaLyJ77L5h"
         - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_KAKAO_REDIRECT_URI
-          value: "https://newstock.info/login/oauth2/code/kakao"
+          value: "http://localhost:5173/login/oauth2/code/kakao"
       imagePullSecrets:
         - name: ocirsecret
 ---
