@@ -1,10 +1,10 @@
-// import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import StockNewsDetailHeader from '@features/News/StockNewsDetail/StockNewsDetailHeader';
 import StockNewsDetailBody from '@features/News/StockNewsDetail/StockNewsDetailBody';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import NewsDetailSkeleton from '@features/News/skeleton/NewsDetailSkeleton';
 import { authRequest } from '@api/axiosInstance';
 import usePointStore from '@store/usePointStore';
 import useSocketStore from '@store/useSocketStore';
@@ -131,8 +131,8 @@ const StockNewsDetailPage: React.FC = () => {
   return (
     <div>
       <SubCenter>
-        <NewsWrapper>
-          {detailNews && (
+        {detailNews ? (
+          <NewsWrapper>
             <StockNewsDetailHeader
               title={detailNews.title}
               media={detailNews.media}
@@ -142,14 +142,14 @@ const StockNewsDetailPage: React.FC = () => {
               stockNewsStockCodes={detailNews?.stockNewsStockCodes}
               id={detailNews.id}
             />
-          )}
-          {detailNews && (
             <StockNewsDetailBody
               subtitle={detailNews.subtitle}
               article={detailNews.article}
             />
-          )}
-        </NewsWrapper>
+          </NewsWrapper>
+        ) : (
+          <NewsDetailSkeleton />
+        )}
       </SubCenter>
     </div>
   );

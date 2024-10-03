@@ -25,6 +25,7 @@ import FavoriteStockList from '@features/MyStock/FavoriteStockList';
 
 import { Flex } from '@components/styledComponent';
 import { useOutletContext } from 'react-router-dom';
+import MyStockSkeleton from '@features/MyStock/skeleton/MyStockSkeleton';
 
 interface StockHolding {
   stockId: number;
@@ -58,7 +59,7 @@ interface OutletContext {
   setIsOpen: (isOpen: boolean) => void;
 }
 const MyStock: React.FC = () => {
-  const { data } = useMyStockData();
+  const { data, isLoading } = useMyStockData();
   const { setIsOpen } = useOutletContext<OutletContext>();
   const FavoriteData = data?.stockFavoriteDtoList || [];
   console.log(FavoriteData);
@@ -89,6 +90,10 @@ const MyStock: React.FC = () => {
   const handleMoreClick = () => {
     setIsOpen(true);
   };
+
+  if (isLoading) {
+    return <MyStockSkeleton />;
+  }
 
   return (
     <>

@@ -7,6 +7,7 @@ import usePointStore from '@store/usePointStore';
 import useSocketStore from '@store/useSocketStore';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import NewsDetailSkeleton from '@features/News/skeleton/NewsDetailSkeleton';
 import { authRequest } from '@api/axiosInstance';
 
 const SubCenter = styled.div`
@@ -130,8 +131,8 @@ const EconomicNewsDetailPage: React.FC = () => {
   return (
     <div>
       <SubCenter>
-        <NewsWrapper>
-          {detailNews && (
+        {detailNews ? (
+          <NewsWrapper>
             <EconNewsDetailHeader
               title={detailNews.title}
               media={detailNews.media}
@@ -139,14 +140,14 @@ const EconomicNewsDetailPage: React.FC = () => {
               sentiment={detailNews.sentiment}
               id={detailNews.id}
             />
-          )}
-          {detailNews && (
             <EconNewsDetailBody
               subtitle={detailNews.subtitle}
               article={detailNews.article}
             />
-          )}
-        </NewsWrapper>
+          </NewsWrapper>
+        ) : (
+          <NewsDetailSkeleton />
+        )}
       </SubCenter>
     </div>
   );

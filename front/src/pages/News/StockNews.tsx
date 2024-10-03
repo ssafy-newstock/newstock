@@ -6,6 +6,7 @@ import EconSubNewsBody from '@features/News/EconNews/EconSubNewsBody';
 import axios, { AxiosResponse } from 'axios';
 import useAllStockStore from '@store/useAllStockStore';
 import useTop10StockStore from '@store/useTop10StockStore';
+import StockNewsSkeleton from '@features/News/skeleton/StockNewsSkeleton';
 
 const SubCenter = styled.div`
   display: flex;
@@ -197,6 +198,8 @@ const StockNewsPage: React.FC = () => {
   };
 
   return (
+    <>
+    {loading && <StockNewsSkeleton/>}
     <SubCenter>
       {newsList.length > 0
         ? newsList.map((news) => {
@@ -237,6 +240,7 @@ const StockNewsPage: React.FC = () => {
       )}
       <ObserverTrigger ref={observerRef} />
     </SubCenter>
+    </>
   );
 };
 

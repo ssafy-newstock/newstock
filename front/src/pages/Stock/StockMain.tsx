@@ -23,6 +23,8 @@ import useAuthStore from '@store/useAuthStore';
 import FavoriteStockSection from '@features/Stock/StockMain/FavoriteStockSection';
 import FavoriteStockSkeleton from '@features/Stock/StockMain/FavoriteStockSkeleton';
 import RealTimeStockSkeleton from '@features/Stock/StockMain/RealTimeStockSkeleton';
+import { ErrorBoundary } from 'react-error-boundary';
+import StockMain from '@pages/Stock/StockMain';
 
 const StockMainPage = () => {
   const { categoryStock } = useCategoryStockStore();
@@ -50,7 +52,7 @@ const StockMainPage = () => {
   };
 
   return (
-    <>
+    <ErrorBoundary fallback={<StockMain/>}>
       <Center style={{ padding: '1rem' }}>
         <Suspense fallback={<FavoriteStockSkeleton />}>
           <FavoriteStockSection />
@@ -117,7 +119,7 @@ const StockMainPage = () => {
       {selectedCategory && (
         <Modal onClose={closeModal} category={selectedCategory} />
       )}
-    </>
+    </ErrorBoundary>
   );
 };
 

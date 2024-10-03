@@ -9,6 +9,7 @@ import useAllStockStore from '@store/useAllStockStore';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import useTop10StockStore from '@store/useTop10StockStore';
+import NewsMainSkeleton from '@features/News/skeleton/NewsMainSkeleton';
 
 interface NewsData {
   id: number;
@@ -93,6 +94,7 @@ const NewsMainPage: React.FC = () => {
         <NewsMainCenter>
           {/* 시황 뉴스 헤더 텍스트 */}
           <NewsMainHeader newsType="시황" />
+          {economicNews.length === 0 && <NewsMainSkeleton/>}
           <NewsMainBodyWrapper>
             {economicNews.map((news, index) => (
               <NewsMainBody
@@ -110,6 +112,7 @@ const NewsMainPage: React.FC = () => {
             ))}
           </NewsMainBodyWrapper>
           <NewsMainHeader newsType="종목" />
+          {stockNews.length === 0 && <NewsMainSkeleton/>}
           <NewsMainBodyWrapper>
             {stockNews.map((news, index) => {
               // stockNewsStockCodes의 첫 번째 stockCode에 해당하는 stockName을 찾음
@@ -118,7 +121,6 @@ const NewsMainPage: React.FC = () => {
                 allStock?.find((s) => s.stockCode === stockCode) ||
                 top10Stock?.find((s) => s.stockCode === stockCode);
               // const stockName = stockDetail?.stockName;
-
               return (
                 <NewsMainBody
                   key={index}
