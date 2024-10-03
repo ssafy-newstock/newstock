@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import SentimentIcon from '@features/News/PNSubicon';
+import newstockIcon from '@assets/Stock/blueLogo.png';
 import StockNewsHeader from './StockNewsHeader';
 import { useEffect, useState } from 'react';
 import NewsSummary from '@features/News/NewsSummary';
@@ -21,7 +22,7 @@ const StockNewsBodyWrapper = styled.div`
 
 const StockNewsTitleWrapper = styled.div`
   display: flex;
-  width: 80%;
+  width: 70%;
   align-items: center;
   gap: 0.5rem;
   margin-top: 1rem;
@@ -59,6 +60,7 @@ const StockNewsContent = styled.p`
   color: #828282;
   font-size: 1rem;
   line-height: 2rem;
+  width: 100%;
 `;
 
 const StockNewsFooter = styled.div`
@@ -73,6 +75,11 @@ const FooterText = styled.p`
   font-size: 1rem;
   font-weight: 500;
   line-height: 1.9rem;
+`;
+
+const MediaWrapper = styled.div`
+  display: flex;
+  gap: 0.5rem;
 `;
 
 const BookmarkedNewsTagWrapper = styled.div`
@@ -119,6 +126,13 @@ const fetchBookmarkedStockNews = async (): Promise<number[]> => {
     return [];
   }
 };
+
+const MediaLogo = styled.img`
+  width: 1.5rem;
+  height: 1.5rem;
+  object-fit: contain; /* 이미지 비율을 유지하면서 컨테이너 안에 맞춤 */
+  border-radius: 50%;
+`;
 
 // Outlet에서 전달된 값에 대한 타입 정의
 interface OutletContextType {
@@ -180,6 +194,7 @@ const StockNewsBody: React.FC<StockNewsBodyProps> = ({
   const formattedDate = date.split('T')[0].replace(/-/g, '.');
   const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
   const [showSummary, setShowSummary] = useState<boolean>(false);
+  const mediaImageUrl = `https://stock.vaiv.kr/resources/images/news/${media}.png`;
 
   // Outlet에서 전달된 콜백 함수 받기
   const { onBookmarkSuccess, bookmarkUpdated } =
@@ -292,7 +307,16 @@ const StockNewsBody: React.FC<StockNewsBodyProps> = ({
       <StockNewsContent>{content}</StockNewsContent>
 
       <StockNewsFooter>
-        <FooterText>{media}</FooterText>
+        <MediaWrapper>
+          <MediaLogo
+            src={mediaImageUrl}
+            alt={media}
+            onError={(e) => {
+              e.currentTarget.src = newstockIcon; // 이미지 로드 실패 시 기본 이미지로 대체
+            }}
+          />
+          <FooterText>{media}</FooterText>
+        </MediaWrapper>
         <FooterText>{formattedDate}</FooterText>
       </StockNewsFooter>
 

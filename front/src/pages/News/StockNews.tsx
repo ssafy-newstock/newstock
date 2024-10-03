@@ -9,12 +9,12 @@ import useTop10StockStore from '@store/useTop10StockStore';
 
 const SubCenter = styled.div`
   display: flex;
-  width: 100%;
   padding: 1rem;
   flex-direction: column;
   align-items: flex-start;
   align-self: stretch;
-  max-width: 106rem;
+  max-width: 100rem;
+  min-width: 90rem;
   width: 90%;
 `;
 

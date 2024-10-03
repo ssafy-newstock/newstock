@@ -5,7 +5,7 @@ const NewsBodyHeaderText = styled.div`
   font-size: 1.2rem;
   font-weight: 600;
   line-height: 1.9rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 `;
 
 interface NewsBodyHeaderProps {
