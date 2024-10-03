@@ -8,6 +8,7 @@ import { authRequest } from '@api/axiosInstance';
 import { formatUnit } from '@utils/formatUnit';
 import usePointStore from '@store/usePointStore';
 import useSocketStore from '@store/useSocketStore';
+import { useNavigate } from 'react-router-dom';
 
 const HeaderContainer = styled.div<{ $isOpen: boolean }>`
   width: ${({ $isOpen }) => ($isOpen ? 'calc(100% - 400px)' : '100%')};
@@ -123,6 +124,7 @@ const Header: React.FC<HeaderProps> = ({ isOpen }) => {
   const { memberName } = useAuthStore();
   const { theme, toggleTheme } = useThemeStore();
   const isDarkMode = theme === 'dark';
+  const navigate = useNavigate();
   // 로그인 모달 상태 추가
   const [loginOpen, setLoginOpen] = useState<boolean>(false);
   // 유저 포인트 상태
@@ -208,7 +210,9 @@ const Header: React.FC<HeaderProps> = ({ isOpen }) => {
   return (
     <>
       <HeaderContainer $isOpen={isOpen}>
-        <NewStock>NewStock</NewStock>
+        <NewStock onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
+          NewStock
+        </NewStock>
         <HeaderRight>
           <Slider onClick={toggleTheme}>
             {/* <div>{isDarkMode ? '🌙' : '☀️'}</div> */}
