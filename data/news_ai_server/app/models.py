@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
-from typing import List
+from typing import List, Dict
 import datetime
+from typing_extensions import Annotated, TypedDict
 
 # 각각의 candle data
 class CandleData(BaseModel):
@@ -24,3 +25,10 @@ class StockData(BaseModel):
 class SimilarStockResponse(BaseModel):
     baseStock: StockData = Field(..., description="Most similar base stock range.")
     otherStock: List[StockData] = Field(..., description="5 most similar stock to base stock range.")
+
+class ReportStockData(TypedDict):
+    """Report of News for specific stock code"""
+
+    report: Annotated[str, ..., "The stock analysis with macro and microeconomic analysis "]
+    # macro_summary: Annotated[str, ..., "The summary for specific stock news"]
+    related_news: Annotated[List[int], ..., "The related top 4 news of the report"]

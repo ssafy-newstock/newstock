@@ -5,6 +5,10 @@ from pymysql.cursors import DictCursor
 import pandas as pd
 from dotenv import load_dotenv
 from exception import StockInfoEmptyException
+import jaydebeapi
+import time
+
+from langchain_openai import ChatOpenAI
 
 # .env파일 로드
 load_dotenv(os.path.join('core', '.env'))
@@ -144,3 +148,67 @@ def get_all_stock_data_for_industry(base_stock_code: str) -> pd.DataFrame:
         return result
     finally:
         connection.close()
+
+def connect_jdbc() -> jaydebeapi.Connection:
+    """JDBC 연결을 설정하고, 지정된 테이블의 인덱스를 삭제한 후 연결을 반환합니다.
+
+    Returns:
+        jaydebeapi.Connection: Phoenix 데이터베이스에 연결된 JDBC connection 객체.
+    """
+
+    # 각 JAR 파일의 경로 설정
+    phoenix_jar_path = './core/jdbc/phoenix-client-embedded-hbase-2.5-5.1.3.jar'
+    reload4j_jar_path = './core/jdbc/reload4j-1.2.24.jar'
+    slf4j_reload4j_jar_path = './core/jdbc/slf4j-reload4j-1.7.36.jar'
+    sqlline_jar_path = './core/jdbc/sqlline-1.9.0-jar-with-dependencies.jar'
+
+    # 필요한 JAR 파일을 포함한 클래스패스 설정
+    class_path = f"{phoenix_jar_path};{reload4j_jar_path};{slf4j_reload4j_jar_path};{sqlline_jar_path}"
+
+    # 환경 변수에서 JDBC URL과 JAVA_HOME을 설정
+    jdbc_url = os.getenv('JDBC_URL')  # JDBC 연결 URL
+    os.environ['JAVA_HOME'] = os.getenv('JAVA_HOME')  # JAVA 설치 경로 설정
+
+    # Phoenix에 JDBC 연결을 설정
+    connection = jaydebeapi.connect(
+        "org.apache.phoenix.jdbc.PhoenixDriver",  # 드라이버 클래스 이름
+        jdbc_url,  # JDBC URL
+        ["", ""],  # 사용자명 및 비밀번호 (빈 값으로 설정)
+        class_path  # 클래스패스에 추가된 JAR 파일들
+    )
+
+    logger.info("Connection successful")  # 연결 성공 메시지 출력
+
+
+    # 연결 객체 반환
+    return connection
+
+def execute_hbase_prepared_query(query, params):
+    """
+    PreparedStatement를 사용하여 쿼리를 실행하고 결과를 반환하는 메소드.
+    """
+    # JayDeBeAPI를 사용하여 Phoenix에 연결
+    connection = connect_jdbc()
+    cursor = None
+    try:
+        cursor = connection.cursor()
+
+        # PreparedStatement 실행
+        cursor.execute(query, params)  # 쿼리와 함께 매개변수 전달
+        results = cursor.fetchall()  # 결과 가져오기
+
+        # 결과 반환
+        return results
+
+    except Exception as e:
+        logger.error(f"Error executing query: {e}")
+        return None, 0
+
+    finally:
+        # 커밋 및 연결 종료
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.commit()
+            connection.close()
+        logger.info("Connection closed successfully!")
