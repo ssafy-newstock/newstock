@@ -76,10 +76,11 @@ const StockDetailPage = () => {
             </Suspense>
           </ErrorBoundary>
         </DividedSection>
-
-        <Suspense fallback={<p>Loading...</p>}>
-          <SimilaritySearch stockCode={stock.stockCode} />
-        </Suspense>
+        <ErrorBoundary fallback={<div>검색 결과가 없습니다.</div>}>
+          <Suspense fallback={<p>Loading...</p>}>
+            <SimilaritySearch stockCode={stock.stockCode} />
+          </Suspense>
+        </ErrorBoundary>
       </Center>
     </>
   );
