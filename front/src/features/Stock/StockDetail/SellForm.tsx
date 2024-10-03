@@ -15,7 +15,7 @@ export const sellStock = async (data: SellStockRequest) => {
 };
 
 // hooks/useSellStock.ts
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export interface SellStockVariables {
   stockCode: string;
@@ -55,6 +55,7 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
   const [modalAmount, setModalAmount] = useState(0);
 
   const mutation = useSellStock();
+  const queryClient = useQueryClient();
 
   const {
     control,
@@ -93,6 +94,7 @@ const SellForm: React.FC<TradeFormProps> = ({ price, stockCode }) => {
         onSuccess: () => {
           setModalOpen(true);
           resetForm({ price, amount: 0 });
+          queryClient.invalidateQueries({queryKey:['my-Holding', stockCode]});
         },
         onError: () => {
           setModalOpen(true);
