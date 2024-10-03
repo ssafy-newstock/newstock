@@ -1,6 +1,5 @@
 import { NewsContainerSkeleton, RowNewsCardSkeleton } from "./styledComponent";
 
-
 const EconNewsSkeleton = () => {
   return (
     <NewsContainerSkeleton>
