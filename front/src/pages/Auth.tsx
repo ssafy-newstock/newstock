@@ -75,18 +75,18 @@ const Auth = () => {
         // 토큰을 cessionStorage에 저장
         sessionStorage.setItem('accessToken', accessToken);
         toast.success('로그인 성공!');
-        // pathname이 있을 경우 해당 경로로 이동, 없을 경우 '/'로 이동
-        if (pathname) {
-          navigate(pathname);
-        } else {
-          navigate('/');
-        }
       } catch (err) {
         console.error('Error during login:', err);
         setError(err);
         toast.error('로그인 중 오류가 발생했습니다.');
       } finally {
         setIsLoading(false);
+        // pathname이 있을 경우 해당 경로로 이동, 없을 경우 '/'로 이동
+        if (pathname) {
+          navigate(pathname);
+        } else {
+          navigate('/');
+        }
       }
     };
 
