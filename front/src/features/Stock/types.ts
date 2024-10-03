@@ -1,3 +1,8 @@
+export interface IApiStock {
+  success: boolean;
+  data: IStock[];
+}
+
 export interface IStock {
   stockCode: string;
   stockName: string;
@@ -9,14 +14,18 @@ export interface IStock {
   acmlVol: number;
 }
 
-export interface IApiStock {
-  success: boolean;
-  data: IStock[];
-}
-
 export interface IApiCategory {
   success: boolean;
   data: ICategoryStock[];
+}
+
+export interface ICategoryStock {
+  industryCode: string;
+  industryName: string;
+  bstpNmixPrpr: string;
+  bstpNmixPrdyVrss: string;
+  bstpNmixPrdyCtrt: string;
+  acmlTrPbmn: string;
 }
 
 export interface ICategory {
@@ -33,15 +42,6 @@ export interface ICategory {
   onClick?: () => void;
 }
 
-export interface ICategoryStock {
-  industryCode: string;
-  industryName: string;
-  bstpNmixPrpr: string;
-  bstpNmixPrdyVrss: string;
-  bstpNmixPrdyCtrt: string;
-  acmlTrPbmn: string;
-}
-
 interface IcategoryDetails {
   url: string;
   bgColor: string;
@@ -52,6 +52,11 @@ export interface IcategoryImage {
 
 export interface ICategoryImgWrapper {
   bgColor?: string;
+}
+
+export interface IApiFavorite {
+  success: boolean;
+  data: IFavoriteStock[];
 }
 
 export interface IFavoriteStock {
@@ -65,6 +70,10 @@ export interface IMutationContext {
   previousFavoriteList: IFavoriteStock[] | undefined;
 }
 
+export interface IApiDaily {
+  success: boolean;
+  data: IDaily[];
+}
 export interface IDaily {
   stockId: number;
   stockCode: string;
@@ -76,6 +85,11 @@ export interface IDaily {
   stockCandleLow: number;
 }
 
+export interface IApiLive {
+  success: boolean;
+  data: ILive[];
+}
+
 export interface ILive {
   id: string;
   stockCode: string;
@@ -85,14 +99,14 @@ export interface ILive {
   time: string; // 시간 형식이 문자열로 제공됨
 }
 
-export interface IChartData {
-  stockCandleDtoList: IDaily[];
-  stocksPriceLiveDailyChartRedisDtoList: ILive[];
-}
+// export interface IChartData {
+//   stockCandleDtoList: IDaily[];
+//   stocksPriceLiveDailyChartRedisDtoList: ILive[];
+// }
 
-export interface OutletContext {
-  chartData: IChartData; // IChartData는 stockCandleDtoList를 포함하는 데이터 구조
-}
+// export interface OutletContext {
+//   chartData: IChartData; // IChartData는 stockCandleDtoList를 포함하는 데이터 구조
+// }
 
 export interface FormValues {
   price: number;
@@ -102,4 +116,23 @@ export interface FormValues {
 export interface TradeFormProps {
   price: number;
   stockCode: string;
+}
+
+export interface TradeModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  message: string;
+  buySuccess?: boolean;
+  sellSuccess?: boolean;
+  price?: number;
+  amount?: number;
+}
+
+export interface CategoryModalProps {
+  onClose: () => void;
+  category: ICategoryStock;
+}
+
+export interface ChartLinkProps {
+  stock: IStock;
 }

@@ -46,9 +46,9 @@ const HistoryIcon: React.FC = () => (
     <g
       fill="none"
       stroke="currentColor"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke-width="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
     >
       <path d="M5.636 18.364A9 9 0 1 0 3 12.004V14" />
       <path d="m1 12l2 2l2-2m6-4v5h5" />
@@ -91,15 +91,10 @@ const RankIcon: React.FC = () => (
     height="2rem"
     viewBox="0 0 48 48"
   >
-    <g
-      fill="none"
-      stroke="currentColor"
-      stroke-linejoin="round"
-      stroke-width="4"
-    >
-      <path stroke-linecap="round" d="M17 18H4v24h13z" />
+    <g fill="none" stroke="currentColor" strokeLinejoin="round" strokeWidth="4">
+      <path strokeLinecap="round" d="M17 18H4v24h13z" />
       <path d="M30 6H17v36h13z" />
-      <path stroke-linecap="round" d="M43 26H30v16h13z" />
+      <path strokeLinecap="round" d="M43 26H30v16h13z" />
     </g>
   </svg>
 );

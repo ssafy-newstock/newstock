@@ -2,10 +2,7 @@ package com.ssafy.stock.domain.service;
 
 import com.ssafy.stock.domain.entity.Redis.*;
 import com.ssafy.stock.domain.entity.*;
-import com.ssafy.stock.domain.error.custom.StockAlreadyFavoriteException;
-import com.ssafy.stock.domain.error.custom.StockFavoriteNotFoundException;
-import com.ssafy.stock.domain.error.custom.StockHoldingNotFoundException;
-import com.ssafy.stock.domain.error.custom.StockNotFoundException;
+import com.ssafy.stock.domain.error.custom.*;
 import com.ssafy.stock.domain.repository.StockFavoriteRepository;
 import com.ssafy.stock.domain.repository.StockHoldingRepository;
 import com.ssafy.stock.domain.repository.StockTransactionRepository;
@@ -191,13 +188,13 @@ public class StockService {
         // Redis에서 조회된 내용이 없으면 DBMS에서 조회
         if (stocksPriceRedisList.isEmpty()) {
             return stocksRepository.findAllWithStockPrice(STOCKPRICE.OTHER).stream()
-                    .map(stock -> stockConverter.stockToPriceDto(stock))
+                    .map(stockConverter::stockToPriceDto)
                     .toList();
         }
 
         // Redis에서 찾은 가격 response
         return stocksPriceRedisList.stream()
-                .map(stocksPriceRedis -> stockConverter.stockRedisToPriceDto(stocksPriceRedis))
+                .map(stockConverter::stockRedisToPriceDto)
                 .toList();
     }
 
@@ -212,13 +209,13 @@ public class StockService {
         // Redis에서 조회된 내용이 없으면 DBMS에서 조회
         if (stocksPriceLiveRedisList.isEmpty()) {
             return stocksRepository.findAllWithStockPrice(STOCKPRICE.TOP).stream()
-                    .map(stock -> stockConverter.stockToPriceDto(stock))
+                    .map(stockConverter::stockToPriceDto)
                     .toList();
         }
 
         // Redis에서 찾은 가격 response
         return stocksPriceLiveRedisList.stream()
-                .map(stock -> stockConverter.stockLiveRedisToPriceDto(stock))
+                .map(stockConverter::stockLiveRedisToPriceDto)
                 .toList();
     }
 
@@ -241,7 +238,7 @@ public class StockService {
      */
     public List<StockCandleDto> getStockCandle(String stockCode, LocalDate startDate, LocalDate endDate) {
         Stocks stock = stocksRepository.findByStockCodeWithCandlesAndDate(stockCode, startDate, endDate)
-                .orElseThrow(() -> new StockNotFoundException());
+                .orElseThrow(() -> new StockCandleNotFoundException(stockCode + " : 해당 주식의 캔들 정보를 찾을 수 없습니다. (기간: " + startDate + " ~ " + endDate + ")"));
 
         List<StocksCandle> stocksCandles = stock.getStocksCandles();
 
@@ -267,7 +264,7 @@ public class StockService {
                     .toList();
 
             return sortedLiveDailyChartRedisList.stream()
-                    .map(stocksPriceLiveDailyChartRedis -> new StocksPriceLiveDailyChartRedisDto(stocksPriceLiveDailyChartRedis))
+                    .map(StocksPriceLiveDailyChartRedisDto::new)
                     .toList();    
         } else {
             // 나머지 전종목 데일리 차트 데이터
@@ -279,7 +276,7 @@ public class StockService {
                     .toList();
 
             return sortedLiveDailyChartRedisList.stream()
-                    .map(stocksPriceDailyChartRedis -> new StocksPriceLiveDailyChartRedisDto(stocksPriceDailyChartRedis))
+                    .map(StocksPriceLiveDailyChartRedisDto::new)
                     .toList();
         }
     }
@@ -300,7 +297,7 @@ public class StockService {
 
     /**
      * 보유 주식 전체 조회 메소드
-     * @param myStockHoldings
+     * @param memberId
      * @return
      */
     public List<StockMyPageHoldingDto> getStockMyPageHoldingDtoList(Long memberId) {
@@ -308,22 +305,7 @@ public class StockService {
 
         return myStockHoldings.stream()
                 .map(myStockHolding -> {
-                    Stocks stock = myStockHolding.getStock();
-
-                    Long currentPrice = stockTransactionService.getCurrentPrice(stock.getStockCode()); // 현재 주가
-                    Long buyPrice = myStockHolding.getStockHoldingBuyPrice(); // 평단가
-                    Long changeAmount = currentPrice - buyPrice; // 등락 가격
-                    Double changeRate = (buyPrice != 0) ? (double) changeAmount / buyPrice * 100 : 0.0; // 등락률 계산 (0으로 나누기 방지)
-
-                    return new StockMyPageHoldingDto(
-                            stock.getId(),
-                            stock.getStockCode(),
-                            stock.getStockName(),
-                            myStockHolding.getStockHoldingBuyAmount(),
-                            buyPrice,
-                            changeAmount,
-                            changeRate
-                    );
+                    return getStockMyPageHoldingDto(myStockHolding);
                 }).toList();
     }
 
@@ -333,37 +315,35 @@ public class StockService {
      * @param stockCode
      * @return
      */
-    public List<StockMyPageHoldingDto> getStockHoldingDtoList(Long memberId, String stockCode) {
-        List<StocksHoldings> myStockHoldings = stockHoldingRepository.findAllByMemberIdAndStockCodeWithStock(memberId, stockCode);
+    public StockMyPageHoldingDto getStockHoldingDtoList(Long memberId, String stockCode) {
+        StocksHoldings myStockHolding = stockHoldingRepository.findAllByMemberIdAndStockCodeWithStock(memberId, stockCode).
+                orElseThrow(() -> new StockHoldingNotFoundException(stockCode + " : 해당 주식을 보유하고 있지 않습니다."));
 
-        if(myStockHoldings.isEmpty()){
-            throw new StockHoldingNotFoundException();
-        }
+        return getStockMyPageHoldingDto(myStockHolding);
+    }
 
-        return myStockHoldings.stream()
-                .map(myStockHolding -> {
-                    Stocks stock = myStockHolding.getStock();
+    private StockMyPageHoldingDto getStockMyPageHoldingDto(StocksHoldings myStockHolding) {
+        Stocks stock = myStockHolding.getStock();
 
-                    Long currentPrice = stockTransactionService.getCurrentPrice(stock.getStockCode()); // 현재 주가
-                    Long buyPrice = myStockHolding.getStockHoldingBuyPrice(); // 평단가
-                    Long changeAmount = currentPrice - buyPrice; // 등락 가격
-                    Double changeRate = (buyPrice != 0) ? (double) changeAmount / buyPrice * 100 : 0.0; // 등락률 계산 (0으로 나누기 방지)
+        Long currentPrice = stockTransactionService.getCurrentPrice(stock.getStockCode()); // 현재 주가
+        Long buyPrice = myStockHolding.getStockHoldingBuyPrice(); // 평단가
+        Long changeAmount = currentPrice - buyPrice; // 등락 가격
+        Double changeRate = (buyPrice != 0) ? (double) changeAmount / buyPrice * 100 : 0.0; // 등락률 계산 (0으로 나누기 방지)
 
-                    return new StockMyPageHoldingDto(
-                            stock.getId(),
-                            stock.getStockCode(),
-                            stock.getStockName(),
-                            myStockHolding.getStockHoldingBuyAmount(),
-                            buyPrice,
-                            changeAmount,
-                            changeRate
-                    );
-                }).toList();
+        return new StockMyPageHoldingDto(
+                stock.getId(),
+                stock.getStockCode(),
+                stock.getStockName(),
+                myStockHolding.getStockHoldingBuyAmount(),
+                buyPrice,
+                changeAmount,
+                changeRate
+        );
     }
 
     /**
      * 주식 거래 내역 전체 조회 메소드
-     * @param myStockTransactions
+     * @param memberId
      * @return
      */
     public List<StockMyPageTransactionDto> getStockMyPageTransactionDtoList(Long memberId) {
@@ -387,8 +367,7 @@ public class StockService {
 
     /**
      * 찜한 주식 조회 메소드
-     *
-     * @param myStockFavorites
+     * @param memberId
      * @return
      */
     public List<StockFavoriteDto> getStockMyPageFavoriteDtoList(Long memberId) {
@@ -414,7 +393,7 @@ public class StockService {
     @Transactional
     public StockFavoriteDto likeStore(Long memberId, String stockCode){
         Stocks stock = stocksRepository.findByStockCode(stockCode)
-                .orElseThrow(() -> new StockNotFoundException());
+                .orElseThrow(() -> new StockNotFoundException(stockCode));
 
         // 이미 찜한 주식인지 확인
         if (stockFavoriteRepository.findByMemberIdAndStockId(memberId, stock.getId()).isPresent()) {
@@ -438,10 +417,10 @@ public class StockService {
     @Transactional
     public void unlikeStore(Long memberId, String stockCode){
         Stocks stock = stocksRepository.findByStockCode(stockCode)
-                .orElseThrow(() -> new StockNotFoundException());
+                .orElseThrow(() -> new StockNotFoundException(stockCode));
 
         StocksFavorite stocksFavorite = stockFavoriteRepository.findByMemberIdAndStockId(memberId, stock.getId())
-                .orElseThrow(() -> new StockFavoriteNotFoundException());
+                .orElseThrow(StockFavoriteNotFoundException::new);
 
         stockFavoriteRepository.delete(stocksFavorite);
         log.info("{}번 회원이 {} 주식을 찜 해제했습니다.", memberId, stock.getStockName());

@@ -29,9 +29,7 @@ const NewsSummaryTitle = styled.div`
 
 const NewsSummaryTitleText = styled.p`
   color: ${({ theme }) => theme.textColor};
-  font-family: Inter;
   font-size: 1.5rem;
-  font-style: normal;
   font-weight: 700;
   line-height: 1.875rem; /* 125% */
 `;
@@ -46,9 +44,7 @@ const NewsSummaryBody = styled.div`
 
 const NewsSummaryBodyText = styled.div`
   color: #828282;
-  font-family: Inter;
   font-size: 1rem;
-  font-style: normal;
   font-weight: 700;
   line-height: 1.2; /* 19.2px */
   flex: 1 0 0;
@@ -87,9 +83,7 @@ const CloseButton = styled.button`
 const ButtonText = styled.p`
   /* color: var(--Black, #1a1a1a); */
   color: ${({ theme }) => theme.profileColor};
-  font-family: Inter;
   font-size: 1rem;
-  font-style: normal;
   font-weight: 500;
   line-height: 1.2; /* 19.2px */
 `;

@@ -19,5 +19,5 @@ public interface StockHoldingRepository extends JpaRepository<StocksHoldings, Lo
             "JOIN FETCH sh.stock s " +
             "WHERE sh.memberId = :memberId " +
             "AND s.stockCode = :stockCode")
-    List<StocksHoldings> findAllByMemberIdAndStockCodeWithStock(Long memberId, String stockCode);
+    Optional<StocksHoldings> findAllByMemberIdAndStockCodeWithStock(Long memberId, String stockCode);
 }

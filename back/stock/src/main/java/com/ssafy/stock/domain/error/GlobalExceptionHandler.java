@@ -12,8 +12,16 @@ import static com.ssafy.stock.global.common.CommonResponse.failure;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
     @ExceptionHandler(StockNotFoundException.class)
     public ResponseEntity<?> handleStockNotFoundException(final RuntimeException e) {
+        log.warn(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(failure(e.getMessage()));
+    }
+
+    @ExceptionHandler(StockCandleNotFoundException.class)
+    public ResponseEntity<?> handleStockCandleNotFoundException(final RuntimeException e) {
         log.warn(e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(failure(e.getMessage()));

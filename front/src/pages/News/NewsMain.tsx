@@ -27,12 +27,12 @@ const NewsMainCenter = styled.div`
   display: flex;
   width: 95%;
   // 화면 퍼지는거 보기 싫어서 일단 최댓값 박아둠.
-  max-width: 106rem;
+  max-width: 100rem;
   /* padding: 1.25rem 3rem; */
   padding: 1rem;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.625rem;
+  gap: 0.5rem;
   flex: 1 0 0;
   align-self: stretch;
 `;

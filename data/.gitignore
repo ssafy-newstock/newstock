@@ -156,6 +156,7 @@ cython_debug/
 
 # 가상환경
 scrap_venv/
+news_ai_venv/
 
 # 데이터 무시
 **/[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9].json
@@ -165,3 +166,5 @@ scrap_venv/
 #data 제거
 /notebook/data
 /notebook/jdbc
+
+/notebook/model

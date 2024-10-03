@@ -18,23 +18,21 @@ const SubCenter = styled.div`
   align-items: flex-start;
   align-self: stretch;
   /* min-width: 900px; */
-  max-width: 106rem;
+  max-width: 100rem;
   /* min-width: 1024px; */
   width: 100%;
 `;
 
 const EconomicNewsWrapper = styled.div<{ $showSummary: boolean }>`
   display: flex;
-  padding: 1.6rem 1.5rem;
   margin: 0 0 2.5rem 0;
   align-items: center;
   justify-content: space-between;
   align-self: stretch;
   border-radius: 2rem;
-  background-color: ${({ theme }) => theme.newsBackgroundColor};
-  box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.1);
-  width: 100%;
-  /* height: 18rem; */
+  width: 98%;
+  gap: 2rem;
+
   cursor: pointer;
 
   transition: ${({ $showSummary }) =>
@@ -222,22 +220,20 @@ const EconomicNewsPage: React.FC = () => {
   return (
     <>
       <SubCenter>
-        {newsList.map((news, index) => (
+        {newsList.map((news) => (
           <EconomicNewsWrapper
-            key={index}
+            key={news.id}
             onClick={() => handleNewsClick(news.id)}
             $showSummary={showSummary}
           >
+            <EconSubNewsBody thumbnail={news.thumbnail} />
             <EconNewsBody
+              id={news.id}
               title={news.title}
               content={news.content}
               media={news.media}
               date={news.uploadDatetime}
               sentiment={news.sentiment}
-            />
-            <EconSubNewsBody
-              id={news.id}
-              thumbnail={news.thumbnail}
               onShowSummaryChange={handleShowSummaryChange}
             />
           </EconomicNewsWrapper>

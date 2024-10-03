@@ -1,64 +1,67 @@
 import styled from 'styled-components';
 
-export const PositiveIcon = styled.div`
+interface IconProps {
+  width?: string;
+  height?: string;
+  padding?: string;
+  border?: string;
+  fontSize?: string;
+  fontWeight?: string;
+}
+
+export const PositiveIcon = styled.div<IconProps>`
   display: flex;
-  width: 6rem;
-  height: 3rem;
-  padding: 0.3rem;
+  width: ${({ width }) => width || '3rem'};
+  height: ${({ height }) => height || '1.6rem'};
+  padding: ${({ padding }) => padding || '0.2rem'};
   justify-content: center;
   align-items: center;
   border-radius: 1.25rem;
-  border: 0.125rem solid #ea1212;
+  border: ${({ border }) => border || '0.1rem solid #ea1212'};
 `;
 
-export const PositiveIconText = styled.p`
+export const PositiveIconText = styled.p<IconProps>`
   color: #e31837;
-  font-family: Inter;
-  font-size: 2rem;
-  font-style: normal;
-  font-weight: 400;
+  font-size: ${({ fontSize }) => fontSize || '0.7rem'};
+  font-weight: ${({ fontWeight }) => fontWeight || '800'};
   line-height: 1.875rem; /* 93.75% */
   text-align: center;
 `;
 
-export const NeutralIcon = styled.div`
+export const NeutralIcon = styled.div<IconProps>`
   display: flex;
-  width: 6rem;
-  height: 3rem;
-  padding: 0.3rem;
+  width: ${({ width }) => width || '3rem'};
+  height: ${({ height }) => height || '1.6rem'};
+  padding: ${({ padding }) => padding || '0.2rem'};
   justify-content: center;
   align-items: center;
   border-radius: 1.25rem;
-  border: 0.125rem solid #828282;
+  border: ${({ border }) => border || '0.125rem solid #828282'};
 `;
 
-export const NeutralIconText = styled.p`
+export const NeutralIconText = styled.p<IconProps>`
   color: #828282;
-  font-family: Inter;
-  font-size: 2rem;
-  font-style: normal;
-  font-weight: 400;
+  font-size: ${({ fontSize }) => fontSize || '0.7rem'};
+  font-weight: ${({ fontWeight }) => fontWeight || '800'};
   line-height: 1.875rem; /* 93.75% */
   text-align: center;
 `;
 
-export const NegativeIcon = styled.div`
+export const NegativeIcon = styled.div<IconProps>`
   display: flex;
-  width: 6rem;
-  height: 3rem;
-  padding: 0.3rem;
+  width: ${({ width }) => width || '3rem'};
+  height: ${({ height }) => height || '1.6rem'};
+  padding: ${({ padding }) => padding || '0.2rem'};
   justify-content: center;
   align-items: center;
   border-radius: 1.25rem;
-  border: 0.125rem solid #006dff;
+  border: ${({ border }) => border || '0.125rem solid #006dff'};
 `;
 
-export const NegativeIconText = styled.p`
+export const NegativeIconText = styled.p<IconProps>`
   color: #006dff;
-  font-family: Inter;
-  font-size: 2rem;
-  font-style: normal;
-  font-weight: 400;
+  font-size: ${({ fontSize }) => fontSize || '0.7rem'};
+  font-weight: ${({ fontWeight }) => fontWeight || '800'};
   line-height: 1.875rem; /* 93.75% */
   text-align: center;
 `;
@@ -96,4 +99,3 @@ const SentimentIcon: React.FC<SentimentIconProps> = ({ sentiment }) => {
 };
 
 export default SentimentIcon;
-

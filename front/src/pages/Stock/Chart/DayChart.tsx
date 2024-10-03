@@ -7,10 +7,12 @@ import axios from 'axios';
 import LoadingSpinner from '@components/LoadingSpinner';
 import { Suspense } from 'react';
 import { toast } from 'react-toastify';
+import { useTheme } from 'styled-components';
 
 const DayChart: React.FC = () => {
   const { state } = useLocation() as { state: { stock: IStock } };
   const { stock } = state;
+  const theme = useTheme();
 
   const { data: StockLiveChart } = useQuery<ILive[]>({
     queryKey: [`StockLiveChart-${stock.stockCode}`],
@@ -61,11 +63,16 @@ const DayChart: React.FC = () => {
           const date = new Date(value);
           return `${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`;
         },
+        style: { colors: theme.textColor },
       },
     },
     yaxis: {
       title: {
         text: '주가 (KRW)',
+        style: { color: theme.textColor },
+      },
+      labels: {
+        style: { colors: theme.textColor },
       },
     },
     tooltip: {

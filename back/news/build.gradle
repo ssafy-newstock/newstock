@@ -47,6 +47,14 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.1.0'
     implementation 'io.github.openfeign:feign-jackson:13.2'
 
+    // Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // Kafka
+    implementation 'org.springframework.kafka:spring-kafka'
+    testImplementation 'org.springframework.kafka:spring-kafka-test'
+
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     runtimeOnly 'com.mysql:mysql-connector-j'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

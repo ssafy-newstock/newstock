@@ -55,12 +55,12 @@ const StockModal: React.FC<StockModalProps> = ({ isOpen, setIsOpen }) => {
   return (
     <>
       {/* 모달을 여는 버튼 */}
-      <ModalButton isOpen={isOpen} onClick={toggleModal}>
+      <ModalButton $isOpen={isOpen} onClick={toggleModal}>
         <OverflowIcon />
       </ModalButton>
 
       {/* 모달 */}
-      <ModalContainer isOpen={isOpen}>
+      <ModalContainer $isOpen={isOpen}>
         <ModalLeft>
           <ModalLeftTop>
             {activeComponent === 'MyStock' && <TextP_24>내 주식</TextP_24>}

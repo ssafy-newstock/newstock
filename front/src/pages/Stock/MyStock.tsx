@@ -22,6 +22,8 @@ import TradingHistoryList, {
   TradingHistoryFirstRow,
 } from '@features/MyStock/TradingHistoryList';
 import FavoriteStockList from '@features/MyStock/FavoriteStockList';
+
+import { Flex } from '@components/styledComponent';
 import { useOutletContext } from 'react-router-dom';
 
 interface StockHolding {
@@ -108,7 +110,7 @@ const MyStock: React.FC = () => {
           <CenterTitle title={'나의 자산'} />
           <MyStockHr />
           <CenterContent />
-          <div style={{ display: 'flex', flexDirection: 'row' }}>
+          <Flex>
             <CenterHistoryDiv>
               <SectionTitle
                 title="내 주식 TOP 10"
@@ -152,7 +154,7 @@ const MyStock: React.FC = () => {
                 </NoDiv>
               )}
             </CenterHistoryDiv>
-          </div>
+          </Flex>
         </CenterDiv>
       </Center>
     </>
