@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useRef, useEffect, useCallback } from 'react';
+import noDataPng from '@assets/News/noDataPng.png';
 import styled from 'styled-components';
 import EconNewsBody from '@features/News/EconNews/EconNewsBody';
 import EconSubNewsBody from '@features/News/EconNews/EconSubNewsBody';
@@ -13,15 +14,13 @@ import EconNewsSkeleton from '@features/News/skeleton/EconNewsSkeleton';
 
 const SubCenter = styled.div`
   display: flex;
-  width: 100%;
   padding: 1rem;
   flex-direction: column;
   align-items: flex-start;
   align-self: stretch;
-  /* min-width: 900px; */
   max-width: 100rem;
-  /* min-width: 1024px; */
-  width: 100%;
+  min-width: 90rem;
+  width: 90%;
 `;
 
 const EconomicNewsWrapper = styled.div<{ $showSummary: boolean }>`
@@ -42,6 +41,35 @@ const EconomicNewsWrapper = styled.div<{ $showSummary: boolean }>`
   &:hover {
     transform: ${({ $showSummary }) => ($showSummary ? 'none' : 'scale(1.02)')};
   }
+`;
+
+const NoDataContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  margin-top: 5rem; /* 페이지 중앙에 오도록 조정 */
+  gap: 2rem;
+`;
+
+const NoDataImage = styled.div`
+  width: 15rem; /* 이미지 크기를 원하는 대로 조정 */
+  height: auto; /* 이미지 비율을 유지 */
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+`;
+
+const NoNewsMessage = styled.p`
+  color: ${({ theme }) => theme.textColor};
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
 `;
 
 const ObserverTrigger = styled.div`
@@ -130,18 +158,21 @@ const fetchEconomyNewsData = async (
       }
     );
 
-    console.log('Fetched data:', response.data); // 가져온 데이터를 출력
-    const newsData = response.data.data.map((newsItem: NewsItem) => {
-      const { imageUrls, content } = processArticle(newsItem.article);
-      return {
-        ...newsItem,
-        content,
-        imageUrls,
-        industry: translateIndustry(newsItem.industry), // industry 값을 한글로 변환
-      };
-    });
-
-    return newsData;
+    // console.log('Fetched data:', response.data); // 가져온 데이터를 출력
+    if (response.data && response.data.data.length > 0) {
+      const newsData = response.data.data.map((newsItem: NewsItem) => {
+        const { imageUrls, content } = processArticle(newsItem.article);
+        return {
+          ...newsItem,
+          content,
+          imageUrls,
+          industry: translateIndustry(newsItem.industry), // industry 값을 한글로 변환
+        };
+      });
+      return newsData;
+    } else {
+      return []; // 데이터가 없는 경우 빈 배열 반환
+    }
   } catch (error) {
     console.error('Failed to fetch Economic news: ', error);
     return [];
@@ -159,6 +190,7 @@ const EconomicNewsPage: React.FC = () => {
   const [page, setPage] = useState<number>(1);
   const [initialLoadComplete, setInitialLoadComplete] =
     useState<boolean>(false);
+  const [hasMoreNews, setHasMoreNews] = useState<boolean>(true); // 추가된 상태
 
   const observerRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
@@ -167,8 +199,12 @@ const EconomicNewsPage: React.FC = () => {
     setLoading(true);
     try {
       const newNews = await fetchEconomyNewsData(selectedCategory, page);
-      setNewsList((prevNewsList) => [...prevNewsList, ...newNews]);
-      setPage((prevPage) => prevPage + 1);
+      if (newNews.length === 0) {
+        setHasMoreNews(false);
+      } else {
+        setNewsList((prevNewsList) => [...prevNewsList, ...newNews]);
+        setPage((prevPage) => prevPage + 1);
+      }
     } catch (error) {
       console.error('Error loading news:', error);
     } finally {
@@ -181,11 +217,12 @@ const EconomicNewsPage: React.FC = () => {
   useEffect(() => {
     setNewsList([]); // 새로운 카테고리에서는 기존 뉴스 목록을 초기화
     setPage(1); // 페이지를 초기화
+    setHasMoreNews(true); // 카테고리 변경 시 다시 true로 설정
     fetchNews(); // 새로운 카테고리에 맞는 데이터를 로드
   }, [selectedCategory]);
 
   useEffect(() => {
-    console.log('Initial data fetch'); // 초기 데이터 로드 로그 출력
+    // console.log('Initial data fetch'); // 초기 데이터 로드 로그 출력
     if (!initialLoadComplete) {
       fetchNews(); // 초기 데이터 로드
     }
@@ -222,9 +259,20 @@ const EconomicNewsPage: React.FC = () => {
     <>
     {loading && <EconNewsSkeleton />}
       <SubCenter>
-        {newsList.map((news) => (
+        {newsList.length === 0 && !loading && (
+          <NoDataContainer>
+            {/* <NoDataImage src={noDataPng} alt="No data available" /> */}
+            <NoDataImage>
+              <img src={noDataPng} alt="noDataPng" />
+            </NoDataImage>
+            <NoNewsMessage>
+              해당 카테고리에 뉴스가 존재하지 않습니다.
+            </NoNewsMessage>
+          </NoDataContainer>
+        )}
+        {newsList.map((news, index) => (
           <EconomicNewsWrapper
-            key={news.id}
+            key={`${news.id}-${index}`} // id와 index 결합하여 고유한 key 생성
             onClick={() => handleNewsClick(news.id)}
             $showSummary={showSummary}
           >
@@ -247,7 +295,7 @@ const EconomicNewsPage: React.FC = () => {
         )}
         {/* 감시하는 요소로 Intersection Observer가 작동하는 기준점 */}
         {/* <div ref={observerRef} style={{ height: '1px' }}></div> */}
-        <ObserverTrigger ref={observerRef} />
+        {hasMoreNews && <ObserverTrigger ref={observerRef} />}
       </SubCenter>
     </>
   );

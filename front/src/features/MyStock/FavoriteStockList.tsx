@@ -67,7 +67,8 @@ const FavoriteStock: React.FC<FavoriteStockProps> = ({ stock }) => {
             $isPositive={!matchedStock.prdyVrss.toString().startsWith('-')}
           >
             <SpanTag>어제보다</SpanTag>{' '}
-            {formatChange(formatNumber(matchedStock.prdyVrss))}
+            {formatChange(formatNumber(matchedStock.prdyVrss))}원 (
+            {formatChange(formatNumber(matchedStock.prdyCtrt))}%)
           </StockPrev>
         </>
       ) : (

@@ -11,6 +11,7 @@ const SubNewsMainCenter = styled.div`
   align-items: flex-start;
   align-self: stretch;
   max-width: 100rem;
+  min-width: 90rem;
 
   width: 100%;
 `;
@@ -34,7 +35,7 @@ const SubNewsBoarder = styled.hr`
   justify-content: center;
   align-items: center;
   gap: 0.625rem;
-  width: 98%;
+  width: 90%;
   height: 0.1rem;
   background-color: ${({ theme }) => theme.textColor};
 `;
