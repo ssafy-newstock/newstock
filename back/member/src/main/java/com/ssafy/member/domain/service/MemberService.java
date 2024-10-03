@@ -1,6 +1,7 @@
 package com.ssafy.member.domain.service;
 
 
+import com.ssafy.member.domain.controller.response.MemberPointResponse;
 import com.ssafy.member.domain.entity.Member;
 import com.ssafy.member.domain.entity.dto.MemberDetailDto;
 import com.ssafy.member.domain.repository.MemberRepository;
@@ -86,7 +87,8 @@ public class MemberService {
     public void increaseMyPoint(Long memberId, Long point) {
         Member member = findMember(memberId);
         member.increaseMemberPoint(point);
-        simpMessageSendingOperations.convertAndSend("/api/sub/member/info/point/increase/" + memberId, point);
+        MemberPointResponse memberPointResponse = new MemberPointResponse(memberId, point);
+        simpMessageSendingOperations.convertAndSend("/api/sub/member/info/point/increase/" + memberId, memberPointResponse);
     }
 
     /**
