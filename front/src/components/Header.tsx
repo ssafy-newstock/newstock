@@ -128,6 +128,8 @@ const Header: React.FC<HeaderProps> = ({ isOpen }) => {
   // 유저 포인트 상태
   const { point, setPoint } = usePointStore();
   const [isHovering, setIsHovering] = useState(false);
+  // 유저 상태
+  const { isLogin, logout, memberId } = useAuthStore();
 
   const handleMouseOver = () => {
     setIsHovering(true);
@@ -146,12 +148,11 @@ const Header: React.FC<HeaderProps> = ({ isOpen }) => {
     setLoginOpen(false);
   };
 
-  const { isLogin, logout, memberId } = useAuthStore();
-
   const handleLogout = () => {
     logout();
     sessionStorage.removeItem('accessToken');
   };
+
   useEffect(() => {
     const fetchUserPoint = async (): Promise<void> => {
       const response = await authRequest.get(`/member/${memberId}/point`);
@@ -164,33 +165,29 @@ const Header: React.FC<HeaderProps> = ({ isOpen }) => {
     }
   }, [isLogin, memberId]);
 
+  const { client, connectSocket } = useSocketStore();
   useEffect(() => {
-    const client = useSocketStore.getState().client;
+    // WebSocket 연결을 시도
+    connectSocket();
 
     if (client && memberId) {
+      // 구독 설정
       const subscription = client.subscribe(
         `/api/sub/member/info/point/${memberId}`,
         (message) => {
           const newPoint = message.body;
-          console.log('Received message in Header:', newPoint);
+          console.log('Received new point:', newPoint);
           setPoint(Number(newPoint));
         }
       );
 
-      client.send(
-        '/api/sub/member/info/point',
-        {},
-        JSON.stringify({ memberId })
-      );
-
-      // 구독 해제 및 WebSocket 해제 처리
       return () => {
         if (subscription) {
-          subscription.unsubscribe();
+          subscription.unsubscribe(); // 구독 해제
         }
       };
     }
-  }, [memberId]); // 의존성 배열에서 setPoint 제거
+  }, [client, memberId]);
 
   // API 생성 후 대체
   // const handleLogout = async () => {
