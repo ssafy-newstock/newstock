@@ -29,7 +29,9 @@ import MyStockPage from '@pages/Stock/MyStock';
 import AllStockPage from '@pages/Stock/AllStock';
 import SectionStockPage from '@pages/Stock/SectionStock';
 import Auth from '@pages/Auth';
-import MyStockSkeleton from '@features/MyStock/skeleton/MyStockSkeleton';
+import NewsMainSkeleton from '@features/News/skeleton/NewsMainSkeleton';
+import EconNewsSkeleton from '@features/News/skeleton/EconNewsSkeleton';
+import StockNewsSkeleton from '@features/News/skeleton/StockNewsSkeleton';
 
 const router = createBrowserRouter([
   {
@@ -87,7 +89,10 @@ const router = createBrowserRouter([
         ],
       },
       { path: 'my-stock', element: <MyStockPage /> },
-      { path: 'skeleton', element: <MyStockSkeleton /> },
+      { path: 'skeleton', element: <NewsMainSkeleton /> },
+      { path: 'econ-skeleton', element: <EconNewsSkeleton /> },
+      { path: 'stock-skeleton', element: <StockNewsSkeleton /> },
+
     ],
   },
 ]);
