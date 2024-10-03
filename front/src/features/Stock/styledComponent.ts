@@ -37,7 +37,7 @@ export const StockGridRow = styled.div`
 `;
 
 export const HoldingStockGridRow = styled(StockGridRow)`
-  grid-template-rows: repeat(2, minmax(2.5rem, 2.5rem));
+  grid-template-rows: repeat(auto-fill, minmax(2.5rem, 2.5rem));
 `;
 
 export const StockCardColumn = styled.div`

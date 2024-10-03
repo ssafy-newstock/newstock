@@ -24,6 +24,7 @@ import { Suspense } from 'react';
 import StockHodingSkeleton from '@features/Stock/StockDetail/StockHoldingSkeleton';
 import { ErrorBoundary } from 'react-error-boundary';
 import StockHoldingError from '@features/Stock/StockDetail/StockHoldingError';
+import SimilaritySearch from '@features/Stock/StockDetail/similaritySearch';
 
 const StockDetailPage = () => {
   const location = useLocation();
@@ -75,6 +76,10 @@ const StockDetailPage = () => {
             </Suspense>
           </ErrorBoundary>
         </DividedSection>
+
+        <Suspense fallback={<p>Loading...</p>}>
+          <SimilaritySearch stockCode={stock.stockCode} />
+        </Suspense>
       </Center>
     </>
   );
