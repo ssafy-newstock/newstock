@@ -65,11 +65,12 @@ const StockFrame = styled.div`
   cursor: pointer;
 `;
 
-const DropdownMenu = styled.div<{ isOpen: boolean; maxHeight: number }>`
+const DropdownMenu = styled.div<{ $isOpen: boolean; $maxHeight: number }>`
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  max-height: ${({ isOpen, maxHeight }) => (isOpen ? `${maxHeight}px` : '0')};
+  max-height: ${({ $isOpen, $maxHeight }) =>
+    $isOpen ? `${$maxHeight}px` : '0'};
   transition: max-height 0.5s ease;
   margin-bottom: 10px;
   margin-left: 3px;
@@ -184,8 +185,8 @@ const Left: React.FC = () => {
         </MenuSectionGG>
       </MenuSectionG>
       <DropdownMenu
-        isOpen={stockDropdown}
-        maxHeight={stockDropdownHeight}
+        $isOpen={stockDropdown}
+        $maxHeight={stockDropdownHeight}
         ref={stockDropdownRef}
       >
         <TextDiv
@@ -328,8 +329,8 @@ const Left: React.FC = () => {
         </MenuSectionGG>
       </MenuSectionG>
       <DropdownMenu
-        isOpen={newsDropdown}
-        maxHeight={newsDropdownHeight}
+        $isOpen={newsDropdown}
+        $maxHeight={newsDropdownHeight}
         ref={newsDropdownRef}
       >
         <TextDiv

@@ -19,13 +19,7 @@ import useAuthStore from '@store/useAuthStore';
 import Left from '@components/Left';
 import StockModal from '@features/MyStockModal/StockModal';
 
-// const Container = styled.div`
-//   display: flex;
-//   width: 100%;
-//   height: 100vh;
-// `;
-
-const Main = styled.div<{ isOpen: boolean }>`
+const Main = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%; /* 기본 너비는 100%로 설정 */
@@ -33,18 +27,18 @@ const Main = styled.div<{ isOpen: boolean }>`
   transition: width 0.5s ease;
 `;
 
-const Content = styled.div<{ isOpen: boolean }>`
+const Content = styled.div`
   display: flex;
   height: 100%;
   flex-direction: row;
   width: 100%; /* 기본적으로 100% 너비 */
   transition: all 0.5s ease;
 `;
-const RightVacantWrapper = styled.div<{ isOpen: boolean }>`
-  width: ${({ isOpen }) =>
-    isOpen ? '580px' : '180px'}; /* isOpen에 따라 width 조정 */
-  opacity: ${({ isOpen }) =>
-    isOpen ? '0' : '1'}; /* isOpen에 따라 opacity 조정 */
+const RightVacantWrapper = styled.div<{ $isOpen: boolean }>`
+  width: ${({ $isOpen }) =>
+    $isOpen ? '580px' : '180px'}; /* isOpen에 따라 width 조정 */
+  opacity: ${({ $isOpen }) =>
+    $isOpen ? '0' : '1'}; /* isOpen에 따라 opacity 조정 */
   transition:
     width 0.5s ease,
     opacity 0.5s ease; /* 너비와 불투명도를 함께 전환 */
@@ -75,12 +69,12 @@ const App = () => {
   return (
     <ThemeProvider theme={currentTheme}>
       <GlobalStyle />
-      <Main isOpen={isOpen}>
+      <Main>
         <Header isOpen={isOpen} />
-        <Content isOpen={isOpen}>
+        <Content>
           <Left />
           <Outlet context={{ setIsOpen }} />
-          <RightVacantWrapper isOpen={isOpen} />
+          <RightVacantWrapper $isOpen={isOpen} />
         </Content>
         {isLogin && <StockModal isOpen={isOpen} setIsOpen={setIsOpen} />}
       </Main>
