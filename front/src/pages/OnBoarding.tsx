@@ -59,12 +59,6 @@ const OnBoardingPage = () => {
     };
   }, []);
 
-  const scrollToSection = (sectionRef: React.RefObject<HTMLDivElement>) => {
-    if (sectionRef.current) {
-      sectionRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   return (
     <Container>
       <SectionFirst
@@ -74,7 +68,6 @@ const OnBoardingPage = () => {
       <SectionGo
         isVisible={isSectionVisible.sectionGo}
         sectionRef={sectionRefs.sectionGo}
-        scrollToSection={scrollToSection}
       />
       <SectionNews
         isVisible={isSectionVisible.SectionNews}
