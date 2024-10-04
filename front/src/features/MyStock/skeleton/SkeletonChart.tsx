@@ -1,5 +1,13 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
+import styled from 'styled-components';
+
+const ChartContainer = styled.div`
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+`;
 
 const SkeletonChart: React.FC = () => {
   const chartOptions: ApexCharts.ApexOptions = {
@@ -39,9 +47,9 @@ const SkeletonChart: React.FC = () => {
   const series = [44, 55, 41, 17];
 
   return (
-    <div>
-      <Chart options={chartOptions} series={series} type="donut" width="380" />
-    </div>
+    <ChartContainer>
+      <Chart options={chartOptions} series={series} type="donut" height={350} />
+    </ChartContainer>
   );
 };
 export default SkeletonChart;

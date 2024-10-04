@@ -68,7 +68,6 @@ const pulseAnimation = keyframes`
 
 export const StockCardColumnSkeleton = styled(StockCardColumn)`
   animation: ${pulseAnimation} 3s infinite;
-  opacity: 0.4;
   cursor: none;
   height: 7rem;
 `;
@@ -156,13 +155,11 @@ export const HoldingStockCardRowNone = styled(StockCardRow)`
 
 export const HoldingStockCardRowSkeleton = styled(HoldingStockCardRow)`
   animation: ${pulseAnimation} 3s infinite;
-  opacity: 0.4;
   height: 2.5rem;
 `;
 
 export const StockCardRowSkeleton = styled(StockCardRow)`
   animation: ${pulseAnimation} 3s infinite;
-  opacity: 0.4;
   height: 2.5rem;
 `;
 
