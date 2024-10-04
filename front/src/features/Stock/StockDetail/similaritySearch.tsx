@@ -3,6 +3,7 @@ import { SimilarityFormValues } from '@features/Stock/types';
 import { useSimilaritySearchQuery } from '@hooks/useSimilaritySearchQuery';
 import BaseStock from './similaritySearch/BaseStock';
 import OtherStock from './similaritySearch/OtherStock';
+import { useStockChartQuery } from '@hooks/useStockChartQuery';
 
 interface SimilaritySearchProps {
   stockCode: string;
@@ -13,10 +14,18 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
 
   const { start_date, end_date } = watch();
 
+  
+  // 유사도 데이터
   const { data, isPending, error } = useSimilaritySearchQuery({
     stockCode,
     start_date,
     end_date,
+  });
+
+  // 기준 데이터
+  const { data: selectionData } = useStockChartQuery(stockCode, {
+    startDate: start_date,
+    endDate: end_date,
   });
 
   const onSubmit = handleSubmit((data) => {
@@ -48,10 +57,10 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
       </form>
 
       {data && (
-        <div style={{display:'flex'}}>
-          <BaseStock baseStock={data.baseStock} />
+        <div style={{ display: 'flex' }}>
+          <BaseStock baseStock={data.baseStock} selectionStock={selectionData ?? []} />
           {data.otherStock.map((otherStock) => (
-            <OtherStock key={otherStock.stockCode} otherStock={otherStock} />
+            <OtherStock key={otherStock.stockCode} otherStock={otherStock} selectionStock={selectionData ?? []}/>
           ))}
         </div>
       )}

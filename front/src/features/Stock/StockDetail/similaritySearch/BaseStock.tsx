@@ -1,7 +1,7 @@
-import { ISimilarityStockData } from '@features/Stock/types';
+import { IDaily, ISimilarityStockData } from '@features/Stock/types';
 import SimilarityChart from '@features/Stock/StockDetail/similaritySearch/SimilarityChart';
 
-const BaseStock = ({ baseStock }: { baseStock: ISimilarityStockData }) => {
+const BaseStock = ({ baseStock, selectionStock }: { baseStock: ISimilarityStockData, selectionStock: IDaily[]}) => {
   return (
     <div>
       <h1>{baseStock.stockCode}</h1>
@@ -9,7 +9,7 @@ const BaseStock = ({ baseStock }: { baseStock: ISimilarityStockData }) => {
       <h1>
         {baseStock.startDate} - {baseStock.endDate}
       </h1>
-      <SimilarityChart stock={baseStock.candleData} />
+      <SimilarityChart stock={baseStock.candleData} selectionStock={selectionStock}/>
     </div>
   );
 };

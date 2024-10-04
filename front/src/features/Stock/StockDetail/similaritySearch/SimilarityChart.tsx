@@ -1,3 +1,4 @@
+import { IDaily } from '@features/Stock/types';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -27,9 +28,10 @@ interface ICandleData {
 
 interface ChartPageProps {
   stock: ICandleData[];
+  selectionStock: IDaily[];
 }
 
-const LineChart = ({ stock }: ChartPageProps) => {
+const LineChart = ({ stock, selectionStock}: ChartPageProps) => {
   const options = {
     responsive: true,
     animation: {
@@ -65,7 +67,15 @@ const LineChart = ({ stock }: ChartPageProps) => {
         pointRadius: 1,
         hoverRadius: 5, // 호버할 때 점 나타내기
       },
-    ],
+      {
+        label: '종가',
+        data: selectionStock.map((item) => item.stockCandleClose),
+        borderColor: '#0000FF',
+        backgroundColor: '#0000FF',
+        pointRadius: 1,
+        hoverRadius: 5, // 호버할 때 점 나타내기
+      },
+    ]
   };
 
   return (

@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import Chart from 'react-apexcharts';
-import LoadingSpinner from '@components/LoadingSpinner';
 import { calculateDates } from '@utils/dateUtils';
-import { Suspense } from 'react';
 import { ApexOptions } from 'apexcharts';
 import { IStock } from '@features/Stock/types';
 import { useTheme } from 'styled-components';
@@ -24,7 +22,7 @@ const CandleChart = ({ stock, timeframe }: ChartPageProps) => {
   }, [timeframe]);
 
   // 차트 데이터를 fetch하는 useQuery
-  const { data: stockDailyChart } = useStockChartQuery(stock, params);
+  const { data: stockDailyChart } = useStockChartQuery(stock.stockCode, params);
 
   const series = stockDailyChart
     ? [
@@ -67,14 +65,12 @@ const CandleChart = ({ stock, timeframe }: ChartPageProps) => {
 
   return (
     <div id="chart">
-      <Suspense fallback={<LoadingSpinner />}>
         <Chart
           options={options}
           series={series}
           type="candlestick"
           height={350}
         />
-      </Suspense>
     </div>
   );
 };
