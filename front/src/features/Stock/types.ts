@@ -171,6 +171,6 @@ export interface SimilarityFormValues {
 }
 // chart Query 부분
 export interface ChartDateParams {
-  startDate: string;
-  endDate: string;
+  startDate: string | undefined;
+  endDate: string | undefined;
 }

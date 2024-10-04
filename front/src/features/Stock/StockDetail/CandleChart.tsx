@@ -27,7 +27,7 @@ const CandleChart = ({ stock, timeframe }: ChartPageProps) => {
   const series = stockDailyChart
     ? [
         {
-          data: stockDailyChart.map((item) => ({
+          data: stockDailyChart?.data.map((item) => ({
             x: item.stockCandleDay,
             y: [
               item.stockCandleOpen,

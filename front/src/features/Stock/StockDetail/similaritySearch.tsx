@@ -1,9 +1,10 @@
 import { useForm } from 'react-hook-form';
+import { useState } from 'react';
 import { SimilarityFormValues } from '@features/Stock/types';
 import { useSimilaritySearchQuery } from '@hooks/useSimilaritySearchQuery';
+import { useStockChartQuery } from '@hooks/useStockChartQuery';
 import BaseStock from '@features/Stock/StockDetail/similaritySearch/BaseStock';
 import OtherStock from '@features/Stock/StockDetail/similaritySearch/OtherStock';
-import { useStockChartQuery } from '@hooks/useStockChartQuery';
 import SelectionStock from '@features/Stock/StockDetail/similaritySearch/SelectionStock';
 import { FlexWrapBetween } from '@components/styledComponent';
 
@@ -12,29 +13,26 @@ interface SimilaritySearchProps {
 }
 
 const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
-  const { register, handleSubmit, watch } = useForm<SimilarityFormValues>();
+  const { register, handleSubmit } = useForm<SimilarityFormValues>();
+  const [searchDates, setSearchDates] = useState<{start_date?: string, end_date?: string}>({});
 
-  const { start_date, end_date } = watch();
-
-  // 유사도 데이터
-  const { data, isPending, error } = useSimilaritySearchQuery({
+  const similarityQuery = useSimilaritySearchQuery({
     stockCode,
-    start_date,
-    end_date,
+    start_date: searchDates.start_date || '',
+    end_date: searchDates.end_date || '',
   });
 
-  // 기준 데이터
-  const { data: selectionData } = useStockChartQuery(stockCode, {
-    startDate: start_date,
-    endDate: end_date,
+  const chartQuery = useStockChartQuery(stockCode, {
+    startDate: searchDates.start_date || '',
+    endDate: searchDates.end_date || '',
   });
 
   const onSubmit = handleSubmit((data) => {
-    console.log('Submitted data: ', data);
+    setSearchDates({
+      start_date: data.start_date,
+      end_date: data.end_date,
+    });
   });
-
-  if (isPending) return <p>Loading...</p>;
-  if (error) return <p>Error occurred: {(error as Error).message}</p>;
 
   return (
     <>
@@ -51,26 +49,35 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
 
         <div>
           <label htmlFor="end_date">End Date:</label>
-          <input id="end_date" type="date" {...register('end_date')} required />
+          <input 
+            id="end_date" 
+            type="date" 
+            {...register('end_date')} 
+            required 
+          />
         </div>
 
         <button type="submit">Search</button>
       </form>
 
-      {data && (
+      {similarityQuery.isPending || chartQuery.isPending ? (
+        <p>Loading...</p>
+      ) : similarityQuery.error || chartQuery.error ? (
+        <p>Error: {((similarityQuery.error || chartQuery.error) as Error).message}</p>
+      ) : similarityQuery.data && chartQuery.data ? (
         <FlexWrapBetween>
           <SelectionStock
-            selectionStock={selectionData ?? []}
+            selectionStock={chartQuery.data.data}
             stockCode={stockCode}
-            startDate={start_date}
-            endDate={end_date}
+            startDate={searchDates.start_date || ''}
+            endDate={searchDates.end_date || ''}
           />
-          <BaseStock baseStock={data.baseStock} />
-          {data.otherStock.map((otherStock) => (
+          <BaseStock baseStock={similarityQuery.data.baseStock} />
+          {similarityQuery.data.otherStock.map((otherStock) => (
             <OtherStock key={otherStock.stockCode} otherStock={otherStock} />
           ))}
         </FlexWrapBetween>
-      )}
+      ) : null}
     </>
   );
 };
