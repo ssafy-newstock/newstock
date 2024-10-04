@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/news/industry")
+@RequestMapping("/api/newsdata/industry")
 @RequiredArgsConstructor
 public class IndustryNewsController {
     private final IndustryNewsService industryNewsService;

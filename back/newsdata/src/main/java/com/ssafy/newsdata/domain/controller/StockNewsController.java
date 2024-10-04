@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/news/stock")
+@RequestMapping("/api/newsdata/stock")
 @RequiredArgsConstructor
 public class StockNewsController {
     private final StockNewsService stockNewsService;
