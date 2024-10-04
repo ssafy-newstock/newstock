@@ -1,7 +1,8 @@
 import { useForm } from 'react-hook-form';
 import { SimilarityFormValues } from '@features/Stock/types';
 import { useSimilaritySearchQuery } from '@hooks/useSimilaritySearchQuery';
-import SimilarityChart from '@features/Stock/StockDetail/similaritySearch/SimilarityChart';
+import BaseStock from './similaritySearch/BaseStock';
+import OtherStock from './similaritySearch/OtherStock';
 
 interface SimilaritySearchProps {
   stockCode: string;
@@ -17,9 +18,6 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
     start_date,
     end_date,
   });
-
-  // const baseStock = data?.baseStock;
-  // const otherStocks = data?.otherStock
 
   const onSubmit = handleSubmit((data) => {
     console.log('Submitted data: ', data);
@@ -51,29 +49,12 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
 
       {data && (
         <div style={{display:'flex'}}>
-          <div>
-            <h1>{data.baseStock.stockCode}</h1>
-            <h1>{data.baseStock.similarityScore}</h1>
-            <h1>
-              {data.baseStock.startDate} - {data.baseStock.endDate}
-            </h1>
-            <SimilarityChart stock={data.baseStock.candleData} />
-          </div>
-
-          {data.otherStock.map((otherstock) => (
-            <div>
-              <h1>{otherstock.stockCode}</h1>
-              <h1>{otherstock.similarityScore}</h1>
-              <h1>
-                {otherstock.startDate} - {otherstock.endDate}
-              </h1>
-              <SimilarityChart stock={otherstock.candleData} />
-            </div>
+          <BaseStock baseStock={data.baseStock} />
+          {data.otherStock.map((otherStock) => (
+            <OtherStock key={otherStock.stockCode} otherStock={otherStock} />
           ))}
         </div>
       )}
-      {/* <h3>Similarity Search Results:</h3>
-      <pre>{JSON.stringify(data, null, 2)}</pre> */}
     </>
   );
 };

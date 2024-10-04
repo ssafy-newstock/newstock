@@ -62,13 +62,14 @@ const LineChart = ({ stock }: ChartPageProps) => {
         data: stock.map((item) => item.close),
         borderColor: '#FF0000',
         backgroundColor: '#FF0000',
-        // pointRadius: 0,
+        pointRadius: 1,
+        hoverRadius: 5, // 호버할 때 점 나타내기
       },
     ],
   };
 
   return (
-    <div style={{ width: '200px' }}>
+    <div style={{ width: '300px' }}>
       <Line options={options} data={data} />
     </div>
   );
