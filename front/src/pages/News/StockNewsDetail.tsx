@@ -18,7 +18,7 @@ const SubCenter = styled.div`
   align-items: flex-start;
   align-self: stretch;
   max-width: 100rem;
-  min-width: 90rem;
+  min-width: 50rem;
   width: 100%;
   margin-top: 2rem;
 `;

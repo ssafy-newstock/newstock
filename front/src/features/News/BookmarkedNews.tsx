@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { ArrowIcon, bookmarkedIcon, NewsTag } from './NewsIconTag';
-import { axiosInstance } from '@api/axiosInstance';
+import { authRequest } from '@api/axiosInstance';
 import { useEffect, useState } from 'react';
 
 const BookmarkedNewsHeader = styled.div`
@@ -87,8 +87,8 @@ const BookmarkedNewsFooter = styled.div`
 const fetchBookmarkedNews = async () => {
   try {
     const [industryResponse, stockResponse] = await Promise.all([
-      axiosInstance.get('/api/news/favorite/industry/list'),
-      axiosInstance.get('/api/news/favorite/stock/list'),
+      authRequest.get('/news/favorite/industry'),
+      authRequest.get('/news/favorite/stock'),
     ]);
 
     const industryData = industryResponse.data.data || [];
@@ -106,9 +106,9 @@ const fetchBookmarkedNews = async () => {
 const deleteBookmark = async (id: number, isStockNews: boolean) => {
   try {
     const url = isStockNews
-      ? `/api/news/favorite/stock/${id}`
-      : `/api/news/favorite/industry/${id}`;
-    const response = await axiosInstance.delete(url);
+      ? `/news/favorite/stock/${id}`
+      : `/news/favorite/industry/${id}`;
+    const response = await authRequest.delete(url);
     if (response.data.success) {
       alert('북마크가 성공적으로 삭제되었습니다.');
     }

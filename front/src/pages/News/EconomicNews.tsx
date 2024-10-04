@@ -19,7 +19,7 @@ const SubCenter = styled.div`
   align-items: flex-start;
   align-self: stretch;
   max-width: 100rem;
-  min-width: 90rem;
+  min-width: 50rem;
   width: 90%;
 `;
 
@@ -52,7 +52,7 @@ const NoDataContainer = styled.div`
   height: 100%;
   text-align: center;
   margin-top: 5rem; /* 페이지 중앙에 오도록 조정 */
-  gap: 2rem;
+  gap: 3rem;
 `;
 
 const NoDataImage = styled.div`
@@ -66,7 +66,7 @@ const NoDataImage = styled.div`
 `;
 
 const NoNewsMessage = styled.p`
-  color: ${({ theme }) => theme.textColor};
+  color: ${({ theme }) => theme.grayTextColor};
   font-size: 1.5rem;
   font-weight: 600;
   text-align: center;
@@ -257,7 +257,7 @@ const EconomicNewsPage: React.FC = () => {
 
   return (
     <>
-    {loading && <EconNewsSkeleton />}
+      {loading && <EconNewsSkeleton />}
       <SubCenter>
         {newsList.length === 0 && !loading && (
           <NoDataContainer>

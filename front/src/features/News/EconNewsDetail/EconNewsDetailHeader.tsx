@@ -9,10 +9,8 @@ import {
   NeutralIconText as BaseNeutralIconText,
 } from '@features/News/PNSubicon';
 import { bookmarkedIcon, unbookmarkedIcon } from '../NewsIconTag';
-import { useEffect, useState } from 'react';
-import { authRequest } from '@api/axiosInstance';
-import { useOutletContext } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { useEffect } from 'react';
+import { useBookmarkStore } from '@store/useBookmarkStore';
 
 const EconNewsDetailHeaderWrapper = styled.div`
   display: flex;
@@ -132,59 +130,27 @@ const EconNewsDetailHeader: React.FC<EconNewsDetailHeaderProps> = ({
   sentiment,
   id,
 }) => {
-  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
+  const {
+    bookmarkedNewsIds,
+    addBookmark,
+    removeBookmark,
+    fetchBookmarkedNews,
+  } = useBookmarkStore(); // zustand로부터 상태 및 함수 불러오기
 
-  // bookmark 상태가 변경되면 다시 갱신하는 함수
-  const { onBookmarkSuccess, bookmarkUpdated } = useOutletContext<{
-    onBookmarkSuccess: () => void;
-    bookmarkUpdated: boolean;
-  }>();
+  const isBookmarked = bookmarkedNewsIds.includes(id);
 
-  // 북마크 상태를 불러오는 함수
-  const loadBookmarkState = async () => {
-    try {
-      const response = await authRequest.get(
-        '/news/favorite/industry'
-      );
-      const bookmarkedNews = response.data.data;
-      const isBookmarkedNews = bookmarkedNews.some(
-        (newsItem: { id: number }) => newsItem.id === id
-      );
-      setIsBookmarked(isBookmarkedNews);
-    } catch (error) {
-      console.error('Failed to load bookmark state: ', error);
-    }
-  };
-
-  // 페이지 로드 시 북마크 상태를 불러옴
   useEffect(() => {
-    loadBookmarkState();
-  }, [id]);
-
-  // 북마크 상태가 업데이트되면 다시 갱신
-  useEffect(() => {
-    if (bookmarkUpdated) {
-      loadBookmarkState();
-    }
-  }, [bookmarkUpdated]);
+    fetchBookmarkedNews(); // 컴포넌트 마운트 시 북마크 상태 불러오기
+  }, [fetchBookmarkedNews]);
 
   const handleBookmarkClick = async () => {
     try {
       if (isBookmarked) {
-        await authRequest.delete(`/news/favorite/industry/${id}`);
-        toast.success('북마크가 성공적으로 삭제되었습니다.');
+        await removeBookmark(id); // 북마크 삭제
       } else {
-        await authRequest.post(`/news/favorite/industry/${id}`);
-        toast.success('북마크가 성공적으로 등록되었습니다.');
+        await addBookmark(id); // 북마크 추가
       }
-      setIsBookmarked(!isBookmarked);
-      onBookmarkSuccess(); // 북마크 상태 갱신 요청
     } catch (error) {
-      if (isBookmarked) {
-        toast.error('북마크 삭제에 실패했습니다.');
-      } else {
-        toast.error('북마크 등록에 실패했습니다.');
-      }
       console.error('Failed to update bookmark: ', error);
     }
   };
