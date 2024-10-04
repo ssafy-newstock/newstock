@@ -169,4 +169,8 @@ export interface SimilarityFormValues {
   start_date: string;
   end_date: string;
 }
-
+// chart Query 부분
+export interface ChartDateParams {
+  startDate: string;
+  endDate: string;
+}

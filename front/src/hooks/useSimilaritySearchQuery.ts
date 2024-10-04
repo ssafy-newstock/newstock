@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { SimilaritySearchParams, SimilaritySearchResponse } from '@features/Stock/types';
 
@@ -16,7 +16,7 @@ const fetchSimilarityData = async ({
 };
 
 export function useSimilaritySearchQuery(params: SimilaritySearchParams) {
-  return useSuspenseQuery({
+  return useQuery({
     queryKey: ['similaritySearch', params.stockCode, params.start_date, params.end_date],
     queryFn: () => fetchSimilarityData(params),
   });
