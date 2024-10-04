@@ -80,6 +80,16 @@ pipeline {
             }
         }
 
+        stage('Build and Push Docker Image for Newsdata') {
+            steps {
+                script {
+                    sh """
+                        docker build -t ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstocknewsdata:${IMAGE_TAG} back/newsdata/
+                        docker push ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstocknewsdata:${IMAGE_TAG}
+                    """
+                }
+            }
+        }
         stage('Build and Push Docker Image for Stock') {
             steps {
                 script {
@@ -175,6 +185,18 @@ pipeline {
             steps {
                 script {
                     def deploymentPath = 'k8s/backend/deployment-newsscrap.yaml'  // deploymentPath 정의
+                    sh """
+                        sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
+                        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f ${deploymentPath}
+                    """
+                }
+            }
+        }
+
+        stage('Update Kubernetes Deployment for Newsdata') {
+            steps {
+                script {
+                    def deploymentPath = 'k8s/backend/deployment-newsdata.yaml'  // deploymentPath 정의
                     sh """
                         sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
                         kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f ${deploymentPath}
