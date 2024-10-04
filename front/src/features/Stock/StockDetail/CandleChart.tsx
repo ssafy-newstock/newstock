@@ -15,14 +15,14 @@ const CandleChart = ({ stock, timeframe }: ChartPageProps) => {
   // 타임프레임에 따라 날짜 계산
   const [params, setParams] = useState(calculateDates(timeframe));
   const theme = useTheme();
-
+  const isEnable = true
   useEffect(() => {
     // 타임프레임이 변경되면 params를 다시 계산하여 반영
     setParams(calculateDates(timeframe));
   }, [timeframe]);
 
   // 차트 데이터를 fetch하는 useQuery
-  const { data: stockDailyChart } = useStockChartQuery(stock.stockCode, params);
+  const { data: stockDailyChart } = useStockChartQuery(stock.stockCode, params, isEnable);
 
   const series = stockDailyChart
     ? [
