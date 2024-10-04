@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { SimilarityFormValues } from '@features/Stock/types';
 import { useSimilaritySearchQuery } from '@hooks/useSimilaritySearchQuery';
-import SimilarityChart from './SimilarityChart';
+import SimilarityChart from '@features/Stock/StockDetail/similaritySearch/SimilarityChart';
 
 interface SimilaritySearchProps {
   stockCode: string;
@@ -29,7 +29,7 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
   if (error) return <p>Error occurred: {(error as Error).message}</p>;
 
   return (
-    <div>
+    <>
       <form onSubmit={onSubmit}>
         <div>
           <label htmlFor="start_date">Start Date:</label>
@@ -50,28 +50,32 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
       </form>
 
       {data && (
-        <div>
-          <SimilarityChart stock={data.baseStock} />
+        <>
+          <div>
+            <h1>Base Stock:</h1>
+            <h1>{data.baseStock.stockCode}</h1>
+            <h1>{data.baseStock.similarityScore}</h1>
+            <h1>
+              {data.baseStock.startDate} - {data.baseStock.endDate}
+            </h1>
+            <SimilarityChart stock={data.baseStock.candleData} />
+          </div>
 
           {data.otherStock.map((otherstock) => (
             <div>
-              <h3>{otherstock.stockCode}</h3>
-              {otherstock.candleData.map((candle) => (
-                <div>
-                  <p>{candle.date}</p>
-                  <p>Open: {candle.open}</p>
-                  <p>Close: {candle.close}</p>
-                  <p>High: {candle.high}</p>
-                  <p>Low: {candle.low}</p>
-                </div>
-              ))}
+              <h1>{otherstock.stockCode}</h1>
+              <h1>{otherstock.similarityScore}</h1>
+              <h1>
+                {otherstock.startDate} - {otherstock.endDate}
+              </h1>
+              <SimilarityChart stock={otherstock.candleData} />
             </div>
           ))}
-        </div>
+        </>
       )}
       {/* <h3>Similarity Search Results:</h3>
       <pre>{JSON.stringify(data, null, 2)}</pre> */}
-    </div>
+    </>
   );
 };
 
