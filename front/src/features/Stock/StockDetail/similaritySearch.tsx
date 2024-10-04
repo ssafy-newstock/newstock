@@ -1,9 +1,10 @@
 import { useForm } from 'react-hook-form';
 import { SimilarityFormValues } from '@features/Stock/types';
 import { useSimilaritySearchQuery } from '@hooks/useSimilaritySearchQuery';
-import BaseStock from './similaritySearch/BaseStock';
-import OtherStock from './similaritySearch/OtherStock';
+import BaseStock from '@features/Stock/StockDetail/similaritySearch/BaseStock';
+import OtherStock from '@features/Stock/StockDetail/similaritySearch/OtherStock';
 import { useStockChartQuery } from '@hooks/useStockChartQuery';
+import SelectionStock from '@features/Stock/StockDetail/similaritySearch/SelectionStock';
 
 interface SimilaritySearchProps {
   stockCode: string;
@@ -14,7 +15,6 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
 
   const { start_date, end_date } = watch();
 
-  
   // 유사도 데이터
   const { data, isPending, error } = useSimilaritySearchQuery({
     stockCode,
@@ -58,9 +58,15 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
 
       {data && (
         <div style={{ display: 'flex' }}>
-          <BaseStock baseStock={data.baseStock} selectionStock={selectionData ?? []} />
+          <SelectionStock
+            selectionStock={selectionData ?? []}
+            stockCode={stockCode}
+            startDate={start_date}
+            endDate={end_date}
+          />
+          <BaseStock baseStock={data.baseStock} />
           {data.otherStock.map((otherStock) => (
-            <OtherStock key={otherStock.stockCode} otherStock={otherStock} selectionStock={selectionData ?? []}/>
+            <OtherStock key={otherStock.stockCode} otherStock={otherStock} />
           ))}
         </div>
       )}

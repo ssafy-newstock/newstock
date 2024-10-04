@@ -27,11 +27,11 @@ interface ICandleData {
 }
 
 interface ChartPageProps {
-  stock: ICandleData[];
-  selectionStock: IDaily[];
+  stock?: ICandleData[];
+  selectionStock?: IDaily[];
 }
 
-const LineChart = ({ stock, selectionStock}: ChartPageProps) => {
+const LineChart = ({ stock, selectionStock }: ChartPageProps) => {
   const options = {
     responsive: true,
     animation: {
@@ -57,11 +57,13 @@ const LineChart = ({ stock, selectionStock}: ChartPageProps) => {
   };
 
   const data = {
-    labels: stock.map((item) => item.date),
+    labels:
+      stock?.map((item) => item.date) ||
+      selectionStock?.map((item) => item.stockCandleDay),
     datasets: [
       {
         label: '종가',
-        data: stock.map((item) => item.close),
+        data: stock?.map((item) => item.close),
         borderColor: '#FF0000',
         backgroundColor: '#FF0000',
         pointRadius: 1,
@@ -69,13 +71,13 @@ const LineChart = ({ stock, selectionStock}: ChartPageProps) => {
       },
       {
         label: '종가',
-        data: selectionStock.map((item) => item.stockCandleClose),
+        data: selectionStock?.map((item) => item.stockCandleClose),
         borderColor: '#0000FF',
         backgroundColor: '#0000FF',
         pointRadius: 1,
         hoverRadius: 5, // 호버할 때 점 나타내기
       },
-    ]
+    ],
   };
 
   return (
