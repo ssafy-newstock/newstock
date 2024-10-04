@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
-import {SimilarityFormValues} from '@features/Stock/types';
+import { SimilarityFormValues } from '@features/Stock/types';
 import { useSimilaritySearchQuery } from '@hooks/useSimilaritySearchQuery';
+import SimilarityChart from './SimilarityChart';
 
 interface SimilaritySearchProps {
   stockCode: string;
@@ -11,7 +12,11 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
 
   const { start_date, end_date } = watch();
 
-  const { data, isPending, error } = useSimilaritySearchQuery({ stockCode, start_date, end_date });
+  const { data, isPending, error } = useSimilaritySearchQuery({
+    stockCode,
+    start_date,
+    end_date,
+  });
 
   // const baseStock = data?.baseStock;
   // const otherStocks = data?.otherStock
@@ -38,12 +43,7 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
 
         <div>
           <label htmlFor="end_date">End Date:</label>
-          <input
-            id="end_date"
-            type="date"
-            {...register('end_date')}
-            required
-          />
+          <input id="end_date" type="date" {...register('end_date')} required />
         </div>
 
         <button type="submit">Search</button>
@@ -51,8 +51,8 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
 
       {data && (
         <div>
-          {/* <h3>Similarity Search Results:</h3>
-          <pre>{JSON.stringify(data, null, 2)}</pre> */}
+          <SimilarityChart stock={data.baseStock} />
+
           {data.otherStock.map((otherstock) => (
             <div>
               <h3>{otherstock.stockCode}</h3>
@@ -67,9 +67,10 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
               ))}
             </div>
           ))}
-
         </div>
       )}
+      {/* <h3>Similarity Search Results:</h3>
+      <pre>{JSON.stringify(data, null, 2)}</pre> */}
     </div>
   );
 };
