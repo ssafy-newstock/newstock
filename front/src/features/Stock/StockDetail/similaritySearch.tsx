@@ -1,42 +1,20 @@
 import { useForm } from 'react-hook-form';
-import { useSuspenseQuery } from '@tanstack/react-query';
-import axios from 'axios';
-
-interface FormValues {
-  start_date: string;
-  end_date: string;
-}
+import {SimilarityFormValues} from '@features/Stock/types';
+import { useSimilaritySearchQuery } from '@hooks/useSimilaritySearchQuery';
 
 interface SimilaritySearchProps {
   stockCode: string;
 }
 
-const fetchSimilarityData = async ({
-  stockCode,
-  start_date,
-  end_date,
-}: {
-  stockCode: string;
-  start_date?: string;
-  end_date?: string;
-}) => {
-  if (!start_date || !end_date) return null;
-  
-  const { data } = await axios.get(`http://localhost:8001/similarity`, {
-    params: { base_stock_code: stockCode, start_date, end_date },
-  });
-  return data;
-};
-
 const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
-  const { register, handleSubmit, watch } = useForm<FormValues>();
+  const { register, handleSubmit, watch } = useForm<SimilarityFormValues>();
 
   const { start_date, end_date } = watch();
 
-  const { data, isPending, error } = useSuspenseQuery({
-    queryKey: ['similaritySearch', stockCode, start_date, end_date],
-    queryFn: () => fetchSimilarityData({ stockCode, start_date, end_date }),
-  });
+  const { data, isPending, error } = useSimilaritySearchQuery({ stockCode, start_date, end_date });
+
+  // const baseStock = data?.baseStock;
+  // const otherStocks = data?.otherStock
 
   const onSubmit = handleSubmit((data) => {
     console.log('Submitted data: ', data);
@@ -73,8 +51,23 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
 
       {data && (
         <div>
-          <h3>Similarity Search Results:</h3>
-          <pre>{JSON.stringify(data, null, 2)}</pre>
+          {/* <h3>Similarity Search Results:</h3>
+          <pre>{JSON.stringify(data, null, 2)}</pre> */}
+          {data.otherStock.map((otherstock) => (
+            <div>
+              <h3>{otherstock.stockCode}</h3>
+              {otherstock.candleData.map((candle) => (
+                <div>
+                  <p>{candle.date}</p>
+                  <p>Open: {candle.open}</p>
+                  <p>Close: {candle.close}</p>
+                  <p>High: {candle.high}</p>
+                  <p>Low: {candle.low}</p>
+                </div>
+              ))}
+            </div>
+          ))}
+
         </div>
       )}
     </div>
