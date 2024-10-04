@@ -52,7 +52,6 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
       {data && (
         <div style={{display:'flex'}}>
           <div>
-            <h1>Base Stock:</h1>
             <h1>{data.baseStock.stockCode}</h1>
             <h1>{data.baseStock.similarityScore}</h1>
             <h1>

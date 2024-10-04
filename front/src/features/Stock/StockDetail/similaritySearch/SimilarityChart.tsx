@@ -1,53 +1,77 @@
-import Chart from 'react-apexcharts';
-import { ApexOptions } from 'apexcharts';
-import { ICandleData } from '@features/Stock/types';
-import { useTheme } from 'styled-components';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+interface ICandleData {
+  date: string;
+  close: number;
+}
 
 interface ChartPageProps {
   stock: ICandleData[];
 }
 
-const CandleChart = ({ stock }: ChartPageProps) => {
-  const theme = useTheme();
-  const series = stock
-    ? [
-        {
-          name: '종가',
-          data: stock.map((item) => ({
-            x: item.date,
-            y: item.close,
-          })),
-        },
-      ]
-    : [];
-
-  const options: ApexOptions = {
-    dataLabels: { enabled: false },
-    chart: {
-      type: 'line',
-      height: 350,
-      zoom: { enabled: false }, // 줌 비활성화
-      animations: { enabled: false }, // 애니메이션 비활성화
-      toolbar: { show: false }, // 차트 툴바(예: 다운로드 버튼) 비활성화
-      // pan: { enabled: false }, // 팬 기능 비활성화
+const LineChart = ({ stock }: ChartPageProps) => {
+  const options = {
+    responsive: true,
+    animation: {
+      // Change the type of animation property
+      duration: 0, // Set duration to 0 to disable animation
     },
-    stroke: { width: 2 },
-    xaxis: {
-      type: 'category',
-      labels: { style: { colors: theme.textColor } },
+    plugins: {
+      legend: {
+        display: false,
+      },
+      zoom: {
+        enabled: false,
+      },
     },
-    yaxis: {
-      tooltip: { enabled: true },
-      title: { text: '주가 (KRW)', style: { color: theme.textColor } },
-      labels: { style: { colors: theme.textColor } },
+    scales: {
+      x: {
+        display: false, // x축 숨기기
+      },
+      y: {
+        display: true, // y축 숨기기
+      },
     },
   };
 
+  const data = {
+    labels: stock.map((item) => item.date),
+    datasets: [
+      {
+        label: '종가',
+        data: stock.map((item) => item.close),
+        borderColor: '#FF0000',
+        backgroundColor: '#FF0000',
+        // pointRadius: 0,
+      },
+    ],
+  };
+
   return (
-    <div id="chart" style={{ width: '200px' }}>
-      <Chart options={options} series={series} type="line" height={350} />
+    <div style={{ width: '200px' }}>
+      <Line options={options} data={data} />
     </div>
   );
 };
 
-export default CandleChart;
+export default LineChart;

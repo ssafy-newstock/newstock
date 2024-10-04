@@ -63,6 +63,13 @@ const StockDetailPage = () => {
           <Outlet />
         </DividedSection>
         {/* 매도, 매수 폼 */}
+
+        <ErrorBoundary fallback={<div>검색 결과가 없습니다.</div>}>
+          <Suspense fallback={<p>Loading...</p>}>
+            <SimilaritySearch stockCode={stock.stockCode} />
+          </Suspense>
+        </ErrorBoundary>
+        
         <TradeForm
           price={stockDetail?.stckPrpr ?? stock.stckPrpr}
           stockCode={stock.stockCode}
@@ -76,11 +83,6 @@ const StockDetailPage = () => {
             </Suspense>
           </ErrorBoundary>
         </DividedSection>
-        <ErrorBoundary fallback={<div>검색 결과가 없습니다.</div>}>
-          <Suspense fallback={<p>Loading...</p>}>
-            <SimilaritySearch stockCode={stock.stockCode} />
-          </Suspense>
-        </ErrorBoundary>
       </Center>
     </>
   );
