@@ -1,14 +1,12 @@
-import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import Chart from 'react-apexcharts';
 import LoadingSpinner from '@components/LoadingSpinner';
-import { calculateDates } from '@utils/dateUtils'; // 날짜 계산 유틸로 분리
-import { axiosInstance } from '@api/axiosInstance';
-import { toast } from 'react-toastify';
+import { calculateDates } from '@utils/dateUtils';
 import { Suspense } from 'react';
 import { ApexOptions } from 'apexcharts';
-import { IDaily, IStock } from '@features/Stock/types';
+import { IStock } from '@features/Stock/types';
 import { useTheme } from 'styled-components';
+import { useStockChartQuery } from '@hooks/useStockChartQuery';
 
 interface ChartPageProps {
   stock: IStock;
@@ -26,22 +24,7 @@ const CandleChart = ({ stock, timeframe }: ChartPageProps) => {
   }, [timeframe]);
 
   // 차트 데이터를 fetch하는 useQuery
-  const { data: stockDailyChart } = useQuery<IDaily[]>({
-    queryKey: [
-      'stockDailyChart',
-      stock.stockCode,
-      params.startDate,
-      params.endDate,
-    ],
-    queryFn: async () => {
-      const response = await axiosInstance.get(
-        `/stock/${stock.stockCode}/candle`,
-        { params }
-      );
-      toast.success(`${stock.stockName} 조회 완료`);
-      return response.data.data;
-    },
-  });
+  const { data: stockDailyChart } = useStockChartQuery(stock, params);
 
   const series = stockDailyChart
     ? [
