@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import NewsSummary from '@features/News/NewsSummary';
 import { Overlay, Background, Modal } from '@components/ModalComponents';
 import { useOutletContext } from 'react-router-dom';
-import { axiosInstance } from '@api/axiosInstance';
+import { authRequest } from '@api/axiosInstance';
 import { toast } from 'react-toastify';
 
 const EconomicNewsBody = styled.div`
@@ -107,9 +107,8 @@ const EconomicSubNewsPNG = styled.img`
 // 시황 뉴스 북마크 등록
 const registerIndustryBookmark = async (id: number) => {
   try {
-    const response = await axiosInstance.post(
-      `/api/news/favorite/industry/${id}`
-    );
+    // const response = await axiosInstance.post(`/news/favorite/industry/${id}`);
+    const response = await authRequest.post(`/news/favorite/industry/${id}`);
     console.log('API Response:', response); // 응답 확인
     if (response.data.success) {
       toast.success('북마크가 성공적으로 등록되었습니다.');
@@ -123,9 +122,7 @@ const registerIndustryBookmark = async (id: number) => {
 // 시황 뉴스 북마크 삭제
 const deleteIndustryBookmark = async (id: number) => {
   try {
-    const response = await axiosInstance.delete(
-      `/api/news/favorite/industry/${id}`
-    );
+    const response = await authRequest.delete(`/news/favorite/industry/${id}`);
     if (response.data.success) {
       toast.success('북마크가 성공적으로 삭제되었습니다.');
     }
@@ -137,9 +134,7 @@ const deleteIndustryBookmark = async (id: number) => {
 
 const fetchBookmarkedNews = async (): Promise<number[]> => {
   try {
-    const response = await axiosInstance.get(
-      '/api/news/favorite/industry/list'
-    );
+    const response = await authRequest.get('/news/favorite/industry');
 
     if (response.data && response.data.data) {
       const data: NewsItem[] = response.data.data;
@@ -211,8 +206,8 @@ const EconNewsBody: React.FC<EconNewsBodyProps> = ({
   const reloadBookmarkState = async (newsId: number) => {
     try {
       // 관심 뉴스 목록을 불러옴
-      const response = await axiosInstance.get(
-        '/api/news/favorite/industry/list'
+      const response = await authRequest.get(
+        '/news/favorite/industry'
       );
 
       if (response.data.success) {

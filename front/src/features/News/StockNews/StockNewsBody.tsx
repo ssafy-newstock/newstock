@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import NewsSummary from '@features/News/NewsSummary';
 import { Overlay, Background, Modal } from '@components/ModalComponents';
 import { useOutletContext } from 'react-router-dom';
-import { axiosInstance } from '@api/axiosInstance';
+import { authRequest } from '@api/axiosInstance';
 import { toast } from 'react-toastify';
 import { NewsTag } from '../NewsIconTag';
 
@@ -91,7 +91,7 @@ const BookmarkedNewsTagWrapper = styled.div`
 // 종목 뉴스 북마크 등록 (stock 뉴스)
 const registerStockBookmark = async (id: number) => {
   try {
-    const response = await axiosInstance.post(`/api/news/favorite/stock/${id}`);
+    const response = await authRequest.post(`/news/favorite/stock/${id}`);
     if (response.data.success) {
       toast.success('북마크가 성공적으로 등록되었습니다.');
     }
@@ -104,8 +104,8 @@ const registerStockBookmark = async (id: number) => {
 // 종목 뉴스 북마크 삭제 (stock 뉴스)
 const deleteStockBookmark = async (id: number) => {
   try {
-    const response = await axiosInstance.delete(
-      `/api/news/favorite/stock/${id}`
+    const response = await authRequest.delete(
+      `/news/favorite/stock/${id}`
     );
     if (response.data.success) {
       toast.success('북마크가 성공적으로 삭제되었습니다.');
@@ -118,7 +118,7 @@ const deleteStockBookmark = async (id: number) => {
 
 const fetchBookmarkedStockNews = async (): Promise<number[]> => {
   try {
-    const response = await axiosInstance.get('/api/news/favorite/stock/list');
+    const response = await authRequest.get('/news/favorite/stock');
     const data: NewsItem[] = response.data.data;
     return data.map((newsItem: NewsItem) => newsItem.id);
   } catch (error) {
@@ -203,7 +203,7 @@ const StockNewsBody: React.FC<StockNewsBodyProps> = ({
   const reloadBookmarkState = async (newsId: number) => {
     try {
       // 관심 뉴스 목록을 불러옴
-      const response = await axiosInstance.get('/api/news/favorite/stock/list');
+      const response = await authRequest.get('/news/favorite/stock');
 
       if (response.data.success) {
         // 관심 뉴스 목록에서 현재 뉴스가 있는지 확인

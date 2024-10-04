@@ -10,10 +10,11 @@ import {
 } from '@features/News/PNSubicon';
 import { NewsTag, bookmarkedIcon, unbookmarkedIcon } from '../NewsIconTag';
 import { useEffect, useState } from 'react';
-import { axiosInstance } from '@api/axiosInstance';
+import { authRequest } from '@api/axiosInstance';
 import { useOutletContext } from 'react-router-dom';
 import useAllStockStore from '@store/useAllStockStore';
 import useTop10StockStore from '@store/useTop10StockStore';
+import { toast } from 'react-toastify';
 
 const StockNewsDetailHeaderWrapper = styled.div`
   display: flex;
@@ -154,7 +155,7 @@ const StockNewsDetailHeader: React.FC<StockNewsDetailHeaderProps> = ({
   // 북마크 상태를 불러오는 함수
   const loadBookmarkState = async () => {
     try {
-      const response = await axiosInstance.get('/api/news/favorite/stock/list');
+      const response = await authRequest.get('/news/favorite/stock');
       const bookmarkedNews = response.data.data;
       const isBookmarkedNews = bookmarkedNews.some(
         (newsItem: { id: number }) => newsItem.id === id
@@ -180,13 +181,20 @@ const StockNewsDetailHeader: React.FC<StockNewsDetailHeaderProps> = ({
   const handleBookmarkClick = async () => {
     try {
       if (isBookmarked) {
-        await axiosInstance.delete(`/api/news/favorite/stock/${id}`);
+        await authRequest.delete(`/news/favorite/stock/${id}`);
+        toast.success('북마크가 성공적으로 삭제되었습니다.');
       } else {
-        await axiosInstance.post(`/api/news/favorite/stock/${id}`);
+        await authRequest.post(`/news/favorite/stock/${id}`);
+        toast.success('북마크가 성공적으로 등록되었습니다.');
       }
       setIsBookmarked(!isBookmarked);
       onBookmarkSuccess(); // 북마크 상태 갱신 요청
     } catch (error) {
+      if (isBookmarked) {
+        toast.error('북마크 삭제에 실패했습니다.');
+      } else {
+        toast.error('북마크 등록에 실패했습니다.');
+      }
       console.error('Failed to update bookmark: ', error);
     }
   };
