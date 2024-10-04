@@ -14,6 +14,22 @@ spec:
       labels:
         app: newstock-stock-newsdata
     spec:
+      hostAliases:
+        - ip: "34.64.230.82"
+          hostnames:
+            - "master01"
+        - ip: "34.22.71.84"
+          hostnames:
+            - "master02"
+        - ip: "34.64.42.191"
+          hostnames:
+            - "slave01"
+        - ip: "34.64.155.83"
+          hostnames:
+            - "slave02"
+        - ip: "34.64.105.214"
+          hostnames:
+            - "slave03"
       containers:
       - name: newstock-stock-newsdata-container
         image: ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstocknewsdata:TAG_PLACEHOLDER
