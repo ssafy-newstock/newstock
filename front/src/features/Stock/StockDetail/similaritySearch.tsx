@@ -5,6 +5,7 @@ import BaseStock from '@features/Stock/StockDetail/similaritySearch/BaseStock';
 import OtherStock from '@features/Stock/StockDetail/similaritySearch/OtherStock';
 import { useStockChartQuery } from '@hooks/useStockChartQuery';
 import SelectionStock from '@features/Stock/StockDetail/similaritySearch/SelectionStock';
+import { FlexWrapBetween } from '@components/styledComponent';
 
 interface SimilaritySearchProps {
   stockCode: string;
@@ -57,7 +58,7 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
       </form>
 
       {data && (
-        <div style={{ display: 'flex' }}>
+        <FlexWrapBetween>
           <SelectionStock
             selectionStock={selectionData ?? []}
             stockCode={stockCode}
@@ -68,7 +69,7 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
           {data.otherStock.map((otherStock) => (
             <OtherStock key={otherStock.stockCode} otherStock={otherStock} />
           ))}
-        </div>
+        </FlexWrapBetween>
       )}
     </>
   );

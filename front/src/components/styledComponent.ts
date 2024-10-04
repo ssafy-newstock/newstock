@@ -25,6 +25,11 @@ export const FlexGapColumn = styled(FlexGap)`
   flex-direction: column;
 `;
 
+export const FlexWrapBetween = styled(Flex)`
+  justify-content: space-between;
+  flex-wrap: wrap;
+`;
+
 export const FlexBetween = styled(Flex)`
   justify-content: space-between;
 `;
