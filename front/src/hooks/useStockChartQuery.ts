@@ -3,7 +3,7 @@ import { axiosInstance } from '@api/axiosInstance';
 import { IApiDaily } from '@features/Stock/types';
 import { ChartDateParams } from '@features/Stock/types';
 
-export const useStockChartQuery = (stockCode: string, params: ChartDateParams) => {
+export const useStockChartQuery = (stockCode: string, params: ChartDateParams, isEnabled: boolean = false) => {
   const { startDate, endDate } = params;
   
   return useQuery<IApiDaily>({
@@ -14,6 +14,6 @@ export const useStockChartQuery = (stockCode: string, params: ChartDateParams) =
       });
       return data;
     },
-    enabled: Boolean(stockCode && startDate && endDate),
+    enabled: isEnabled && Boolean(stockCode && startDate && endDate),
   });
 };
