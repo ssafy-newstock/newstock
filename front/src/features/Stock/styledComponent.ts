@@ -296,6 +296,7 @@ export const DetailPageButton = styled.div`
   color: ${({ theme }) => theme.profileColor};
   border-radius: 1rem;
   padding: 0.5rem 1rem;
+  cursor: pointer;
 `;
 
 export const FormWrapper = styled.div`

@@ -6,7 +6,7 @@ import { useStockChartQuery } from '@hooks/useStockChartQuery';
 import BaseStock from '@features/Stock/StockDetail/similaritySearch/BaseStock';
 import OtherStock from '@features/Stock/StockDetail/similaritySearch/OtherStock';
 import SelectionStock from '@features/Stock/StockDetail/similaritySearch/SelectionStock';
-import { Flex, FlexGap, FlexWrapBetween } from '@components/styledComponent';
+import { FlexGap, FlexWrapBetween } from '@components/styledComponent';
 
 interface SimilaritySearchProps {
   stockCode: string;
