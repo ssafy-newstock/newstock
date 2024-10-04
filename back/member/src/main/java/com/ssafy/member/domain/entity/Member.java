@@ -32,6 +32,10 @@ public class Member extends BaseTimeEntity {
     @Column(name = "member_point")
     private Long point;
 
+    @Version
+    @Column(name = "version")
+    private Long version;
+
     public Member(final String memberName, final String provider, final String providerEmail, final String profileImageUrl) {
         this.memberName = memberName;
         this.providerEmail = providerEmail;
