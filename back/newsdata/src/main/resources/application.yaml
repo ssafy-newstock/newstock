@@ -16,7 +16,7 @@ spring:
       port: 6379
 
 server:
-  port: 8002
+  port: 8010
 hbase:
   url: http://j11c207a.p.ssafy.io:9090
 
