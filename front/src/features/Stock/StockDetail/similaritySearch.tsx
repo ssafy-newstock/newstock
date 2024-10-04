@@ -50,7 +50,7 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
       </form>
 
       {data && (
-        <>
+        <div style={{display:'flex'}}>
           <div>
             <h1>Base Stock:</h1>
             <h1>{data.baseStock.stockCode}</h1>
@@ -71,7 +71,7 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
               <SimilarityChart stock={otherstock.candleData} />
             </div>
           ))}
-        </>
+        </div>
       )}
       {/* <h3>Similarity Search Results:</h3>
       <pre>{JSON.stringify(data, null, 2)}</pre> */}
