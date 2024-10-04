@@ -9,6 +9,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import NewsDetailSkeleton from '@features/News/skeleton/NewsDetailSkeleton';
 import { authRequest } from '@api/axiosInstance';
+import { toast } from 'react-toastify';
 
 const SubCenter = styled.div`
   display: flex;
@@ -118,6 +119,9 @@ const EconomicNewsDetailPage: React.FC = () => {
           setPlusPoint((prevPoint) =>
             prevPoint !== null ? prevPoint + plusPoint : plusPoint
           );
+          if (plusPoint) {
+            toast.success('10만원이 충전되었습니다!');
+          }
         }
       );
 
