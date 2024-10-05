@@ -55,9 +55,11 @@ const StockMainPage = () => {
   return (
     <ErrorBoundary fallback={<StockMain />}>
       <Center style={{ padding: '1rem' }}>
-        <Suspense fallback={<FavoriteStockSkeleton />}>
-          <FavoriteStockSection />
-        </Suspense>
+        {isLogin && (
+          <Suspense fallback={<FavoriteStockSkeleton />}>
+            <FavoriteStockSection />
+          </Suspense>
+        )}
 
         {/* 실시간 차트(top 10) */}
         <DividedSection style={{ marginTop: isLogin ? '1.5rem' : '0rem' }}>
