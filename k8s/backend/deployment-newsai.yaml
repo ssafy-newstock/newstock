@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: newstock-stock-newsai
+  labels:
+    app: newstock-stock-newsai
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: newstock-stock-newsai
+  template:
+    metadata:
+      labels:
+        app: newstock-stock-newsai
+    spec:
+      hostAliases:
+        - ip: "34.64.230.82"
+          hostnames:
+            - "master01"
+        - ip: "34.22.71.84"
+          hostnames:
+            - "master02"
+        - ip: "34.64.42.191"
+          hostnames:
+            - "slave01"
+        - ip: "34.64.155.83"
+          hostnames:
+            - "slave02"
+        - ip: "34.64.105.214"
+          hostnames:
+            - "slave03"
+      containers:
+      - name: newstock-stock-newsai-container
+        image: ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstocknewsai:TAG_PLACEHOLDER
+        ports:
+        - containerPort: 8000  # FastAPI 기본 포트
+        env:
+          - name: MYSQL_DB_HOST
+            value: "svc.sel4.cloudtype.app"
+          - name: MYSQL_DB_PORT
+            value: "32142"
+          - name: MYSQL_DB_USER
+            value: "root"
+          - name: MYSQL_DB_PASSWORD
+            value: "root"
+          - name: MYSQL_DB_NAME
+            value: "stock"
+          - name: MYSQL_DB_CHARSET
+            value: "utf8mb4"
+          - name: JDBC_URL
+            value: "jdbc:phoenix:34.64.230.82,34.22.71.84,34.64.42.191:2181:/hbase"
+          - name: OPENAI_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: secret-gpt
+                key: SECRET_KEY
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "1024Mi"
+            cpu: "500m"
+      imagePullSecrets:
+        - name: ocirsecret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: newstock-stock-newsai-service
+spec:
+  selector:
+    app: newstock-stock-newsai
+  ports:
+    - protocol: TCP
+      port: 8020           # 클러스터 내부에서 접근할 서비스 포트
+      targetPort: 8020    # 컨테이너 내부 포트
+  type: ClusterIP      # 외부에서 접근할 수 없는 기본 설정, 필요시 LoadBalancer로 변경 가능
