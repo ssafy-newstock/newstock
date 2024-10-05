@@ -115,6 +115,17 @@ pipeline {
             }
         }
 
+        stage('Build and Push Docker Image for NewsAI') {
+            steps {
+                script {
+                    sh """
+                        docker build -t ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstocknewsai:${IMAGE_TAG} data/news_ai_server
+                        docker push ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstocknewsai:${IMAGE_TAG}
+                    """
+                }
+            }
+        }
+
         stage('Update Kubernetes Deployment for Auth') {
 //             when {
 //                 expression { env.MEMBER_CHANGED == 'true' }
@@ -221,6 +232,18 @@ pipeline {
             steps {
                 script {
                     def deploymentPath = 'k8s/frontend/deployment-front.yaml'  // deploymentPath 정의
+                    sh """
+                        sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
+                        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f ${deploymentPath}
+                    """
+                }
+            }
+        }
+
+        stage('Update Kubernetes Deployment for NewsAI') {
+            steps {
+                script {
+                    def deploymentPath = 'k8s/backend/deployment-newsai.yaml'  // deploymentPath 정의
                     sh """
                         sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
                         kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f ${deploymentPath}
