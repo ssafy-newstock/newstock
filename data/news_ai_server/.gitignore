@@ -8,4 +8,4 @@ htmlcov
 .venv
 
 # jdbc 파일 의존성 제거
-/app/core/jdbc
+# /app/core/jdbc
