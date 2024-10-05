@@ -17,6 +17,7 @@ import {
   Text,
   SimilarityButton,
 } from '@features/Stock/styledComponent';
+import { toast } from 'react-toastify';
 
 interface SimilaritySearchProps {
   stockCode: string;
@@ -67,6 +68,10 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
     });
     setIsSearchInitiated(true);
   });
+
+  if (similarityQuery.data && chartQuery.data) {
+    toast.success('유사도 검색 완료');
+  }
 
   return (
     <>
