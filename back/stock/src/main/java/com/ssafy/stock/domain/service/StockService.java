@@ -434,15 +434,15 @@ public class StockService {
                     List<StocksHoldings> myStockHoldings = stockHoldingRepository.findAllByMemberIdWithStock(memberId);
                     List<StocksTransactions> myStockSellTransaction = stockTransactionRepository.findSellByMemberIdWithStock(memberId);
 
-                    double holdingChangeRate = getHoldingChangeRate(myStockHoldings);
-                    double transactionChangeRate = getTransactionChangeRate(myStockSellTransaction);
+                    Double holdingChangeRate = getHoldingChangeRate(myStockHoldings);
+                    Double transactionChangeRate = getTransactionChangeRate(myStockSellTransaction);
 
                     return new MemberChangeRateDto(memberId, holdingChangeRate + transactionChangeRate);
                 }).toList();
     }
 
-    private double getTransactionChangeRate(List<StocksTransactions> myStockSellTransaction) {
-        double transactionChangeRate = myStockSellTransaction.stream()
+    private Double getTransactionChangeRate(List<StocksTransactions> myStockSellTransaction) {
+        Double transactionChangeRate = myStockSellTransaction.stream()
                 .mapToDouble(transaction -> {
                     Stocks stock = transaction.getStock();
 
@@ -455,8 +455,8 @@ public class StockService {
         return transactionChangeRate;
     }
 
-    private double getHoldingChangeRate(List<StocksHoldings> myStockHoldings) {
-        double holdingChangeRate = myStockHoldings.stream()
+    private Double getHoldingChangeRate(List<StocksHoldings> myStockHoldings) {
+        Double holdingChangeRate = myStockHoldings.stream()
                 .mapToDouble(holding -> {
                     Stocks stock = holding.getStock();
 
