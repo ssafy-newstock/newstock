@@ -155,7 +155,9 @@ def connect_jdbc() -> jaydebeapi.Connection:
     Returns:
         jaydebeapi.Connection: Phoenix 데이터베이스에 연결된 JDBC connection 객체.
     """
-
+    logger.info("23")
+    logger.info("====================")
+    logger.info(os.getcwd())
     # 각 JAR 파일의 경로 설정
     phoenix_jar_path = './core/jdbc/phoenix-client-embedded-hbase-2.5-5.1.3.jar'
     reload4j_jar_path = './core/jdbc/reload4j-1.2.24.jar'
@@ -163,12 +165,14 @@ def connect_jdbc() -> jaydebeapi.Connection:
     sqlline_jar_path = './core/jdbc/sqlline-1.9.0-jar-with-dependencies.jar'
 
     # 필요한 JAR 파일을 포함한 클래스패스 설정
-    class_path = f"{phoenix_jar_path};{reload4j_jar_path};{slf4j_reload4j_jar_path};{sqlline_jar_path}"
-
+    class_path = f"{phoenix_jar_path}:{reload4j_jar_path}:{slf4j_reload4j_jar_path}:{sqlline_jar_path}"
+    # class_path = f"{phoenix_jar_path};{reload4j_jar_path};{slf4j_reload4j_jar_path};{sqlline_jar_path}"
+    logger.info(class_path)
     # 환경 변수에서 JDBC URL과 JAVA_HOME을 설정
     jdbc_url = os.getenv('JDBC_URL')  # JDBC 연결 URL
     os.environ['JAVA_HOME'] = os.getenv('JAVA_HOME')  # JAVA 설치 경로 설정
 
+    logger.info("connection start")
     # Phoenix에 JDBC 연결을 설정
     connection = jaydebeapi.connect(
         "org.apache.phoenix.jdbc.PhoenixDriver",  # 드라이버 클래스 이름
@@ -176,7 +180,7 @@ def connect_jdbc() -> jaydebeapi.Connection:
         ["", ""],  # 사용자명 및 비밀번호 (빈 값으로 설정)
         class_path  # 클래스패스에 추가된 JAR 파일들
     )
-
+    
     logger.info("Connection successful")  # 연결 성공 메시지 출력
 
 
