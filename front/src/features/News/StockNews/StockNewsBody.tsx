@@ -5,10 +5,10 @@ import StockNewsHeader from './StockNewsHeader';
 import { useEffect, useState } from 'react';
 import NewsSummary from '@features/News/NewsSummary';
 import { Overlay, Background, Modal } from '@components/ModalComponents';
-import { useOutletContext } from 'react-router-dom';
-import { authRequest } from '@api/axiosInstance';
-import { toast } from 'react-toastify';
 import { NewsTag } from '../NewsIconTag';
+import { useBookmarkStore } from '@store/useBookmarkStore';
+import useAuthStore from '@store/useAuthStore';
+import { toast } from 'react-toastify';
 
 const StockNewsBodyWrapper = styled.div`
   display: flex;
@@ -79,6 +79,7 @@ const FooterText = styled.p`
 
 const MediaWrapper = styled.div`
   display: flex;
+  align-items: center;
   gap: 0.5rem;
 `;
 
@@ -88,72 +89,12 @@ const BookmarkedNewsTagWrapper = styled.div`
   gap: 1rem;
 `;
 
-// 종목 뉴스 북마크 등록 (stock 뉴스)
-const registerStockBookmark = async (id: number) => {
-  try {
-    const response = await authRequest.post(`/news/favorite/stock/${id}`);
-    if (response.data.success) {
-      toast.success('북마크가 성공적으로 등록되었습니다.');
-    }
-  } catch (error) {
-    console.error('Failed to register bookmark: ', error);
-    toast.error('북마크 등록에 실패했습니다.');
-  }
-};
-
-// 종목 뉴스 북마크 삭제 (stock 뉴스)
-const deleteStockBookmark = async (id: number) => {
-  try {
-    const response = await authRequest.delete(
-      `/news/favorite/stock/${id}`
-    );
-    if (response.data.success) {
-      toast.success('북마크가 성공적으로 삭제되었습니다.');
-    }
-  } catch (error) {
-    console.error('Failed to delete bookmark: ', error);
-    toast.error('북마크 삭제에 실패했습니다.');
-  }
-};
-
-const fetchBookmarkedStockNews = async (): Promise<number[]> => {
-  try {
-    const response = await authRequest.get('/news/favorite/stock');
-    const data: NewsItem[] = response.data.data;
-    return data.map((newsItem: NewsItem) => newsItem.id);
-  } catch (error) {
-    console.error('Failed to fetch bookmarked news:', error);
-    return [];
-  }
-};
-
 const MediaLogo = styled.img`
   width: 1.5rem;
   height: 1.5rem;
   object-fit: contain; /* 이미지 비율을 유지하면서 컨테이너 안에 맞춤 */
   border-radius: 50%;
 `;
-
-// Outlet에서 전달된 값에 대한 타입 정의
-interface OutletContextType {
-  onBookmarkSuccess: () => void; // onBookmarkSuccess가 함수라는 것을 명시
-  bookmarkUpdated: boolean; // bookmarkUpdated 추가
-}
-
-// 인터페이스 정의
-interface NewsItem {
-  id: number;
-  title: string;
-  article: string;
-  description: string;
-  industry?: string;
-  media: string;
-  sentiment: string;
-  subtitle: string;
-  thumbnail?: string;
-  uploadDatetime: string;
-  keywords?: string[];
-}
 
 interface IStockDetail {
   stockCode: string;
@@ -192,74 +133,51 @@ const StockNewsBody: React.FC<StockNewsBodyProps> = ({
   stockDetail,
 }) => {
   const formattedDate = date.split('T')[0].replace(/-/g, '.');
-  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
   const [showSummary, setShowSummary] = useState<boolean>(false);
   const mediaImageUrl = `https://stock.vaiv.kr/resources/images/news/${media}.png`;
 
-  // Outlet에서 전달된 콜백 함수 받기
-  const { onBookmarkSuccess, bookmarkUpdated } =
-    useOutletContext<OutletContextType>();
+  // zustand store에서 북마크 상태 관리 함수와 데이터 가져오기
+  const {
+    bookmarkedStockNewsIds,
+    addStockBookmark,
+    removeStockBookmark,
+    fetchBookmarkedStockNews,
+  } = useBookmarkStore();
 
-  const reloadBookmarkState = async (newsId: number) => {
-    try {
-      // 관심 뉴스 목록을 불러옴
-      const response = await authRequest.get('/news/favorite/stock');
+  const isBookmarked = bookmarkedStockNewsIds.includes(id); // 북마크 여부 확인
 
-      if (response.data.success) {
-        // 관심 뉴스 목록에서 현재 뉴스가 있는지 확인
-        const bookmarkedNews = response.data.data;
-        const isBookmarkedNews = bookmarkedNews.some(
-          (newsItem: NewsItem) => newsItem.id === newsId
-        );
-
-        // 현재 뉴스가 북마크된 상태라면 true, 아니면 false로 설정
-        setIsBookmarked(isBookmarkedNews);
-      }
-    } catch (error) {
-      console.error('Failed to reload bookmark state: ', error);
-    }
-  };
-
-  // bookmarkUpdated 상태가 변경되면 북마크 상태 갱신
-  useEffect(() => {
-    if (bookmarkUpdated) {
-      // bookmark 상태를 다시 체크해서 갱신
-      // 예시로 GET 요청을 다시 보내서 상태를 확인하거나, 다른 상태로 업데이트
-      reloadBookmarkState(id);
-    }
-  }, [bookmarkUpdated]);
+  const { isLogin } = useAuthStore();
 
   const handleBookmarkIconClick = async (event: React.MouseEvent) => {
-    event.stopPropagation(); // 상위 클릭 이벤트 중지
+    event.stopPropagation();
+
+    if (!isLogin) {
+      // 로그인하지 않은 상태에서는 북마크 기능 제한
+      toast.error('로그인이 필요한 서비스입니다.');
+      return;
+    }
 
     if (!isBookmarked) {
       try {
-        await registerStockBookmark(id);
-        setIsBookmarked(true);
-        onBookmarkSuccess(); // 콜백 함수 호출 (북마크 성공 알림)
+        await addStockBookmark(id);
       } catch (error) {
         console.error('Bookmark registration failed', error);
       }
     } else {
-      // 북마크 삭제
       try {
-        await deleteStockBookmark(id);
-        setIsBookmarked(false);
-        onBookmarkSuccess(); // 북마크 삭제 후 리스트 갱신
+        await removeStockBookmark(id);
       } catch (error) {
         console.error('Bookmark removal failed', error);
       }
     }
   };
 
+  // 컴포넌트 마운트 시 북마크 상태 로드
   useEffect(() => {
-    const fetchBookmarks = async () => {
-      const bookmarkedIds = await fetchBookmarkedStockNews();
-      setIsBookmarked(bookmarkedIds.includes(id)); // 현재 뉴스 ID가 북마크된 상태인지 확인
-      console.log(bookmarkedIds); // 이 부분을 추가하여 불러온 북마크 ID들을 확인
-    };
-    fetchBookmarks();
-  }, [id]); // 뉴스 ID가 변경될 때마다 확인
+    if (isLogin) {
+      fetchBookmarkedStockNews(); // zustand에서 북마크 상태 로드
+    }
+  }, [fetchBookmarkedStockNews, isLogin]);
 
   const handleSummaryClick = (event: React.MouseEvent) => {
     event.stopPropagation(); // 상위 클릭 이벤트 중지

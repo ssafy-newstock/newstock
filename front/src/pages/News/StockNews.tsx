@@ -15,7 +15,7 @@ const SubCenter = styled.div`
   align-items: flex-start;
   align-self: stretch;
   max-width: 100rem;
-  min-width: 90rem;
+  min-width: 50rem;
   width: 90%;
 `;
 
@@ -199,47 +199,47 @@ const StockNewsPage: React.FC = () => {
 
   return (
     <>
-    {loading && <StockNewsSkeleton/>}
-    <SubCenter>
-      {newsList.length > 0
-        ? newsList.map((news) => {
-            // stockNewsStockCodes의 첫 번째 stockCode를 기반으로 stockDetail 찾기
-            const stockCode = news.stockNewsStockCodes?.[0];
-            const stockDetail =
-              allStock?.find((s) => s.stockCode === stockCode) ||
-              top10Stock?.find((s) => s.stockCode === stockCode);
-            const stockName = stockDetail?.stockName || 'Unknown Stock';
+      {loading && <StockNewsSkeleton />}
+      <SubCenter>
+        {newsList.length > 0
+          ? newsList.map((news) => {
+              // stockNewsStockCodes의 첫 번째 stockCode를 기반으로 stockDetail 찾기
+              const stockCode = news.stockNewsStockCodes?.[0];
+              const stockDetail =
+                allStock?.find((s) => s.stockCode === stockCode) ||
+                top10Stock?.find((s) => s.stockCode === stockCode);
+              const stockName = stockDetail?.stockName || 'Unknown Stock';
 
-            return (
-              <StockNewsWrapper
-                key={news.id}
-                onClick={() => handleNewsClick(news.id)}
-                $showSummary={showSummary}
-              >
-                <EconSubNewsBody thumbnail={news.thumbnail} />
-                <StockNewsBody
-                  id={news.id}
-                  title={news.title}
-                  content={news.content}
-                  media={news.media}
-                  date={news.uploadDatetime}
-                  keywords={news.stockKeywords}
-                  sentiment={news.sentiment}
-                  onShowSummaryChange={handleShowSummaryChange}
-                  header={stockName}
-                  stockDetail={stockDetail!}
-                />
-              </StockNewsWrapper>
-            );
-          })
-        : !loading && <p>No news available</p>}
-      {loading && (
-        <LoadingIcon>
-          <LoadingSpinner />
-        </LoadingIcon>
-      )}
-      <ObserverTrigger ref={observerRef} />
-    </SubCenter>
+              return (
+                <StockNewsWrapper
+                  key={news.id}
+                  onClick={() => handleNewsClick(news.id)}
+                  $showSummary={showSummary}
+                >
+                  <EconSubNewsBody thumbnail={news.thumbnail} />
+                  <StockNewsBody
+                    id={news.id}
+                    title={news.title}
+                    content={news.content}
+                    media={news.media}
+                    date={news.uploadDatetime}
+                    keywords={news.stockKeywords}
+                    sentiment={news.sentiment}
+                    onShowSummaryChange={handleShowSummaryChange}
+                    header={stockName}
+                    stockDetail={stockDetail!}
+                  />
+                </StockNewsWrapper>
+              );
+            })
+          : !loading && <p>No news available</p>}
+        {loading && (
+          <LoadingIcon>
+            <LoadingSpinner />
+          </LoadingIcon>
+        )}
+        <ObserverTrigger ref={observerRef} />
+      </SubCenter>
     </>
   );
 };

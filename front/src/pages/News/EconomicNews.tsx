@@ -1,6 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useRef, useEffect, useCallback } from 'react';
-import noDataPng from '@assets/News/noDataPng.png';
+import noData from '@assets/News/noData.png';
 import styled from 'styled-components';
 import EconNewsBody from '@features/News/EconNews/EconNewsBody';
 import EconSubNewsBody from '@features/News/EconNews/EconSubNewsBody';
@@ -19,7 +19,7 @@ const SubCenter = styled.div`
   align-items: flex-start;
   align-self: stretch;
   max-width: 100rem;
-  min-width: 90rem;
+  min-width: 50rem;
   width: 90%;
 `;
 
@@ -51,12 +51,12 @@ const NoDataContainer = styled.div`
   width: 100%;
   height: 100%;
   text-align: center;
-  margin-top: 5rem; /* 페이지 중앙에 오도록 조정 */
-  gap: 2rem;
+  /* margin-top: 7rem; */
+  gap: 3rem;
 `;
 
 const NoDataImage = styled.div`
-  width: 15rem; /* 이미지 크기를 원하는 대로 조정 */
+  width: 85%; /* 이미지 크기를 원하는 대로 조정 */
   height: auto; /* 이미지 비율을 유지 */
   img {
     width: 100%;
@@ -65,12 +65,13 @@ const NoDataImage = styled.div`
   }
 `;
 
-const NoNewsMessage = styled.p`
-  color: ${({ theme }) => theme.textColor};
-  font-size: 1.5rem;
-  font-weight: 600;
-  text-align: center;
-`;
+// const NoNewsMessage = styled.p`
+//   color: ${({ theme }) => theme.grayTextColor};
+//   font-size: 1.8rem;
+//   font-weight: 600;
+//   text-align: center;
+//   /* margin-right: 2rem; */
+// `;
 
 const ObserverTrigger = styled.div`
   height: 0.0625rem;
@@ -257,17 +258,19 @@ const EconomicNewsPage: React.FC = () => {
 
   return (
     <>
-    {loading && <EconNewsSkeleton />}
+      {loading && <EconNewsSkeleton />}
       <SubCenter>
         {newsList.length === 0 && !loading && (
           <NoDataContainer>
-            {/* <NoDataImage src={noDataPng} alt="No data available" /> */}
-            <NoDataImage>
+            {/* <NoDataImage>
               <img src={noDataPng} alt="noDataPng" />
             </NoDataImage>
             <NoNewsMessage>
               해당 카테고리에 뉴스가 존재하지 않습니다.
-            </NoNewsMessage>
+            </NoNewsMessage> */}
+            <NoDataImage>
+              <img src={noData} alt="noDataPng" />
+            </NoDataImage>
           </NoDataContainer>
         )}
         {newsList.map((news, index) => (

@@ -7,8 +7,10 @@ import { useEffect, useState } from 'react';
 import NewsSummary from '@features/News/NewsSummary';
 import { Overlay, Background, Modal } from '@components/ModalComponents';
 import { useOutletContext } from 'react-router-dom';
-import { authRequest } from '@api/axiosInstance';
 import { toast } from 'react-toastify';
+
+import { useBookmarkStore } from '@store/useBookmarkStore';
+import useAuthStore from '@store/useAuthStore';
 
 const EconomicNewsBody = styled.div`
   display: flex;
@@ -77,6 +79,7 @@ const FooterText = styled.p`
 
 const MediaWrapper = styled.div`
   display: flex;
+  align-items: center;
   gap: 0.5rem;
 `;
 
@@ -104,50 +107,6 @@ const EconomicSubNewsPNG = styled.img`
   }
 `;
 
-// 시황 뉴스 북마크 등록
-const registerIndustryBookmark = async (id: number) => {
-  try {
-    // const response = await axiosInstance.post(`/news/favorite/industry/${id}`);
-    const response = await authRequest.post(`/news/favorite/industry/${id}`);
-    console.log('API Response:', response); // 응답 확인
-    if (response.data.success) {
-      toast.success('북마크가 성공적으로 등록되었습니다.');
-    }
-  } catch (error) {
-    console.error('Failed to register bookmark: ', error);
-    toast.error('북마크 등록에 실패했습니다.');
-  }
-};
-
-// 시황 뉴스 북마크 삭제
-const deleteIndustryBookmark = async (id: number) => {
-  try {
-    const response = await authRequest.delete(`/news/favorite/industry/${id}`);
-    if (response.data.success) {
-      toast.success('북마크가 성공적으로 삭제되었습니다.');
-    }
-  } catch (error) {
-    console.error('Failed to delete bookmark: ', error);
-    toast.error('북마크 삭제에 실패했습니다.');
-  }
-};
-
-const fetchBookmarkedNews = async (): Promise<number[]> => {
-  try {
-    const response = await authRequest.get('/news/favorite/industry');
-
-    if (response.data && response.data.data) {
-      const data: NewsItem[] = response.data.data;
-      return data.map((newsItem: NewsItem) => newsItem.id);
-    } else {
-      return [];
-    }
-  } catch (error) {
-    console.error('Failed to fetch bookmarked news:', error);
-    return [];
-  }
-};
-
 const MediaLogo = styled.img`
   width: 1.5rem;
   height: 1.5rem;
@@ -159,20 +118,6 @@ const MediaLogo = styled.img`
 interface OutletContextType {
   onBookmarkSuccess: () => void; // onBookmarkSuccess가 함수라는 것을 명시
   bookmarkUpdated: boolean; // bookmarkUpdated 추가
-}
-
-// 인터페이스 정의
-interface NewsItem {
-  id: number;
-  title: string;
-  article: string;
-  description: string;
-  industry?: string;
-  media: string;
-  sentiment: string;
-  subtitle: string;
-  thumbnail?: string;
-  uploadDatetime: string;
 }
 
 interface EconNewsBodyProps {
@@ -195,84 +140,55 @@ const EconNewsBody: React.FC<EconNewsBodyProps> = ({
   onShowSummaryChange,
 }) => {
   const formattedDate = date.split('T')[0].replace(/-/g, '.');
-  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
+  // const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
   const [showSummary, setShowSummary] = useState<boolean>(false);
   const mediaImageUrl = `https://stock.vaiv.kr/resources/images/news/${media}.png`;
 
+  const {
+    bookmarkedNewsIds,
+    fetchBookmarkedNews,
+    addBookmark,
+    removeBookmark,
+  } = useBookmarkStore();
+  const isBookmarked = bookmarkedNewsIds.includes(id);
+
+  const { isLogin } = useAuthStore();
+
   // Outlet에서 전달된 콜백 함수 받기
-  const { onBookmarkSuccess, bookmarkUpdated } =
-    useOutletContext<OutletContextType>();
-
-  const reloadBookmarkState = async (newsId: number) => {
-    try {
-      // 관심 뉴스 목록을 불러옴
-      const response = await authRequest.get(
-        '/news/favorite/industry'
-      );
-
-      if (response.data.success) {
-        // 관심 뉴스 목록에서 현재 뉴스가 있는지 확인
-        const bookmarkedNews = response.data.data;
-        const isBookmarkedNews = bookmarkedNews.some(
-          (newsItem: NewsItem) => newsItem.id === newsId
-        );
-
-        // 현재 뉴스가 북마크된 상태라면 true, 아니면 false로 설정
-        setIsBookmarked(isBookmarkedNews);
-      }
-    } catch (error) {
-      console.error('Failed to reload bookmark state: ', error);
-    }
-  };
-
-  // bookmarkUpdated 상태가 변경되면 북마크 상태 갱신
-  useEffect(() => {
-    if (bookmarkUpdated) {
-      // bookmark 상태를 다시 체크해서 갱신
-      // 예시로 GET 요청을 다시 보내서 상태를 확인하거나, 다른 상태로 업데이트
-      reloadBookmarkState(id);
-    }
-  }, [bookmarkUpdated]);
+  const { onBookmarkSuccess } = useOutletContext<OutletContextType>();
 
   const handleBookmarkIconClick = async (event: React.MouseEvent) => {
     event.stopPropagation(); // 상위 클릭 이벤트 중지
-    console.log('Bookmark icon clicked');
+
+    if (!isLogin) {
+      // 로그인하지 않은 상태에서는 북마크 기능 제한
+      toast.error('로그인이 필요한 서비스입니다.');
+      return;
+    }
 
     if (!isBookmarked) {
       try {
-        console.log('Trying to register bookmark');
-        await registerIndustryBookmark(id);
-        setIsBookmarked(true);
-        onBookmarkSuccess(); // 콜백 함수 호출 (북마크 성공 알림)
+        await addBookmark(id);
+        onBookmarkSuccess();
       } catch (error) {
         console.error('Bookmark registration failed', error);
       }
     } else {
       // 북마크 삭제
       try {
-        console.log('Trying to delete bookmark');
-        await deleteIndustryBookmark(id);
-        setIsBookmarked(false);
-        onBookmarkSuccess(); // 북마크 삭제 후 리스트 갱신
+        await removeBookmark(id); // zustand의 removeBookmark 호출
+        onBookmarkSuccess();
       } catch (error) {
         console.error('Bookmark removal failed', error);
       }
     }
   };
 
-  // 상태가 변경될 때마다 콘솔에 출력
   useEffect(() => {
-    console.log('Updated bookmark state:', isBookmarked);
-  }, [isBookmarked]);
-
-  useEffect(() => {
-    const fetchBookmarks = async () => {
-      const bookmarkedIds = await fetchBookmarkedNews();
-      setIsBookmarked(bookmarkedIds.includes(id)); // 현재 뉴스 ID가 북마크된 상태인지 확인
-      console.log(bookmarkedIds); // 이 부분을 추가하여 불러온 북마크 ID들을 확인
-    };
-    fetchBookmarks();
-  }, [id]); // 뉴스 ID가 변경될 때마다 확인
+    if (isLogin) {
+      fetchBookmarkedNews();
+    }
+  }, [fetchBookmarkedNews, isLogin]);
 
   const handleSummaryClick = (event: React.MouseEvent) => {
     event.stopPropagation(); // 상위 클릭 이벤트 중지
