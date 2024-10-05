@@ -24,11 +24,13 @@ import { ErrorBoundary } from 'react-error-boundary';
 import StockHoldingError from '@features/Stock/StockDetail/StockHoldingError';
 import SimilaritySearch from '@features/Stock/StockDetail/SimilaritySearch';
 import { useFindStockByCode } from '@utils/uesFindStockByCode';
+import useAuthStore from '@store/useAuthStore';
 
 const StockDetailPage = () => {
   const location = useLocation();
   const { stock } = location.state as { stock: IStock };
   const [isShow, setIsShow] = useState<boolean>(false);
+  const {isLogin} = useAuthStore();
 
   // 주식 상세 정보
   const stockDetail = useFindStockByCode(stock.stockCode);
@@ -45,7 +47,7 @@ const StockDetailPage = () => {
           {stockDetail && <StockInfo stockDetail={stockDetail} />}
           {/* 좋아요, 유사도 버튼 */}
           <FlexGap $gap="1rem">
-            {stock && <LikeButton stockCode={stock.stockCode} />}
+            {isLogin && <LikeButton stockCode={stock.stockCode} />}
             <DetailPageButton onClick={handleClick}>
               유사도 분석
             </DetailPageButton>
