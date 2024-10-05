@@ -1,104 +1,162 @@
-import { TextP_16_NOTGRAY } from '@features/MyStock/myStockStyledComponent';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
 import { useMyTransactionData } from '@hooks/useStockHoldings';
+import blueLogo from '@assets/Stock/blueLogo.png';
+import LoadingSpinner from '@components/LoadingSpinner';
+import {
+  CardDiv,
+  CardLeftDiv,
+  CardLeftRightDiv,
+  CardRightDiv,
+  CenteredMessage,
+  ContainerDiv,
+  RightContentDiv,
+  StockImage,
+  TextP_14_NOTGRAY,
+} from '@features/MyStockModal/styledComponent';
 
-// 텍스트 색상을 변경하기 위한 스타일드 컴포넌트 생성
-const ColoredText = styled(TextP_16_NOTGRAY)<{ $color: string }>`
-  color: ${({ $color }) => $color};
-`;
-
-const TransactionCardDiv = styled.div`
+const TransactionCardLeftTopDiv = styled.div`
   display: flex;
-  padding: 10px;
-  justify-content: space-between;
-  align-items: center;
-  align-self: stretch;
-  border-radius: 30px;
-  background-color: ${({ theme }) => theme.newsBackgroundColor};
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.1);
-  margin: 0rem 0.5rem;
-`;
-
-const TransactionCardRightDiv = styled.div`
-  display: flex;
-  align-items: flex-end;
-  flex-direction: column;
-  justify-content: center;
-  gap: 1rem;
-`;
-
-const TransactionCardLeftDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const TransactionDateText = styled.p`
-  color: ${({ theme }) => theme.textColor};
-  font-size: 0.875rem;
+  flex-direction: row;
+  gap: 0.5rem;
 `;
 
 const TransactionTypeText = styled.p<{ $type: string }>`
-  color: ${({ $type }) => ($type === 'BUY' ? 'green' : 'red')};
-  font-size: 1rem;
-  font-weight: bold;
+  color: ${({ $type }) => ($type === 'BUY' ? 'red' : 'blue')};
+`;
+
+const DateTitle = styled.h3`
+  font-size: 1.2rem;
+  margin: 0.5rem;
+`;
+
+const HistoryhrDiv = styled.div`
+  margin: 0rem 0.5rem;
+  width: 95%;
+  border-bottom: 1px solid #b3b3b3;
 `;
 
 const History: React.FC = () => {
   // 커스텀 훅으로 거래 내역 데이터를 가져옴
   const { data: transactions, isLoading, error } = useMyTransactionData();
-  const navigate = useNavigate();
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <LoadingSpinner />;
   }
 
   if (error || !transactions) {
-    return <p>Error loading data.</p>;
+    return <CenteredMessage>Error loading data.</CenteredMessage>;
   }
 
+  if (transactions.length === 0) {
+    return <CenteredMessage>거래 내역이 없습니다.</CenteredMessage>;
+  }
+
+  // 날짜 형식 변환 함수
+  const formatDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
+    const day = ('0' + date.getDate()).slice(-2);
+    return `${year}.${month}.${day}`;
+  };
+
+  // 9시간을 더하는 함수
+  const addNineHours = (date: Date) => {
+    const updatedDate = new Date(date);
+    updatedDate.setHours(updatedDate.getHours() + 9); // 9시간 더함
+    return updatedDate;
+  };
+
+  // 날짜별로 거래 내역을 그룹화하는 함수
+  const groupedTransactions = transactions.reduce(
+    (acc, transaction) => {
+      const transactionDate = addNineHours(
+        new Date(transaction.stockTransactionDate)
+      );
+      const dateKey = formatDate(transactionDate);
+
+      if (!acc[dateKey]) {
+        acc[dateKey] = [];
+      }
+      acc[dateKey].push(transaction);
+      return acc;
+    },
+    {} as { [key: string]: typeof transactions }
+  );
+
+  // 날짜를 내림차순으로 정렬
+  const sortedDates = Object.keys(groupedTransactions).sort(
+    (a, b) => new Date(b).getTime() - new Date(a).getTime()
+  );
+
   return (
-    <>
-      {transactions.map((transaction) => {
-        const color =
-          transaction.stockTransactionType === 'BUY' ? 'green' : 'red';
+    <RightContentDiv>
+      {sortedDates.map((dateKey) => (
+        <ContainerDiv key={dateKey}>
+          {/* 날짜 표시 */}
+          <DateTitle>{dateKey}</DateTitle>
 
-        const handleNavigate = () => {
-          navigate(`/stock-detail/${transaction.stockCode}/day-chart`, {
-            state: { stockId: transaction.stockId },
-          });
-        };
+          {groupedTransactions[dateKey]
+            .sort(
+              (a, b) =>
+                new Date(
+                  addNineHours(new Date(b.stockTransactionDate))
+                ).getTime() -
+                new Date(
+                  addNineHours(new Date(a.stockTransactionDate))
+                ).getTime()
+            ) // 시간을 기준으로 내림차순 정렬
+            .map((transaction) => {
+              const transactionDate = addNineHours(
+                new Date(transaction.stockTransactionDate)
+              );
+              return (
+                <CardDiv key={transaction.stockId}>
+                  <CardLeftDiv>
+                    <StockImage
+                      src={`https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${transaction.stockCode}.png`}
+                      alt={blueLogo}
+                    />
+                    {/* 주식 이름 및 매수/매도 표시 */}
+                    <CardLeftRightDiv>
+                      <TextP_14_NOTGRAY>
+                        {transaction.stockName}
+                      </TextP_14_NOTGRAY>
+                      {/* 거래 날짜와 시간 표시 */}
+                      <TextP_14_NOTGRAY>
+                        {transactionDate.toLocaleTimeString()}{' '}
+                        {/* 9시간 더한 시간 */}
+                      </TextP_14_NOTGRAY>
+                    </CardLeftRightDiv>
+                  </CardLeftDiv>
 
-        return (
-          <TransactionCardDiv key={transaction.stockId}>
-            <TransactionCardLeftDiv
-              onClick={handleNavigate}
-              style={{ cursor: 'pointer' }}
-            >
-              <TextP_16_NOTGRAY>{transaction.stockName}</TextP_16_NOTGRAY>
-              <TransactionDateText>
-                {new Date(
-                  transaction.stockTransactionDate
-                ).toLocaleDateString()}
-              </TransactionDateText>
-              <TransactionTypeText $type={transaction.stockTransactionType}>
-                {transaction.stockTransactionType === 'BUY' ? '매수' : '매도'}
-              </TransactionTypeText>
-            </TransactionCardLeftDiv>
-
-            <TransactionCardRightDiv>
-              <ColoredText $color={color}>
-                {transaction.stockTransactionTotalPrice.toLocaleString()}원
-              </ColoredText>
-              <ColoredText $color={color}>
-                {transaction.stockTransactionAmount.toLocaleString()}주 @{' '}
-                {transaction.stockTransactionPrice.toLocaleString()}원
-              </ColoredText>
-            </TransactionCardRightDiv>
-          </TransactionCardDiv>
-        );
-      })}
-    </>
+                  {/* 거래 금액 및 수량 표시 */}
+                  <CardRightDiv>
+                    <TextP_14_NOTGRAY>
+                      {transaction.stockTransactionAmount.toLocaleString()}주
+                      {' / '}
+                      {transaction.stockTransactionPrice.toLocaleString()}원
+                    </TextP_14_NOTGRAY>
+                    <TransactionCardLeftTopDiv>
+                      <TextP_14_NOTGRAY>
+                        {transaction.stockTransactionTotalPrice.toLocaleString()}
+                        원
+                      </TextP_14_NOTGRAY>
+                      <TransactionTypeText
+                        $type={transaction.stockTransactionType}
+                      >
+                        {transaction.stockTransactionType === 'BUY'
+                          ? '매수'
+                          : '매도'}
+                      </TransactionTypeText>
+                    </TransactionCardLeftTopDiv>
+                  </CardRightDiv>
+                </CardDiv>
+              );
+            })}
+          <HistoryhrDiv />
+        </ContainerDiv>
+      ))}
+    </RightContentDiv>
   );
 };
 

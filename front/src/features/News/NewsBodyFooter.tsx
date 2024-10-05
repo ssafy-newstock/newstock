@@ -3,7 +3,7 @@ import newstockIcon from '@assets/Stock/blueLogo.png';
 
 const NewsBodyFooterWrapper = styled.div`
   display: flex;
-  padding: 0 0.6rem;
+  padding: 0 0.3rem;
   align-items: center;
   gap: 0.75rem;
 `;

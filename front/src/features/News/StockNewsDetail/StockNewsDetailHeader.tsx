@@ -9,11 +9,12 @@ import {
   NeutralIconText as BaseNeutralIconText,
 } from '@features/News/PNSubicon';
 import { NewsTag, bookmarkedIcon, unbookmarkedIcon } from '../NewsIconTag';
-import { useEffect, useState } from 'react';
-import { axiosInstance } from '@api/axiosInstance';
-import { useOutletContext } from 'react-router-dom';
+import { useEffect } from 'react';
+import { toast } from 'react-toastify';
 import useAllStockStore from '@store/useAllStockStore';
 import useTop10StockStore from '@store/useTop10StockStore';
+import { useBookmarkStore } from '@store/useBookmarkStore';
+import useAuthStore from '@store/useAuthStore';
 
 const StockNewsDetailHeaderWrapper = styled.div`
   display: flex;
@@ -143,55 +144,43 @@ const StockNewsDetailHeader: React.FC<StockNewsDetailHeaderProps> = ({
   stockNewsStockCodes,
   id,
 }) => {
-  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
+  const {
+    bookmarkedStockNewsIds,
+    addStockBookmark,
+    removeStockBookmark,
+    fetchBookmarkedStockNews,
+  } = useBookmarkStore(); // zustand로부터 상태 및 함수 불러오기
 
-  // bookmark 상태가 변경되면 다시 갱신하는 함수
-  const { onBookmarkSuccess, bookmarkUpdated } = useOutletContext<{
-    onBookmarkSuccess: () => void;
-    bookmarkUpdated: boolean;
-  }>();
+  const { isLogin } = useAuthStore();
 
-  // 북마크 상태를 불러오는 함수
-  const loadBookmarkState = async () => {
-    try {
-      const response = await axiosInstance.get('/api/news/favorite/stock/list');
-      const bookmarkedNews = response.data.data;
-      const isBookmarkedNews = bookmarkedNews.some(
-        (newsItem: { id: number }) => newsItem.id === id
-      );
-      setIsBookmarked(isBookmarkedNews);
-    } catch (error) {
-      console.error('Failed to load bookmark state: ', error);
-    }
-  };
+  const isBookmarked = bookmarkedStockNewsIds.includes(id);
 
-  // 페이지 로드 시 북마크 상태를 불러옴
   useEffect(() => {
-    loadBookmarkState();
-  }, [id]);
-
-  // 북마크 상태가 업데이트되면 다시 갱신
-  useEffect(() => {
-    if (bookmarkUpdated) {
-      loadBookmarkState();
+    if (isLogin) {
+      fetchBookmarkedStockNews(); // 컴포넌트 마운트 시 북마크 상태 불러오기
     }
-  }, [bookmarkUpdated]);
+  }, [fetchBookmarkedStockNews, isLogin]);
 
   const handleBookmarkClick = async () => {
+    if (!isLogin) {
+      // 로그인하지 않은 상태에서는 북마크 기능 제한
+      toast.error('로그인이 필요한 서비스입니다.');
+      return;
+    }
+
     try {
       if (isBookmarked) {
-        await axiosInstance.delete(`/api/news/favorite/stock/${id}`);
+        await removeStockBookmark(id); // 북마크 삭제
       } else {
-        await axiosInstance.post(`/api/news/favorite/stock/${id}`);
+        await addStockBookmark(id); // 북마크 추가
       }
-      setIsBookmarked(!isBookmarked);
-      onBookmarkSuccess(); // 북마크 상태 갱신 요청
     } catch (error) {
       console.error('Failed to update bookmark: ', error);
     }
   };
 
   const date = uploadDate.split('T')[0].replace(/-/g, '.');
+
   const { allStock } = useAllStockStore();
   const { top10Stock } = useTop10StockStore();
 

@@ -10,7 +10,8 @@ import {
 
 const NewsBodyTitleWrapper = styled.div`
   display: flex;
-  width: 19rem;
+  /* width: 19rem; */
+  width: 100%;
   justify-content: space-between;
   align-items: flex-start;
   position: relative;
