@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SimilarityFormValues } from '@features/Stock/types';
 import { useSimilaritySearchQuery } from '@hooks/useSimilaritySearchQuery';
 import { useStockChartQuery } from '@hooks/useStockChartQuery';
@@ -69,9 +69,12 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
     setIsSearchInitiated(true);
   });
 
-  if (similarityQuery.data && chartQuery.data) {
-    toast.success('유사도 검색 완료');
+  useEffect(() => {
+    if (similarityQuery.data && chartQuery.data) {
+      toast.success('유사도 검색 완료');
+    }
   }
+  , [similarityQuery.data, chartQuery.data]);
 
   return (
     <>
