@@ -3,7 +3,7 @@ import SimilarityChart from '@features/Stock/StockDetail/similaritySearch/Simila
 import { useFindStockByCode } from '@utils/uesFindStockByCode';
 import { getStockImageUrl } from '@utils/getStockImageUrl';
 import blueLogo from '@assets/Stock/blueLogo.png';
-import { StockImage, StockTitle, TextRight } from '@features/Stock/styledComponent';
+import { AnalysisButton, StockImage, StockTitle, TextRight } from '@features/Stock/styledComponent';
 import { FlexGapColumnCenter } from '@components/styledComponent';
 
 
@@ -22,6 +22,7 @@ const OtherStock = ({ otherStock }: { otherStock: ISimilarityStockData }) => {
         {otherStock.startDate} - {otherStock.endDate}
       </TextRight>
       <SimilarityChart stock={otherStock.candleData} />
+      <AnalysisButton>분석하기</AnalysisButton>
     </FlexGapColumnCenter>
   );
 };

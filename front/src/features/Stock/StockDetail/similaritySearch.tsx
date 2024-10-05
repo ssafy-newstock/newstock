@@ -8,43 +8,30 @@ import OtherStock from '@features/Stock/StockDetail/similaritySearch/OtherStock'
 import SelectionStock from '@features/Stock/StockDetail/similaritySearch/SelectionStock';
 import { FlexGap } from '@components/styledComponent';
 import styled from 'styled-components';
-import { DividedSection, InputLabel, InputTag, InputRow } from '@features/Stock/styledComponent';
+import {
+  DividedSection,
+  InputLabel,
+  InputTag,
+  InputRow,
+  SkeletonDiv,
+  Text,
+  SimilarityButton,
+} from '@features/Stock/styledComponent';
 
 interface SimilaritySearchProps {
   stockCode: string;
 }
 
-const SimilarityGrid = styled.div`
+const SimilarityFlex = styled.div`
   width: 100%;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 기본: 3열 */
+  display: flex;
+  flex-wrap: wrap;
   gap: 2rem;
 `;
 
-const SimilarityButton = styled.button`
-  background-color: ${({ theme }) => theme.profileBackgroundColor};
-  color: ${({ theme }) => theme.profileColor};
-  border-radius: 1rem;
-  border: none;
-  padding: 0.5rem 1rem;
-`;
-
-const StyledInput = styled.input`
-  padding: 0.5rem;
-  border: 2px solid #007BFF;
-  border-radius: 4px;
-  font-size: 1rem;
-  width: 100%;
-  transition: border-color 0.3s;
-
-  &:focus {
-    border-color: #0056b3;
-    outline: none;
-  }
-
-  &::placeholder {
-    color: #aaa;
-  }
+const SkeletonFlex = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;
 
 const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
@@ -86,33 +73,36 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
       <form onSubmit={onSubmit}>
         <FlexGap $gap="2rem">
           <InputRow>
-            <InputLabel htmlFor="start_date">Start Date:</InputLabel>
+            <InputLabel>조회 기간: </InputLabel>
             <InputTag
               id="start_date"
               type="date"
               {...register('start_date')}
               required
+              style={{ textAlign: 'center' }}
             />
-          </InputRow>
-
-          <InputRow>
-            <InputLabel htmlFor="end_date">End Date:</InputLabel>
+            <Text>~</Text>
             <InputTag
               id="end_date"
               type="date"
               {...register('end_date')}
               required
+              style={{ textAlign: 'center' }}
             />
           </InputRow>
 
-          <SimilarityButton type="submit">Search</SimilarityButton>
+          <SimilarityButton type="submit">검색</SimilarityButton>
         </FlexGap>
       </form>
 
       {isSearchInitiated && (
         <DividedSection>
           {(similarityQuery.isPending || chartQuery.isPending) && (
-            <p>Loading...</p>
+            <SkeletonFlex>
+              {Array.from({ length: 4 }).map((_, index) => (
+                <SkeletonDiv key={index} $width="19rem" $height="16rem" />
+              ))}
+            </SkeletonFlex>
           )}
           {(similarityQuery.error || chartQuery.error) && (
             <p>
@@ -121,7 +111,7 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
             </p>
           )}
           {similarityQuery.data && chartQuery.data && (
-            <SimilarityGrid>
+            <SimilarityFlex>
               <SelectionStock
                 selectionStock={chartQuery.data.data}
                 stockCode={stockCode}
@@ -135,7 +125,7 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
                   otherStock={otherStock}
                 />
               ))}
-            </SimilarityGrid>
+            </SimilarityFlex>
           )}
         </DividedSection>
       )}

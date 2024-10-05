@@ -3,7 +3,12 @@ import SimilarityChart from '@features/Stock/StockDetail/similaritySearch/Simila
 import { useFindStockByCode } from '@utils/uesFindStockByCode';
 import { getStockImageUrl } from '@utils/getStockImageUrl';
 import blueLogo from '@assets/Stock/blueLogo.png';
-import { StockImage, StockTitle, TextRight } from '@features/Stock/styledComponent';
+import {
+  AnalysisButton,
+  StockImage,
+  StockTitle,
+  TextRight,
+} from '@features/Stock/styledComponent';
 import { FlexGapColumnCenter } from '@components/styledComponent';
 
 interface SelectionStockProps {
@@ -21,7 +26,7 @@ const SelectionStock = ({
 }: SelectionStockProps) => {
   const stock = useFindStockByCode(stockCode);
   return (
-    <FlexGapColumnCenter $gap='0.5rem'>
+    <FlexGapColumnCenter $gap="0.5rem">
       <StockTitle>
         <StockImage
           src={getStockImageUrl(stockCode)}
@@ -35,6 +40,7 @@ const SelectionStock = ({
         {startDate} - {endDate}
       </TextRight>
       <SimilarityChart selectionStock={selectionStock} />
+      <AnalysisButton>분석하기</AnalysisButton>
     </FlexGapColumnCenter>
   );
 };

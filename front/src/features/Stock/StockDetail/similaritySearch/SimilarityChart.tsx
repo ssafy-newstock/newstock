@@ -31,12 +31,29 @@ interface ChartPageProps {
   selectionStock?: IDaily[];
 }
 
+const LINE_COLORS = {
+  stock: '#FF0000',
+  selectionStock: '#0000FF',
+};
+
+const createDataset = (
+  label: string,
+  data: number[] | undefined,
+  color: string
+) => ({
+  label,
+  data,
+  borderColor: color,
+  backgroundColor: color,
+  pointRadius: 1,
+  hoverRadius: 5, // 호버할 때 점 나타내기
+});
+
 const LineChart = ({ stock, selectionStock }: ChartPageProps) => {
   const options = {
     responsive: true,
     animation: {
-      // Change the type of animation property
-      duration: 0, // Set duration to 0 to disable animation
+      duration: 0, // 애니메이션 비활성화
     },
     plugins: {
       legend: {
@@ -51,33 +68,21 @@ const LineChart = ({ stock, selectionStock }: ChartPageProps) => {
         display: false, // x축 숨기기
       },
       y: {
-        display: true, // y축 숨기기
+        display: true, // y축 보이기
       },
     },
   };
 
+  const labels = stock?.map(item => item.date) || selectionStock?.map(item => item.stockCandleDay);
+  
+  const datasets = [
+    createDataset('종가', stock?.map(item => item.close), LINE_COLORS.stock),
+    createDataset('종가', selectionStock?.map(item => item.stockCandleClose), LINE_COLORS.selectionStock),
+  ];
+
   const data = {
-    labels:
-      stock?.map((item) => item.date) ||
-      selectionStock?.map((item) => item.stockCandleDay),
-    datasets: [
-      {
-        label: '종가',
-        data: stock?.map((item) => item.close),
-        borderColor: '#FF0000',
-        backgroundColor: '#FF0000',
-        pointRadius: 1,
-        hoverRadius: 5, // 호버할 때 점 나타내기
-      },
-      {
-        label: '종가',
-        data: selectionStock?.map((item) => item.stockCandleClose),
-        borderColor: '#0000FF',
-        backgroundColor: '#0000FF',
-        pointRadius: 1,
-        hoverRadius: 5, // 호버할 때 점 나타내기
-      },
-    ],
+    labels,
+    datasets,
   };
 
   return (

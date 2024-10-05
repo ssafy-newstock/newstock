@@ -66,6 +66,12 @@ const pulseAnimation = keyframes`
   }
 `;
 
+export const SkeletonDiv = styled.div<{$width:string, $height:string}>`
+  width: ${({$width}) => $width};
+  height: ${({$height}) => $height};
+  animation: ${pulseAnimation} 3s infinite;
+`;
+
 export const StockCardColumnSkeleton = styled(StockCardColumn)`
   animation: ${pulseAnimation} 3s infinite;
   cursor: none;
@@ -431,4 +437,16 @@ export const NoneButton = styled.button`
   background-color: transparent;
   border: none;
   cursor: pointer;
+`;
+
+export const SimilarityButton = styled.button`
+  background-color: ${({ theme }) => theme.profileBackgroundColor};
+  color: ${({ theme }) => theme.profileColor};
+  border-radius: 1rem;
+  border: none;
+  padding: 0.5rem 1rem;
+`;
+
+export const AnalysisButton = styled(DetailPageButton)`
+  align-self: flex-end;
 `;
