@@ -35,6 +35,21 @@ spec:
         image: ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstocknewsai:TAG_PLACEHOLDER
         ports:
         - containerPort: 8000  # FastAPI 기본 포트
+        env:
+          - name: MYSQL_DB_HOST
+            value: "svc.sel4.cloudtype.app"
+          - name: MYSQL_DB_PORT
+            value: "32142"
+          - name: MYSQL_DB_USER
+            value: "root"
+          - name: MYSQL_DB_PASSWORD
+            value: "root"
+          - name: MYSQL_DB_NAME
+            value: "stock"
+          - name: MYSQL_DB_CHARSET
+            value: "utf8mb4"
+          - name: JDBC_URL
+            value: "jdbc:phoenix:34.64.230.82,34.22.71.84,34.64.42.191:2181:/hbase"
         resources:
           requests:
             memory: "256Mi"
