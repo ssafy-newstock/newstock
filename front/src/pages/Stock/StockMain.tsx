@@ -25,7 +25,7 @@ import FavoriteStockSkeleton from '@features/Stock/StockMain/FavoriteStockSkelet
 import RealTimeStockSkeleton from '@features/Stock/StockMain/RealTimeStockSkeleton';
 import { ErrorBoundary } from 'react-error-boundary';
 import StockMain from '@pages/Stock/StockMain';
-import { getCategoryImage } from '@utils/\bgetCategoryImage';
+import { getCategoryImage } from '@utils/getCategoryImage';
 
 const StockMainPage = () => {
   const { categoryStock } = useCategoryStockStore();

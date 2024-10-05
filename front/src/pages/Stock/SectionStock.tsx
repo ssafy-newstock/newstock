@@ -16,7 +16,7 @@ import Modal from '@features/Stock/SectionStock/Modal';
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import useCategoryStockStore from '@store/useCategoryStockStore';
-import { getCategoryImage } from '@utils/\bgetCategoryImage';
+import { getCategoryImage } from '@utils/getCategoryImage';
 
 // 밑줄 스타일
 const Underline = styled.div<{ $activeIndex: number }>`
@@ -111,18 +111,21 @@ const SectionStockPage = () => {
         <DividedSection>
           <StockGridRow>
             <AllCategoryFirstRow />
-              {dataToRender?.map((category: ICategoryStock, index: number) => {
-                const imageUrl = getCategoryImage(category.industryName, categoryImage);
-                return (
-                  <AllCategoryStock
-                    key={index}
-                    category={category}
-                    imageUrl={imageUrl.url}
-                    imageBgColor={imageUrl.bgColor}
-                    onClick={() => openModal(category)}
-                  />
-                );
-              })}
+            {dataToRender?.map((category: ICategoryStock, index: number) => {
+              const imageUrl = getCategoryImage(
+                category.industryName,
+                categoryImage
+              );
+              return (
+                <AllCategoryStock
+                  key={index}
+                  category={category}
+                  imageUrl={imageUrl.url}
+                  imageBgColor={imageUrl.bgColor}
+                  onClick={() => openModal(category)}
+                />
+              );
+            })}
           </StockGridRow>
         </DividedSection>
       </Center>

@@ -27,7 +27,7 @@ import { CategoryModalProps } from '@features/Stock/types';
 import { mapIndustryNames } from '@features/Stock/SectionStock/modal/mapIndustryNames';
 import { FlexGapColumn } from '@components/styledComponent';
 import { getStockImageUrl } from '@utils/getStockImageUrl';
-import { getCategoryImage } from '@utils/\bgetCategoryImage';
+import { getCategoryImage } from '@utils/getCategoryImage';
 
 const Modal: React.FC<CategoryModalProps> = ({ onClose, category }) => {
   const navigate = useNavigate();
