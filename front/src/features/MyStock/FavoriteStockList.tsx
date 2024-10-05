@@ -17,6 +17,7 @@ import useAllStockStore from '@store/useAllStockStore';
 import useTop10StockStore from '@store/useTop10StockStore';
 import { formatNumber } from '@utils/formatNumber';
 import { formatChange } from '@utils/formatChange';
+import { getStockImageUrl } from '@utils/getStockImageUrl';
 
 interface stockFavoriteDto {
   stockFavoriteId: number;
@@ -53,8 +54,9 @@ const FavoriteStock: React.FC<FavoriteStockProps> = ({ stock }) => {
       <StockCardTitle>
         <StockTitle>
           <StockImage
-            src={`https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stock.stockCode}.png`}
-            alt={blueLogo}
+            src={getStockImageUrl(stock.stockCode)}
+            onError={(e) => (e.currentTarget.src = blueLogo)}
+            alt=""
           />
           {stock.stockName}
         </StockTitle>

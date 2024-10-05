@@ -23,7 +23,6 @@ import { IStock } from '@features/Stock/types';
 import useAllStockStore from '@store/useAllStockStore';
 import SearchIcon from '@features/Stock/AllStock/SearchIcon';
 import useTop10StockStore from '@store/useTop10StockStore';
-import LoadingSpinner from '@components/LoadingSpinner';
 
 const Underline = styled.div<{ $sortBy: string }>`
   position: absolute;
@@ -194,11 +193,9 @@ const AllStockPage: React.FC = () => {
         <DividedSection>
           <StockGridRow>
             <AllStockFirstRow />
-            <Suspense fallback={<LoadingSpinner />}>
               {currentItems.map((stock: IStock, index: number) => (
                 <AllStock key={`${stock.stockCode}-${index}`} stock={stock} />
               ))}
-            </Suspense>
           </StockGridRow>
         </DividedSection>
 

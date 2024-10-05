@@ -13,10 +13,9 @@ import AllCategoryStock, {
 } from '@features/Stock/SectionStock/AllCategoryStock';
 import { ICategoryStock } from '@features/Stock/types';
 import Modal from '@features/Stock/SectionStock/Modal';
-import { Suspense, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import useCategoryStockStore from '@store/useCategoryStockStore';
-import LoadingSpinner from '@components/LoadingSpinner';
 
 // 밑줄 스타일
 const Underline = styled.div<{ $activeIndex: number }>`
@@ -111,7 +110,6 @@ const SectionStockPage = () => {
         <DividedSection>
           <StockGridRow>
             <AllCategoryFirstRow />
-            <Suspense fallback={<LoadingSpinner />}>
               {dataToRender?.map((category: ICategoryStock, index: number) => {
                 // 기본 이미지 객체
                 const defaultImage = {
@@ -136,7 +134,6 @@ const SectionStockPage = () => {
                   />
                 );
               })}
-            </Suspense>
           </StockGridRow>
         </DividedSection>
       </Center>
