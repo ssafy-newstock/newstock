@@ -9,8 +9,6 @@ import {
 import { IStock } from '@features/Stock/types';
 import { Outlet, useLocation } from 'react-router-dom';
 import TradeForm from '@features/Stock/StockDetail/TradeForm';
-import useAllStockStore from '@store/useAllStockStore';
-import useTop10StockStore from '@store/useTop10StockStore';
 import {
   FlexBetweenEnd,
   FlexBetweenStart,

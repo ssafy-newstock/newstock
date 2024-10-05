@@ -1,10 +1,4 @@
-import React, {
-  Suspense,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { Center } from '@components/Center';
 import AllStock, { AllStockFirstRow } from '@features/Stock/AllStock/AllStock';
@@ -193,9 +187,9 @@ const AllStockPage: React.FC = () => {
         <DividedSection>
           <StockGridRow>
             <AllStockFirstRow />
-              {currentItems.map((stock: IStock, index: number) => (
-                <AllStock key={`${stock.stockCode}-${index}`} stock={stock} />
-              ))}
+            {currentItems.map((stock: IStock, index: number) => (
+              <AllStock key={`${stock.stockCode}-${index}`} stock={stock} />
+            ))}
           </StockGridRow>
         </DividedSection>
 
