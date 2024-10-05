@@ -1,15 +1,28 @@
 import { ISimilarityStockData } from '@features/Stock/types';
 import SimilarityChart from '@features/Stock/StockDetail/similaritySearch/SimilarityChart';
+import { useFindStockByCode } from '@utils/uesFindStockByCode';
+import { getStockImageUrl } from '@utils/getStockImageUrl';
+import blueLogo from '@assets/Stock/blueLogo.png';
+import { StockImage, StockTitle, TextRight } from '@features/Stock/styledComponent';
+import { FlexGapColumnCenter } from '@components/styledComponent';
+
 
 const OtherStock = ({ otherStock }: { otherStock: ISimilarityStockData }) => {
+  const stock = useFindStockByCode(otherStock.stockCode);
   return (
-    <div>
-      <h1>{otherStock.stockCode}</h1>
-      <h1>
+    <FlexGapColumnCenter $gap='0.5rem'>
+      <StockTitle>
+      <StockImage
+        src={getStockImageUrl(otherStock.stockCode)}
+        onError={(e) => (e.currentTarget.src = blueLogo)}
+        alt=""
+      />{stock?.stockName}
+      </StockTitle>
+      <TextRight>
         {otherStock.startDate} - {otherStock.endDate}
-      </h1>
+      </TextRight>
       <SimilarityChart stock={otherStock.candleData} />
-    </div>
+    </FlexGapColumnCenter>
   );
 };
 

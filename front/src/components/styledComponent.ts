@@ -24,6 +24,9 @@ export const FlexGapStastCenter = styled(FlexGap)`
 export const FlexGapColumn = styled(FlexGap)`
   flex-direction: column;
 `;
+export const FlexGapColumnCenter = styled(FlexGapColumn)`
+  justify-content: center;
+`;
 
 export const FlexWrapBetween = styled(Flex)`
   justify-content: space-between;

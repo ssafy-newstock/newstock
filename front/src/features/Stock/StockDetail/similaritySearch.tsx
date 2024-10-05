@@ -6,11 +6,20 @@ import { useStockChartQuery } from '@hooks/useStockChartQuery';
 import BaseStock from '@features/Stock/StockDetail/similaritySearch/BaseStock';
 import OtherStock from '@features/Stock/StockDetail/similaritySearch/OtherStock';
 import SelectionStock from '@features/Stock/StockDetail/similaritySearch/SelectionStock';
-import { FlexGap, FlexWrapBetween } from '@components/styledComponent';
+import { FlexGap } from '@components/styledComponent';
+import styled from 'styled-components';
+import { DividedSection } from '@features/Stock/styledComponent';
 
 interface SimilaritySearchProps {
   stockCode: string;
 }
+
+const SimilarityGrid = styled.div`
+  display: flex;
+  flex-wrap: wrap; /* 요소들이 넘어갈 수 있도록 설정 */
+  gap: 2rem; /* 요소 간 간격 */
+  width: 100%;
+`;
 
 const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
   const { register, handleSubmit } = useForm<SimilarityFormValues>();
@@ -47,9 +56,9 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
   });
 
   return (
-    <>
+    <div style={{width:"100%"}}>
       <form onSubmit={onSubmit}>
-        <FlexGap $gap='2rem'>
+        <FlexGap $gap="2rem">
           <div>
             <label htmlFor="start_date">Start Date:</label>
             <input
@@ -75,7 +84,7 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
       </form>
 
       {isSearchInitiated && (
-        <>
+        <DividedSection>
           {(similarityQuery.isPending || chartQuery.isPending) && (
             <p>Loading...</p>
           )}
@@ -86,7 +95,7 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
             </p>
           )}
           {similarityQuery.data && chartQuery.data && (
-            <FlexWrapBetween>
+            <SimilarityGrid>
               <SelectionStock
                 selectionStock={chartQuery.data.data}
                 stockCode={stockCode}
@@ -100,11 +109,11 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
                   otherStock={otherStock}
                 />
               ))}
-            </FlexWrapBetween>
+            </SimilarityGrid>
           )}
-        </>
+        </DividedSection>
       )}
-    </>
+    </div>
   );
 };
 

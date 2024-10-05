@@ -36,8 +36,6 @@ const StockDetailPage = () => {
   const handleClick = () => {
     setIsShow(!isShow);
   };
-  // 유사도 버튼 버튼 표시 여부
-  // const showButton = location.pathname.includes('day-chart');
 
   return (
     <>

@@ -3,6 +3,8 @@ import SimilarityChart from '@features/Stock/StockDetail/similaritySearch/Simila
 import { useFindStockByCode } from '@utils/uesFindStockByCode';
 import { getStockImageUrl } from '@utils/getStockImageUrl';
 import blueLogo from '@assets/Stock/blueLogo.png';
+import { StockImage, StockTitle, TextRight } from '@features/Stock/styledComponent';
+import { FlexGapColumnCenter } from '@components/styledComponent';
 
 interface SelectionStockProps {
   selectionStock: IDaily[];
@@ -19,18 +21,21 @@ const SelectionStock = ({
 }: SelectionStockProps) => {
   const stock = useFindStockByCode(stockCode);
   return (
-    <div>
-      <img
-        src={getStockImageUrl(stockCode)}
-        onError={(e) => (e.currentTarget.src = blueLogo)}
-        alt=""
-      />
-      <h1>{stock?.stockName}</h1>
-      <h1>
-        {startDate}-{endDate}
-      </h1>
+    <FlexGapColumnCenter $gap='0.5rem'>
+      <StockTitle>
+        <StockImage
+          src={getStockImageUrl(stockCode)}
+          onError={(e) => (e.currentTarget.src = blueLogo)}
+          alt=""
+        />
+        {stock?.stockName}
+      </StockTitle>
+
+      <TextRight>
+        {startDate} - {endDate}
+      </TextRight>
       <SimilarityChart selectionStock={selectionStock} />
-    </div>
+    </FlexGapColumnCenter>
   );
 };
 

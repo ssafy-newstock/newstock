@@ -81,9 +81,9 @@ const LineChart = ({ stock, selectionStock }: ChartPageProps) => {
   };
 
   return (
-    <div style={{ width: '300px' }}>
+    <>
       <Line options={options} data={data} />
-    </div>
+    </>
   );
 };
 
