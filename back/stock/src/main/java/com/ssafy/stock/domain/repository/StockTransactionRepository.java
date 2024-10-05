@@ -11,4 +11,10 @@ public interface StockTransactionRepository extends JpaRepository<StocksTransact
             "JOIN FETCH st.stock s " +
             "WHERE st.memberId = :memberId")
     List<StocksTransactions> findAllByMemberIdWithStock(Long memberId);
+
+    @Query("SELECT st FROM StocksTransactions st " +
+            "JOIN FETCH st.stock s " +
+            "WHERE st.memberId = :memberId " +
+            "AND st.stockTransactionType = 'SELL'")
+    List<StocksTransactions> findSellByMemberIdWithStock(Long memberId);
 }
