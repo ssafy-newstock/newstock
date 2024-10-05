@@ -50,6 +50,8 @@ spec:
             value: "utf8mb4"
           - name: JDBC_URL
             value: "jdbc:phoenix:34.64.230.82,34.22.71.84,34.64.42.191:2181:/hbase"
+          - name: OPENAI_API_KEY
+            value : secret-gpt
         resources:
           requests:
             memory: "256Mi"
