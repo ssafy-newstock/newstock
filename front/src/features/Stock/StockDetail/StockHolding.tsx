@@ -16,6 +16,8 @@ import {
 import { formatNumber } from '@utils/formatNumber';
 import { formatChange } from '@utils/formatChange';
 import blueLogo from '@assets/Stock/blueLogo.png';
+import { getStockImageUrl } from '@utils/getStockImageUrl';
+import useAuthStore from '@store/useAuthStore';
 
 interface IStockHolding {
   stockId: number;
@@ -63,14 +65,9 @@ const useStockHoldingQuery = (
 };
 
 const StockHolding = ({ stockCode }: { stockCode: string }) => {
-  const { data } = useStockHoldingQuery(stockCode);
+  const { isLogin } = useAuthStore();
+  const { data } = useStockHoldingQuery(stockCode, { enabled: isLogin });
   const stock = data.data;
-
-  const getStockImageUrl = () => {
-    if (!stock) return '';
-    return `https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stock.stockCode}.png`;
-  };
-
   return (
     <>
       <HrTag />
@@ -87,7 +84,7 @@ const StockHolding = ({ stockCode }: { stockCode: string }) => {
           <HoldingStockCardRow>
             <StockTitle>
               <StockImage
-                src={getStockImageUrl()}
+                src={getStockImageUrl(stockCode)}
                 onError={(e) => (e.currentTarget.src = blueLogo)}
                 alt=""
               />
