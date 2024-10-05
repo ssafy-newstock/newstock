@@ -27,7 +27,7 @@ const SimilarityFlex = styled.div`
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  gap: 2rem;
+  gap: 1rem;
 `;
 
 const SkeletonFlex = styled.div`
