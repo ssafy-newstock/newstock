@@ -3,10 +3,18 @@ import { authRequest } from '@api/axiosInstance';
 import { toast } from 'react-toastify';
 
 interface NewsDetail {
-  id: number; // 뉴스 ID
-  title: string; // 뉴스 제목
-  media: string; // 미디어 정보
-  uploadDatetime: string; // 업로드 날짜
+  id: number;
+  title: string;
+  subtitle: string | null;
+  media: string;
+  description: string;
+  thumbnail: string;
+  uploadDatetime: string;
+  article: string;
+  sentiment: string;
+  industry?: string;
+  stockNewsStockCodes?: string[]; // 종목 뉴스만 해당되는 부분
+  stockKeywords?: string[]; // 종목 뉴스만 해당되는 부분
 }
 
 // 북마크된 뉴스 상태를 관리하는 인터페이스 정의
@@ -62,6 +70,7 @@ export const useBookmarkStore = create<BookmarkStoreState>((set) => ({
             title: newsItem.title,
             media: newsItem.media,
             uploadDatetime: newsItem.uploadDatetime,
+            industry: newsItem.industry,
           })
         );
         set({ bookmarkedDetailNews: bookmarkedNews }); // 상태에 불러온 뉴스 상세 정보 저장
@@ -141,6 +150,7 @@ export const useBookmarkStore = create<BookmarkStoreState>((set) => ({
             title: newsItem.title,
             media: newsItem.media,
             uploadDatetime: newsItem.uploadDatetime,
+            stockNewsStockCodes: newsItem.stockNewsStockCodes,
           })
         );
         set({ bookmarkedDetailStockNews: bookmarkedNews }); // 상태에 불러온 뉴스 상세 정보 저장

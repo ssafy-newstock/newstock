@@ -64,6 +64,7 @@ export const FontStyle = styled.p`
 
 export const CenterContentSectionBeforeDiv = styled.div`
   display: flex;
+  /* width: 100%; */
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
@@ -80,22 +81,21 @@ export const CenterContentSection = styled.div`
     height: 0;
   }
   padding: 0.9375rem 1rem;
-  margin: 0.625rem 0rem 1.875rem 0rem;
+  /* margin: 0.625rem 0rem 1.875rem 0rem; */
   flex-direction: column;
   align-items: flex-start;
   border-radius: 1rem;
   background: ${({ theme }) => theme.centerContentSectionBackgroundColor};
+  margin-top: 4rem;
 `;
 
 export const CenterContentSectionDiv = styled.div`
   display: grid;
-  grid-template-columns: repeat(
-    auto-fill,
-    minmax(20rem, 1fr)
-  ); /* 그리드 형식으로 카드 배치 */
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
   gap: 1rem;
   width: 100%;
-  padding: 0.625rem;
+  padding: 0.625rem 0;
+  justify-items: center;
 `;
 
 export const CenterContentSectionTitle = styled.p`
@@ -107,24 +107,34 @@ export const CenterContentSectionTitle = styled.p`
 
 export const CardContainer = styled.div`
   display: flex;
-  padding: 0.375rem 0rem;
-  width: 20rem;
-  height: 10rem; /* 모든 카드의 높이를 일정하게 유지 */
+  padding: 0.8rem 1rem;
+  width: 90%;
+  height: auto; /* 모든 카드의 높이를 일정하게 유지 */
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.625rem;
+  gap: 0.5rem;
   align-self: stretch;
   border-radius: 1.25rem;
   background: ${({ theme }) => theme.newsBackgroundColor};
   box-shadow: 0rem 0.25rem 0.25rem 0rem rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
   overflow: hidden; /* 내용이 넘치면 잘리도록 설정 */
+
+  cursor: pointer;
+
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 `;
 
 export const CardTitleFontStyle = styled.p`
-  font-size: 1.375rem;
-  line-height: 1.5625rem;
-  margin: 0.625rem;
+  font-size: 1rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  width: 80%;
+  /* margin: 0.625rem; */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -174,7 +184,7 @@ export const CardKeywordFontStyle = styled.p`
 
 export const NewsSectionContainer = styled.div`
   display: flex;
-  width: 100%;
+  width: 25%;
   height: 100%;
   flex-direction: column;
   align-items: center;

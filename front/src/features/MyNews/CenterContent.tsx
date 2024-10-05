@@ -1,8 +1,8 @@
-import { axiosInstance } from '@api/axiosInstance';
 import NewsSection from '@features/MyNews/NewsSection';
 import { CenterContentDiv } from '@features/MyNews/styledComponent';
 import { isWithinInterval, parse } from 'date-fns';
 import { useEffect, useState } from 'react';
+import { useBookmarkStore } from '@store/useBookmarkStore';
 
 interface NewsData {
   id: number;
@@ -15,7 +15,7 @@ interface NewsData {
   article: string;
   sentiment: string;
   industry?: string;
-  stockNewsStockCodes?: { stockCode: string; stockName: string }[]; // 종목 뉴스만 해당되는 부분
+  stockNewsStockCodes?: string[]; // 종목 뉴스만 해당되는 부분
   stockKeywords?: string[]; // 종목 뉴스만 해당되는 부분
 }
 
@@ -24,38 +24,30 @@ interface CenterContentProps {
 }
 
 const CenterContent: React.FC<CenterContentProps> = ({ selectedDateRange }) => {
-  const [EconomicNews, setEconomicNews] = useState<NewsData[]>([]);
-  const [StockNews, setStockNews] = useState<NewsData[]>([]);
+  const {
+    bookmarkedDetailNews: economicNews,
+    bookmarkedDetailStockNews: stockNews,
+    fetchBookmarkedDetailNews,
+    fetchBookmarkedDetailStockNews,
+  } = useBookmarkStore();
 
   const [filteredEconomicNews, setFilteredEconomicNews] =
-    useState(EconomicNews);
-  const [filteredStockNews, setFilteredStockNews] = useState(StockNews);
+    useState<NewsData[]>(economicNews);
+  const [filteredStockNews, setFilteredStockNews] =
+    useState<NewsData[]>(stockNews);
 
-  const fetchEconomicNews = async () => {
-    const response = await axiosInstance.get(
-      '/api/news/favorite/industry/list'
-    );
-    const { data } = response.data;
-    setEconomicNews(data || []);
-  };
-
-  const fetchNewsData = async () => {
-    const response = await axiosInstance.get('/api/news/favorite/stock/list');
-    const { data } = response.data.data;
-    setStockNews(data || []);
-  };
-
+  // zustand 스토어에서 북마크된 뉴스 데이터 불러오기
   useEffect(() => {
-    fetchEconomicNews();
-    fetchNewsData();
-  }, []);
+    fetchBookmarkedDetailNews();
+    fetchBookmarkedDetailStockNews();
+  }, [fetchBookmarkedDetailNews, fetchBookmarkedDetailStockNews]);
 
   useEffect(() => {
     if (selectedDateRange[0] && selectedDateRange[1]) {
       const [startDate, endDate] = selectedDateRange;
 
       // EconomicNews 필터링
-      const filteredEconomicNews = EconomicNews.filter((news) => {
+      const filteredEconomicNews = economicNews.filter((news) => {
         const newsDate = parse(news.uploadDatetime, 'yyyy.MM.dd', new Date()); // 뉴스 날짜를 Date 객체로 변환
         return isWithinInterval(newsDate, {
           start: startDate, // Date 객체로 비교
@@ -65,7 +57,7 @@ const CenterContent: React.FC<CenterContentProps> = ({ selectedDateRange }) => {
       setFilteredEconomicNews(filteredEconomicNews);
 
       // StockNews 필터링
-      const filteredStockNews = StockNews.filter((news) => {
+      const filteredStockNews = stockNews.filter((news) => {
         const newsDate = parse(news.uploadDatetime, 'yyyy.MM.dd', new Date()); // 뉴스 날짜를 Date 객체로 변환
         return isWithinInterval(newsDate, {
           start: startDate, // Date 객체로 비교
@@ -75,10 +67,10 @@ const CenterContent: React.FC<CenterContentProps> = ({ selectedDateRange }) => {
       setFilteredStockNews(filteredStockNews);
     } else {
       // 선택된 날짜가 없을 경우 전체 뉴스로 설정
-      setFilteredEconomicNews(EconomicNews);
-      setFilteredStockNews(StockNews);
+      setFilteredEconomicNews(economicNews);
+      setFilteredStockNews(stockNews);
     }
-  }, [selectedDateRange, EconomicNews, StockNews]);
+  }, [selectedDateRange, economicNews, stockNews]);
 
   return (
     <CenterContentDiv>

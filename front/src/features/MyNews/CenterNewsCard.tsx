@@ -3,8 +3,6 @@ import {
   CardBottomContainer,
   CardContainer,
   CardContextDiv,
-  CardKeywordDiv,
-  CardKeywordFontStyle,
   CardTitleFontStyle,
   FontStyle,
   IconWrapper,
@@ -12,6 +10,22 @@ import {
 import { translateIndustry } from '@api/dummyData/DummyData';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
+import { NewsTag } from '@features/News/NewsIconTag';
+import styled from 'styled-components';
+import useAllStockStore from '@store/useAllStockStore';
+import useTop10StockStore from '@store/useTop10StockStore';
+
+const CustomFontStyle = styled(FontStyle)`
+  color: ${({ theme }) => theme.grayTextColor};
+  font-size: 0.8rem;
+`;
+
+const BookmarkedNewsMiddleLine = styled.div`
+  width: 0.09rem;
+  height: 1.25rem;
+  background: #e0e0e0;
+`;
+
 interface NewsData {
   id: number;
   title: string;
@@ -23,7 +37,7 @@ interface NewsData {
   article: string;
   sentiment: string;
   industry?: string;
-  stockNewsStockCodes?: { stockCode: string; stockName: string }[]; // 종목 뉴스만 해당되는 부분
+  stockNewsStockCodes?: string[]; // 종목 뉴스만 해당되는 부분
   stockKeywords?: string[]; // 종목 뉴스만 해당되는 부분
 }
 
@@ -52,33 +66,36 @@ const CenterNewsCard: React.FC<CenterCardProps> = ({
     }
   };
 
+  // handleDelete 정의
   const handleDelete = () => {
-    onDelete(data.id); // 삭제된 아이템을 상위에서 처리
+    onDelete(data.id); // 삭제 작업 처리
   };
 
   const formattedDate = formatTransactionDate(data.uploadDatetime);
+
+  const { allStock } = useAllStockStore();
+  const { top10Stock } = useTop10StockStore();
+
+  const stockCode = data.stockNewsStockCodes?.[0];
+  const stockDetail =
+    allStock?.find((s) => s.stockCode === stockCode) ||
+    top10Stock?.find((s) => s.stockCode === stockCode);
+  const stockName = stockDetail?.stockName || 'Unknown Stock';
+
   return (
     <CardContainer style={{ cursor: 'pointer' }} onClick={handleDetail}>
       <CardTitleFontStyle>{data.title}</CardTitleFontStyle>
       <CardContextDiv>
-        <FontStyle>{data.media}</FontStyle>
-        <p>|</p>
-        <FontStyle>{formattedDate}</FontStyle>
+        <CustomFontStyle>{data.media}</CustomFontStyle>
+        <BookmarkedNewsMiddleLine />
+        <CustomFontStyle>{formattedDate}</CustomFontStyle>
       </CardContextDiv>
       <CardBottomContainer>
-        {data.stockNewsStockCodes && (
-          <CardKeywordDiv>
-            <CardKeywordFontStyle>
-              #{data.stockNewsStockCodes[0].stockName}
-            </CardKeywordFontStyle>
-          </CardKeywordDiv>
-        )}
+        {stockCode && <NewsTag $tagName={stockName}># {stockName}</NewsTag>}
         {data.industry && (
-          <CardKeywordDiv>
-            <CardKeywordFontStyle>
-              #{translateIndustry(data.industry)}
-            </CardKeywordFontStyle>
-          </CardKeywordDiv>
+          <NewsTag $tagName={translateIndustry(data.industry)}>
+            #{translateIndustry(data.industry)}
+          </NewsTag>
         )}
         <IconWrapper>
           <AshbhIcon id={data.id} title={title} onDelete={handleDelete} />
