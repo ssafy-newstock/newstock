@@ -10,7 +10,9 @@ import {
 } from '@features/News/PNSubicon';
 import { bookmarkedIcon, unbookmarkedIcon } from '../NewsIconTag';
 import { useEffect } from 'react';
+import { toast } from 'react-toastify';
 import { useBookmarkStore } from '@store/useBookmarkStore';
+import useAuthStore from '@store/useAuthStore';
 
 const EconNewsDetailHeaderWrapper = styled.div`
   display: flex;
@@ -137,13 +139,23 @@ const EconNewsDetailHeader: React.FC<EconNewsDetailHeaderProps> = ({
     fetchBookmarkedNews,
   } = useBookmarkStore(); // zustand로부터 상태 및 함수 불러오기
 
+  const { isLogin } = useAuthStore();
+
   const isBookmarked = bookmarkedNewsIds.includes(id);
 
   useEffect(() => {
-    fetchBookmarkedNews(); // 컴포넌트 마운트 시 북마크 상태 불러오기
-  }, [fetchBookmarkedNews]);
+    if (isLogin) {
+      fetchBookmarkedNews();
+    }
+  }, [fetchBookmarkedNews, isLogin]);
 
   const handleBookmarkClick = async () => {
+    if (!isLogin) {
+      // 로그인하지 않은 상태에서는 북마크 기능 제한
+      toast.error('로그인이 필요한 서비스입니다.');
+      return;
+    }
+
     try {
       if (isBookmarked) {
         await removeBookmark(id); // 북마크 삭제

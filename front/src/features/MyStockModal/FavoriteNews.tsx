@@ -1,14 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { useBookmarkStore } from '@store/useBookmarkStore';
 import { NewsTag } from '@features/News/NewsIconTag';
 import { bookmarkedIcon } from '@features/News/NewsIconTag';
 import { useNavigate } from 'react-router-dom';
-import { authRequest } from '@api/axiosInstance';
+// import noDataPng from '@assets/News/noDataPng.png';
+
+const FavoriteNewsCenter = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  gap: 1rem;
+`;
 
 const BookmarkedNewsWrapper = styled.div`
   display: flex;
-  width: 100%;
   padding: 0.8rem 1rem;
   flex-direction: column;
   justify-content: center;
@@ -47,7 +55,6 @@ const BookmarkedNewsMiddle = styled.div`
 `;
 
 const BookmarkedNewsMiddleText = styled.p`
-  /* color: #828282; */
   color: ${({ theme }) => theme.grayTextColor};
   font-size: 0.8rem;
   line-height: 1.875rem;
@@ -67,63 +74,43 @@ const BookmarkedNewsFooter = styled.div`
   align-items: stretch;
 `;
 
-// 북마크된 뉴스의 ID로부터 뉴스 정보를 가져오는 함수
-const fetchNewsDetailsById = async (id: number, isStockNews: boolean) => {
-  const url = isStockNews
-    ? `/news/stock/${id}` // 종목 뉴스 API 엔드포인트
-    : `/news/industry/${id}`; // 시황 뉴스 API 엔드포인트
-
-  try {
-    const response = await authRequest.get(url);
-    return response.data.data; // 뉴스 상세 정보 반환
-  } catch (error) {
-    console.error('Failed to fetch news details:', error);
-    return null;
-  }
-};
-
-interface newsItem {
-  id: number;
-  title: string;
-  media: string;
-  uploadDatetime: string;
-}
-
 const FavoriteNews: React.FC = () => {
   const {
-    bookmarkedNewsIds,
-    bookmarkedStockNewsIds,
-    fetchBookmarkedNews,
-    fetchBookmarkedStockNews,
+    bookmarkedDetailNews,
+    bookmarkedDetailStockNews,
+    fetchBookmarkedDetailNews,
+    fetchBookmarkedDetailStockNews,
     removeBookmark,
     removeStockBookmark,
   } = useBookmarkStore();
 
-  const [newsDetails, setNewsDetails] = useState<newsItem[]>([]); // 뉴스 세부 정보 저장
   const navigate = useNavigate();
 
-  // 북마크된 뉴스의 세부 정보를 불러오는 함수
-  const loadNewsDetails = async () => {
-    const allIds = [...bookmarkedNewsIds, ...bookmarkedStockNewsIds];
-    const newsPromises = allIds.map((id) =>
-      fetchNewsDetailsById(
-        id,
-        bookmarkedStockNewsIds.includes(id) // stock 뉴스인지 여부
-      )
-    );
+  const allBookmarkedNews = [
+    ...new Set([...bookmarkedDetailNews, ...bookmarkedDetailStockNews]),
+  ];
 
-    const results = await Promise.all(newsPromises);
-    setNewsDetails(results.filter((news) => news !== null)); // null이 아닌 결과만 저장
-  };
+  // 북마크된 뉴스 데이터를 불러오는 함수들을 useCallback으로 메모이제이션하여 중복 호출 방지
+  const loadBookmarks = useCallback(async () => {
+    try {
+      await Promise.all([
+        fetchBookmarkedDetailNews(),
+        fetchBookmarkedDetailStockNews(),
+      ]);
+    } catch (error) {
+      console.error('Failed to load bookmarks:', error);
+    }
+  }, [
+    fetchBookmarkedDetailNews,
+    fetchBookmarkedDetailStockNews,
+    bookmarkedDetailNews,
+    bookmarkedDetailStockNews,
+  ]);
 
-  // 북마크된 뉴스 데이터를 다시 불러오는 함수
+  // useEffect는 의존성 배열에 있는 값이 변화할 때만 호출
   useEffect(() => {
-    const loadBookmarks = async () => {
-      await Promise.all([fetchBookmarkedNews(), fetchBookmarkedStockNews()]);
-      await loadNewsDetails();
-    };
-    loadBookmarks();
-  }, [fetchBookmarkedNews, fetchBookmarkedStockNews]);
+    loadBookmarks(); // 상태가 변할 때마다 북마크된 뉴스 불러오기
+  }, [loadBookmarks]);
 
   // 뉴스 클릭 이벤트에서 stockNews와 industryNews를 구분하여 navigate
   const handleNewsClick = (id: number, isStockNews: boolean) => {
@@ -144,54 +131,55 @@ const FavoriteNews: React.FC = () => {
     } else {
       await removeBookmark(id); // 시황 뉴스 북마크 삭제
     }
-    loadNewsDetails();
   };
 
   return (
-    <>
-      {newsDetails.length > 0 ? (
-        newsDetails.map((news, index) => (
-          <BookmarkedNewsWrapper
-            key={index}
-            onClick={() =>
-              handleNewsClick(news.id, bookmarkedStockNewsIds.includes(news.id))
-            }
-          >
-            <BookmarkedNewsTitle>{news.title}</BookmarkedNewsTitle>
-            <BookmarkedNewsMiddle>
-              <BookmarkedNewsMiddleText>{news.media}</BookmarkedNewsMiddleText>
-              <BookmarkedNewsMiddleLine />
-              <BookmarkedNewsMiddleText>
-                {news.uploadDatetime.split(' ')[0].replace(/-/g, '.')}
-              </BookmarkedNewsMiddleText>
-            </BookmarkedNewsMiddle>
+    <FavoriteNewsCenter>
+      {allBookmarkedNews.length > 0 ? (
+        allBookmarkedNews.map((newsItem, index) => {
+          const uploadDate = newsItem.uploadDatetime
+            ? newsItem.uploadDatetime.split('T')[0].replace(/-/g, '.')
+            : '날짜 없음';
 
-            <BookmarkedNewsFooter>
-              <NewsTag
-                $tagName={
-                  bookmarkedStockNewsIds.includes(news.id) ? '종목' : '시황'
-                }
-              >
-                # {bookmarkedStockNewsIds.includes(news.id) ? '종목' : '시황'}
-              </NewsTag>
-              <div
-                onClick={(e) =>
-                  handleBookmarkClick(
-                    news.id,
-                    e,
-                    bookmarkedStockNewsIds.includes(news.id)
-                  )
-                }
-              >
-                {bookmarkedIcon}
-              </div>
-            </BookmarkedNewsFooter>
-          </BookmarkedNewsWrapper>
-        ))
+          const isStockNews = bookmarkedDetailStockNews.includes(newsItem);
+
+          return (
+            <BookmarkedNewsWrapper
+              key={index}
+              onClick={() => handleNewsClick(newsItem.id, isStockNews)}
+            >
+              <BookmarkedNewsTitle>
+                {newsItem.title || '제목 없음'}
+              </BookmarkedNewsTitle>
+              <BookmarkedNewsMiddle>
+                <BookmarkedNewsMiddleText>
+                  {newsItem.media || '미디어 정보 없음'}
+                </BookmarkedNewsMiddleText>
+                <BookmarkedNewsMiddleLine />
+                <BookmarkedNewsMiddleText>
+                  {uploadDate}
+                </BookmarkedNewsMiddleText>
+              </BookmarkedNewsMiddle>
+
+              <BookmarkedNewsFooter>
+                <NewsTag $tagName={isStockNews ? '종목' : '시황'}>
+                  #{isStockNews ? '종목' : '시황'}
+                </NewsTag>
+                <div
+                  onClick={(e) =>
+                    handleBookmarkClick(newsItem.id, e, isStockNews)
+                  }
+                >
+                  {bookmarkedIcon}
+                </div>
+              </BookmarkedNewsFooter>
+            </BookmarkedNewsWrapper>
+          );
+        })
       ) : (
-        <p>북마크된 뉴스가 없습니다.</p>
+        <p>데이터가 존재하지 않습니다...</p>
       )}
-    </>
+    </FavoriteNewsCenter>
   );
 };
 

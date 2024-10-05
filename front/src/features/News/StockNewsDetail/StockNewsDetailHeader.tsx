@@ -10,9 +10,11 @@ import {
 } from '@features/News/PNSubicon';
 import { NewsTag, bookmarkedIcon, unbookmarkedIcon } from '../NewsIconTag';
 import { useEffect } from 'react';
+import { toast } from 'react-toastify';
 import useAllStockStore from '@store/useAllStockStore';
 import useTop10StockStore from '@store/useTop10StockStore';
 import { useBookmarkStore } from '@store/useBookmarkStore';
+import useAuthStore from '@store/useAuthStore';
 
 const StockNewsDetailHeaderWrapper = styled.div`
   display: flex;
@@ -149,13 +151,23 @@ const StockNewsDetailHeader: React.FC<StockNewsDetailHeaderProps> = ({
     fetchBookmarkedStockNews,
   } = useBookmarkStore(); // zustand로부터 상태 및 함수 불러오기
 
+  const { isLogin } = useAuthStore();
+
   const isBookmarked = bookmarkedStockNewsIds.includes(id);
 
   useEffect(() => {
-    fetchBookmarkedStockNews(); // 컴포넌트 마운트 시 북마크 상태 불러오기
-  }, [fetchBookmarkedStockNews]);
+    if (isLogin) {
+      fetchBookmarkedStockNews(); // 컴포넌트 마운트 시 북마크 상태 불러오기
+    }
+  }, [fetchBookmarkedStockNews, isLogin]);
 
   const handleBookmarkClick = async () => {
+    if (!isLogin) {
+      // 로그인하지 않은 상태에서는 북마크 기능 제한
+      toast.error('로그인이 필요한 서비스입니다.');
+      return;
+    }
+
     try {
       if (isBookmarked) {
         await removeStockBookmark(id); // 북마크 삭제

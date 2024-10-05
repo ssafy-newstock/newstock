@@ -7,8 +7,10 @@ import { useEffect, useState } from 'react';
 import NewsSummary from '@features/News/NewsSummary';
 import { Overlay, Background, Modal } from '@components/ModalComponents';
 import { useOutletContext } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 import { useBookmarkStore } from '@store/useBookmarkStore';
+import useAuthStore from '@store/useAuthStore';
 
 const EconomicNewsBody = styled.div`
   display: flex;
@@ -77,6 +79,7 @@ const FooterText = styled.p`
 
 const MediaWrapper = styled.div`
   display: flex;
+  align-items: center;
   gap: 0.5rem;
 `;
 
@@ -149,11 +152,19 @@ const EconNewsBody: React.FC<EconNewsBodyProps> = ({
   } = useBookmarkStore();
   const isBookmarked = bookmarkedNewsIds.includes(id);
 
+  const { isLogin } = useAuthStore();
+
   // Outlet에서 전달된 콜백 함수 받기
   const { onBookmarkSuccess } = useOutletContext<OutletContextType>();
 
   const handleBookmarkIconClick = async (event: React.MouseEvent) => {
     event.stopPropagation(); // 상위 클릭 이벤트 중지
+
+    if (!isLogin) {
+      // 로그인하지 않은 상태에서는 북마크 기능 제한
+      toast.error('로그인이 필요한 서비스입니다.');
+      return;
+    }
 
     if (!isBookmarked) {
       try {
@@ -174,8 +185,10 @@ const EconNewsBody: React.FC<EconNewsBodyProps> = ({
   };
 
   useEffect(() => {
-    fetchBookmarkedNews();
-  }, [fetchBookmarkedNews]);
+    if (isLogin) {
+      fetchBookmarkedNews();
+    }
+  }, [fetchBookmarkedNews, isLogin]);
 
   const handleSummaryClick = (event: React.MouseEvent) => {
     event.stopPropagation(); // 상위 클릭 이벤트 중지

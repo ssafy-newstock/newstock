@@ -7,6 +7,8 @@ import NewsSummary from '@features/News/NewsSummary';
 import { Overlay, Background, Modal } from '@components/ModalComponents';
 import { NewsTag } from '../NewsIconTag';
 import { useBookmarkStore } from '@store/useBookmarkStore';
+import useAuthStore from '@store/useAuthStore';
+import { toast } from 'react-toastify';
 
 const StockNewsBodyWrapper = styled.div`
   display: flex;
@@ -77,6 +79,7 @@ const FooterText = styled.p`
 
 const MediaWrapper = styled.div`
   display: flex;
+  align-items: center;
   gap: 0.5rem;
 `;
 
@@ -143,8 +146,16 @@ const StockNewsBody: React.FC<StockNewsBodyProps> = ({
 
   const isBookmarked = bookmarkedStockNewsIds.includes(id); // 북마크 여부 확인
 
+  const { isLogin } = useAuthStore();
+
   const handleBookmarkIconClick = async (event: React.MouseEvent) => {
     event.stopPropagation();
+
+    if (!isLogin) {
+      // 로그인하지 않은 상태에서는 북마크 기능 제한
+      toast.error('로그인이 필요한 서비스입니다.');
+      return;
+    }
 
     if (!isBookmarked) {
       try {
@@ -163,8 +174,10 @@ const StockNewsBody: React.FC<StockNewsBodyProps> = ({
 
   // 컴포넌트 마운트 시 북마크 상태 로드
   useEffect(() => {
-    fetchBookmarkedStockNews(); // zustand에서 북마크 상태 로드
-  }, [fetchBookmarkedStockNews]);
+    if (isLogin) {
+      fetchBookmarkedStockNews(); // zustand에서 북마크 상태 로드
+    }
+  }, [fetchBookmarkedStockNews, isLogin]);
 
   const handleSummaryClick = (event: React.MouseEvent) => {
     event.stopPropagation(); // 상위 클릭 이벤트 중지
