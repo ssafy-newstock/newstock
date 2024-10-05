@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 import { SimilaritySearchParams, SimilaritySearchResponse } from '@features/Stock/types';
 import { axiosInstance } from '@api/axiosInstance';
 
