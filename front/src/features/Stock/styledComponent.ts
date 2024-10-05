@@ -66,9 +66,9 @@ const pulseAnimation = keyframes`
   }
 `;
 
-export const SkeletonDiv = styled.div<{$width:string, $height:string}>`
-  width: ${({$width}) => $width};
-  height: ${({$height}) => $height};
+export const SkeletonDiv = styled.div<{ $width: string; $height: string }>`
+  width: ${({ $width }) => $width};
+  height: ${({ $height }) => $height};
   animation: ${pulseAnimation} 3s infinite;
 `;
 
@@ -252,19 +252,34 @@ export const CategoryData = styled(StockPrev)`
 export const ButtonWrapper = styled.div`
   display: flex;
   gap: 1rem;
-  position: relative; /* 밑줄이 이 영역 안에서 움직이도록 */
 `;
 
 // 버튼 스타일
-export const SortButton = styled.button`
+export const SortButton = styled.button<{ $isActive: boolean }>`
   background: none;
   border: none;
-  font: inherit;
+  padding: 0.5rem;
   cursor: pointer;
-  padding: 0;
-  margin: 0;
-  position: relative;
   color: ${({ theme }) => theme.textColor};
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -0.1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: ${({ $isActive }) => ($isActive ? '2rem' : '0')};
+    height: 0.2rem;
+    background-color: ${({ theme }) => theme.textColor};
+    transition: width 0.3s ease;
+  }
+`;
+
+export const CategorySortButton = styled(SortButton)`
+  &::after {
+    width: ${({ $isActive }) => ($isActive ? '2.5rem' : '0')};
+  }
 `;
 
 export const SearchInputWrapper = styled.div`
