@@ -65,9 +65,12 @@ const StockDetailPage = () => {
         {/* 유사도 분석 */}
         {isShow && (
           <DividedSection>
+            <StockHeader>유사도 분석</StockHeader>
+            <HrTag />
             <ErrorBoundary fallback={<div>검색 결과가 없습니다.</div>}>
               <SimilaritySearch stockCode={stock.stockCode} />
             </ErrorBoundary>
+            <HrTag />
           </DividedSection>
         )}
 

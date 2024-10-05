@@ -325,6 +325,7 @@ export const InputRow = styled.div`
 export const InputLabel = styled.label`
   min-width: 60px;
   font-weight: bold;
+  font-size: 1rem;
 `;
 
 export const InputTag = styled.input`

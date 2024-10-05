@@ -8,17 +8,43 @@ import OtherStock from '@features/Stock/StockDetail/similaritySearch/OtherStock'
 import SelectionStock from '@features/Stock/StockDetail/similaritySearch/SelectionStock';
 import { FlexGap } from '@components/styledComponent';
 import styled from 'styled-components';
-import { DividedSection } from '@features/Stock/styledComponent';
+import { DividedSection, InputLabel, InputTag, InputRow } from '@features/Stock/styledComponent';
 
 interface SimilaritySearchProps {
   stockCode: string;
 }
 
 const SimilarityGrid = styled.div`
-  display: flex;
-  flex-wrap: wrap; /* 요소들이 넘어갈 수 있도록 설정 */
-  gap: 2rem; /* 요소 간 간격 */
   width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 기본: 3열 */
+  gap: 2rem;
+`;
+
+const SimilarityButton = styled.button`
+  background-color: ${({ theme }) => theme.profileBackgroundColor};
+  color: ${({ theme }) => theme.profileColor};
+  border-radius: 1rem;
+  border: none;
+  padding: 0.5rem 1rem;
+`;
+
+const StyledInput = styled.input`
+  padding: 0.5rem;
+  border: 2px solid #007BFF;
+  border-radius: 4px;
+  font-size: 1rem;
+  width: 100%;
+  transition: border-color 0.3s;
+
+  &:focus {
+    border-color: #0056b3;
+    outline: none;
+  }
+
+  &::placeholder {
+    color: #aaa;
+  }
 `;
 
 const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
@@ -56,30 +82,30 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
   });
 
   return (
-    <div style={{width:"100%"}}>
+    <>
       <form onSubmit={onSubmit}>
         <FlexGap $gap="2rem">
-          <div>
-            <label htmlFor="start_date">Start Date:</label>
-            <input
+          <InputRow>
+            <InputLabel htmlFor="start_date">Start Date:</InputLabel>
+            <InputTag
               id="start_date"
               type="date"
               {...register('start_date')}
               required
             />
-          </div>
+          </InputRow>
 
-          <div>
-            <label htmlFor="end_date">End Date:</label>
-            <input
+          <InputRow>
+            <InputLabel htmlFor="end_date">End Date:</InputLabel>
+            <InputTag
               id="end_date"
               type="date"
               {...register('end_date')}
               required
             />
-          </div>
+          </InputRow>
 
-          <button type="submit">Search</button>
+          <SimilarityButton type="submit">Search</SimilarityButton>
         </FlexGap>
       </form>
 
@@ -113,7 +139,7 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
           )}
         </DividedSection>
       )}
-    </div>
+    </>
   );
 };
 
