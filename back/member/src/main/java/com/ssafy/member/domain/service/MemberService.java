@@ -13,6 +13,7 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -136,4 +137,11 @@ public class MemberService {
         return member;
     }
 
+    /**
+     * 등락률(ChangeRate) 상위 10명 멤버 조회
+     * @return List<Member>
+     */
+    public List<Member> getTopFiveRank(){
+        return memberRepository.getTopFiveRank();
+    }
 }
