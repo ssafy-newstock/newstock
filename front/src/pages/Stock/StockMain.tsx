@@ -25,6 +25,8 @@ import FavoriteStockSkeleton from '@features/Stock/StockMain/FavoriteStockSkelet
 import RealTimeStockSkeleton from '@features/Stock/StockMain/RealTimeStockSkeleton';
 import { ErrorBoundary } from 'react-error-boundary';
 import StockMain from '@pages/Stock/StockMain';
+import { get } from 'http';
+import { getCategoryImage } from '@utils/\bgetCategoryImage';
 
 const StockMainPage = () => {
   const { categoryStock } = useCategoryStockStore();
@@ -52,7 +54,7 @@ const StockMainPage = () => {
   };
 
   return (
-    <ErrorBoundary fallback={<StockMain/>}>
+    <ErrorBoundary fallback={<StockMain />}>
       <Center style={{ padding: '1rem' }}>
         <Suspense fallback={<FavoriteStockSkeleton />}>
           <FavoriteStockSection />
@@ -93,17 +95,10 @@ const StockMainPage = () => {
             .slice(0, 4)
             .map((category: ICategoryStock, index: number) => {
               // 기본 이미지 객체
-              const defaultImage = {
-                url: 'default-image-url',
-                bgColor: 'default-bg-color',
-              };
-              // 카테고리 이미지 객체를 찾고, 없으면 기본 이미지 사용
-              const imageUrl =
-                category.industryName in categoryImage
-                  ? categoryImage[
-                      category.industryName as keyof typeof categoryImage
-                    ]
-                  : defaultImage; // 기본 이미지 객체로 처리
+              const imageUrl = getCategoryImage(
+                category.industryName,
+                categoryImage
+              );
               return (
                 <CategoryStock
                   key={index}

@@ -27,22 +27,13 @@ import { CategoryModalProps } from '@features/Stock/types';
 import { mapIndustryNames } from '@features/Stock/SectionStock/modal/mapIndustryNames';
 import { FlexGapColumn } from '@components/styledComponent';
 import { getStockImageUrl } from '@utils/getStockImageUrl';
+import { getCategoryImage } from '@utils/\bgetCategoryImage';
 
 const Modal: React.FC<CategoryModalProps> = ({ onClose, category }) => {
   const navigate = useNavigate();
-
+  const imageUrl = getCategoryImage(category.industryName, categoryImage);
   const { allStock } = useAllStockStore();
   const { top10Stock } = useTop10StockStore();
-
-  const defaultImage = {
-    url: 'default-image-url',
-    bgColor: 'default-bg-color',
-  };
-
-  const imageUrl =
-    category.industryName in categoryImage
-      ? categoryImage[category.industryName as keyof typeof categoryImage]
-      : defaultImage;
 
   const wholeStock = useMemo(() => {
     return (allStock || []).concat(top10Stock || []);

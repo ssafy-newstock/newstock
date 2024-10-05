@@ -16,6 +16,7 @@ import Modal from '@features/Stock/SectionStock/Modal';
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import useCategoryStockStore from '@store/useCategoryStockStore';
+import { getCategoryImage } from '@utils/\bgetCategoryImage';
 
 // 밑줄 스타일
 const Underline = styled.div<{ $activeIndex: number }>`
@@ -111,19 +112,7 @@ const SectionStockPage = () => {
           <StockGridRow>
             <AllCategoryFirstRow />
               {dataToRender?.map((category: ICategoryStock, index: number) => {
-                // 기본 이미지 객체
-                const defaultImage = {
-                  url: 'default-image-url',
-                  bgColor: 'default-bg-color',
-                };
-                // 카테고리 이미지 객체를 찾고, 없으면 기본 이미지 사용
-                const imageUrl =
-                  category.industryName in categoryImage
-                    ? categoryImage[
-                        category.industryName as keyof typeof categoryImage
-                      ]
-                    : defaultImage; // 기본 이미지 객체로 처리
-
+                const imageUrl = getCategoryImage(category.industryName, categoryImage);
                 return (
                   <AllCategoryStock
                     key={index}
