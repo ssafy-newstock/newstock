@@ -25,18 +25,15 @@ import StockHodingSkeleton from '@features/Stock/StockDetail/StockHoldingSkeleto
 import { ErrorBoundary } from 'react-error-boundary';
 import StockHoldingError from '@features/Stock/StockDetail/StockHoldingError';
 import SimilaritySearch from '@features/Stock/StockDetail/SimilaritySearch';
+import { useFindStockByCode } from '@utils/uesFindStockByCode';
 
 const StockDetailPage = () => {
   const location = useLocation();
   const { stock } = location.state as { stock: IStock };
-  const { allStock } = useAllStockStore();
-  const { top10Stock } = useTop10StockStore();
   const [isShow, setIsShow] = useState<boolean>(false);
 
   // 주식 상세 정보
-  const stockDetail =
-    allStock?.find((s) => s.stockCode === stock.stockCode) ||
-    top10Stock?.find((s) => s.stockCode === stock.stockCode);
+  const stockDetail = useFindStockByCode(stock.stockCode);
 
   const handleClick = () => {
     setIsShow(!isShow);
