@@ -164,7 +164,7 @@ public class MemberService {
                 .map(transactionRank -> {
                     return new MemberRankDto(transactionRank.getId(),
                             transactionRank.getMemberName(),
-                            transactionRank.getHoldingChangeRate());
+                            transactionRank.getTransactionChangeRate());
                 }).toList();
     }
 }
