@@ -17,6 +17,7 @@ import {
   StockImage,
   TextP_14_NOTGRAY,
 } from '@features/MyStockModal/styledComponent';
+import { getStockImageUrl } from '@utils/getStockImageUrl';
 
 const FavoriteStock: React.FC = () => {
   const { data: favoriteStocks, isLoading, error } = useMyStockFavoriteData();
@@ -67,8 +68,9 @@ const FavoriteStock: React.FC = () => {
             <CardDiv onClick={handleNavigate}>
               <CardLeftDiv>
                 <StockImage
-                  src={`https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stock.stockCode}.png`}
-                  alt={blueLogo}
+                  src={getStockImageUrl(stock.stockCode)}
+                  onError={(e) => (e.currentTarget.src = blueLogo)}
+                  alt=""
                 />
                 <CardLeftRightDiv>
                   <TextP_14_NOTGRAY>{stock.stockName}</TextP_14_NOTGRAY>
