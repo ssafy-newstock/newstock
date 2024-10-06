@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+import static com.ssafy.member.global.common.CommonResponse.success;
+
 
 @RestController
 @RequestMapping("/api/member")
@@ -128,7 +130,7 @@ public class MemberController {
     public ResponseEntity<?> getHoldingRank(){
         List<MemberRankDto> response = memberService.getHoldingRank();
         return ResponseEntity
-                .ok(response);
+                .ok(success(response));
     }
 
     /**
@@ -139,7 +141,7 @@ public class MemberController {
     public ResponseEntity<?> getTransactionRank(){
         List<MemberRankDto> response = memberService.getTransactionRank();
         return ResponseEntity
-                .ok(response);
+                .ok(success(response));
     }
 
 }
