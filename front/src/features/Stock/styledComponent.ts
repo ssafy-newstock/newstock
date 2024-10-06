@@ -460,6 +460,7 @@ export const SimilarityButton = styled.button`
   border-radius: 1rem;
   border: none;
   padding: 0.5rem 1rem;
+  cursor: pointer;
 `;
 
 export const AnalysisButton = styled(DetailPageButton)`
