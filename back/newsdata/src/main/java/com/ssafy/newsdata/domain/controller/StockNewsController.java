@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -68,9 +69,9 @@ public class StockNewsController {
                 .build();
     }
 
-//    @GetMapping("/bulk")
-//    public CommonResponse<?> getStockNewsInIds(@RequestParam List<Long> ids) {
-//        List<StockNewsDto> stockNewsInIds = stockNewsService.getStockNewsInIds(ids);
-//        return CommonResponse.success(stockNewsInIds);
-//    }
+    @GetMapping("/bulk")
+    public CommonResponse<?> getStockNewsInIds(@RequestParam List<String> ids) throws SQLException, ClassNotFoundException {
+        List<StockNewsResponse> stockNewsInIds = stockNewsService.getStockNewsInIds(ids);
+        return CommonResponse.success(stockNewsInIds);
+    }
 }
