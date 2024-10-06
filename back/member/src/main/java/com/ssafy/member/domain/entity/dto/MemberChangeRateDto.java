@@ -9,5 +9,6 @@ import lombok.NoArgsConstructor;
 @Getter
 public class MemberChangeRateDto {
     private Long memberId;
-    private Double changeRate;
+    private Double holdingChangeRate;
+    private Double transactionChangeRate;
 }
