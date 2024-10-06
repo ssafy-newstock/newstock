@@ -18,7 +18,7 @@ interface NewsData {
   article: string;
   sentiment: string;
   industry?: string;
-  stockNewsStockCodes?: { stockCode: string; stockName: string }[];
+  stockNewsStockCodes?: string[];
   stockKeywords?: string[];
 }
 
