@@ -1,11 +1,57 @@
+
+from typing import Optional
+from fastapi import APIRouter, Query
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from summary import get_stock_news_title, summaryLLM
+from models import StockSummaryResponse
 from utils import get_stock_data
 import json
 
 router = APIRouter()
 date_pattern = r"^\d{4}-\d{2}-\d{2}$"
 
+
+
+
+@router.get("")
+def get_summary(
+    base_stock_code: Optional[str] = Query(
+        None,
+        description="Stock code for summary."
+    ),
+    base_stock_name: Optional[str] = Query(
+        None,
+        description="Stock name for summary."
+    ),
+    start_date: Optional[str] = Query(
+        None, 
+        description="Start date for the summary.",
+        regex=date_pattern
+    ),
+    end_date: Optional[str] = Query(
+        None, 
+        description="End date for summary.",
+        regex=date_pattern
+    )
+):
+    # 주가 데이터 가져오기
+    stock_price_df = get_stock_data(base_stock_code, start_date, end_date)
+
+#    타이틀 가져오기
+    news_titles, news_info_dict = get_stock_news_title(base_stock_code, start_date, end_date)
+
+    macro_report_summary, micro_resport_summary, related_news_json = summaryLLM(base_stock_code, base_stock_name, start_date, end_date, news_titles, news_info_dict, stock_price_df)
+
+
+    response = StockSummaryResponse(
+        macroReport=macro_report_summary,
+        microReport=micro_resport_summary,
+        relatedNews=related_news_json
+    )
+    return response
+
+
+# websocket depreciated
 @router.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
