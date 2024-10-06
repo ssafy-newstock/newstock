@@ -8,7 +8,7 @@ export function useSimilaritySearchQuery(params: SimilaritySearchParams, isEnabl
   return useQuery<SimilaritySearchResponse>({
     queryKey: ['similaritySearch', stockCode, start_date, end_date],
     queryFn: async () => {
-      const { data } = await axiosInstance.get<SimilaritySearchResponse>('/newsai/similarity/', {
+      const { data } = await axiosInstance.get<SimilaritySearchResponse>('/newsai/similarity', {
         params: { base_stock_code: stockCode, start_date, end_date },
       });
       return data;
