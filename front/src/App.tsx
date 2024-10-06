@@ -18,6 +18,7 @@ import { useCategoryStockQuery } from '@hooks/useCategoryStockQuery';
 import useAuthStore from '@store/useAuthStore';
 import Left from '@components/Left';
 import StockModal from '@features/MyStockModal/StockModal';
+import { useNavigate } from 'react-router-dom';
 
 const Main = styled.div`
   display: flex;
@@ -59,6 +60,14 @@ const App = () => {
   const { data: top10Stock } = useTop10StockQuery();
   const { data: allStock } = useAllStockQuery();
   const { data: categoryStock } = useCategoryStockQuery();
+  const navigate = useNavigate();
+
+  // 상태 업데이트 완료 후 navigate 호출
+  useEffect(() => {
+    if (isLogin) {
+      navigate('/news-main');
+    }
+  }, [isLogin, navigate]);
 
   useEffect(() => {
     top10Stock && setTop10Stock(top10Stock.data);
@@ -79,7 +88,9 @@ const App = () => {
           <Outlet context={{ setIsOpen }} />
           {!isOnboarding && <RightVacantWrapper $isOpen={isOpen} />}
         </Content>
-        {isLogin && <StockModal isOpen={isOpen} setIsOpen={setIsOpen} />}
+        {isLogin && !isOnboarding && (
+          <StockModal isOpen={isOpen} setIsOpen={setIsOpen} />
+        )}
       </Main>
       {/* 웹소켓 연결 */}
       <WebSocketComponent />
