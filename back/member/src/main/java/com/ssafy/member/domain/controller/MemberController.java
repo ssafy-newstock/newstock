@@ -8,6 +8,7 @@ import com.ssafy.member.domain.controller.response.MemberFindResponse;
 import com.ssafy.member.domain.controller.response.MemberPointResponse;
 import com.ssafy.member.domain.entity.Member;
 import com.ssafy.member.domain.entity.dto.MemberDetailDto;
+import com.ssafy.member.domain.entity.dto.MemberRankDto;
 import com.ssafy.member.domain.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -120,12 +121,23 @@ public class MemberController {
     }
 
     /**
-     * 모의 투자 상위 10명 랭킹 조회
-     * @return List<Member>
+     * 보유 수익률 랭킹 조회
+     * @return List<MemberRankDto>
      */
-    @GetMapping("/rank")
-    public ResponseEntity<?> getMemberRank(){
-        List<Member> response = memberService.getTopFiveRank();
+    @GetMapping("/rank/holding")
+    public ResponseEntity<?> getHoldingRank(){
+        List<MemberRankDto> response = memberService.getHoldingRank();
+        return ResponseEntity
+                .ok(response);
+    }
+
+    /**
+     * 매매 수익률 랭킹 조회
+     * @return List<MemberRankDto>
+     */
+    @GetMapping("/rank/transaction")
+    public ResponseEntity<?> getTransactionRank(){
+        List<MemberRankDto> response = memberService.getTransactionRank();
         return ResponseEntity
                 .ok(response);
     }

@@ -437,7 +437,7 @@ public class StockService {
                     Double holdingChangeRate = getHoldingChangeRate(myStockHoldings);
                     Double transactionChangeRate = getTransactionChangeRate(myStockSellTransaction);
 
-                    return new MemberChangeRateDto(memberId, holdingChangeRate + transactionChangeRate);
+                    return new MemberChangeRateDto(memberId, holdingChangeRate, transactionChangeRate);
                 }).toList();
     }
 
@@ -448,7 +448,7 @@ public class StockService {
                 .sum();
 
         if (totalSellAmount == 0) {
-            return 0.0; // 판매한 거래가 없을 때 0 처리
+            return null; // 판매한 거래가 없을 때 null 처리
         }
 
         // 가중 평균 수익률 계산
@@ -473,7 +473,7 @@ public class StockService {
                 .sum();
 
         if (totalBuyAmount == 0) {
-            return 0.0;
+            return null;    // 보유한 주식이 없으면 null 처리
         }
 
         // 가중 평균 수익률 계산

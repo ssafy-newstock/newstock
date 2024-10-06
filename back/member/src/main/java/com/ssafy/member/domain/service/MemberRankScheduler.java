@@ -42,7 +42,7 @@ public class MemberRankScheduler {
             Member member = memberMap.get(response.getMemberId());
 
             if (member != null) {
-                member.updateMemberChangeRate(response.getChangeRate());
+                member.updateMemberChangeRate(response.getHoldingChangeRate(), response.getTransactionChangeRate());
             } else {
                 throw new MemberNotFoundException(response.getMemberId());
             }

@@ -13,13 +13,17 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByMemberNameAndProviderEmail(String memberName, String providerEmail);
     boolean existsByMemberNameAndProviderEmail(String memberName, String providerEmail);
 
-    @Query("SELECT m.id " +
-            "FROM Member m ")
-    List<Long> findAllId();
+    @Query("SELECT m " +
+            "FROM Member m " +
+            "WHERE m.holdingChangeRate IS NOT NULL " +
+            "ORDER BY m.holdingChangeRate DESC " +
+            "LIMIT 10 ")
+    List<Member> getHoldingRank();
 
     @Query("SELECT m " +
             "FROM Member m " +
-            "ORDER BY m.changeRate DESC " +
+            "WHERE m.transactionChangeRate IS NOT NULL " +
+            "ORDER BY m.transactionChangeRate DESC " +
             "LIMIT 10 ")
-    List<Member> getTopFiveRank();
+    List<Member> getTransactionRank();
 }
