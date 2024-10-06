@@ -392,7 +392,7 @@ export const TradeModalOverlay = styled.div`
 `;
 
 export const TradeModalContent = styled.div`
-  background-color: white;
+  background-color: ${({ theme }) => theme.stockBackgroundColor};
   padding: 1rem;
   border-radius: 1rem;
   min-width: 15rem;
