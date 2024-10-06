@@ -428,7 +428,7 @@ public class StockService {
 
 
 
-    public List<MemberChangeRateDto> getMyChangeRate(List<Long> memberIdListRequest){
+    public List<MemberChangeRateDto> getStockRank(List<Long> memberIdListRequest){
         return memberIdListRequest.stream()
                 .map(memberId -> {
                     List<StocksHoldings> myStockHoldings = stockHoldingRepository.findAllByMemberIdWithStock(memberId);
