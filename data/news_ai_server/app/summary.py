@@ -1,5 +1,6 @@
 import random
 import os
+import logging
 import pandas as pd
 from fastapi import WebSocket
 from datetime import datetime
@@ -10,6 +11,13 @@ from langchain_openai import ChatOpenAI
 from models import ReportStockData
 from utils import execute_hbase_prepared_query
 from exception import StockNewsEmptyException
+
+
+# 로깅 설정
+logging.basicConfig(level=logging.INFO,
+                    format='%(levelname)s:  %(asctime)s - %(message)s')
+logger = logging.getLogger(__name__)
+
 
 # 쿼리 날리는 코드
 def get_stock_news_title(stock_code: str, start_date: str, end_date: str) -> Tuple[str, Dict]:
@@ -147,13 +155,13 @@ def df_to_string(df: pd.DataFrame) -> str:
     # Convert the DataFrame to a string format
     return df.to_string(index=False)
 
-async def summaryLLM(websocket: WebSocket,
-                     stock_code:str,
-                     start_date:str,
-                     end_date: str,
-                     news_str: str,
-                     news_info_dict:Dict,
-                     stock_price_df: pd.DataFrame):
+async def summaryLLM_socket(websocket: WebSocket,
+                        stock_code:str,
+                        start_date:str,
+                        end_date: str,
+                        news_str: str,
+                        news_info_dict:Dict,
+                        stock_price_df: pd.DataFrame):
 
     # 주시 가격 데이터 프롬프트에 넣을 수 있게 전처리
     stock_price_str = df_to_string(stock_price_df)
@@ -214,13 +222,10 @@ async def summaryLLM(websocket: WebSocket,
         if 'related_news' in chunk:
             related_news_list = chunk['related_news']
 
-    print(full)
-    print(f"type: {type(related_news_list)}, {related_news_list}")
-    # print(news_info_dict)
     # 최종 관련 뉴스 출력
     if related_news_list:
         # await websocket.send_text(f"Final related_news: {related_news_list}")
-        print('find related_news_list')
+        logging.info('find related_news_list')
         related_news_json = get_related_news_from_id(related_news_list, news_info_dict)
         await websocket.send_json(related_news_json)
     else:
@@ -244,3 +249,63 @@ def get_related_news_from_id(related_news_list: List[int], news_info_dict: Dict[
         json_news_list.append(news_dict)
     
     return {"related_news" : json_news_list}
+
+def summaryLLM(
+                stock_code:str,
+                stock_name: str,
+                start_date:str,
+                end_date: str,
+                news_str: str,
+                news_info_dict:Dict,
+                stock_price_df: pd.DataFrame):
+
+    # 주시 가격 데이터 프롬프트에 넣을 수 있게 전처리
+    stock_price_str = df_to_string(stock_price_df)
+
+    model = ChatOpenAI(
+        model="gpt-4o",
+        temperature=0.5,
+        openai_api_key=os.getenv('OPENAI_API_KEY'),
+        max_retries=2,
+    )
+
+    # 사전에 정한 모양으로 나오게
+    structured_llm = model.with_structured_output(ReportStockData)
+    
+
+    prompt = f"""
+    [YOUR ROLE] 시황 보고서 작성 애널리스트
+    [YOUR WORK]
+   너는 내가 준 대한민국 코스피의 {start_date} ~ {end_date} 기간 내 {stock_name} 종목을 내가 준 뉴스 및 의 주가 가격을 고려해서 시황 및 종목 분석 보고서를 작성해 줘야해.
+    분석할 때는 다음과 같은 상황을 지켜야 해
+    [Required]
+    0. 보고서 분석의 메인은 뉴스 기반이야. 뉴스 정보가 보고서에 많이 들어갔으면 좋겠어
+    1. 무조건 한국어로 보고서를 적어줘. 최대산 상세하게, 글자수는 한국어 기준으로 600자 이상
+    2. 너가 보고서를 작성할 때는 두 단락으로 나누어. 각각의 단락은 소제목이 있어야 하고, 단락은 엔터로 나눠.
+    3.  첫 번째는 거시적인 흐름, 전체적은 주식장의 흐름과 연관을 지어서 분석해줘
+    4. 두 번째는 해당 회사와 관련된 요소만을 중심으로 연관을 지어서 분석해 줘.
+    5. 주식 가격을 예측하려고 하지 마.
+    6. 최대한 주어진 뉴스에 대한 주가의 영향을 연결지어서 심층적으로 분석해줘.
+    7. 마지막으로 너가 시황분석, 요약한 것과 가장 관련 있는, 도움이 많이 되었던 뉴스 4개를 뽑아줘. 주의해야 할 점은 뉴스 id만 가져와.
+    7.1 뉴스 id는 리스트에 담아줘 (ex. [20240101000000001, 20240102000000012, 20240102000000013, 20240102000000012]
+
+
+    관련 기사 목록
+    [News Title]
+    {news_str}
+
+    [{stock_code} price]
+    {stock_price_str}
+
+
+    """
+
+  
+    logging.info("분석 시작")
+    summary_result = structured_llm.invoke(prompt)
+    logging.info("GPT로부터 추론 완료")
+    macro_report_summary = summary_result['macro_report']
+    micro_resport_summary = summary_result['micro_report']
+
+    related_news_json = get_related_news_from_id(summary_result['related_news'], news_info_dict)['related_news']
+    return macro_report_summary, micro_resport_summary, related_news_json
