@@ -11,7 +11,7 @@ const FavoriteStockSkeleton = () => {
       <StockHeader>관심 종목</StockHeader>
       <HrTag />
       <StockGridColumn>
-        {Array.from({ length: 6 }).map((_, index) => (
+        {Array.from({ length: 5 }).map((_, index) => (
           <StockCardColumnSkeleton key={index} />
         ))}
       </StockGridColumn>

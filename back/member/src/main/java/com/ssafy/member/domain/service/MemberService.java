@@ -4,6 +4,7 @@ package com.ssafy.member.domain.service;
 import com.ssafy.member.domain.controller.response.MemberPointResponse;
 import com.ssafy.member.domain.entity.Member;
 import com.ssafy.member.domain.entity.dto.MemberDetailDto;
+import com.ssafy.member.domain.entity.dto.MemberRankDto;
 import com.ssafy.member.domain.repository.MemberRepository;
 import com.ssafy.member.global.exception.MemberNotFoundException;
 import com.ssafy.member.global.exception.NotEnoughPointsException;
@@ -13,6 +14,7 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -136,4 +138,33 @@ public class MemberService {
         return member;
     }
 
+    /**
+     * 보유 수익률 랭킹 10명
+     * @return List<MemberRankDto>
+     */
+    public List<MemberRankDto> getHoldingRank(){
+        List<Member> holdingRankList = memberRepository.getHoldingRank();
+
+        return holdingRankList.stream()
+                .map(transactionRank -> {
+                    return new MemberRankDto(transactionRank.getId(),
+                                                transactionRank.getMemberName(),
+                                                transactionRank.getHoldingChangeRate());
+                }).toList();
+    }
+
+    /**
+     * 매매 수익률 랭킹 10명
+     * @return List<MemberRankDto>
+     */
+    public List<MemberRankDto> getTransactionRank(){
+        List<Member> transactionRankList = memberRepository.getTransactionRank();
+
+        return transactionRankList.stream()
+                .map(transactionRank -> {
+                    return new MemberRankDto(transactionRank.getId(),
+                            transactionRank.getMemberName(),
+                            transactionRank.getTransactionChangeRate());
+                }).toList();
+    }
 }

@@ -63,7 +63,7 @@ const StockFrame = styled.div`
   align-items: center;
   width: 25px;
   height: 25px;
-  border: 2px solid #828282;
+  border: 2.5px solid #828282;
   flex-shrink: 0;
   cursor: pointer;
 `;
@@ -145,7 +145,7 @@ const Left: React.FC = () => {
             <path
               d="M35.3333 2L21.4444 15.8889L10.3333 4.77778L2 13.1111"
               stroke="#828282"
-              strokeWidth="3"
+              strokeWidth="4"
               strokeLinecap="round"
               strokeLinejoin="round"
             />

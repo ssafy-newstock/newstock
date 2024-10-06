@@ -32,6 +32,12 @@ public class Member extends BaseTimeEntity {
     @Column(name = "member_point")
     private Long point;
 
+    @Column(name = "member_holding_change_rate")
+    private Double holdingChangeRate;
+
+    @Column(name = "member_transaction_change_rate")
+    private Double transactionChangeRate;
+
     public Member(final String memberName, final String provider, final String providerEmail, final String profileImageUrl) {
         this.memberName = memberName;
         this.providerEmail = providerEmail;
@@ -51,8 +57,15 @@ public class Member extends BaseTimeEntity {
         this.point = point;
     }
 
+    // increase point
     public void increaseMemberPoint(Long point){
         this.point += point;
+    }
+
+    // update changeRate
+    public void updateMemberChangeRate(Double holdingChangeRate, Double transactionChangeRate) {
+        this.holdingChangeRate = holdingChangeRate;
+        this.transactionChangeRate = transactionChangeRate;
     }
 }
 

@@ -26,6 +26,7 @@ const CustomStockTitle = styled(StockTitle)`
   font-size: 1.2rem;
   color: ${({ theme }) => theme.editorTextColor};
   font-weight: 600;
+  margin-bottom: 1rem;
 `;
 
 const CustomStockImage = styled(StockImage)`

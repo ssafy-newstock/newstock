@@ -194,4 +194,11 @@ public class StockController{
 
         return ResponseEntity.ok(success(response));
     }
+
+    @GetMapping("/rank")
+    public ResponseEntity<?> getStockRank(@RequestParam List<Long> memberIdList){
+        List<MemberChangeRateDto> response = stockService.getStockRank(memberIdList);
+
+        return ResponseEntity.ok(success(response));
+    }
 }

@@ -7,11 +7,10 @@ import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class StockNewsRepository {
-//    List<StockNews> findAllByIdIn(List<Long> ids);
-
     public StockNewsDto findById(Long id) throws SQLException, ClassNotFoundException {
         Connection conn = null;
         PreparedStatement pstmt = null;
@@ -191,6 +190,56 @@ public class StockNewsRepository {
         return stockNewsList;
     }
 
+    public List<StockNewsDto> findAllByIdIn(final List<String> ids) throws SQLException, ClassNotFoundException {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rst = null;
+        List<StockNewsDto> stockNewsList = new ArrayList<>();
+
+        try {
+            // Phoenix 드라이버 로드
+            Class.forName("org.apache.phoenix.jdbc.PhoenixDriver");
+            System.out.println("Driver loaded successfully");
+
+            // Phoenix에 연결
+            conn = DriverManager.getConnection("jdbc:phoenix:34.64.230.82,34.22.71.84,34.64.42.191:2181:/hbase");
+            System.out.println("Connection successful");
+
+            // SQL 쿼리 작성 (id 값 바인딩)
+            String query = "SELECT * " +
+                    "FROM ph_stock_news " +
+                    "WHERE news_id IN (" + ids.stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining(",")) + ")";
+
+            // PreparedStatement 생성 및 id 값 바인딩
+            pstmt = conn.prepareStatement(query);
+
+            // 쿼리 실행
+            rst = pstmt.executeQuery();
+
+            // ResultSet을 DTO 리스트로 매핑
+            while (rst.next()) {
+                StockNewsDto stockNewsDto = mapResultSetToDto(rst); // ResultSet을 StockNewsDto로 변환하는 메서드 호출
+                stockNewsList.add(stockNewsDto);
+            }
+
+        } finally {
+            // 자원 해제
+            if (rst != null) {
+                rst.close();
+            }
+            if (pstmt != null) {
+                pstmt.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
+
+        return stockNewsList;
+    }
+
     private static StockNewsDto mapResultSetToDto(ResultSet rst) throws SQLException {
         StockNewsDto stockNewsDto = new StockNewsDto();
 
@@ -213,4 +262,6 @@ public class StockNewsRepository {
         // 추가적으로 필요한 데이터가 있을 경우 더 매핑 가능
         return stockNewsDto;
     }
+
+
 }

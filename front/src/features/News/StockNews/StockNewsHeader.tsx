@@ -92,8 +92,6 @@ const StockNewsHeader: React.FC<StockNewsHeaderProps> = ({
   if (!stockDetail) {
     console.log('stockDetail이 아직 정의되지 않음.');
     return null; // 또는 로딩 상태 등을 반환할 수 있습니다.
-  } else {
-    console.log('스톡디테일 : ', stockDetail);
   }
 
   return (

@@ -2,13 +2,14 @@ import styled from 'styled-components';
 
 const NewsBodyContentWrapper = styled.div`
   display: flex;
-  width: 18rem;
+  /* width: 18rem; */
+  width: 100%;
   justify-content: center;
   align-items: center;
 `;
 
 const NewsBodyContentText = styled.div`
-  width: 17rem;
+  /* width: 17rem; */
   /* flex-shrink: 0; */
   color: #828282;
   font-size: 0.94rem;
