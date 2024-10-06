@@ -38,7 +38,7 @@ const OnBoardingPage = () => {
     SectionFourth: false,
     SectionFifth: false,
     SectionSixth: false,
-    SectionLast: false, // 마지막 섹션 추가
+    SectionLast: false,
   });
 
   const sectionRefs = {
@@ -48,7 +48,7 @@ const OnBoardingPage = () => {
     SectionFourth: useRef<HTMLDivElement | null>(null),
     SectionFifth: useRef<HTMLDivElement | null>(null),
     SectionSixth: useRef<HTMLDivElement | null>(null),
-    SectionLast: useRef<HTMLDivElement | null>(null), // 마지막 섹션 ref 추가
+    SectionLast: useRef<HTMLDivElement | null>(null),
   };
 
   useEffect(() => {
