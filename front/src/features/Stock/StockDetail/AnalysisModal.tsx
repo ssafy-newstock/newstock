@@ -1,59 +1,60 @@
-import { Background, Modal, Overlay, BigModal } from '@components/ModalComponents';
 import styled from 'styled-components';
+
+interface INews {
+  title: string;
+  upload_datetime: string;
+  media: string;
+  thumbnail?: string;
+}
 
 interface AnalysisModalProps {
   onClose?: () => void;
-  response: any;
-  newslist: any[];
+  message?: string;
+  newsList?: INews[]
 }
 
-const CancelButton = styled.div`
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* background: rgba(0, 0, 0, 0.5); */
   display: flex;
   justify-content: center;
-  margin-top: 16px;
-  background-color: ${({ theme }) => theme.profileBackgroundColor};
-  font-weight: bold;
-  color: ${({ theme }) => theme.profileColor};
-  padding: 8px 16px;
-  border-radius: 9999px;
-  cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  align-items: center;
+  z-index: 1000;
 `;
 
-const AnalysisModal: React.FC<AnalysisModalProps> = ({ onClose, response, newslist }) => {
+const ModalContent = styled.div`
+  background-color: ${({ theme }) => theme.stockBackgroundColor};
+  padding: 1rem;
+  border-radius: 1rem;
+  min-width: 15rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+`;
+
+const CloseButton = styled.button`
+  background-color: #f0f0f0;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+  cursor: pointer;
+  &:hover {
+    background-color: #ccc;
+  }
+`;
+const AnalysisModal: React.FC<AnalysisModalProps> = ({ onClose }) => {
   return (
-    <Overlay>
-      <Background onClick={onClose}>
-        <BigModal>
-          <div>
-            <h2>Response:</h2>
-            <pre>{response}</pre>
-          </div>
-          <div id="news-container">
-            {newslist.map((news, index) => (
-              <div key={index} className="news-item">
-                <div className="news-thumbnail">
-                  <img
-                    src={
-                      news.thumbnail || 'https://via.placeholder.com/100'
-                    }
-                    alt="thumbnail"
-                  />
-                </div>
-                <div className="news-content">
-                  <div className="news-title">{news.title}</div>
-                  <div className="news-meta">
-                    업로드 날짜: {news.upload_datetime} | 미디어:{' '}
-                    {news.media}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <CancelButton onClick={onClose}>취소</CancelButton>
-        </BigModal>
-      </Background>
-    </Overlay>
+    <ModalOverlay onClick={onClose}>
+      <ModalContent>
+        <CloseButton onClick={onClose}>Close</CloseButton>
+      </ModalContent>
+    </ModalOverlay>
   );
 };
 

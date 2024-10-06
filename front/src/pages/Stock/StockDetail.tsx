@@ -25,7 +25,6 @@ import StockHoldingError from '@features/Stock/StockDetail/StockHoldingError';
 import SimilaritySearch from '@features/Stock/StockDetail/SimilaritySearch';
 import { useFindStockByCode } from '@utils/uesFindStockByCode';
 import useAuthStore from '@store/useAuthStore';
-import useWebSocket from '@features/Stock/StockDetail/useWebSocket';
 import AnalysisModal from '@features/Stock/StockDetail/AnalysisModal';
 
 const StockDetailPage = () => {
@@ -41,23 +40,11 @@ const StockDetailPage = () => {
     setIsShow(!isShow);
   };
 
-  //웹소켓 관련
-  const { response, news, sendMessage } = useWebSocket(
-    'wss://newstock.info/api/newsai/summary/ws'
-  );
-
-  const handleSendMessage = (event: React.FormEvent) => {
-    event.preventDefault();
-    sendMessage({
-      base_stock_code: stock.stockCode,
-      stock_name: stock.stockName,
-      start_date: '2024-08-01',
-      end_date: '2024-09-01',
-    });
+  const handleAnalysis = () => {
     setIsModalOpen(true);
-  };
+  }
 
-  const closeModal = () => {
+  const closeAnalysis = () => {
     setIsModalOpen(false);
   }
 
@@ -70,7 +57,7 @@ const StockDetailPage = () => {
           {/* 좋아요, 유사도 버튼 */}
           <FlexGap $gap="1rem">
             {isLogin && <LikeButton stockCode={stock.stockCode} />}
-            <DetailPageButton onClick={handleSendMessage}>
+            <DetailPageButton onClick={handleAnalysis}>
               차트 분석
             </DetailPageButton>
             <DetailPageButton onClick={handleClick}>
@@ -123,7 +110,7 @@ const StockDetailPage = () => {
           </DividedSection>
         )}
       </Center>
-      {isModalOpen && <AnalysisModal onClose={closeModal} response={response} newslist={news} />}
+      {isModalOpen && <AnalysisModal onClose={closeAnalysis} />}
     </>
   );
 };
