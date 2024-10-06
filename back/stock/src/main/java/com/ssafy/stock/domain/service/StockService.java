@@ -442,28 +442,49 @@ public class StockService {
     }
 
     private Double getTransactionChangeRate(List<StocksTransactions> myStockSellTransaction) {
+        // 총 판매 금액
+        Long totalSellAmount = myStockSellTransaction.stream()
+                .mapToLong(transaction -> transaction.getStockTransactionPrice() * transaction.getStockTransactionAmount())
+                .sum();
+
+        if (totalSellAmount == 0) {
+            return 0.0; // 판매한 거래가 없을 때 0 처리
+        }
+
+        // 가중 평균 수익률 계산
         Double transactionChangeRate = myStockSellTransaction.stream()
                 .mapToDouble(transaction -> {
                     Stocks stock = transaction.getStock();
-
-                    Long currentPrice = stockTransactionService.getCurrentPrice(stock.getStockCode());
-                    Long sellPrice = transaction.getStockTransactionPrice();
-                    Long changeAmount = currentPrice - sellPrice;
-                    return (sellPrice != 0) ? (double) changeAmount / sellPrice * 100 : 0.0; // 등락률 계산 (0으로 나누기 방지)
-                }).sum();
+                    Long currentPrice = stockTransactionService.getCurrentPrice(stock.getStockCode()); // 현재 주가
+                    Long sellPrice = transaction.getStockTransactionPrice(); // 판매가
+                    Long quantity = transaction.getStockTransactionAmount(); // 판매 수량
+                    Long changeAmount = (currentPrice - sellPrice) * quantity; // 등락 가격
+                    return (double) changeAmount / totalSellAmount * 100; // 가중 수익률
+                })
+                .sum();
 
         return transactionChangeRate;
+
     }
 
     private Double getHoldingChangeRate(List<StocksHoldings> myStockHoldings) {
+        Long totalBuyAmount = myStockHoldings.stream()
+                .mapToLong(holding -> holding.getStockHoldingBuyPrice() * holding.getStockHoldingBuyAmount())
+                .sum();
+
+        if (totalBuyAmount == 0) {
+            return 0.0;
+        }
+
+        // 가중 평균 수익률 계산
         Double holdingChangeRate = myStockHoldings.stream()
                 .mapToDouble(holding -> {
                     Stocks stock = holding.getStock();
-
                     Long currentPrice = stockTransactionService.getCurrentPrice(stock.getStockCode()); // 현재 주가
                     Long buyPrice = holding.getStockHoldingBuyPrice(); // 구매가
-                    Long changeAmount = currentPrice - buyPrice; // 등락 가격
-                    return (buyPrice != 0) ? (double) changeAmount / buyPrice * 100 : 0.0; // 등락률 계산 (0으로 나누기 방지)
+                    Long quantity = holding.getStockHoldingBuyAmount(); // 보유 수량
+                    Long changeAmount = (currentPrice - buyPrice) * quantity; // 등락 가격
+                    return (double) changeAmount / totalBuyAmount * 100; // 가중 수익률
                 })
                 .sum();
 
