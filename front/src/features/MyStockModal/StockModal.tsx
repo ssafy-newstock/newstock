@@ -29,13 +29,6 @@ interface StockModalProps {
   setIsOpen: (isOpen: boolean) => void;
 }
 
-// active 상태에 따른 IconDiv 스타일링
-const ActiveIconDiv = styled(IconDiv)<{ active: boolean }>`
-  color: ${({ active }) =>
-    active ? '#1a73e8' : '#828282'}; // 활성화된 메뉴는 파란색, 비활성화는 회색
-  transition: color 0.3s ease; // 부드러운 전환 효과 추가
-`;
-
 // active 상태에 따른 TextP_12 스타일링
 const ActiveTextP_12 = styled(TextP_12)<{ active: boolean }>`
   color: ${({ active }) =>
