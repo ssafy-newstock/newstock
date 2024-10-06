@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -17,7 +18,7 @@ public class IndustryNewsController {
     private final IndustryNewsService industryNewsService;
 
     @GetMapping("/top4")
-    public CommonResponse<?> getTop4() {
+    public CommonResponse<?> getTop4() throws SQLException, ClassNotFoundException {
         List<IndustryNewsDto> industryNewsPreviewDtos = industryNewsService.getRecentIndustryNewsTop4();
 
         return CommonResponse.success(industryNewsPreviewDtos);
@@ -26,16 +27,16 @@ public class IndustryNewsController {
     @GetMapping()
     public CommonResponse<?> getIndustryNews(
             @RequestParam(value = "industry", required = false) String industry,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size) {
+            @RequestParam(value = "lastSeenId", defaultValue = "") String lastSeenId,
+            @RequestParam(value = "size", defaultValue = "10") int size) throws Exception {
 
-        List<IndustryNewsDto> industryNewsPreviewDtos = industryNewsService.getIndustryNewsPreviews(industry, page, size);
+        List<IndustryNewsDto> industryNewsPreviewDtos = industryNewsService.getIndustryNewsPreviews(industry, lastSeenId, size);
 
         return CommonResponse.success(industryNewsPreviewDtos);
     }
 
     @GetMapping("/{id}")
-    public CommonResponse<?> getIndustryNewsById(@PathVariable("id") Long id) {
+    public CommonResponse<?> getIndustryNewsById(@PathVariable("id") Long id) throws SQLException, ClassNotFoundException {
         IndustryNewsDto industryNews = industryNewsService.getIndustryNews(id);
 
         return CommonResponse.success(industryNews);
@@ -43,7 +44,7 @@ public class IndustryNewsController {
 
     @GetMapping("/{id}/read")
     public ResponseEntity<?> checkReadIndustryNews(@PathVariable("id") Long id,
-                                                    @RequestHeader(value = "authorization",required = false) String token) {
+                                                   @RequestHeader(value = "authorization", required = false) String token) {
         industryNewsService.checkReadIndustryNews(id, token);
 
         return ResponseEntity.noContent()
@@ -51,7 +52,7 @@ public class IndustryNewsController {
     }
 
     @GetMapping("/bulk")
-    public CommonResponse<?> getIndustryNewsInIds(@RequestParam List<Long> ids) {
+    public CommonResponse<?> getIndustryNewsInIds(@RequestParam List<String> ids) throws SQLException, ClassNotFoundException {
         List<IndustryNewsDto> industryNewsInIds = industryNewsService.getIndustryNewsInIds(ids);
         return CommonResponse.success(industryNewsInIds);
     }

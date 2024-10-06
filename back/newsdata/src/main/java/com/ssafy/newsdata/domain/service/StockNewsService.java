@@ -159,4 +159,15 @@ public class StockNewsService {
         List<String> keywords = StringParsingUtils.toList(stockNewsDto.getKeywords());
         return StockNewsResponse.of(stockNewsDto, stockCodes, keywords);
     }
+
+    public List<StockNewsResponse> getStockNewsInIds(final List<String> ids) throws SQLException, ClassNotFoundException {
+        List<StockNewsDto> allNews = stockNewsRepository.findAllByIdIn(ids);
+        return allNews.stream()
+                .map(stockNewsDto -> {
+                    List<String> stockCodes = StringParsingUtils.toList(stockNewsDto.getStockCodes());
+                    List<String> keywords = StringParsingUtils.toList(stockNewsDto.getKeywords());
+                    return StockNewsResponse.of(stockNewsDto, stockCodes, keywords);
+                })
+                .toList();
+    }
 }

@@ -1,25 +1,24 @@
 package com.ssafy.newsdata.domain.entity.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
+@Data
 public class IndustryNewsDto {
     private Long id;
-    private String article;
-    private String description;
-    private String industry;
-    private String media;
-//    private String newsId;
-    private String sentiment;
-    private String subtitle;
-    private String thumbnail;
     private String title;
+    private String subtitle;
+    private String description;
+    private String article;
+    private String media;
+    private Long sentiment;
+    private Long score;
+    private String thumbnail;
+    private String industry;
     private LocalDateTime uploadDatetime;
-
 }
