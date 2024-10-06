@@ -22,11 +22,27 @@ import FavoriteStock from '@features/MyStockModal/FavoriteStock';
 import Ranking from '@features/MyStockModal/Ranking';
 import FavoriteNews from '@features/MyStockModal/FavoriteNews';
 import History from '@features/MyStockModal/History';
+import styled from 'styled-components';
 
 interface StockModalProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
 }
+
+// active 상태에 따른 IconDiv 스타일링
+const ActiveIconDiv = styled(IconDiv)<{ active: boolean }>`
+  color: ${({ active }) =>
+    active ? '#1a73e8' : '#828282'}; // 활성화된 메뉴는 파란색, 비활성화는 회색
+  transition: color 0.3s ease; // 부드러운 전환 효과 추가
+`;
+
+// active 상태에 따른 TextP_12 스타일링
+const ActiveTextP_12 = styled(TextP_12)<{ active: boolean }>`
+  color: ${({ active }) =>
+    active ? '#1a73e8' : '#828282'}; // 활성화된 텍스트도 동일한 색상 변경
+  font-weight: ${({ active }) =>
+    active ? '600' : 'normal'}; // 선택된 메뉴는 볼드 처리
+`;
 
 const StockModal: React.FC<StockModalProps> = ({ isOpen, setIsOpen }) => {
   const [activeComponent, setActiveComponent] = useState<string | null>(null); // 활성화된 컴포넌트 상태
@@ -75,24 +91,34 @@ const StockModal: React.FC<StockModalProps> = ({ isOpen, setIsOpen }) => {
         </ModalLeft>
         <ModalRight>
           <IconDiv onClick={() => setActiveComponent('MyStock')}>
-            <MyStockIcon />
-            <TextP_12>내 주식</TextP_12>
+            <MyStockIcon active={activeComponent === 'MyStock'} />
+            <ActiveTextP_12 active={activeComponent === 'MyStock'}>
+              내 주식
+            </ActiveTextP_12>
           </IconDiv>
           <IconDiv onClick={() => setActiveComponent('MyStockHistory')}>
-            <HistoryIcon />
-            <TextP_12>거래 내역</TextP_12>
+            <HistoryIcon active={activeComponent === 'MyStockHistory'} />
+            <ActiveTextP_12 active={activeComponent === 'MyStockHistory'}>
+              거래 내역
+            </ActiveTextP_12>
           </IconDiv>
           <IconDiv onClick={() => setActiveComponent('Heart')}>
-            <HeartIcon />
-            <TextP_12>관심 종목</TextP_12>
+            <HeartIcon active={activeComponent === 'Heart'} />
+            <ActiveTextP_12 active={activeComponent === 'Heart'}>
+              관심 종목
+            </ActiveTextP_12>
           </IconDiv>
           <IconDiv onClick={() => setActiveComponent('Star')}>
-            <StarIcon />
-            <TextP_12>관심 뉴스</TextP_12>
+            <StarIcon active={activeComponent === 'Star'} />
+            <ActiveTextP_12 active={activeComponent === 'Star'}>
+              관심 뉴스
+            </ActiveTextP_12>
           </IconDiv>
           <IconDiv onClick={() => setActiveComponent('Rank')}>
-            <RankIcon />
-            <TextP_12>랭킹</TextP_12>
+            <RankIcon active={activeComponent === 'Rank'} />
+            <ActiveTextP_12 active={activeComponent === 'Rank'}>
+              랭킹
+            </ActiveTextP_12>
           </IconDiv>
         </ModalRight>
       </ModalContainer>
