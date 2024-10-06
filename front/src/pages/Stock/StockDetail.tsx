@@ -25,19 +25,41 @@ import StockHoldingError from '@features/Stock/StockDetail/StockHoldingError';
 import SimilaritySearch from '@features/Stock/StockDetail/SimilaritySearch';
 import { useFindStockByCode } from '@utils/uesFindStockByCode';
 import useAuthStore from '@store/useAuthStore';
+import useWebSocket from '@features/Stock/StockDetail/useWebSocket';
+import AnalysisModal from '@features/Stock/StockDetail/AnalysisModal';
 
 const StockDetailPage = () => {
   const location = useLocation();
   const { stock } = location.state as { stock: IStock };
   const [isShow, setIsShow] = useState<boolean>(false);
-  const {isLogin} = useAuthStore();
-
+  const { isLogin } = useAuthStore();
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   // 주식 상세 정보
   const stockDetail = useFindStockByCode(stock.stockCode);
 
   const handleClick = () => {
     setIsShow(!isShow);
   };
+
+  //웹소켓 관련
+  const { response, news, sendMessage } = useWebSocket(
+    'wss://newstock.info/api/newsai/summary/ws'
+  );
+
+  const handleSendMessage = (event: React.FormEvent) => {
+    event.preventDefault();
+    sendMessage({
+      base_stock_code: stock.stockCode,
+      stock_name: stock.stockName,
+      start_date: '2024-08-01',
+      end_date: '2024-09-01',
+    });
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  }
 
   return (
     <>
@@ -48,6 +70,9 @@ const StockDetailPage = () => {
           {/* 좋아요, 유사도 버튼 */}
           <FlexGap $gap="1rem">
             {isLogin && <LikeButton stockCode={stock.stockCode} />}
+            <DetailPageButton onClick={handleSendMessage}>
+              차트 분석
+            </DetailPageButton>
             <DetailPageButton onClick={handleClick}>
               유사도 분석
             </DetailPageButton>
@@ -69,7 +94,9 @@ const StockDetailPage = () => {
           <DividedSection>
             <StockHeader>유사도 분석</StockHeader>
             <HrTag />
-            <ErrorBoundary fallback={<SimilaritySearch stockCode={stock.stockCode} />}>
+            <ErrorBoundary
+              fallback={<SimilaritySearch stockCode={stock.stockCode} />}
+            >
               <SimilaritySearch stockCode={stock.stockCode} />
             </ErrorBoundary>
             <HrTag />
@@ -85,15 +112,18 @@ const StockDetailPage = () => {
         </DividedSection>
 
         {/* 주식 보유 내역 */}
-        <DividedSection>
-          <StockHeader>나의 {stock?.stockName} 보유 내역</StockHeader>
-          <ErrorBoundary FallbackComponent={StockHoldingError}>
-            <Suspense fallback={<StockHodingSkeleton />}>
-              <StockHolding stockCode={stock.stockCode} />
-            </Suspense>
-          </ErrorBoundary>
-        </DividedSection>
+        {isLogin && (
+          <DividedSection>
+            <StockHeader>나의 {stock?.stockName} 보유 내역</StockHeader>
+            <ErrorBoundary FallbackComponent={StockHoldingError}>
+              <Suspense fallback={<StockHodingSkeleton />}>
+                <StockHolding stockCode={stock.stockCode} />
+              </Suspense>
+            </ErrorBoundary>
+          </DividedSection>
+        )}
       </Center>
+      {isModalOpen && <AnalysisModal onClose={closeModal} response={response} newslist={news} />}
     </>
   );
 };
