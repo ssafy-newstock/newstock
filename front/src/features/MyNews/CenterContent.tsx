@@ -3,20 +3,38 @@ import { CenterContentDiv } from '@features/MyNews/styledComponent';
 import { isWithinInterval, parse } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { useBookmarkStore } from '@store/useBookmarkStore';
+import { useScrapStore } from '@store/useScrapStore';
 
-interface NewsData {
+// interface NewsData {
+//   id: number;
+//   title: string;
+//   subtitle: string | null;
+//   media: string;
+//   description: string;
+//   thumbnail: string;
+//   uploadDatetime: string;
+//   article: string;
+//   sentiment: string;
+//   industry?: string;
+//   stockNewsStockCodes?: string[]; // 종목 뉴스만 해당되는 부분
+//   stockKeywords?: string[]; // 종목 뉴스만 해당되는 부분
+// }
+
+interface ScrapData {
   id: number;
   title: string;
-  subtitle: string | null;
-  media: string;
-  description: string;
-  thumbnail: string;
-  uploadDatetime: string;
-  article: string;
-  sentiment: string;
+  subtitle?: string | null;
+  media?: string;
+  description?: string;
+  thumbnail?: string;
+  uploadDatetime?: string;
+  article?: string;
+  sentiment?: string;
   industry?: string;
   stockNewsStockCodes?: string[]; // 종목 뉴스만 해당되는 부분
   stockKeywords?: string[]; // 종목 뉴스만 해당되는 부분
+  newsType?: string;
+  content?: string;
 }
 
 interface CenterContentProps {
@@ -31,16 +49,45 @@ const CenterContent: React.FC<CenterContentProps> = ({ selectedDateRange }) => {
     fetchBookmarkedDetailStockNews,
   } = useBookmarkStore();
 
+  const {
+    scraps: scrapIndustryNews,
+    scrapStockNews, // 종목 스크랩 데이터
+    fetchScrapData, // 시황 뉴스 스크랩 함수
+    fetchScrapStockData, // 종목 뉴스 스크랩 함수
+  } = useScrapStore();
+
   const [filteredEconomicNews, setFilteredEconomicNews] =
-    useState<NewsData[]>(economicNews);
+    useState<ScrapData[]>(economicNews);
   const [filteredStockNews, setFilteredStockNews] =
-    useState<NewsData[]>(stockNews);
+    useState<ScrapData[]>(stockNews);
 
   // zustand 스토어에서 북마크된 뉴스 데이터 불러오기
   useEffect(() => {
     fetchBookmarkedDetailNews();
     fetchBookmarkedDetailStockNews();
-  }, [fetchBookmarkedDetailNews, fetchBookmarkedDetailStockNews]);
+
+    const [startDate, endDate] = selectedDateRange;
+
+    if (startDate && endDate) {
+      // 날짜 범위가 선택된 경우 해당 날짜 범위를 기반으로 스크랩 뉴스 데이터를 가져옵니다.
+      fetchScrapData(
+        1,
+        10,
+        startDate.toISOString().split('T')[0],
+        endDate.toISOString().split('T')[0]
+      );
+    } else {
+      // 날짜 범위가 선택되지 않은 경우 기본값으로 스크랩 뉴스 데이터를 가져옵니다.
+      fetchScrapData();
+      fetchScrapStockData();
+    }
+  }, [
+    fetchBookmarkedDetailNews,
+    fetchBookmarkedDetailStockNews,
+    selectedDateRange,
+    fetchScrapData,
+    fetchScrapStockData,
+  ]);
 
   useEffect(() => {
     if (selectedDateRange[0] && selectedDateRange[1]) {
@@ -76,8 +123,8 @@ const CenterContent: React.FC<CenterContentProps> = ({ selectedDateRange }) => {
     <CenterContentDiv>
       <NewsSection title={'시황 뉴스'} datas={filteredEconomicNews} />
       <NewsSection title={'종목 뉴스'} datas={filteredStockNews} />
-      <NewsSection title={'시황 스크랩'} datas={filteredStockNews} />
-      <NewsSection title={'종목 스크랩'} datas={filteredStockNews} />
+      <NewsSection title={'시황 스크랩'} datas={scrapIndustryNews} />
+      <NewsSection title={'종목 스크랩'} datas={scrapStockNews} />
     </CenterContentDiv>
   );
 };

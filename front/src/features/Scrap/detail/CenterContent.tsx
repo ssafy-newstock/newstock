@@ -12,17 +12,26 @@ import {
   CenterNewsRightDiv,
   CenterNewsRightImg,
 } from '@features/Scrap/detail/scrapDetailCenterStyledComponent';
-interface NewsItem {
-  title: string;
-  description: string;
-  media: string;
-  uploadDatetime: string;
+
+interface ScrapData {
+  id: number;
+  article?: string;
+  description?: string;
+  industry?: string;
+  media?: string;
+  sentiment?: string;
+  subtitle?: string | null;
   thumbnail?: string;
-  stockId: string;
+  title: string;
+  uploadDatetime?: string;
+  newsType?: string;
+  content?: string;
+  stockNewsStockCodes?: string[]; // 종목 뉴스만 해당되는 부분
+  stockKeywords?: string[]; // 종목 뉴스만 해당되는 부분
 }
 
 interface CardData {
-  NewsItem: NewsItem;
+  ScrapData: ScrapData;
   context: string;
 }
 
@@ -32,7 +41,7 @@ interface CenterContentProps {
 
 const CenterContent: React.FC<CenterContentProps> = ({ selectedCard }) => {
   const formattedDate =
-    selectedCard.NewsItem.uploadDatetime?.split(' ')[0].replace(/-/g, '.') ||
+    selectedCard.ScrapData.uploadDatetime?.split(' ')[0].replace(/-/g, '.') ||
     '날짜 불명';
   return (
     <CenterContentDiv>
@@ -47,7 +56,7 @@ const CenterContent: React.FC<CenterContentProps> = ({ selectedCard }) => {
               textOverflow: 'ellipsis',
             }}
           >
-            {selectedCard.NewsItem.title}
+            {selectedCard.ScrapData.title}
           </TextP_24_NOTGRAY>
           <TextP_20
             style={{
@@ -58,16 +67,16 @@ const CenterContent: React.FC<CenterContentProps> = ({ selectedCard }) => {
               textOverflow: 'ellipsis',
             }}
           >
-            {selectedCard.NewsItem.description}
+            {selectedCard.ScrapData.description}
           </TextP_20>
 
           <CenterNewsLeftTopDiv>
-            <TextP_16>{selectedCard.NewsItem.media}</TextP_16>
+            <TextP_16>{selectedCard.ScrapData.media}</TextP_16>
             <TextP_16> {formattedDate}</TextP_16>
           </CenterNewsLeftTopDiv>
         </CenterNewsLeftDiv>
-        {selectedCard.NewsItem.thumbnail ? (
-          <CenterNewsRightImg src={selectedCard.NewsItem.thumbnail} />
+        {selectedCard.ScrapData.thumbnail ? (
+          <CenterNewsRightImg src={selectedCard.ScrapData.thumbnail} />
         ) : (
           <CenterNewsRightDiv />
         )}

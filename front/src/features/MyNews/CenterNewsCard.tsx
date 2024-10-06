@@ -26,24 +26,26 @@ const BookmarkedNewsMiddleLine = styled.div`
   background: #e0e0e0;
 `;
 
-interface NewsData {
+interface scrapData {
   id: number;
   title: string;
-  subtitle: string | null;
-  media: string;
-  description: string;
-  thumbnail: string;
-  uploadDatetime: string;
-  article: string;
-  sentiment: string;
+  subtitle?: string | null;
+  media?: string;
+  description?: string;
+  thumbnail?: string;
+  uploadDatetime?: string;
+  article?: string;
+  sentiment?: string;
   industry?: string;
   stockNewsStockCodes?: string[]; // 종목 뉴스만 해당되는 부분
   stockKeywords?: string[]; // 종목 뉴스만 해당되는 부분
+  newsType?: string;
+  content?: string;
 }
 
 interface CenterCardProps {
   title: string;
-  data: NewsData;
+  data: scrapData;
   onDelete: (id: number) => void;
 }
 
@@ -71,7 +73,9 @@ const CenterNewsCard: React.FC<CenterCardProps> = ({
     onDelete(data.id); // 삭제 작업 처리
   };
 
-  const formattedDate = formatTransactionDate(data.uploadDatetime);
+  const formattedDate = data.uploadDatetime
+    ? formatTransactionDate(data.uploadDatetime)
+    : ''; // 날짜가 없을 경우 빈 문자열을 설정
 
   const { allStock } = useAllStockStore();
   const { top10Stock } = useTop10StockStore();

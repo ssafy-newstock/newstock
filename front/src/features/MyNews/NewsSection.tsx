@@ -7,24 +7,26 @@ import {
   NewsSectionContainer,
 } from '@features/MyNews/styledComponent';
 
-interface NewsData {
+interface ScrapData {
   id: number;
   title: string;
-  subtitle: string | null;
-  media: string;
-  description: string;
-  thumbnail: string;
-  uploadDatetime: string;
-  article: string;
-  sentiment: string;
+  subtitle?: string | null;
+  media?: string;
+  description?: string;
+  thumbnail?: string;
+  uploadDatetime?: string;
+  article?: string;
+  sentiment?: string;
   industry?: string;
-  stockNewsStockCodes?: string[];
-  stockKeywords?: string[];
+  stockNewsStockCodes?: string[]; // 종목 뉴스만 해당되는 부분
+  stockKeywords?: string[]; // 종목 뉴스만 해당되는 부분
+  newsType?: string;
+  content?: string;
 }
 
 interface NewsSectionProps {
   title: string;
-  datas: NewsData[];
+  datas: ScrapData[];
 }
 
 const NewsSection: React.FC<NewsSectionProps> = ({ title, datas }) => {
@@ -61,7 +63,7 @@ const NewsSection: React.FC<NewsSectionProps> = ({ title, datas }) => {
                 textAlign: 'center',
               }}
             >
-              저장한 {title}가 없습니다.
+              저장한 {title}이 없습니다.
             </p>
           </div>
         ) : (

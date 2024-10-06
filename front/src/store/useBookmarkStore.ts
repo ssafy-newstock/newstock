@@ -71,6 +71,8 @@ export const useBookmarkStore = create<BookmarkStoreState>((set) => ({
             media: newsItem.media,
             uploadDatetime: newsItem.uploadDatetime,
             industry: newsItem.industry,
+            thumbnail: newsItem.thumbnail,
+            article: newsItem.article,
           })
         );
         set({ bookmarkedDetailNews: bookmarkedNews }); // 상태에 불러온 뉴스 상세 정보 저장
@@ -151,6 +153,8 @@ export const useBookmarkStore = create<BookmarkStoreState>((set) => ({
             media: newsItem.media,
             uploadDatetime: newsItem.uploadDatetime,
             stockNewsStockCodes: newsItem.stockNewsStockCodes,
+            thumbnail: newsItem.thumbnail,
+            article: newsItem.article,
           })
         );
         set({ bookmarkedDetailStockNews: bookmarkedNews }); // 상태에 불러온 뉴스 상세 정보 저장

@@ -10,18 +10,25 @@ import {
   ScrapCardRightDiv,
 } from '@features/Scrap/detail/scrapDetailRightStyledComponent';
 
-interface NewsItem {
+interface ScrapData {
+  id: number;
+  article?: string;
+  description?: string;
+  industry?: string;
+  media?: string;
+  sentiment?: string;
+  subtitle?: string | null;
+  thumbnail?: string;
   title: string;
-}
-
-interface Data {
-  Title: string;
-  NewsItem: NewsItem;
-  Date: string;
+  uploadDatetime?: string;
+  newsType?: string;
+  content?: string;
+  stockNewsStockCodes?: string[];
+  stockKeywords?: string[];
 }
 
 interface ScrapCardProps {
-  data: Data;
+  data: ScrapData;
   onClick?: () => void;
 }
 
@@ -41,7 +48,7 @@ const ScrapCard: React.FC<ScrapCardProps> = ({ data, onClick }) => {
             textOverflow: 'ellipsis',
           }}
         >
-          {data.Title}
+          {data.title}
         </TextP_24_NOTGRAY>
         <ScrapCardRightBottomDiv>
           <div>
@@ -54,10 +61,14 @@ const ScrapCard: React.FC<ScrapCardProps> = ({ data, onClick }) => {
                 textOverflow: 'ellipsis',
               }}
             >
-              {data.NewsItem.title}
+              {data.article || data.description || '내용 없음'}
             </TextP_16>
           </div>
-          <TextP_16>{data.Date}</TextP_16>
+          <TextP_16>
+            {data.uploadDatetime
+              ? data.uploadDatetime.split(' ')[0]
+              : '날짜 없음'}
+          </TextP_16>
         </ScrapCardRightBottomDiv>
       </ScrapCardRightDiv>
     </ScrapCardDiv>
