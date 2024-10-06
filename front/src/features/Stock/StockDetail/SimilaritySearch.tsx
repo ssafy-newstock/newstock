@@ -69,6 +69,13 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
       return end.toISOString().split('T')[0]; // YYYY-MM-DD 형식으로 반환
     };
 
+    const calculateStartDate = (endDate: string) => {
+      const end = new Date(endDate);
+      const start = new Date(end);
+      start.setMonth(end.getMonth() - 1); // 한달 전으로 설정
+      return start.toISOString().split('T')[0]; // YYYY-MM-DD 형식으로 반환
+    }
+
   // 시작일 입력시 종료일 자동 입력
   const startDateValue = watch('start_date');
   useEffect(() => {
@@ -76,7 +83,15 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
       const endDate = calculateEndDate(startDateValue);
       setValue('end_date', endDate); // end_date 값을 설정
     }
-  }, [startDateValue, setValue]);
+  }, [startDateValue]);
+
+  const endDateValue = watch('end_date');
+  useEffect(() => {
+    if (endDateValue) {
+      const startDate = calculateStartDate(endDateValue);
+      setValue('start_date', startDate); // end_date 값을 설정
+    }
+  }, [endDateValue]);
 
   const onSubmit = handleSubmit((data) => {
     setSearchDates({
@@ -113,7 +128,6 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
               {...register('end_date')}
               required
               style={{ textAlign: 'center' }}
-              disabled
             />
           </InputRow>
 
