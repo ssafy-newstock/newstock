@@ -15,6 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -118,6 +119,16 @@ public class MemberController {
                 .ok(response);
     }
 
+    /**
+     * 모의 투자 상위 10명 랭킹 조회
+     * @return List<Member>
+     */
+    @GetMapping("/rank")
+    public ResponseEntity<?> getMemberRank(){
+        List<Member> response = memberService.getTopFiveRank();
+        return ResponseEntity
+                .ok(response);
+    }
 
 }
 

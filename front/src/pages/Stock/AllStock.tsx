@@ -1,10 +1,4 @@
-import React, {
-  Suspense,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { Center } from '@components/Center';
 import AllStock, { AllStockFirstRow } from '@features/Stock/AllStock/AllStock';
@@ -23,30 +17,6 @@ import { IStock } from '@features/Stock/types';
 import useAllStockStore from '@store/useAllStockStore';
 import SearchIcon from '@features/Stock/AllStock/SearchIcon';
 import useTop10StockStore from '@store/useTop10StockStore';
-import LoadingSpinner from '@components/LoadingSpinner';
-
-const Underline = styled.div<{ $sortBy: string }>`
-  position: absolute;
-  bottom: -0.5rem;
-  left: ${({ $sortBy }) => {
-    switch ($sortBy) {
-      case 'stckPrpr':
-        return '0.3rem';
-      case 'prdyCtrt':
-        return '4.3rem';
-      case 'acmlTrPbmn':
-        return '8.3rem';
-      case 'acmlVol':
-        return '12.3rem';
-      default:
-        return '0.3rem';
-    }
-  }};
-  height: 0.2rem;
-  width: 2.4rem;
-  background-color: ${({ theme }) => theme.textColor};
-  transition: left 0.3s ease;
-`;
 
 const PaginationWrapper = styled.div`
   display: flex;
@@ -182,23 +152,38 @@ const AllStockPage: React.FC = () => {
         </SearchInputWrapper>
 
         <ButtonWrapper>
-          <SortButton onClick={() => setSortBy('stckPrpr')}>현재가</SortButton>
-          <SortButton onClick={() => setSortBy('prdyCtrt')}>등락률</SortButton>
-          <SortButton onClick={() => setSortBy('acmlTrPbmn')}>
+          <SortButton
+            $isActive={sortBy === 'stckPrpr'}
+            onClick={() => setSortBy('stckPrpr')}
+          >
+            현재가
+          </SortButton>
+          <SortButton
+            $isActive={sortBy === 'prdyCtrt'}
+            onClick={() => setSortBy('prdyCtrt')}
+          >
+            등락률
+          </SortButton>
+          <SortButton
+            $isActive={sortBy === 'acmlTrPbmn'}
+            onClick={() => setSortBy('acmlTrPbmn')}
+          >
             거래금
           </SortButton>
-          <SortButton onClick={() => setSortBy('acmlVol')}>거래량</SortButton>
-          <Underline $sortBy={sortBy} />
+          <SortButton
+            $isActive={sortBy === 'acmlVol'}
+            onClick={() => setSortBy('acmlVol')}
+          >
+            거래량
+          </SortButton>
         </ButtonWrapper>
 
         <DividedSection>
           <StockGridRow>
             <AllStockFirstRow />
-            <Suspense fallback={<LoadingSpinner />}>
-              {currentItems.map((stock: IStock, index: number) => (
-                <AllStock key={`${stock.stockCode}-${index}`} stock={stock} />
-              ))}
-            </Suspense>
+            {currentItems.map((stock: IStock, index: number) => (
+              <AllStock key={`${stock.stockCode}-${index}`} stock={stock} />
+            ))}
           </StockGridRow>
         </DividedSection>
 

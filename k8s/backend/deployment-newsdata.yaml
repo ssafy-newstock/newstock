@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: newstock-stock-newsdata
+  labels:
+    app: newstock-stock-newsdata
+spec:
+  replicas: 1 # 원하는 레플리카 수 설정
+  selector:
+    matchLabels:
+      app: newstock-stock-newsdata
+  template:
+    metadata:
+      labels:
+        app: newstock-stock-newsdata
+    spec:
+      hostAliases:
+        - ip: "34.64.230.82"
+          hostnames:
+            - "master01"
+        - ip: "34.22.71.84"
+          hostnames:
+            - "master02"
+        - ip: "34.64.42.191"
+          hostnames:
+            - "slave01"
+        - ip: "34.64.155.83"
+          hostnames:
+            - "slave02"
+        - ip: "34.64.105.214"
+          hostnames:
+            - "slave03"
+      containers:
+      - name: newstock-stock-newsdata-container
+        image: ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstocknewsdata:TAG_PLACEHOLDER
+        ports:
+        - containerPort: 8010  # 스프링 부트 애플리케이션의 기본 포트
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
+
+
+        env:
+        - name: JAVA_OPTS
+          value: "-Xms512m -Xmx1024m"  # 메모리 설정 등 스프링 부트 설정
+      imagePullSecrets:
+        - name: ocirsecret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: newstock-stock-newsdata-service
+spec:
+  selector:
+    app: newstock-stock-newsdata
+  ports:
+    - protocol: TCP
+      port: 8010          # 클러스터 내부에서 접근할 서비스 포트
+      targetPort: 8010    # 컨테이너 내부 포트
+  type: ClusterIP      # 외부에서 접근할 수 있는 서비스 타입 (필요시 ClusterIP로 변경 가능)

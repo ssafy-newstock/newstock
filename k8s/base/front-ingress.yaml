@@ -50,6 +50,20 @@ spec:
                 name: newstock-stock-news-service
                 port:
                   number: 8002
+          - path: /api/newsdata(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: newstock-stock-newsdata-service
+                port:
+                  number: 8010
+          - path: /api/newsai(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: newstock-stock-newsai-service
+                port:
+                  number: 8020
           - path: /api/member/websocket
             pathType: Prefix
             backend:

@@ -80,6 +80,16 @@ pipeline {
             }
         }
 
+        stage('Build and Push Docker Image for Newsdata') {
+            steps {
+                script {
+                    sh """
+                        docker build -t ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstocknewsdata:${IMAGE_TAG} back/newsdata/
+                        docker push ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstocknewsdata:${IMAGE_TAG}
+                    """
+                }
+            }
+        }
         stage('Build and Push Docker Image for Stock') {
             steps {
                 script {
@@ -100,6 +110,17 @@ pipeline {
                     sh """
                         docker build -t ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstockfrontend:${IMAGE_TAG} front/
                         docker push ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstockfrontend:${IMAGE_TAG}
+                    """
+                }
+            }
+        }
+
+        stage('Build and Push Docker Image for NewsAI') {
+            steps {
+                script {
+                    sh """
+                        docker build -t ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstocknewsai:${IMAGE_TAG} data/news_ai_server
+                        docker push ocir.ap-singapore-2.oci.oraclecloud.com/axzbwuphhddr/newstocknewsai:${IMAGE_TAG}
                     """
                 }
             }
@@ -183,6 +204,18 @@ pipeline {
             }
         }
 
+        stage('Update Kubernetes Deployment for Newsdata') {
+            steps {
+                script {
+                    def deploymentPath = 'k8s/backend/deployment-newsdata.yaml'  // deploymentPath 정의
+                    sh """
+                        sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
+                        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f ${deploymentPath}
+                    """
+                }
+            }
+        }
+
         stage('Update Kubernetes Deployment for Stock') {
             steps {
                 script {
@@ -199,6 +232,18 @@ pipeline {
             steps {
                 script {
                     def deploymentPath = 'k8s/frontend/deployment-front.yaml'  // deploymentPath 정의
+                    sh """
+                        sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
+                        kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f ${deploymentPath}
+                    """
+                }
+            }
+        }
+
+        stage('Update Kubernetes Deployment for NewsAI') {
+            steps {
+                script {
+                    def deploymentPath = 'k8s/backend/deployment-newsai.yaml'  // deploymentPath 정의
                     sh """
                         sed -i 's/TAG_PLACEHOLDER/${IMAGE_TAG}/g' ${deploymentPath}
                         kubectl --server=$OKE_MASTER --token=$OKE_TOKEN --insecure-skip-tls-verify apply -f ${deploymentPath}

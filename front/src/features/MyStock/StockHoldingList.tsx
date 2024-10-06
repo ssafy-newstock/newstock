@@ -8,8 +8,10 @@ import {
 import blueLogo from '@assets/Stock/blueLogo.png';
 import { useNavigate } from 'react-router-dom';
 import { MyStockCardRow } from '@features/MyStock/myStockCenterStyledComponent';
+import { getStockImageUrl } from '@utils/getStockImageUrl';
 import useAllStockStore from '@store/useAllStockStore'; // Zustand 스토어에서 allStock 데이터 참조
 import useTop10StockStore from '@store/useTop10StockStore'; // Zustand 스토어에서 top10Stock 데이터 참조
+
 
 // 인터페이스 정의
 interface StockHolding {
@@ -83,8 +85,9 @@ const StockHoldingList = ({ stock }: { stock: StockHolding }) => {
     <MyStockCardRow onClick={handleNavigate} style={{ cursor: 'pointer' }}>
       <StockTitle>
         <StockImage
-          src={`https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stock.stockCode}.png`}
-          alt={blueLogo}
+            src={getStockImageUrl(stock.stockCode)}
+            onError={(e) => (e.currentTarget.src = blueLogo)}
+            alt=""
         />
         {stock.stockName}
       </StockTitle>

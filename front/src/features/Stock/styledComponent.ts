@@ -37,7 +37,7 @@ export const StockGridRow = styled.div`
 `;
 
 export const HoldingStockGridRow = styled(StockGridRow)`
-  grid-template-rows: repeat(2, minmax(2.5rem, 2.5rem));
+  grid-template-rows: repeat(auto-fill, minmax(2.5rem, 2.5rem));
 `;
 
 export const StockCardColumn = styled.div`
@@ -66,9 +66,14 @@ const pulseAnimation = keyframes`
   }
 `;
 
+export const SkeletonDiv = styled.div<{ $width: string; $height: string }>`
+  width: ${({ $width }) => $width};
+  height: ${({ $height }) => $height};
+  animation: ${pulseAnimation} 3s infinite;
+`;
+
 export const StockCardColumnSkeleton = styled(StockCardColumn)`
   animation: ${pulseAnimation} 3s infinite;
-  opacity: 0.4;
   cursor: none;
   height: 7rem;
 `;
@@ -156,13 +161,11 @@ export const HoldingStockCardRowNone = styled(StockCardRow)`
 
 export const HoldingStockCardRowSkeleton = styled(HoldingStockCardRow)`
   animation: ${pulseAnimation} 3s infinite;
-  opacity: 0.4;
   height: 2.5rem;
 `;
 
 export const StockCardRowSkeleton = styled(StockCardRow)`
   animation: ${pulseAnimation} 3s infinite;
-  opacity: 0.4;
   height: 2.5rem;
 `;
 
@@ -249,19 +252,34 @@ export const CategoryData = styled(StockPrev)`
 export const ButtonWrapper = styled.div`
   display: flex;
   gap: 1rem;
-  position: relative; /* 밑줄이 이 영역 안에서 움직이도록 */
 `;
 
 // 버튼 스타일
-export const SortButton = styled.button`
+export const SortButton = styled.button<{ $isActive: boolean }>`
   background: none;
   border: none;
-  font: inherit;
+  padding: 0.5rem;
   cursor: pointer;
-  padding: 0;
-  margin: 0;
-  position: relative;
   color: ${({ theme }) => theme.textColor};
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -0.1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: ${({ $isActive }) => ($isActive ? '2rem' : '0')};
+    height: 0.2rem;
+    background-color: ${({ theme }) => theme.textColor};
+    transition: width 0.3s ease;
+  }
+`;
+
+export const CategorySortButton = styled(SortButton)`
+  &::after {
+    width: ${({ $isActive }) => ($isActive ? '2.5rem' : '0')};
+  }
 `;
 
 export const SearchInputWrapper = styled.div`
@@ -296,6 +314,7 @@ export const DetailPageButton = styled.div`
   color: ${({ theme }) => theme.profileColor};
   border-radius: 1rem;
   padding: 0.5rem 1rem;
+  cursor: pointer;
 `;
 
 export const FormWrapper = styled.div`
@@ -327,6 +346,7 @@ export const InputRow = styled.div`
 export const InputLabel = styled.label`
   min-width: 60px;
   font-weight: bold;
+  font-size: 1rem;
 `;
 
 export const InputTag = styled.input`
@@ -432,4 +452,16 @@ export const NoneButton = styled.button`
   background-color: transparent;
   border: none;
   cursor: pointer;
+`;
+
+export const SimilarityButton = styled.button`
+  background-color: ${({ theme }) => theme.profileBackgroundColor};
+  color: ${({ theme }) => theme.profileColor};
+  border-radius: 1rem;
+  border: none;
+  padding: 0.5rem 1rem;
+`;
+
+export const AnalysisButton = styled(DetailPageButton)`
+  align-self: flex-end;
 `;

@@ -326,7 +326,7 @@ public class StockService {
         Stocks stock = myStockHolding.getStock();
 
         Long currentPrice = stockTransactionService.getCurrentPrice(stock.getStockCode()); // 현재 주가
-        Long buyPrice = myStockHolding.getStockHoldingBuyPrice(); // 평단가
+        Long buyPrice = myStockHolding.getStockHoldingBuyPrice(); // 구매가
         Long changeAmount = currentPrice - buyPrice; // 등락 가격
         Double changeRate = (buyPrice != 0) ? (double) changeAmount / buyPrice * 100 : 0.0; // 등락률 계산 (0으로 나누기 방지)
 
@@ -424,5 +424,49 @@ public class StockService {
 
         stockFavoriteRepository.delete(stocksFavorite);
         log.info("{}번 회원이 {} 주식을 찜 해제했습니다.", memberId, stock.getStockName());
+    }
+
+
+
+    public List<MemberChangeRateDto> getStockRank(List<Long> memberIdListRequest){
+        return memberIdListRequest.stream()
+                .map(memberId -> {
+                    List<StocksHoldings> myStockHoldings = stockHoldingRepository.findAllByMemberIdWithStock(memberId);
+                    List<StocksTransactions> myStockSellTransaction = stockTransactionRepository.findSellByMemberIdWithStock(memberId);
+
+                    Double holdingChangeRate = getHoldingChangeRate(myStockHoldings);
+                    Double transactionChangeRate = getTransactionChangeRate(myStockSellTransaction);
+
+                    return new MemberChangeRateDto(memberId, holdingChangeRate + transactionChangeRate);
+                }).toList();
+    }
+
+    private Double getTransactionChangeRate(List<StocksTransactions> myStockSellTransaction) {
+        Double transactionChangeRate = myStockSellTransaction.stream()
+                .mapToDouble(transaction -> {
+                    Stocks stock = transaction.getStock();
+
+                    Long currentPrice = stockTransactionService.getCurrentPrice(stock.getStockCode());
+                    Long sellPrice = transaction.getStockTransactionPrice();
+                    Long changeAmount = currentPrice - sellPrice;
+                    return (sellPrice != 0) ? (double) changeAmount / sellPrice * 100 : 0.0; // 등락률 계산 (0으로 나누기 방지)
+                }).sum();
+
+        return transactionChangeRate;
+    }
+
+    private Double getHoldingChangeRate(List<StocksHoldings> myStockHoldings) {
+        Double holdingChangeRate = myStockHoldings.stream()
+                .mapToDouble(holding -> {
+                    Stocks stock = holding.getStock();
+
+                    Long currentPrice = stockTransactionService.getCurrentPrice(stock.getStockCode()); // 현재 주가
+                    Long buyPrice = holding.getStockHoldingBuyPrice(); // 구매가
+                    Long changeAmount = currentPrice - buyPrice; // 등락 가격
+                    return (buyPrice != 0) ? (double) changeAmount / buyPrice * 100 : 0.0; // 등락률 계산 (0으로 나누기 방지)
+                })
+                .sum();
+
+        return holdingChangeRate;
     }
 }

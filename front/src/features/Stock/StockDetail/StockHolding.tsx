@@ -16,6 +16,9 @@ import {
 import { formatNumber } from '@utils/formatNumber';
 import { formatChange } from '@utils/formatChange';
 import blueLogo from '@assets/Stock/blueLogo.png';
+import { getStockImageUrl } from '@utils/getStockImageUrl';
+import useAuthStore from '@store/useAuthStore';
+import StockHoldingError from '@features/Stock/StockDetail/StockHoldingError';
 
 interface IStockHolding {
   stockId: number;
@@ -36,16 +39,27 @@ interface IApiStockHolding {
 const fetchStockHolding = async (
   stockCode: string
 ): Promise<IApiStockHolding> => {
-  const response = await authRequest.get<IApiStockHolding>(
-    `/stock/my-holding/${stockCode}`
-  );
+  try {
+    const response = await authRequest.get<IApiStockHolding>(
+      `/stock/my-holding/${stockCode}`
+    );
 
-  if (!response.data.success || !response.data.data) {
-    throw new Error('데이터가 존재하지 않습니다.');
+    if (!response.data.success || !response.data.data) {
+      throw new Error('데이터가 존재하지 않습니다.');
+    }
+
+    return response.data;
+  } catch (error: any) {
+    if (error.response?.status === 404) {
+      return {
+        success: false,
+        data: undefined,  // 데이터가 없으면 undefined로 반환
+      };
+    }
+    throw error;  // 다른 에러는 그대로 던짐
   }
-
-  return response.data;
 };
+
 
 const useStockHoldingQuery = (
   stockCode: string,
@@ -63,13 +77,13 @@ const useStockHoldingQuery = (
 };
 
 const StockHolding = ({ stockCode }: { stockCode: string }) => {
-  const { data } = useStockHoldingQuery(stockCode);
+  const { isLogin } = useAuthStore();
+  const { data } = useStockHoldingQuery(stockCode, { enabled: isLogin });
   const stock = data.data;
 
-  const getStockImageUrl = () => {
-    if (!stock) return '';
-    return `https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stock.stockCode}.png`;
-  };
+  if (!stock ) {
+    return <StockHoldingError/>;
+  }
 
   return (
     <>
@@ -87,7 +101,7 @@ const StockHolding = ({ stockCode }: { stockCode: string }) => {
           <HoldingStockCardRow>
             <StockTitle>
               <StockImage
-                src={getStockImageUrl()}
+                src={getStockImageUrl(stockCode)}
                 onError={(e) => (e.currentTarget.src = blueLogo)}
                 alt=""
               />

@@ -14,6 +14,7 @@ import { formatUnit } from '@utils/formatUnit';
 import { IStock } from '@features/Stock/types';
 import blueLogo from '@assets/Stock/blueLogo.png';
 import { useNavigate } from 'react-router-dom';
+import { getStockImageUrl } from '@utils/getStockImageUrl';
 
 
 export const RealTimeStockFirstRow = () => {
@@ -39,8 +40,9 @@ const RealTimeStock = ({stock}:{stock:IStock}) => {
       <StockCardRow onClick={handleNavigate}>
         <StockTitle>
           <StockImage
-            src={`https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stock.stockCode}.png`}
-            alt={blueLogo}
+            src={getStockImageUrl(stock.stockCode)}
+            onError={(e) => (e.currentTarget.src = blueLogo)}
+            alt=""
           />
           {stock.stockName}
         </StockTitle>

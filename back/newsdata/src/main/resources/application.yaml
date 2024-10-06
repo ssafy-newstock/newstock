@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: jdbc:phoenix:34.64.230.82,34.22.71.84,34.64.42.191:2181:/hbase
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+  profiles:
+    include: feign
+  application:
+    name: news
+  kafka:
+    bootstrap-servers: kafka-service:9092
+  data:
+    redis:
+      host: redis-service
+      port: 6379
+
+server:
+  port: 8010
+hbase:
+  url: http://j11c207a.p.ssafy.io:9090
+
+
+logging:
+  level:
+    com.ssafy.news.domain.service.client.StockClient: DEBUG
