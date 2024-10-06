@@ -12,7 +12,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Transactional(readOnly = true)
@@ -26,16 +29,23 @@ public class MemberRankScheduler {
     @Transactional
     @Scheduled(cron = "0 0 * * * *")
     public void getMemberChangeRate() {
-        List<Long> memberIdList = memberRepository.findAllId();
-        CommonResponse<?> memberChangeRate = stockClient.getMemberChangeRate(memberIdList);
+        List<Member> memberList = memberRepository.findAll();
 
+        Map<Long, Member> memberMap = memberList.stream()
+                .collect(Collectors.toMap(Member::getId, member -> member));
+
+        List<Long> memberIdList = new ArrayList<>(memberMap.keySet());
+        CommonResponse<?> memberChangeRate = stockClient.getMemberChangeRate(memberIdList);
         List<MemberChangeRateDto> responses = (List<MemberChangeRateDto>) memberChangeRate.getData();
 
         responses.forEach(response -> {
-                    Member member = memberRepository.findById( response.getMemberId())
-                            .orElseThrow(() -> new MemberNotFoundException( response.getMemberId()));
+            Member member = memberMap.get(response.getMemberId());
 
-                    member.updateMemberChangeRate(response.getChangeRate());
-                });
+            if (member != null) {
+                member.updateMemberChangeRate(response.getChangeRate());
+            } else {
+                throw new MemberNotFoundException(response.getMemberId());
+            }
+        });
     }
 }
