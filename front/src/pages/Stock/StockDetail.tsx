@@ -53,7 +53,7 @@ const StockDetailPage = () => {
   const endDate = '2024-09-01';
 
   const { data:analysisData } = useAnalysisQuery({
-    stock: {
+    analysisStock: {
       stockCode: stock.stockCode,
       stockName: stock.stockName,
     },

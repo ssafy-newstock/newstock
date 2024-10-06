@@ -8,7 +8,7 @@ interface IStockParmas {
 }
 
 interface IAnalysisParams {
-  stock: IStockParmas;
+  analysisStock: IStockParmas;
   startDate: string;
   endDate: string;
 }
@@ -29,10 +29,10 @@ interface IAnalysisResponse {
 }
 
 // 공통 파라미터 생성 함수
-const createParams = ({ stock, startDate, endDate }: IAnalysisParams) => ({
+const createParams = ({ analysisStock, startDate, endDate }: IAnalysisParams) => ({
   params: {
-    base_stock_code: stock.stockCode,
-    stock_name: stock.stockName,
+    base_stock_code: analysisStock.stockCode,
+    stock_name: analysisStock.stockName,
     start_date: startDate,
     end_date: endDate,
   },
@@ -92,8 +92,8 @@ export const useAnalysisQuery = (
   >({
     queryKey: [
       'analysis',
-      params.stock.stockCode,
-      params.stock.stockName,
+      params.analysisStock.stockCode,
+      params.analysisStock.stockName,
       params.startDate,
       params.endDate,
     ],
