@@ -26,6 +26,7 @@ import SimilaritySearch from '@features/Stock/StockDetail/SimilaritySearch';
 import { useFindStockByCode } from '@utils/uesFindStockByCode';
 import useAuthStore from '@store/useAuthStore';
 import AnalysisModal from '@features/Stock/StockDetail/AnalysisModal';
+import { useAnalysisQuery } from '@hooks/useAnalysisQuery';
 
 const StockDetailPage = () => {
   const location = useLocation();
@@ -42,11 +43,32 @@ const StockDetailPage = () => {
 
   const handleAnalysis = () => {
     setIsModalOpen(true);
-  }
+  };
 
   const closeAnalysis = () => {
     setIsModalOpen(false);
-  }
+  };
+
+  const startDate = '2024-08-01';
+  const endDate = '2024-09-01';
+
+  const { data:analysisData } = useAnalysisQuery({
+    stock: {
+      stockCode: stock.stockCode,
+      stockName: stock.stockName,
+    },
+    startDate,
+    endDate,
+  });
+
+  // const response = axiosInstance.get('/newsai/summary', {
+  //   params: {
+  //     base_stock_code: stock.stockCode,
+  //     stock_name: stock.stockName,
+  //     start_date: startDate,
+  //     end_date: endDate,
+  //   },
+  // });
 
   return (
     <>
@@ -110,7 +132,7 @@ const StockDetailPage = () => {
           </DividedSection>
         )}
       </Center>
-      {isModalOpen && <AnalysisModal onClose={closeAnalysis} />}
+      {isModalOpen && <AnalysisModal onClose={closeAnalysis} analysisData={analysisData} />}
     </>
   );
 };
