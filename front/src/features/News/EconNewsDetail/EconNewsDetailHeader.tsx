@@ -9,9 +9,10 @@ import {
   NeutralIconText as BaseNeutralIconText,
 } from '@features/News/PNSubicon';
 import { bookmarkedIcon, unbookmarkedIcon } from '../NewsIconTag';
-import { useEffect, useState } from 'react';
-import { axiosInstance } from '@api/axiosInstance';
-import { useOutletContext } from 'react-router-dom';
+import { useEffect } from 'react';
+import { toast } from 'react-toastify';
+import { useBookmarkStore } from '@store/useBookmarkStore';
+import useAuthStore from '@store/useAuthStore';
 
 const EconNewsDetailHeaderWrapper = styled.div`
   display: flex;
@@ -131,51 +132,36 @@ const EconNewsDetailHeader: React.FC<EconNewsDetailHeaderProps> = ({
   sentiment,
   id,
 }) => {
-  const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
+  const {
+    bookmarkedNewsIds,
+    addBookmark,
+    removeBookmark,
+    fetchBookmarkedNews,
+  } = useBookmarkStore(); // zustand로부터 상태 및 함수 불러오기
 
-  // bookmark 상태가 변경되면 다시 갱신하는 함수
-  const { onBookmarkSuccess, bookmarkUpdated } = useOutletContext<{
-    onBookmarkSuccess: () => void;
-    bookmarkUpdated: boolean;
-  }>();
+  const { isLogin } = useAuthStore();
 
-  // 북마크 상태를 불러오는 함수
-  const loadBookmarkState = async () => {
-    try {
-      const response = await axiosInstance.get(
-        '/api/news/favorite/industry/list'
-      );
-      const bookmarkedNews = response.data.data;
-      const isBookmarkedNews = bookmarkedNews.some(
-        (newsItem: { id: number }) => newsItem.id === id
-      );
-      setIsBookmarked(isBookmarkedNews);
-    } catch (error) {
-      console.error('Failed to load bookmark state: ', error);
-    }
-  };
+  const isBookmarked = bookmarkedNewsIds.includes(id);
 
-  // 페이지 로드 시 북마크 상태를 불러옴
   useEffect(() => {
-    loadBookmarkState();
-  }, [id]);
-
-  // 북마크 상태가 업데이트되면 다시 갱신
-  useEffect(() => {
-    if (bookmarkUpdated) {
-      loadBookmarkState();
+    if (isLogin) {
+      fetchBookmarkedNews();
     }
-  }, [bookmarkUpdated]);
+  }, [fetchBookmarkedNews, isLogin]);
 
   const handleBookmarkClick = async () => {
+    if (!isLogin) {
+      // 로그인하지 않은 상태에서는 북마크 기능 제한
+      toast.error('로그인이 필요한 서비스입니다.');
+      return;
+    }
+
     try {
       if (isBookmarked) {
-        await axiosInstance.delete(`/api/news/favorite/industry/${id}`);
+        await removeBookmark(id); // 북마크 삭제
       } else {
-        await axiosInstance.post(`/api/news/favorite/industry/${id}`);
+        await addBookmark(id); // 북마크 추가
       }
-      setIsBookmarked(!isBookmarked);
-      onBookmarkSuccess(); // 북마크 상태 갱신 요청
     } catch (error) {
       console.error('Failed to update bookmark: ', error);
     }

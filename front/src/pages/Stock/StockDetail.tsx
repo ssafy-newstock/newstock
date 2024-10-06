@@ -9,8 +9,6 @@ import {
 import { IStock } from '@features/Stock/types';
 import { Outlet, useLocation } from 'react-router-dom';
 import TradeForm from '@features/Stock/StockDetail/TradeForm';
-import useAllStockStore from '@store/useAllStockStore';
-import useTop10StockStore from '@store/useTop10StockStore';
 import {
   FlexBetweenEnd,
   FlexBetweenStart,
@@ -20,24 +18,26 @@ import ChartLink from '@features/Stock/StockDetail/ChartLink';
 import LikeButton from '@features/Stock/StockDetail/LikeButton';
 import StockInfo from '@features/Stock/StockDetail/StockInfo';
 import StockHolding from '@features/Stock/StockDetail/StockHolding';
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 import StockHodingSkeleton from '@features/Stock/StockDetail/StockHoldingSkeleton';
 import { ErrorBoundary } from 'react-error-boundary';
 import StockHoldingError from '@features/Stock/StockDetail/StockHoldingError';
+import SimilaritySearch from '@features/Stock/StockDetail/SimilaritySearch';
+import { useFindStockByCode } from '@utils/uesFindStockByCode';
+import useAuthStore from '@store/useAuthStore';
 
 const StockDetailPage = () => {
   const location = useLocation();
   const { stock } = location.state as { stock: IStock };
-  const { allStock } = useAllStockStore();
-  const { top10Stock } = useTop10StockStore();
+  const [isShow, setIsShow] = useState<boolean>(false);
+  const {isLogin} = useAuthStore();
 
   // 주식 상세 정보
-  const stockDetail =
-    allStock?.find((s) => s.stockCode === stock.stockCode) ||
-    top10Stock?.find((s) => s.stockCode === stock.stockCode);
+  const stockDetail = useFindStockByCode(stock.stockCode);
 
-  // 유사도 버튼 버튼 표시 여부
-  const showButton = location.pathname.includes('day-chart');
+  const handleClick = () => {
+    setIsShow(!isShow);
+  };
 
   return (
     <>
@@ -47,8 +47,10 @@ const StockDetailPage = () => {
           {stockDetail && <StockInfo stockDetail={stockDetail} />}
           {/* 좋아요, 유사도 버튼 */}
           <FlexGap $gap="1rem">
-            {stock && <LikeButton stockCode={stock.stockCode} />}
-            {!showButton && <DetailPageButton>유사도 분석</DetailPageButton>}
+            {isLogin && <LikeButton stockCode={stock.stockCode} />}
+            <DetailPageButton onClick={handleClick}>
+              유사도 분석
+            </DetailPageButton>
           </FlexGap>
         </FlexBetweenEnd>
         <HrTag />
@@ -61,12 +63,28 @@ const StockDetailPage = () => {
         <DividedSection>
           <Outlet />
         </DividedSection>
-        {/* 매도, 매수 폼 */}
-        <TradeForm
-          price={stockDetail?.stckPrpr ?? stock.stckPrpr}
-          stockCode={stock.stockCode}
-        />
 
+        {/* 유사도 분석 */}
+        {isShow && (
+          <DividedSection>
+            <StockHeader>유사도 분석</StockHeader>
+            <HrTag />
+            <ErrorBoundary fallback={<SimilaritySearch stockCode={stock.stockCode} />}>
+              <SimilaritySearch stockCode={stock.stockCode} />
+            </ErrorBoundary>
+            <HrTag />
+          </DividedSection>
+        )}
+
+        {/* 매도, 매수 폼 */}
+        <DividedSection>
+          <TradeForm
+            price={stockDetail?.stckPrpr ?? stock.stckPrpr}
+            stockCode={stock.stockCode}
+          />
+        </DividedSection>
+
+        {/* 주식 보유 내역 */}
         <DividedSection>
           <StockHeader>나의 {stock?.stockName} 보유 내역</StockHeader>
           <ErrorBoundary FallbackComponent={StockHoldingError}>

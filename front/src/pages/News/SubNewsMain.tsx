@@ -11,7 +11,7 @@ const SubNewsMainCenter = styled.div`
   align-items: flex-start;
   align-self: stretch;
   max-width: 100rem;
-  min-width: 90rem;
+  min-width: 50rem;
 
   width: 100%;
 `;
@@ -21,6 +21,7 @@ const SubNewsHeaderWrapper = styled.div`
   align-items: flex-start;
   gap: 0.15rem;
   align-self: stretch;
+  min-width: 50rem;
 `;
 
 const SubNewsHeaderText = styled.p`
@@ -36,25 +37,28 @@ const SubNewsBoarder = styled.hr`
   align-items: center;
   gap: 0.625rem;
   width: 90%;
+  min-width: 50rem;
   height: 0.1rem;
   background-color: ${({ theme }) => theme.textColor};
 `;
 
 const CategoryWrapper = styled.div`
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-items: center;
-  justify-content: flex-start;
   align-items: start;
-  width: 98%;
-  gap: 1.5rem;
+  width: 85%;
+  padding-left: 0.3rem;
   flex-wrap: nowrap;
   white-space: nowrap;
-  overflow: hidden; /* 넘친 카테고리들을 가리도록 설정 */
+  /* 넘친 카테고리들을 가리도록 설정 */
+  overflow: hidden;
+  min-width: 50rem;
 `;
 
 const CategoryText = styled.p<{ $isSelected: boolean }>`
-  font-size: 0.8rem;
+  /* font-size: 0.8rem; */
+  font-size: 1rem;
   font-weight: ${({ $isSelected }) => ($isSelected ? '600' : '400')};
   line-height: 1.9rem; /* 187.5% */
   color: ${({ $isSelected, theme }) =>

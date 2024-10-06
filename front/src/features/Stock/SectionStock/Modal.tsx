@@ -26,22 +26,14 @@ import { useNavigate } from 'react-router-dom';
 import { CategoryModalProps } from '@features/Stock/types';
 import { mapIndustryNames } from '@features/Stock/SectionStock/modal/mapIndustryNames';
 import { FlexGapColumn } from '@components/styledComponent';
+import { getStockImageUrl } from '@utils/getStockImageUrl';
+import { getCategoryImage } from '@utils/getCategoryImage';
 
 const Modal: React.FC<CategoryModalProps> = ({ onClose, category }) => {
   const navigate = useNavigate();
-
+  const imageUrl = getCategoryImage(category.industryName, categoryImage);
   const { allStock } = useAllStockStore();
   const { top10Stock } = useTop10StockStore();
-
-  const defaultImage = {
-    url: 'default-image-url',
-    bgColor: 'default-bg-color',
-  };
-
-  const imageUrl =
-    category.industryName in categoryImage
-      ? categoryImage[category.industryName as keyof typeof categoryImage]
-      : defaultImage;
 
   const wholeStock = useMemo(() => {
     return (allStock || []).concat(top10Stock || []);
@@ -133,8 +125,9 @@ const Modal: React.FC<CategoryModalProps> = ({ onClose, category }) => {
               >
                 <StockTitle>
                   <StockImage
-                    src={`https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stock.stockCode}.png`}
-                    onError={(e) => (e.currentTarget.src = blueLogo)} // 기본 이미지 설정
+                    src={getStockImageUrl(stock.stockCode)}
+                    onError={(e) => (e.currentTarget.src = blueLogo)}
+                    alt=""
                   />
                   {stock.stockName}
                 </StockTitle>
@@ -154,7 +147,6 @@ const Modal: React.FC<CategoryModalProps> = ({ onClose, category }) => {
         )}
 
         <CategoryCloseButton onClick={onClose}>X</CategoryCloseButton>
-        
       </CategoryModalContent>
     </CategoryModalOverlay>
   );

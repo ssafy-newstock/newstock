@@ -1,4 +1,3 @@
-// 필요한 임포트 추가
 import styled from 'styled-components';
 import {
   StockImage,
@@ -9,6 +8,10 @@ import {
 import blueLogo from '@assets/Stock/blueLogo.png';
 import { useNavigate } from 'react-router-dom';
 import { MyStockCardRow } from '@features/MyStock/myStockCenterStyledComponent';
+import { getStockImageUrl } from '@utils/getStockImageUrl';
+import useAllStockStore from '@store/useAllStockStore'; // Zustand 스토어에서 allStock 데이터 참조
+import useTop10StockStore from '@store/useTop10StockStore'; // Zustand 스토어에서 top10Stock 데이터 참조
+
 
 // 인터페이스 정의
 interface StockHolding {
@@ -49,30 +52,42 @@ const ColoredText = styled(Text)<{
 const StockHoldingList = ({ stock }: { stock: StockHolding }) => {
   const navigate = useNavigate();
 
+  // Zustand 스토어에서 실시간 주가 데이터 가져오기
+  const allStock = useAllStockStore((state) => state.allStock);
+  const top10Stock = useTop10StockStore((state) => state.top10Stock);
+
+  // 해당 주식에 대한 실시간 데이터를 찾음
+  const matchedStock =
+    allStock.find((s) => s.stockCode === stock.stockCode) ||
+    top10Stock.find((s) => s.stockCode === stock.stockCode);
+
+  // 실시간 데이터로부터 현재가 계산
+  const StockCurrentPrice = matchedStock
+    ? matchedStock.stckPrpr
+    : stock.stockHoldingBuyPrice + stock.stockHoldingChange;
+  const TotalPrice = StockCurrentPrice * stock.stockHoldingBuyAmount;
+
+  // 수익률 상태 판단
+  const profitStatus: 'positive' | 'negative' | 'zero' =
+    matchedStock && matchedStock.prdyVrss > 0
+      ? 'positive'
+      : matchedStock && matchedStock.prdyVrss < 0
+        ? 'negative'
+        : 'zero';
+
   const handleNavigate = () => {
     navigate(`/stock-detail/${stock.stockCode}/day-chart`, {
       state: { stock },
     });
   };
 
-  const StockCurrentPrice =
-    stock.stockHoldingBuyPrice + stock.stockHoldingChange;
-  const TotalPrice = StockCurrentPrice * stock.stockHoldingBuyAmount;
-
-  // 수익률 상태 판단
-  const profitStatus: 'positive' | 'negative' | 'zero' =
-    stock.stockHoldingChangeRate > 0
-      ? 'positive'
-      : stock.stockHoldingChangeRate < 0
-        ? 'negative'
-        : 'zero';
-
   return (
     <MyStockCardRow onClick={handleNavigate} style={{ cursor: 'pointer' }}>
       <StockTitle>
         <StockImage
-          src={`https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stock.stockCode}.png`}
-          alt={blueLogo}
+            src={getStockImageUrl(stock.stockCode)}
+            onError={(e) => (e.currentTarget.src = blueLogo)}
+            alt=""
         />
         {stock.stockName}
       </StockTitle>
@@ -81,7 +96,10 @@ const StockHoldingList = ({ stock }: { stock: StockHolding }) => {
         {StockCurrentPrice.toLocaleString()}원
       </ColoredText>
       <ColoredText $profitStatus={profitStatus}>
-        {stock.stockHoldingChangeRate.toFixed(2)}%
+        {matchedStock
+          ? matchedStock.prdyCtrt.toFixed(2)
+          : stock.stockHoldingChangeRate.toFixed(2)}
+        %
       </ColoredText>
       <Text>{stock.stockHoldingBuyAmount.toLocaleString()}주</Text>
       <Text>{TotalPrice.toLocaleString()}원</Text>

@@ -22,7 +22,7 @@ const MyStockSkeleton = () => {
           <CenterTitle title={'관심 종목'} />
           <MyStockHr />
           <StockGridColumn>
-            {Array.from({ length: 6 }).map((_, index) => (
+            {Array.from({ length: 5 }).map((_, index) => (
               <StockCardColumnSkeleton key={index} />
             ))}
           </StockGridColumn>

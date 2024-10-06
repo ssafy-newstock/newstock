@@ -1,5 +1,5 @@
 // src/features/MyStock/TradingHistoryList.tsx
-
+import blueLogo from '@assets/Stock/blueLogo.png';
 import styled from 'styled-components';
 import {
   StockImage,
@@ -10,6 +10,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { MyStockCardRow } from '@features/MyStock/myStockCenterStyledComponent';
 import { format, addHours } from 'date-fns';
+import { getStockImageUrl } from '@utils/getStockImageUrl';
 
 // TransactionDto 인터페이스 정의
 interface TransactionDto {
@@ -82,8 +83,9 @@ const TradingHistoryList = ({ stock }: { stock: TransactionDto }) => {
     <MyStockCardRow onClick={handleNavigate} style={{ cursor: 'pointer' }}>
       <StockTitle>
         <StockImage
-          src={`https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stock.stockCode}.png`}
-          alt={`${stock.stockName} 로고`}
+            src={getStockImageUrl(stock.stockCode)}
+            onError={(e) => (e.currentTarget.src = blueLogo)}
+            alt=""
         />
         {stock.stockName}
       </StockTitle>

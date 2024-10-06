@@ -16,12 +16,12 @@ import {
   ModalRight,
   TextP_12,
   TextP_24,
-} from './styledComponent';
-import MyStock from './MyStock';
-import History from './History';
-import FavoriteStock from './FavoriteStock';
-import Ranking from './Ranking';
-import FavoriteNews from './FavoriteNews';
+} from '@features/MyStockModal/styledComponent';
+import MyStock from '@features/MyStockModal/MyStock';
+import FavoriteStock from '@features/MyStockModal/FavoriteStock';
+import Ranking from '@features/MyStockModal/Ranking';
+import FavoriteNews from '@features/MyStockModal/FavoriteNews';
+import History from '@features/MyStockModal/History';
 
 interface StockModalProps {
   isOpen: boolean;

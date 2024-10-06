@@ -55,7 +55,6 @@ export const MetricItemSkeleton = styled(MetricItem)`
   animation: ${pulseAnimation} 1.5s infinite;
   min-height: 3rem;
   min-width: 20rem;
-  opacity: 0.4;
 `;
 
 export const MyStockCardRow = styled(StockCardRow)`

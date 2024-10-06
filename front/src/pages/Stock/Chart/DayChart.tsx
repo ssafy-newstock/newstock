@@ -14,6 +14,12 @@ const DayChart: React.FC = () => {
   const { stock } = state;
   const theme = useTheme();
 
+  // 9:00부터 15:30까지의 타임스탬프 계산
+  const startTime = new Date();
+  startTime.setHours(9, 0, 0, 0); // 9시 00분 00초
+  const endTime = new Date();
+  endTime.setHours(15, 30, 0, 0); // 15시 30분 00초
+
   const { data: StockLiveChart } = useQuery<ILive[]>({
     queryKey: [`StockLiveChart-${stock.stockCode}`],
     queryFn: async () => {
@@ -30,19 +36,16 @@ const DayChart: React.FC = () => {
     {
       name: '',
       data: StockLiveChart
-        ? StockLiveChart.map((item) => ({
+        ? StockLiveChart.filter((item) => {
+            const time = new Date(item.time).getTime();
+            return time >= startTime.getTime() && time <= endTime.getTime(); // 9:00 ~ 15:30 사이의 데이터만 포함
+          }).map((item) => ({
             x: new Date(item.time).getTime(), // x축에 표시할 시간 (timestamp)
             y: item.stckPrpr, // 주가 가격
           }))
         : [],
     },
   ];
-
-  // 9:00부터 15:30까지의 타임스탬프 계산
-  const startTime = new Date();
-  startTime.setHours(9, 0, 0, 0); // 9시 00분 00초
-  const endTime = new Date();
-  endTime.setHours(15, 30, 0, 0); // 15시 30분 00초
 
   // ApexCharts 옵션 설정
   const options: ApexOptions = {

@@ -136,3 +136,41 @@ export interface CategoryModalProps {
 export interface ChartLinkProps {
   stock: IStock;
 }
+
+// 차트 유사도 부분
+export interface ICandleData {
+  date: string;
+  open: number;
+  close: number;
+  high: number;
+  low: number;
+}
+
+export interface ISimilarityStockData {
+  stockCode: string;
+  similarityScore: number;
+  startDate: string;
+  endDate: string;
+  candleData: ICandleData[];
+}
+
+export interface SimilaritySearchResponse {
+  baseStock: ISimilarityStockData;
+  otherStock: ISimilarityStockData[];
+}
+
+export interface SimilaritySearchParams {
+  stockCode: string;
+  start_date?: string;
+  end_date?: string;
+}
+
+export interface SimilarityFormValues {
+  start_date: string;
+  end_date: string;
+}
+// chart Query 부분
+export interface ChartDateParams {
+  startDate: string | undefined;
+  endDate: string | undefined;
+}

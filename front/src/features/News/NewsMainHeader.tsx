@@ -9,7 +9,7 @@ const HeaderWrapper = styled.div`
   justify-content: flex-start; /* 왼쪽 정렬로 설정 */
   align-self: stretch;
   align-items: baseline;
-  min-width: 90rem;
+  min-width: 50rem;
 `;
 
 const NewsHeaderText = styled.div`

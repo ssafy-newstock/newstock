@@ -13,6 +13,7 @@ import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
 import blueLogo from '@assets/Stock/blueLogo.png';
 import { useNavigate } from 'react-router-dom';
+import { getStockImageUrl } from '@utils/getStockImageUrl';
 
 
 const FavoriteStock = ({ stock }: { stock: IStock }) => {
@@ -23,18 +24,12 @@ const FavoriteStock = ({ stock }: { stock: IStock }) => {
     navigate(`/stock-detail/${stock.stockCode}/day-chart`, { state: { stock } });
   };
 
-  const getStockImageUrl = () => {
-    // 이미지 URL 생성
-    const url = `https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stock.stockCode}.png`;
-    return url;
-  };
-
   return (
     <StockCardColumn onClick={handleNavigate}>
       <StockCardTitle>
         <StockTitle>
           <StockImage
-            src={getStockImageUrl()}
+            src={getStockImageUrl(stock.stockCode)}
             onError={(e) => (e.currentTarget.src = blueLogo)}
             alt=""
           />
