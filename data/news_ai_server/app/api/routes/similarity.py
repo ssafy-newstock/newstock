@@ -9,7 +9,7 @@ from models import SimilarStockResponse
 router = APIRouter()
 date_pattern = r"^\d{4}-\d{2}-\d{2}$"
 
-@router.get("/")
+@router.get("")
 def get_similarity(
     base_stock_code: Optional[str] = Query(
         None,
