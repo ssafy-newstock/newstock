@@ -77,7 +77,7 @@ const ImgTag = styled.img`
   object-fit: fill;
   width: 8rem;
   height: 6rem;
-  background-color: ${({ theme }) => theme.backgroundColor};
+  border-radius: 1rem;
 `;
 
 const NewsGrid = styled.div`
