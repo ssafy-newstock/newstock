@@ -27,7 +27,7 @@ public class NewsHBaseService {
 //
 //    }
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 0 0 1 * *")
     public void getRecentIndustryNews() throws SQLException, ClassNotFoundException {
         Object data = newsDataClient.getRecentIndustryNews().getData();
 
@@ -43,7 +43,7 @@ public class NewsHBaseService {
         }
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 0 0 1 * *")
     public void getRecentStockNews() throws SQLException, ClassNotFoundException {
         Object data = newsDataClient.getRecentStockNews().getData();
 
