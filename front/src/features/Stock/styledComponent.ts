@@ -2,7 +2,7 @@ import styled, { keyframes } from 'styled-components';
 
 export const StockHeader = styled.div`
   font-size: 1.5rem;
-  font-weight: bold;
+  font-weight: bolder;
 `;
 
 export const StockHeaderWrapper = styled.div`
@@ -84,6 +84,7 @@ export const StockCardTitle = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: 0.5rem;
+  font-weight: bold;
 `;
 
 export const StockTitle = styled.div`
@@ -112,21 +113,26 @@ export const StockImageDetail = styled(StockImage)`
 
 export const StckPrice = styled.div`
   font-size: 1rem;
+  font-weight: bold;
 `;
 
 export const StockPrev = styled.div<{ $isPositive: boolean }>`
-  font-size: 0.8rem;
+  font-size: 1rem;
   color: ${({ $isPositive, theme }) =>
     $isPositive ? theme.stockBlue : theme.stockRed};
+  font-weight: bold;
 `;
 
 export const HoldingStockPrev = styled(StockPrev)`
   font-size: 1rem;
+  font-weight: bold;
+
 `;
 
 export const SpanTag = styled.span`
   font-size: 0.8rem;
   color: ${({ theme }) => theme.textColor};
+  font-weight: bold;
 `;
 
 export const HeartWrapper = styled.div`
@@ -176,10 +182,11 @@ export const CategoryCardRow = styled(StockCardRow)`
 export const Text = styled.div`
   font-size: 1rem;
   color: ${({ theme }) => theme.textColor};
+  font-weight: bold;
 `;
 
 export const TextBold = styled(Text)`
-  font-weight: bold;
+  font-weight: bolder;
 `;
 
 export const TextBoldLeft = styled(TextBold)`
@@ -262,15 +269,16 @@ export const SortButton = styled.button<{ $isActive: boolean }>`
   cursor: pointer;
   color: ${({ theme }) => theme.textColor};
   position: relative;
+  font-size: 1rem;
 
   &::after {
     content: '';
     position: absolute;
-    bottom: -0.2rem;
+    bottom: -0.3rem;
     left: 50%;
     transform: translateX(-50%);
     width: ${({ $isActive }) => ($isActive ? '2rem' : '0')};
-    height: 0.2rem;
+    height: 0.15rem;
     background-color: ${({ theme }) => theme.textColor};
     transition: width 0.3s ease;
   }
@@ -297,6 +305,7 @@ export const SearchInput = styled.input`
   background-color: ${({ theme }) => theme.stockBackgroundColor};
   color: ${({ theme }) => theme.textColor};
   font-size: 1rem;
+  font-weight: bold;
 `;
 
 export const IconWrapper = styled.div`
@@ -315,6 +324,7 @@ export const DetailPageButton = styled.div`
   border-radius: 1rem;
   padding: 0.5rem 1rem;
   cursor: pointer;
+  font-weight: bold;
 `;
 
 export const FormWrapper = styled.div`
@@ -376,6 +386,7 @@ export const TradeButton = styled.button<{ $variant: 'buy' | 'sell' }>`
   &:hover {
     opacity: 0.8;
   }
+  font-weight: bold;
 `;
 
 export const TradeModalOverlay = styled.div`
