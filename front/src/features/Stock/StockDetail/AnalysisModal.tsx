@@ -5,7 +5,7 @@ import {
   FlexGapColumn,
 } from '@components/styledComponent';
 import styled from 'styled-components';
-import newstockIcon from '@assets/Stock/blueLogo.png';
+import newstockIcon from '@assets/Stock/Logo.png';
 import LoadingSpinner from '@components/LoadingSpinner';
 import {
   Text,
@@ -74,9 +74,10 @@ const CloseButton = styled.button`
 `;
 
 const ImgTag = styled.img`
-  object-fit: cover;
+  object-fit: fill;
   width: 8rem;
   height: 6rem;
+  background-color: ${({ theme }) => theme.backgroundColor};
 `;
 
 const NewsGrid = styled.div`
