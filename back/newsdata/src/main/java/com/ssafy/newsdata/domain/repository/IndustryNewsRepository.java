@@ -3,6 +3,7 @@ package com.ssafy.newsdata.domain.repository;
 import com.ssafy.newsdata.domain.entity.dto.IndustryNewsDto;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.stream.Collectors;
 
 @Repository
 public class IndustryNewsRepository {
-    public IndustryNewsDto findById(Long id) throws SQLException, ClassNotFoundException {
+    public IndustryNewsDto findById(String id) throws SQLException, ClassNotFoundException {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rst = null;
@@ -29,12 +30,11 @@ public class IndustryNewsRepository {
             String query = """
                     SELECT *
                     FROM ph_industry_news pin
-                    WHERE pin.news_id = ?
-                    """;
+                    WHERE pin.news_id = ?""";
 
             // PreparedStatement 생성 및 id 값 바인딩
             pstmt = conn.prepareStatement(query);
-            pstmt.setLong(1, id);
+            pstmt.setBigDecimal(1, new BigDecimal(id));
 
             // 쿼리 실행
             rst = pstmt.executeQuery();
@@ -231,7 +231,7 @@ public class IndustryNewsRepository {
     private static IndustryNewsDto mapResultSetToDto(ResultSet rst) throws SQLException {
         IndustryNewsDto industryNewsDto = new IndustryNewsDto();
 
-        industryNewsDto.setId(rst.getLong("news_id"));
+        industryNewsDto.setId(rst.getString("news_id"));
         industryNewsDto.setArticle(rst.getString("article"));
         industryNewsDto.setDescription(rst.getString("description"));
         industryNewsDto.setMedia(rst.getString("media"));

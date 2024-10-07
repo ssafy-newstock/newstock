@@ -1,3 +1,5 @@
 auth-client:
   url: http://newstock-stock-auth-service:8000/api/auth
 
+newsdata-client:
+  url: http://newstock-stock-newsdata-service:8010/api/newsdata
