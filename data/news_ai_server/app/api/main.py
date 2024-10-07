@@ -11,7 +11,7 @@ app = FastAPI(
 api_router = APIRouter()
 
 # 307 redirect
-app.router.redirect_slashes = False
+# app.router.redirect_slashes = False
 
 api_router.include_router(similarity.router, prefix="/api/newsai/similarity", tags=["similarity"])
 api_router.include_router(summary.router, prefix="/api/newsai/summary", tags=["summary"])
