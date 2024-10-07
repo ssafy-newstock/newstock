@@ -216,9 +216,13 @@ def calculate_base_cosine_similarity(base_whole_close_price_array: np.array, bas
         cosine_similarity = dot_product / (base_norm * other_norm) if base_norm and other_norm else 0
 
         # 최댓값 및 인덱스 갱신
-        if cosine_similarity[0, 0] > max_similarities and cosine_similarity[0, 0] != 1:
+        print(f"cosine similarity: {cosine_similarity[0, 0]}, type: {type(cosine_similarity[0, 0])}")
+        if cosine_similarity[0, 0] > max_similarities and cosine_similarity[0, 0] < 1.0:
+            print("완료1")
             max_similarities = cosine_similarity[0, 0]
+            print("완료2")
             max_indices = start
+        print("완료3")
     
     return max_similarities, max_indices
 
@@ -345,9 +349,9 @@ def extract_other_similarity(other_similarity_scores: np.array,
         List[StockData]: 다른 주식 유사도 리스트.
     """
 
-    # similarity에서 가장 큰 5가지 뽑기.
-    other_top_5_code_idx = np.argsort(other_similarity_scores)[-5:][::-1]
-    other_top_5_date_index = other_index_results[other_top_5_code_idx]
+    # similarity에서 가장 큰 3가지 뽑기.
+    other_top_3_code_idx = np.argsort(other_similarity_scores)[-3:][::-1]
+    other_top_3_date_index = other_index_results[other_top_3_code_idx]
     # stock_code 기준으로 그룹화하여 각각의 DataFrame으로 저장
     grouped = other_stock_whole_price_df.groupby('stock_code')
 
@@ -357,10 +361,10 @@ def extract_other_similarity(other_similarity_scores: np.array,
     
     # 각각의 idx마다
     print(len(other_index_results))
-    print(other_top_5_code_idx)
+    print(other_top_3_code_idx)
     print(other_index_results)
-    print(other_top_5_date_index)
-    for code_idx, date_idx in zip(other_top_5_code_idx, other_top_5_date_index):
+    print(other_top_3_date_index)
+    for code_idx, date_idx in zip(other_top_3_code_idx, other_top_3_date_index):
         stock_code = other_stock_whole_price_df['stock_code'].unique()[code_idx]  # Get the stock code
         
         # 유사한 데이터 프레임 가져오기

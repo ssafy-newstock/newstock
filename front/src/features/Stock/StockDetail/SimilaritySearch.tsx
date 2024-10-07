@@ -18,6 +18,8 @@ import {
   SimilarityButton,
 } from '@features/Stock/styledComponent';
 import { toast } from 'react-toastify';
+import { calculateEndDate } from '@utils/calculateEndDate';
+import { calculateStartDate } from '@utils/calculateStartDate';
 
 interface SimilaritySearchProps {
   stockCode: string;
@@ -36,7 +38,8 @@ const SkeletonFlex = styled.div`
 `;
 
 const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
-  const { register, handleSubmit, setValue, watch } = useForm<SimilarityFormValues>();
+  const { register, handleSubmit, setValue, watch } =
+    useForm<SimilarityFormValues>();
   const [isSearchInitiated, setIsSearchInitiated] = useState(false);
   const [searchDates, setSearchDates] = useState<{
     start_date?: string;
@@ -60,21 +63,6 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
     },
     isSearchInitiated
   );
-
-    // 한달 뒤 날짜를 계산하는 함수
-    const calculateEndDate = (startDate: string) => {
-      const start = new Date(startDate);
-      const end = new Date(start);
-      end.setMonth(start.getMonth() + 1); // 한달 뒤로 설정
-      return end.toISOString().split('T')[0]; // YYYY-MM-DD 형식으로 반환
-    };
-
-    const calculateStartDate = (endDate: string) => {
-      const end = new Date(endDate);
-      const start = new Date(end);
-      start.setMonth(end.getMonth() - 1); // 한달 전으로 설정
-      return start.toISOString().split('T')[0]; // YYYY-MM-DD 형식으로 반환
-    }
 
   // 시작일 입력시 종료일 자동 입력
   const startDateValue = watch('start_date');
@@ -105,8 +93,7 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
     if (similarityQuery.data && chartQuery.data) {
       toast.success('유사도 검색 완료');
     }
-  }
-  , [similarityQuery.data, chartQuery.data]);
+  }, [similarityQuery.data, chartQuery.data]);
 
   return (
     <>

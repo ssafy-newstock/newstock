@@ -98,6 +98,7 @@ export const useAnalysisQuery = (
       params.endDate,
     ],
     queryFn: () => fetchAnalysis(params),
+    enabled: Boolean(params.analysisStock.stockCode && params.analysisStock.stockName && params.startDate && params.endDate),
     ...options,
   });
 };

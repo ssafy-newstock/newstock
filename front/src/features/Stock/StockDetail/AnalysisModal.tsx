@@ -2,6 +2,7 @@ import { Flex, FlexColumn } from '@components/styledComponent';
 import SentimentIcon from '@features/News/PNSubicon';
 import styled from 'styled-components';
 import newstockIcon from '@assets/Stock/blueLogo.png';
+import LoadingSpinner from '@components/LoadingSpinner';
 
 interface IRelatedNews {
   id: number;
@@ -64,48 +65,54 @@ const AnalysisModal: React.FC<AnalysisModalProps> = ({
   analysisData,
 }) => {
   return (
-    <ModalOverlay onClick={onClose}>
+    <ModalOverlay>
       <ModalContent>
-        <h2>Analysis</h2>
-        <p>{analysisData?.macroReport}</p>
-        <p>{analysisData?.microReport}</p>
-        <h3>Related News</h3>
-        <ul>
-          {analysisData?.relatedNews.map((news) => (
-            <li key={news.id}>
-              <Flex>
-                <img
-                  src={news.thumbnail || newstockIcon}
-                  alt={news.title}
-                  style={{ width: '10rem' }}
-                />
-                <FlexColumn>
-                  <Flex>
-                    <SentimentIcon sentiment={String(news.sentiment)} />
-                    <p>{news.title}</p>
-                  </Flex>
-
+        {analysisData ? (
+          <>
+            <h2>Analysis</h2>
+            <p>{analysisData?.macroReport}</p>
+            <p>{analysisData?.microReport}</p>
+            <h3>Related News</h3>
+            <ul>
+              {analysisData?.relatedNews.map((news) => (
+                <li key={news.id}>
                   <Flex>
                     <img
-                      style={{
-                        width: '1.5rem',
-                        height: '1.5rem',
-                        borderRadius: '50%',
-                      }}
-                      src={`https://stock.vaiv.kr/resources/images/news/${news.media}.png`}
-                      onError={(e) => {
-                        e.currentTarget.src = newstockIcon;
-                      }}
+                      src={news.thumbnail || newstockIcon}
+                      alt={news.title}
+                      style={{ width: '10rem' }}
                     />
-                    <p>{news.media}</p>
-                    <p>{news.upload_datetime}</p>
+                    <FlexColumn>
+                      <Flex>
+                        <SentimentIcon sentiment={String(news.sentiment)} />
+                        <p>{news.title}</p>
+                      </Flex>
+
+                      <Flex>
+                        <img
+                          style={{
+                            width: '1.5rem',
+                            height: '1.5rem',
+                            borderRadius: '50%',
+                          }}
+                          src={`https://stock.vaiv.kr/resources/images/news/${news.media}.png`}
+                          onError={(e) => {
+                            e.currentTarget.src = newstockIcon;
+                          }}
+                        />
+                        <p>{news.media}</p>
+                        <p>{news.upload_datetime}</p>
+                      </Flex>
+                    </FlexColumn>
                   </Flex>
-                </FlexColumn>
-              </Flex>
-            </li>
-          ))}
-        </ul>
-        <CloseButton onClick={onClose}>Close</CloseButton>
+                </li>
+              ))}
+            </ul>
+            <CloseButton onClick={onClose}>Close</CloseButton>
+          </>
+        ) : (
+          <LoadingSpinner />
+        )}
       </ModalContent>
     </ModalOverlay>
   );
