@@ -46,13 +46,17 @@ const StockDetailPage = () => {
     setIsAnalysisShow(!isAnalysisShow);
   };
 
-  // 오늘 날짜 기준으로 한 달 전과 오늘 날짜 구하기
-  const today = new Date();
-  const endDate = today.toISOString().split('T')[0]; // 오늘 날짜 (yyyy-mm-dd 형식)
+  // // 오늘 날짜 기준으로 한 달 전과 오늘 날짜 구하기
+  // const today = new Date();
+  // const endDate = today.toISOString().split('T')[0];
 
-  const lastMonth = new Date();
-  lastMonth.setMonth(today.getMonth() - 1);
-  const startDate = lastMonth.toISOString().split('T')[0]; // 한 달 전 날짜 (yyyy-mm-dd 형식)
+  // const lastMonth = new Date();
+  // lastMonth.setMonth(today.getMonth() - 1);
+  // const startDate = lastMonth.toISOString().split('T')[0];
+
+  // 임시 데이터
+  const startDate = '2024-08-13'
+  const endDate = '2024-09-13'
 
   const { data: _analysisData } = useAnalysisQuery({
     analysisStock: {
