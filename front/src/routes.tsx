@@ -89,10 +89,6 @@ const router = createBrowserRouter([
         ],
       },
       { path: 'my-stock', element: <MyStockPage /> },
-      { path: 'skeleton', element: <NewsMainSkeleton /> },
-      { path: 'econ-skeleton', element: <EconNewsSkeleton /> },
-      { path: 'stock-skeleton', element: <StockNewsSkeleton /> },
-
     ],
   },
 ]);
