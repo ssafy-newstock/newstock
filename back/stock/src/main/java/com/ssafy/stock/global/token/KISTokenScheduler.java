@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.stock.global.token.response.KISTokenResponse;
 import com.ssafy.stock.global.token.response.KISWebSocketTokenResponse;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,14 +51,14 @@ public class KISTokenScheduler {
      * 애플리케이션 시작 시 한국투자증권 accssToken 초기화 작업
      * @throws JsonProcessingException
      */
-    @PostConstruct
+    /*@PostConstruct
     public void init() throws JsonProcessingException {
         log.info("애플리케이션 시작 시 토큰 갱신 시작");
         refreshToken("token1", APP_KEY1, APP_SECRET1);
         refreshToken("token2", APP_KEY2, APP_SECRET2);
         refreshToken("token3", APP_KEY3, APP_SECRET3);
         refreshWebSocketToken("websocket", APP_KEY1, APP_SECRET1);
-    }
+    }*/
 
     /**
      * 오전 08시 30분 한국투자증권 API key 갱신 스케줄러
