@@ -82,6 +82,7 @@ export const IconDiv = styled.div`
   flex-direction: column;
   gap: 0.5rem;
   cursor: pointer;
+  transition: color 0.5s ease;
 `;
 
 export const TextP_12 = styled.p`
