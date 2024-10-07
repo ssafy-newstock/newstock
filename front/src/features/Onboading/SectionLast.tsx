@@ -169,10 +169,12 @@ const SectionLast: React.FC<SectionProps> = ({
     >
       {!isExpanded && <SectionLastTitle>뉴스톡과 함께하기</SectionLastTitle>}
       <ImageDiv>
-        <ClickDiv>
-          <Text>클릭해 주세요</Text>
-          <AllowIcon />
-        </ClickDiv>
+        {!isExpanded && (
+          <ClickDiv>
+            <Text>클릭해 주세요</Text>
+            <AllowIcon />
+          </ClickDiv>
+        )}
         <ImageContainer
           $isExpanded={isExpanded}
           onClick={handleImageClick}
