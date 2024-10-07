@@ -1,8 +1,23 @@
-import { Flex, FlexColumn } from '@components/styledComponent';
+import {
+  DivTag,
+  Flex,
+  FlexColumn,
+  FlexGap,
+  FlexGapCenter,
+  FlexGapColumn,
+} from '@components/styledComponent';
 import SentimentIcon from '@features/News/PNSubicon';
 import styled from 'styled-components';
 import newstockIcon from '@assets/Stock/blueLogo.png';
 import LoadingSpinner from '@components/LoadingSpinner';
+import {
+  Text,
+  TextBold,
+  TextBoldLeft,
+  TextBoldLarge,
+  TextLarge,
+  HrTag,
+} from '@features/Stock/styledComponent';
 
 interface IRelatedNews {
   id: number;
@@ -60,6 +75,13 @@ const CloseButton = styled.button`
     background-color: #ccc;
   }
 `;
+
+const ImgTag = styled.img`
+  object-fit: fill;
+  width: 100%;
+  height: 100%;
+`;
+
 const AnalysisModal: React.FC<AnalysisModalProps> = ({
   onClose,
   analysisData,
@@ -69,45 +91,49 @@ const AnalysisModal: React.FC<AnalysisModalProps> = ({
       <ModalContent>
         {analysisData ? (
           <>
-            <h2>Analysis</h2>
+            <TextBoldLarge>차트 분석</TextBoldLarge>
+            <HrTag />
+            <h1>거시적 관점</h1>
             <p>{analysisData?.macroReport}</p>
+            <HrTag />
+            <h1>미시적 관점</h1>
             <p>{analysisData?.microReport}</p>
-            <h3>Related News</h3>
-            <ul>
+            <HrTag />
+            <h3>관련 뉴스</h3>
+            
+            <FlexGapColumn $gap="1rem" style={{ width: '100%' }}>
               {analysisData?.relatedNews.map((news) => (
-                <li key={news.id}>
-                  <Flex>
-                    <img
+                <div>
+                <FlexGapCenter key={news.id} $gap="1rem">
+                  <DivTag style={{ width: '5rem', height: '3rem' }}>
+                    <ImgTag
                       src={news.thumbnail || newstockIcon}
                       alt={news.title}
-                      style={{ width: '10rem' }}
                     />
-                    <FlexColumn>
-                      <Flex>
-                        <SentimentIcon sentiment={String(news.sentiment)} />
-                        <p>{news.title}</p>
-                      </Flex>
+                  </DivTag>
+                  <FlexGapColumn $gap="0.5rem">
+                    <TextBoldLeft>{news.title}</TextBoldLeft>
 
-                      <Flex>
-                        <img
-                          style={{
-                            width: '1.5rem',
-                            height: '1.5rem',
-                            borderRadius: '50%',
-                          }}
-                          src={`https://stock.vaiv.kr/resources/images/news/${news.media}.png`}
-                          onError={(e) => {
-                            e.currentTarget.src = newstockIcon;
-                          }}
-                        />
-                        <p>{news.media}</p>
-                        <p>{news.upload_datetime}</p>
-                      </Flex>
-                    </FlexColumn>
-                  </Flex>
-                </li>
+                    <FlexGapCenter $gap="1rem" style={{ paddingLeft: '0.5rem' }}>
+                      <img
+                        style={{
+                          width: '1rem',
+                          height: '1rem',
+                          borderRadius: '50%',
+                        }}
+                        src={`https://stock.vaiv.kr/resources/images/news/${news.media}.png`}
+                        onError={(e) => {
+                          e.currentTarget.src = newstockIcon;
+                        }}
+                      />
+                      <Text>{news.media}</Text>
+                      <Text>{news.upload_datetime}</Text>
+                    </FlexGapCenter>
+                  </FlexGapColumn>
+                </FlexGapCenter>
+              </div>
               ))}
-            </ul>
+            </FlexGapColumn>
             <CloseButton onClick={onClose}>Close</CloseButton>
           </>
         ) : (
