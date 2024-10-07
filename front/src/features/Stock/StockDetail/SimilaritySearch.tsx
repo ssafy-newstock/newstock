@@ -38,7 +38,8 @@ const SkeletonFlex = styled.div`
 `;
 
 const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
-  const { register, handleSubmit, setValue, watch } = useForm<SimilarityFormValues>();
+  const { register, handleSubmit, setValue, watch } =
+    useForm<SimilarityFormValues>();
   const [isSearchInitiated, setIsSearchInitiated] = useState(false);
   const [searchDates, setSearchDates] = useState<{
     start_date?: string;
@@ -92,8 +93,7 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
     if (similarityQuery.data && chartQuery.data) {
       toast.success('유사도 검색 완료');
     }
-  }
-  , [similarityQuery.data, chartQuery.data]);
+  }, [similarityQuery.data, chartQuery.data]);
 
   return (
     <>
