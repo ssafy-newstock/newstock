@@ -52,13 +52,22 @@ const RightNewsCard: React.FC<RightNewsProps> = ({ data }) => {
   const stockDetail = useFindStockByCode(stockCode);
   const stockName = stockDetail?.stockName || 'Unknown Stock';
 
+  const newsType = stockCode ? 'stock' : 'industry';
+
   const handleDetail = () => {
-    navigate(`/subnews-main/stock-news/${data.id}`);
+    if (newsType === 'stock') {
+      navigate(`/subnews-main/stock-news/${data.id}`);
+    } else {
+      navigate(`/subnews-main/economic-news/${data.id}`);
+    }
   };
 
   // 드래그 시작 시
   const handleDragStart = (e: React.DragEvent) => {
-    e.dataTransfer.setData('text/plain', JSON.stringify(data));
+    e.dataTransfer.setData(
+      'text/plain',
+      JSON.stringify({ ...data, type: newsType })
+    );
     e.dataTransfer.effectAllowed = 'move'; // 이동 가능
     document.body.style.cursor = 'grabbing'; // 드래그 시 커서 변경
   };

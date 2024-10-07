@@ -53,6 +53,7 @@ interface ScrapData {
   stockKeywords?: string[]; // 종목 뉴스만 해당되는 부분
   newsType?: string;
   content?: string;
+  newsId?: number;
 }
 
 interface CenterCardProps {
@@ -87,6 +88,9 @@ const CenterNewsCard: React.FC<CenterCardProps> = ({
   // handleDelete 정의
   const handleDelete = () => {
     onDelete(data.id); // 삭제 작업 처리
+    if (scrapData) {
+      onDelete(scrapData.newsId!); // 삭제 작업 처리
+    }
   };
 
   const formattedDate = data.uploadDatetime
@@ -117,7 +121,12 @@ const CenterNewsCard: React.FC<CenterCardProps> = ({
               </NewsTag>
             )}
             <IconWrapper>
-              <AshbhIcon id={data.id} title={title} onDelete={handleDelete} />
+              <AshbhIcon
+                id={data.id}
+                title={title}
+                onDelete={handleDelete}
+                scrapData={scrapData}
+              />
             </IconWrapper>
           </CardBottomContainer>
 

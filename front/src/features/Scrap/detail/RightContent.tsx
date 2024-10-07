@@ -21,60 +21,26 @@ interface ScrapData {
   newsId?: number;
 }
 
-// interface CardData {
-//   Title: string;
-//   NewsItem: ScrapData;
-//   Date: string;
-//   context: string;
-// }
-
-// // 더미 데이터
-// const cards: ScrapData[] = [
-//   {
-//     title:
-//       '첫번째 스크랩 입니다.첫번째 스크랩 입니다첫번째 스크랩 입니다첫번째 스크랩 입니다',
-//     NewsItem: {
-//       title:
-//         "\"'한국'만 들어가면 난리나요\"해외에서 더 열광하는 '이것'첫번째 스크랩 입니다첫번째 스크랩 입니다첫번째 스크랩 입니다첫번째 스크랩 입니다첫번째 스크랩 입니다",
-//       description:
-//         '[비즈니스 포커스]‘참이슬’, ‘진로’ 등의 소주 브랜드를 보유한 하이트진로는 현재 베트남에 첫 해외 소주 공장을 짓고 있다. 동남아시아에서 소주가 큰 인기를 끌자 급증하// [비즈니스 포커스]‘참이슬’, ‘진로’ 등의 소주 브랜드를 보유한 하이트진로는 현재 베트남에 첫 해외 소주 공장을 짓고 있다. 동남아시아에서 소주가 큰 인기를 끌자 급증하',
-//       media: '한경비즈니스',
-//       thumbnail:
-//         'https://img3.daumcdn.net/thumb/R658x0.q70/?fname=https://t1.daumcdn.net/news/202409/07/kedbiz/20240907093504339mqsb.jpg',
-//       uploadDatetime: '2024-09-07 09:35:00',
-//       stockId: '20240907093501345',
-//     },
-//     Date: '2024.08.18',
-//     context: `<p><em>기울임 스타일</em></p>
-// <p><del>취소선 테스트</del></p>
-// <p>이건 뭐지</p>
-// <p><strong>스트롱?</strong></p>
-// <h3>h3 태그</h3>
-// <p>😷</p>
-// <p>for i in &nbsp;range(1):</p>`,
-//   },
-// ];
-
 interface RightContentProps {
-  onCardClick: (card: ScrapData) => void; // 클릭 시 호출되는 함수
+  onCardClick: (scrap: ScrapData, scrapNews: ScrapData) => void; // 클릭 시 호출되는 함수
   selectedDateRange: [Date | null, Date | null];
-  scrapData: ScrapData[];
-  scrapNewsData: ScrapData[];
+  scrapDatas: ScrapData[];
+  scrapNewsDatas: ScrapData[];
 }
 
 const RightContent: React.FC<RightContentProps> = ({
   onCardClick,
   selectedDateRange,
-  scrapData,
-  scrapNewsData,
+  scrapDatas,
+  scrapNewsDatas,
 }) => {
-  const [filteredScrap, setFilteredScrap] = useState<ScrapData[]>(scrapData);
+  const [filteredScrap, setFilteredScrap] = useState<ScrapData[]>(scrapDatas);
 
   useEffect(() => {
     if (selectedDateRange[0] && selectedDateRange[1]) {
       const [startDate, endDate] = selectedDateRange;
 
-      const filtered = scrapData.filter((scrap) => {
+      const filtered = scrapDatas.filter((scrap) => {
         const scrapDate = parse(
           scrap.uploadDatetime ?? '',
           'yyyy.MM.dd',
@@ -88,16 +54,16 @@ const RightContent: React.FC<RightContentProps> = ({
 
       setFilteredScrap(filtered);
     } else {
-      setFilteredScrap(scrapData); // 날짜가 없으면 전체 뉴스
+      setFilteredScrap(scrapDatas); // 날짜가 없으면 전체 뉴스
     }
-  }, [selectedDateRange, scrapData]);
+  }, [selectedDateRange, scrapDatas]);
 
   return (
     <>
       {filteredScrap.length > 0 ? (
         filteredScrap.map((scrap, index) => {
           // scrap.newsId와 일치하는 scrapNewsData에서 데이터를 찾음
-          const matchedNewsData = scrapNewsData.find(
+          const matchedNewsData = scrapNewsDatas.find(
             (news) => news.id === scrap.newsId
           );
 
@@ -107,7 +73,7 @@ const RightContent: React.FC<RightContentProps> = ({
               key={`${scrap.newsId}-${index}`}
               data={matchedNewsData} // 찾은 newsData를 전달
               scrapData={scrap} // scrapData 전달
-              onClick={() => onCardClick(scrap)}
+              onClick={() => onCardClick(scrap, matchedNewsData)}
             />
           ) : null; // 데이터가 없으면 렌더링하지 않음
         })

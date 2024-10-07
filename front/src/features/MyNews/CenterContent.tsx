@@ -5,21 +5,6 @@ import { useEffect, useState } from 'react';
 import { useBookmarkStore } from '@store/useBookmarkStore';
 import { useScrapStore } from '@store/useScrapStore';
 
-// interface NewsData {
-//   id: number;
-//   title: string;
-//   subtitle: string | null;
-//   media: string;
-//   description: string;
-//   thumbnail: string;
-//   uploadDatetime: string;
-//   article: string;
-//   sentiment: string;
-//   industry?: string;
-//   stockNewsStockCodes?: string[]; // 종목 뉴스만 해당되는 부분
-//   stockKeywords?: string[]; // 종목 뉴스만 해당되는 부분
-// }
-
 interface ScrapData {
   id: number;
   title: string;
@@ -126,6 +111,13 @@ const CenterContent: React.FC<CenterContentProps> = ({ selectedDateRange }) => {
       setFilteredStockNews(stockNews);
     }
   }, [selectedDateRange, economicNews, stockNews]);
+
+  useEffect(() => {
+    console.log('my-news의 시황 스크랩 : ', scraps);
+    console.log('my-news의 시황 뉴스 : ', scrapNews);
+    console.log('my-news의 종목 스크랩 : ', stockScraps);
+    console.log('my-news의 종목 뉴스 : ', scrapStockNews);
+  }, [scraps, stockScraps, scrapNews, scrapStockNews]);
 
   return (
     <CenterContentDiv>

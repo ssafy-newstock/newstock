@@ -1,17 +1,18 @@
 import {
-  TextP_16,
-  TextP_20,
-  TextP_24_NOTGRAY,
-} from '@features/Scrap/scrapStyledComponent';
-import {
   CenterContentDiv,
   CenterNewsContextDiv,
   CenterNewsDiv,
   CenterNewsLeftDiv,
-  CenterNewsLeftTopDiv,
   CenterNewsRightDiv,
-  CenterNewsRightImg,
+  CustomCenterNewsRightImg,
+  EconomicNewsTitleText,
+  EconomicNewsContent,
+  EconomicNewsFooter,
+  FooterText,
+  MediaWrapper,
+  MediaLogo,
 } from '@features/Scrap/detail/scrapDetailCenterStyledComponent';
+import newstockIcon from '@assets/Stock/blueLogo.png';
 
 interface ScrapData {
   id: number;
@@ -33,19 +34,54 @@ interface ScrapData {
 
 interface CenterContentProps {
   selectedCard: ScrapData;
+  selectedNewsCard: ScrapData;
 }
 
-const CenterContent: React.FC<CenterContentProps> = ({ selectedCard }) => {
+const processArticle = (
+  article: string
+): { imageUrls: string[]; content: string } => {
+  const imageTagRegex = /<ImageTag>(.*?)<\/ImageTag>/g;
+  const imageUrls: string[] = [];
+  let content = article;
+  let match;
+
+  // 모든 ImageTag를 찾아서 이미지 URL 추출
+  while ((match = imageTagRegex.exec(article)) !== null) {
+    imageUrls.push(match[1]); // 이미지 URL을 배열에 추가
+  }
+
+  // 이미지 태그를 제거한 본문 내용
+  content = article.replace(imageTagRegex, '').trim();
+
+  return { imageUrls, content };
+};
+
+const CenterContent: React.FC<CenterContentProps> = ({
+  selectedCard,
+  selectedNewsCard,
+}) => {
   // 업로드 날짜를 포맷팅
   const formattedDate =
-    selectedCard.uploadDatetime?.split(' ')[0].replace(/-/g, '.') ||
+    selectedNewsCard.uploadDatetime?.split('T')[0].replace(/-/g, '.') ||
     '날짜 불명';
+
+  const mediaImageUrl = selectedNewsCard?.media
+    ? `https://stock.vaiv.kr/resources/images/news/${selectedNewsCard.media}.png`
+    : '';
+
+  // article이 undefined일 경우 기본값을 제공
+  const { imageUrls, content } = processArticle(selectedNewsCard.article || '');
 
   return (
     <CenterContentDiv>
       <CenterNewsDiv>
+        {selectedNewsCard.thumbnail ? (
+          <CustomCenterNewsRightImg src={selectedNewsCard.thumbnail} />
+        ) : (
+          <CenterNewsRightDiv />
+        )}
         <CenterNewsLeftDiv>
-          <TextP_24_NOTGRAY
+          <EconomicNewsTitleText
             style={{
               display: '-webkit-box',
               WebkitBoxOrient: 'vertical',
@@ -54,9 +90,9 @@ const CenterContent: React.FC<CenterContentProps> = ({ selectedCard }) => {
               textOverflow: 'ellipsis',
             }}
           >
-            {selectedCard.title}
-          </TextP_24_NOTGRAY>
-          <TextP_20
+            {selectedNewsCard.title}
+          </EconomicNewsTitleText>
+          <EconomicNewsContent
             style={{
               display: '-webkit-box',
               WebkitBoxOrient: 'vertical',
@@ -65,22 +101,26 @@ const CenterContent: React.FC<CenterContentProps> = ({ selectedCard }) => {
               textOverflow: 'ellipsis',
             }}
           >
-            {selectedCard.description}
-          </TextP_20>
+            {content}
+          </EconomicNewsContent>
 
-          <CenterNewsLeftTopDiv>
-            <TextP_16>{selectedCard.media}</TextP_16>
-            <TextP_16> {formattedDate}</TextP_16>
-          </CenterNewsLeftTopDiv>
+          <EconomicNewsFooter>
+            <MediaWrapper>
+              <MediaLogo
+                src={mediaImageUrl}
+                alt="media"
+                onError={(e) => {
+                  e.currentTarget.src = newstockIcon; // 이미지 로드 실패 시 기본 이미지로 대체
+                }}
+              />
+              <FooterText>{selectedNewsCard.media}</FooterText>
+            </MediaWrapper>
+            <FooterText> {formattedDate}</FooterText>
+          </EconomicNewsFooter>
         </CenterNewsLeftDiv>
-        {selectedCard.thumbnail ? (
-          <CenterNewsRightImg src={selectedCard.thumbnail} />
-        ) : (
-          <CenterNewsRightDiv />
-        )}
       </CenterNewsDiv>
       <CenterNewsContextDiv>
-        <div dangerouslySetInnerHTML={{ __html: selectedCard.context || '' }} />
+        <div dangerouslySetInnerHTML={{ __html: selectedCard.content || '' }} />
       </CenterNewsContextDiv>
     </CenterContentDiv>
   );

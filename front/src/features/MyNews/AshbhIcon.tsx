@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { useBookmarkStore } from '@store/useBookmarkStore';
+import { useScrapStore } from '@store/useScrapStore';
 
 const StyledSvgIcon = styled.svg`
   cursor: pointer; /* 클릭 가능한 커서 설정 */
@@ -10,26 +11,56 @@ const StyledSvgIcon = styled.svg`
     transition: transform 0.2s ease-in-out;
   }
 `;
+interface ScrapData {
+  id: number;
+  title: string;
+  subtitle?: string | null;
+  media?: string;
+  description?: string;
+  thumbnail?: string;
+  uploadDatetime?: string;
+  article?: string;
+  sentiment?: string;
+  industry?: string;
+  stockNewsStockCodes?: string[]; // 종목 뉴스만 해당되는 부분
+  stockKeywords?: string[]; // 종목 뉴스만 해당되는 부분
+  newsType?: string;
+  content?: string;
+}
 
 interface AshbhIconProps {
   id: number;
   title: string;
+  scrapData?: ScrapData;
   onDelete: () => void; // 삭제 후 처리할 함수
 }
 
-const AshbhIcon: React.FC<AshbhIconProps> = ({ id, title, onDelete }) => {
+const AshbhIcon: React.FC<AshbhIconProps> = ({
+  id,
+  title,
+  scrapData,
+  onDelete,
+}) => {
   const { removeBookmark, removeStockBookmark } = useBookmarkStore();
+  const { deleteScrap, deleteStockScrap } = useScrapStore();
 
   const handleDelete = async (event: React.MouseEvent) => {
     event.stopPropagation();
 
     try {
-      if (title === '시황 뉴스') {
-        // 시황 뉴스 삭제
-        await removeBookmark(id);
+      // 스크랩 데이터가 있으면 -> 스크랩 뉴스
+      if (scrapData) {
+        if (scrapData.newsType === '시황 뉴스') {
+          await deleteScrap(scrapData.id);
+        } else {
+          await deleteStockScrap(scrapData.id);
+        }
       } else {
-        // 종목 뉴스 삭제
-        await removeStockBookmark(id);
+        if (title === '시황 뉴스') {
+          await removeBookmark(id);
+        } else {
+          await removeStockBookmark(id);
+        }
       }
       onDelete(); // 삭제 후 UI 갱신을 위한 함수 호출
     } catch (error) {

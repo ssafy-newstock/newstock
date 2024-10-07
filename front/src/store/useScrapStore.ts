@@ -43,8 +43,33 @@ interface ScrapStore {
     newsId: number,
     newsType: string,
     content: string
-  ) => Promise<void>; // 스크랩 작성 함수 추가
-
+  ) => Promise<void>; // 스크랩 작성 함수
+  createStockScrap: (
+    title: string,
+    newsId: number,
+    newsType: string,
+    content: string
+  ) => Promise<void>;
+  // 시황 뉴스 스크랩 삭제
+  deleteScrap: (scrapId: number) => Promise<void>;
+  // 종목 뉴스 스크랩 삭제
+  deleteStockScrap: (scrapId: number) => Promise<void>;
+  // 시황 뉴스 스크랩 수정
+  updateScrap: (
+    scrapId: number,
+    title: string,
+    newsId: number,
+    newsType: string,
+    content: string
+  ) => Promise<void>;
+  // 종목 뉴스 스크랩 수정
+  updateStockScrap: (
+    scrapId: number,
+    title: string,
+    newsId: number,
+    newsType: string,
+    content: string
+  ) => Promise<void>;
   // 특정 시황 뉴스 스크랩 조회
   fetchSpecificScrap: (scrapId: number) => Promise<void>;
 }
@@ -72,7 +97,7 @@ export const useScrapStore = create<ScrapStore>((set) => ({
           ...(endDate && { endDate }), // 날짜가 선택된 경우에만 포함
         },
       });
-
+      console.log('현재 시황 스크랩 뉴스 : ', response.data.data.scraps);
       set({
         scraps: response.data.data.scraps,
         scrapNews: response.data.data.scrapInNews,
@@ -98,7 +123,7 @@ export const useScrapStore = create<ScrapStore>((set) => ({
           ...(endDate && { endDate }), // 날짜가 선택된 경우에만 포함
         },
       });
-
+      console.log('현재 종목 스크랩 뉴스 : ', response.data.data.scraps);
       set({
         stockScraps: response.data.data.scraps,
         scrapStockNews: response.data.data.scrapInNews, // 종목 뉴스 스크랩 데이터
@@ -107,7 +132,7 @@ export const useScrapStore = create<ScrapStore>((set) => ({
       console.error('종목 뉴스 스크랩 조회 중 오류 발생:', error);
     }
   },
-  // 스크랩 작성 기능 추가
+  // 스크랩 작성 기능
   createScrap: async (title, newsId, newsType, content) => {
     try {
       const response = await authRequest.post(
@@ -127,12 +152,147 @@ export const useScrapStore = create<ScrapStore>((set) => ({
 
       if (response.data.success) {
         console.log('스크랩 작성 성공:', response.data.data);
-        // 필요시 스토어 업데이트 로직 추가
       } else {
         console.error('스크랩 작성 실패:', response.data);
       }
     } catch (error) {
       console.error('스크랩 작성 중 오류 발생:', error);
+    }
+  },
+
+  // 종목 뉴스 스크랩 작성 기능
+  createStockScrap: async (
+    title: string,
+    newsId: number,
+    newsType: string,
+    content: string
+  ) => {
+    try {
+      const response = await authRequest.post(
+        '/news/scrap/stock/write',
+        new URLSearchParams({
+          title,
+          newsId: newsId.toString(),
+          newsType,
+          content,
+        }),
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        }
+      );
+
+      if (response.data.success) {
+        console.log('종목 스크랩 작성 성공:', response.data.data);
+      } else {
+        console.error('종목 스크랩 작성 실패:', response.data);
+      }
+    } catch (error) {
+      console.error('종목 스크랩 작성 중 오류 발생:', error);
+    }
+  },
+  // 시황 뉴스 스크랩 삭제 기능
+  deleteScrap: async (scrapId: number) => {
+    try {
+      const response = await authRequest.delete(
+        `/news/scrap/industry/${scrapId}`
+      );
+
+      if (response.data.success) {
+        console.log('시황 뉴스 스크랩 삭제 성공:', response.data.data);
+        // 필요시 스토어 업데이트 로직 추가
+      } else {
+        console.error('시황 뉴스 스크랩 삭제 실패:', response.data);
+      }
+    } catch (error) {
+      console.error('시황 뉴스 스크랩 삭제 중 오류 발생:', error);
+    }
+  },
+
+  // 종목 뉴스 스크랩 삭제 기능
+  deleteStockScrap: async (scrapId: number) => {
+    try {
+      const response = await authRequest.delete(`/news/scrap/stock/${scrapId}`);
+
+      if (response.data.success) {
+        console.log('종목 뉴스 스크랩 삭제 성공:', response.data.data);
+        // 필요시 스토어 업데이트 로직 추가
+      } else {
+        console.error('종목 뉴스 스크랩 삭제 실패:', response.data);
+      }
+    } catch (error) {
+      console.error('종목 뉴스 스크랩 삭제 중 오류 발생:', error);
+    }
+  },
+
+  // 시황 뉴스 스크랩 수정 기능 추가
+  updateScrap: async (
+    scrapId: number,
+    title: string,
+    newsId: number,
+    newsType: string,
+    content: string
+  ) => {
+    try {
+      const response = await authRequest.post(
+        `/news/scrap/industry/${scrapId}`,
+        new URLSearchParams({
+          title,
+          newsId: newsId.toString(),
+          newsType,
+          content,
+        }),
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        }
+      );
+
+      if (response.data.success) {
+        console.log('시황 뉴스 스크랩 수정 성공:', response.data.data);
+        // 필요시 스토어 업데이트 로직 추가
+      } else {
+        console.error('시황 뉴스 스크랩 수정 실패:', response.data);
+      }
+    } catch (error) {
+      console.error('시황 뉴스 스크랩 수정 중 오류 발생:', error);
+    }
+  },
+
+  // 종목 뉴스 스크랩 수정 기능 추가
+  updateStockScrap: async (
+    scrapId: number,
+    title: string,
+    newsId: number,
+    newsType: string,
+    content: string
+  ) => {
+    try {
+      const response = await authRequest.post(
+        `/news/scrap/stock/${scrapId}`,
+        new URLSearchParams({
+          title,
+          newsId: newsId.toString(),
+          newsType,
+          content,
+        }),
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        }
+      );
+
+      if (response.data.success) {
+        console.log('종목 뉴스 스크랩 수정 성공:', response.data.data);
+        // 필요시 스토어 업데이트 로직 추가
+      } else {
+        console.error('종목 뉴스 스크랩 수정 실패:', response.data);
+      }
+    } catch (error) {
+      console.error('종목 뉴스 스크랩 수정 중 오류 발생:', error);
     }
   },
 

@@ -167,6 +167,7 @@ const CenterContent: React.FC = () => {
     setContent(content); // 본문 내용 설정
     document.body.style.cursor = 'default'; // 드롭 완료 후 커서 기본으로
   };
+
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     document.body.style.cursor = 'copy'; // 드래그 중 커서를 'copy'로 변경
@@ -184,7 +185,7 @@ const CenterContent: React.FC = () => {
     <>
       <TitleDiv>
         <ConterTitleDiv>
-          <TitleP>스크랩 작성</TitleP>
+          <TitleP>스크랩 편집</TitleP>
           <ThemedButton onClick={handleCreateCompleteClick}>
             작성 완료
           </ThemedButton>

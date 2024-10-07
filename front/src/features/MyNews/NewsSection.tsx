@@ -38,10 +38,11 @@ const NewsSection: React.FC<NewsSectionProps> = ({
 }) => {
   const handleDelete = (id: number) => {
     datas.filter((news) => news.id !== id);
+    scrapDatas?.filter((news) => news.newsId !== id);
   };
 
-  console.log('datas : ', datas);
-  console.log('scrapDatas: ', scrapDatas);
+  // console.log('datas : ', datas);
+  // console.log('scrapDatas: ', scrapDatas);
 
   return (
     <NewsSectionContainer>
