@@ -1,22 +1,18 @@
 import {
   DivTag,
-  Flex,
-  FlexColumn,
   FlexGap,
   FlexGapCenter,
   FlexGapColumn,
 } from '@components/styledComponent';
-import SentimentIcon from '@features/News/PNSubicon';
 import styled from 'styled-components';
 import newstockIcon from '@assets/Stock/blueLogo.png';
 import LoadingSpinner from '@components/LoadingSpinner';
 import {
   Text,
-  TextBold,
   TextBoldLeft,
   TextBoldLarge,
-  TextLarge,
   HrTag,
+  TextLeft,
 } from '@features/Stock/styledComponent';
 
 interface IRelatedNews {
@@ -53,7 +49,8 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-  width: 50%;
+  min-width: 20rem;
+  max-width: 60rem;
   background-color: ${({ theme }) => theme.stockBackgroundColor};
   padding: 1rem;
   border-radius: 1rem;
@@ -61,7 +58,7 @@ const ModalContent = styled.div`
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 2rem;
   align-items: center;
 `;
 
@@ -77,69 +74,116 @@ const CloseButton = styled.button`
 `;
 
 const ImgTag = styled.img`
-  object-fit: fill;
+  object-fit: cover;
+  width: 8rem;
+  height: 6rem;
+`;
+
+const NewsGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(auto-fill, 1fr, 1fr);
+  gap: 2rem;
+`;
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   width: 100%;
-  height: 100%;
+  border-radius: 1rem;
+  background-color: ${({ theme }) => theme.backgroundColor};
+  padding: 0.5rem 1rem;
+`;
+
+const NewsContainer = styled.div`
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  border-radius: 1rem;
+  background-color: ${({ theme }) => theme.backgroundColor};
+  padding: 0.5rem 1rem;
+  align-items: center;
 `;
 
 const AnalysisModal: React.FC<AnalysisModalProps> = ({
   onClose,
   analysisData,
 }) => {
+  if (analysisData?.macroReport === '') {
+    return (
+      <ModalOverlay>
+        <ModalContent>
+          <Text>분석 결과가 없습니다.</Text>
+          <CloseButton onClick={onClose}>닫기</CloseButton>
+        </ModalContent>
+      </ModalOverlay>
+    );
+  }
   return (
     <ModalOverlay>
-      <ModalContent>
-        {analysisData ? (
+      {analysisData ? (
+        <ModalContent>
           <>
-            <TextBoldLarge>차트 분석</TextBoldLarge>
-            <HrTag />
-            <h1>거시적 관점</h1>
-            <p>{analysisData?.macroReport}</p>
-            <HrTag />
-            <h1>미시적 관점</h1>
-            <p>{analysisData?.microReport}</p>
-            <HrTag />
-            <h3>관련 뉴스</h3>
-            
-            <FlexGapColumn $gap="1rem" style={{ width: '100%' }}>
+            <DivTag style={{ width: '100%' }}>
+              <TextBoldLarge>종목 분석</TextBoldLarge>
+              <HrTag />
+            <FlexGap $gap="1rem">
+              <Container>
+                <Text>거시적 관점</Text>
+                <TextLeft>{analysisData?.macroReport}</TextLeft>
+              </Container>
+              <Container>
+                <Text>미시적 관점</Text>
+                <TextLeft>{analysisData?.microReport}</TextLeft>
+              </Container>
+            </FlexGap>
+            </DivTag>
+
+            <DivTag style={{ width: '100%' }}>
+              <TextBoldLarge>관련 뉴스</TextBoldLarge>
+              <HrTag />
+            <NewsGrid>
               {analysisData?.relatedNews.map((news) => (
-                <div>
-                <FlexGapCenter key={news.id} $gap="1rem">
-                  <DivTag style={{ width: '5rem', height: '3rem' }}>
+                <>
+                  <NewsContainer key={news.id}>
                     <ImgTag
                       src={news.thumbnail || newstockIcon}
                       alt={news.title}
                     />
-                  </DivTag>
-                  <FlexGapColumn $gap="0.5rem">
-                    <TextBoldLeft>{news.title}</TextBoldLeft>
+                    <FlexGapColumn $gap="0.5rem">
+                      <TextBoldLeft>{news.title}</TextBoldLeft>
 
-                    <FlexGapCenter $gap="1rem" style={{ paddingLeft: '0.5rem' }}>
-                      <img
-                        style={{
-                          width: '1rem',
-                          height: '1rem',
-                          borderRadius: '50%',
-                        }}
-                        src={`https://stock.vaiv.kr/resources/images/news/${news.media}.png`}
-                        onError={(e) => {
-                          e.currentTarget.src = newstockIcon;
-                        }}
-                      />
-                      <Text>{news.media}</Text>
-                      <Text>{news.upload_datetime}</Text>
-                    </FlexGapCenter>
-                  </FlexGapColumn>
-                </FlexGapCenter>
-              </div>
+                      <FlexGapCenter
+                        $gap="0.5rem"
+                        style={{ paddingLeft: '0.5rem' }}
+                      >
+                        <img
+                          style={{
+                            width: '1.5rem',
+                            height: '1.5rem',
+                            borderRadius: '50%',
+                          }}
+                          src={`https://stock.vaiv.kr/resources/images/news/${news.media}.png`}
+                          onError={(e) => {
+                            e.currentTarget.src = newstockIcon;
+                          }}
+                        />
+                        <Text>{news.media}</Text>
+                        <Text>{news.upload_datetime.split(' ')[0]}</Text>
+                      </FlexGapCenter>
+                    </FlexGapColumn>
+                  </NewsContainer>
+                </>
               ))}
-            </FlexGapColumn>
-            <CloseButton onClick={onClose}>Close</CloseButton>
+            </NewsGrid>
+            </DivTag>
+            <CloseButton onClick={onClose}>닫기</CloseButton>
           </>
-        ) : (
-          <LoadingSpinner />
-        )}
-      </ModalContent>
+        </ModalContent>
+      ) : (
+        <LoadingSpinner />
+      )}
     </ModalOverlay>
   );
 };
