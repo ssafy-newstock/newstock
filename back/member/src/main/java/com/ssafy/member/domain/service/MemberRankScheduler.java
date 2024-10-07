@@ -35,14 +35,14 @@ public class MemberRankScheduler {
                 .collect(Collectors.toMap(Member::getId, member -> member));
 
         List<Long> memberIdList = new ArrayList<>(memberMap.keySet());
-        CommonResponse<?> memberChangeRate = stockClient.getMemberChangeRate(memberIdList);
-        List<MemberChangeRateDto> responses = (List<MemberChangeRateDto>) memberChangeRate.getData();
+        CommonResponse<List<MemberChangeRateDto>> memberChangeRateResponse = stockClient.getMemberChangeRate(memberIdList);
+        List<MemberChangeRateDto> responses = memberChangeRateResponse.getData();
 
         responses.forEach(response -> {
             Member member = memberMap.get(response.getMemberId());
 
             if (member != null) {
-                member.updateMemberChangeRate(response.getChangeRate());
+                member.updateMemberChangeRate(response.getHoldingChangeRate(), response.getTransactionChangeRate());
             } else {
                 throw new MemberNotFoundException(response.getMemberId());
             }

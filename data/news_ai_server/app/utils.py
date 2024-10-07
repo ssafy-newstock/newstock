@@ -165,7 +165,7 @@ def connect_jdbc() -> jaydebeapi.Connection:
     sqlline_jar_path = './core/jdbc/sqlline-1.9.0-jar-with-dependencies.jar'
 
     # 필요한 JAR 파일을 포함한 클래스패스 설정
-    class_path = f"{phoenix_jar_path}:{reload4j_jar_path}:{slf4j_reload4j_jar_path}:{sqlline_jar_path}"
+    class_path = f"{phoenix_jar_path}:{reload4j_jar_path}:{slf4j_reload4j_jar_path}:{sqlline_jar_path}" #linux
     # class_path = f"{phoenix_jar_path};{reload4j_jar_path};{slf4j_reload4j_jar_path};{sqlline_jar_path}"
     logger.info(class_path)
     # 환경 변수에서 JDBC URL과 JAVA_HOME을 설정

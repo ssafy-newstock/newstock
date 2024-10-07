@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 date_pattern = r"^\d{4}-\d{2}-\d{2}$"
 
-@router.get("/")
+@router.get("")
 def get_dummy():
     result = logging.info("Dummy Controller")
     
