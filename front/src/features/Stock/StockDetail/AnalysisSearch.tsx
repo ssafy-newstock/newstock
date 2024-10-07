@@ -86,7 +86,7 @@ const AnalysisSearch: React.FC<AnalysisSearchProps> = ({
 
   useEffect(() => {
     if (analysisQuery.data) {
-      toast.success('분석 완료');
+      toast.success('차트 분석 완료');
     }
   }, [analysisQuery.data]);
 
