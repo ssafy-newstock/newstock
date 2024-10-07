@@ -53,6 +53,9 @@ export const lightTheme: DefaultTheme = {
     { background: '#FCE3C9' },
     // 추가 색상
   ],
+  onBoadingTextColor: '#000000',
+  cardBackgroundColor: '#F6F8FF',
+  cardBackBackgroundColor: '#453DE0',
 };
 
 export const darkTheme: DefaultTheme = {
@@ -107,4 +110,7 @@ export const darkTheme: DefaultTheme = {
     { background: '#8B4513' },
     // 추가 색상
   ],
+  onBoadingTextColor: '#fff',
+  cardBackgroundColor: '#101729',
+  cardBackBackgroundColor: '#1e1e1e',
 };

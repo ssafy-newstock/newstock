@@ -9,6 +9,7 @@ import { authRequest } from '@api/axiosInstance';
 import usePointStore from '@store/usePointStore';
 import useSocketStore from '@store/useSocketStore';
 import useAuthStore from '@store/useAuthStore';
+import { toast } from 'react-toastify';
 
 const SubCenter = styled.div`
   display: flex;
@@ -118,6 +119,9 @@ const StockNewsDetailPage: React.FC = () => {
           setPlusPoint((prevPoint) =>
             prevPoint !== null ? prevPoint + plusPoint : plusPoint
           );
+          if (plusPoint) {
+            toast.success('10만원이 충전되었습니다!');
+          }
         }
       );
 
