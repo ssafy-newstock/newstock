@@ -10,6 +10,9 @@ import {
   TextRight,
 } from '@features/Stock/styledComponent';
 import { FlexGapColumnCenter } from '@components/styledComponent';
+import { useAnalysisQuery } from '@hooks/useAnalysisQuery';
+import { useState } from 'react';
+import AnalysisModal from '@features/Stock/StockDetail/AnalysisModal';
 
 interface SelectionStockProps {
   selectionStock: IDaily[];
@@ -25,6 +28,28 @@ const SelectionStock = ({
   endDate,
 }: SelectionStockProps) => {
   const stock = useFindStockByCode(stockCode);
+
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  const openAnalysis = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeAnalysis = () => {
+    setIsModalOpen(false);
+  };
+
+  const analysisQuery = stock
+    ? useAnalysisQuery({
+        analysisStock: {
+          stockCode: stock?.stockCode,
+          stockName: stock?.stockName,
+        },
+        startDate: startDate,
+        endDate: endDate,
+      })
+    : null;
+
   return (
     <FlexGapColumnCenter $gap="0.5rem">
       <StockTitle>
@@ -40,7 +65,13 @@ const SelectionStock = ({
         {startDate} - {endDate}
       </TextRight>
       <SimilarityChart selectionStock={selectionStock} />
-      <AnalysisButton>분석하기</AnalysisButton>
+      <AnalysisButton onClick={openAnalysis}>분석하기</AnalysisButton>
+      {isModalOpen && (
+        <AnalysisModal
+          analysisData={analysisQuery?.data}
+          onClose={closeAnalysis}
+        />
+      )}
     </FlexGapColumnCenter>
   );
 };

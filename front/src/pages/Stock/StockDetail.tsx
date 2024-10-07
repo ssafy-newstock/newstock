@@ -25,19 +25,47 @@ import StockHoldingError from '@features/Stock/StockDetail/StockHoldingError';
 import SimilaritySearch from '@features/Stock/StockDetail/SimilaritySearch';
 import { useFindStockByCode } from '@utils/uesFindStockByCode';
 import useAuthStore from '@store/useAuthStore';
+import { useAnalysisQuery } from '@hooks/useAnalysisQuery';
+import AnalysisSearch from '@features/Stock/StockDetail/AnalysisSearch';
 
 const StockDetailPage = () => {
   const location = useLocation();
   const { stock } = location.state as { stock: IStock };
-  const [isShow, setIsShow] = useState<boolean>(false);
-  const {isLogin} = useAuthStore();
+  const [isSimilartyShow, setIsSimilartyShow] = useState<boolean>(false);
+  const [isAnalysisShow, setIsAnalysisShow] = useState<boolean>(false);
 
+  const { isLogin } = useAuthStore();
   // 주식 상세 정보
   const stockDetail = useFindStockByCode(stock.stockCode);
 
-  const handleClick = () => {
-    setIsShow(!isShow);
+  const handleSimilartyClick = () => {
+    setIsSimilartyShow(!isSimilartyShow);
   };
+
+  const handleAnalysisClick = () => {
+    setIsAnalysisShow(!isAnalysisShow);
+  };
+
+  // // 오늘 날짜 기준으로 한 달 전과 오늘 날짜 구하기
+  // const today = new Date();
+  // const endDate = today.toISOString().split('T')[0];
+
+  // const lastMonth = new Date();
+  // lastMonth.setMonth(today.getMonth() - 1);
+  // const startDate = lastMonth.toISOString().split('T')[0];
+
+  // 임시 데이터
+  const startDate = '2024-08-13'
+  const endDate = '2024-09-13'
+
+  const { data: _analysisData } = useAnalysisQuery({
+    analysisStock: {
+      stockCode: stock.stockCode,
+      stockName: stock.stockName,
+    },
+    startDate,
+    endDate,
+  });
 
   return (
     <>
@@ -48,7 +76,10 @@ const StockDetailPage = () => {
           {/* 좋아요, 유사도 버튼 */}
           <FlexGap $gap="1rem">
             {isLogin && <LikeButton stockCode={stock.stockCode} />}
-            <DetailPageButton onClick={handleClick}>
+            <DetailPageButton onClick={handleAnalysisClick}>
+              차트 분석
+            </DetailPageButton>
+            <DetailPageButton onClick={handleSimilartyClick}>
               유사도 분석
             </DetailPageButton>
           </FlexGap>
@@ -64,12 +95,27 @@ const StockDetailPage = () => {
           <Outlet />
         </DividedSection>
 
+        {/* 차트 분석 */}
+        {isAnalysisShow && (
+          <>
+            <AnalysisSearch
+              stockCode={stock.stockCode}
+              stockName={stock.stockName}
+              startDate={startDate}
+              endDate={endDate}
+            />
+            <HrTag />
+          </>
+        )}
+
         {/* 유사도 분석 */}
-        {isShow && (
+        {isSimilartyShow && (
           <DividedSection>
             <StockHeader>유사도 분석</StockHeader>
             <HrTag />
-            <ErrorBoundary fallback={<SimilaritySearch stockCode={stock.stockCode} />}>
+            <ErrorBoundary
+              fallback={<SimilaritySearch stockCode={stock.stockCode} />}
+            >
               <SimilaritySearch stockCode={stock.stockCode} />
             </ErrorBoundary>
             <HrTag />
@@ -85,14 +131,16 @@ const StockDetailPage = () => {
         </DividedSection>
 
         {/* 주식 보유 내역 */}
-        <DividedSection>
-          <StockHeader>나의 {stock?.stockName} 보유 내역</StockHeader>
-          <ErrorBoundary FallbackComponent={StockHoldingError}>
-            <Suspense fallback={<StockHodingSkeleton />}>
-              <StockHolding stockCode={stock.stockCode} />
-            </Suspense>
-          </ErrorBoundary>
-        </DividedSection>
+        {isLogin && (
+          <DividedSection>
+            <StockHeader>나의 {stock?.stockName} 보유 내역</StockHeader>
+            <ErrorBoundary FallbackComponent={StockHoldingError}>
+              <Suspense fallback={<StockHodingSkeleton />}>
+                <StockHolding stockCode={stock.stockCode} />
+              </Suspense>
+            </ErrorBoundary>
+          </DividedSection>
+        )}
       </Center>
     </>
   );

@@ -251,14 +251,14 @@ export const CategoryData = styled(StockPrev)`
 // 버튼 컨테이너 스타일
 export const ButtonWrapper = styled.div`
   display: flex;
-  gap: 1rem;
+  /* gap: 1rem; */
 `;
 
 // 버튼 스타일
 export const SortButton = styled.button<{ $isActive: boolean }>`
   background: none;
   border: none;
-  padding: 0.5rem;
+  padding: 0rem 0.5rem;
   cursor: pointer;
   color: ${({ theme }) => theme.textColor};
   position: relative;
@@ -266,7 +266,7 @@ export const SortButton = styled.button<{ $isActive: boolean }>`
   &::after {
     content: '';
     position: absolute;
-    bottom: -0.1rem;
+    bottom: -0.2rem;
     left: 50%;
     transform: translateX(-50%);
     width: ${({ $isActive }) => ($isActive ? '2rem' : '0')};
@@ -278,7 +278,7 @@ export const SortButton = styled.button<{ $isActive: boolean }>`
 
 export const CategorySortButton = styled(SortButton)`
   &::after {
-    width: ${({ $isActive }) => ($isActive ? '2.5rem' : '0')};
+    width: ${({ $isActive }) => ($isActive ? '3rem' : '0')};
   }
 `;
 
@@ -392,7 +392,7 @@ export const TradeModalOverlay = styled.div`
 `;
 
 export const TradeModalContent = styled.div`
-  background-color: white;
+  background-color: ${({ theme }) => theme.stockBackgroundColor};
   padding: 1rem;
   border-radius: 1rem;
   min-width: 15rem;
@@ -460,6 +460,7 @@ export const SimilarityButton = styled.button`
   border-radius: 1rem;
   border: none;
   padding: 0.5rem 1rem;
+  cursor: pointer;
 `;
 
 export const AnalysisButton = styled(DetailPageButton)`
