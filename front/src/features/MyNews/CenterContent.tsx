@@ -50,8 +50,10 @@ const CenterContent: React.FC<CenterContentProps> = ({ selectedDateRange }) => {
   } = useBookmarkStore();
 
   const {
-    scraps: scrapIndustryNews,
-    scrapStockNews, // 종목 스크랩 데이터
+    scraps,
+    scrapNews,
+    stockScraps, // 종목 스크랩 데이터
+    scrapStockNews,
     fetchScrapData, // 시황 뉴스 스크랩 함수
     fetchScrapStockData, // 종목 뉴스 스크랩 함수
   } = useScrapStore();
@@ -71,6 +73,12 @@ const CenterContent: React.FC<CenterContentProps> = ({ selectedDateRange }) => {
     if (startDate && endDate) {
       // 날짜 범위가 선택된 경우 해당 날짜 범위를 기반으로 스크랩 뉴스 데이터를 가져옵니다.
       fetchScrapData(
+        1,
+        10,
+        startDate.toISOString().split('T')[0],
+        endDate.toISOString().split('T')[0]
+      );
+      fetchScrapStockData(
         1,
         10,
         startDate.toISOString().split('T')[0],
@@ -123,8 +131,16 @@ const CenterContent: React.FC<CenterContentProps> = ({ selectedDateRange }) => {
     <CenterContentDiv>
       <NewsSection title={'시황 뉴스'} datas={filteredEconomicNews} />
       <NewsSection title={'종목 뉴스'} datas={filteredStockNews} />
-      <NewsSection title={'시황 스크랩'} datas={scrapIndustryNews} />
-      <NewsSection title={'종목 스크랩'} datas={scrapStockNews} />
+      <NewsSection
+        title={'시황 스크랩'}
+        datas={scrapNews}
+        scrapDatas={scraps}
+      />
+      <NewsSection
+        title={'종목 스크랩'}
+        datas={scrapStockNews}
+        scrapDatas={stockScraps}
+      />
     </CenterContentDiv>
   );
 };

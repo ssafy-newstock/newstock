@@ -28,21 +28,19 @@ interface ScrapData {
   content?: string;
   stockNewsStockCodes?: string[]; // 종목 뉴스만 해당되는 부분
   stockKeywords?: string[]; // 종목 뉴스만 해당되는 부분
-}
-
-interface CardData {
-  ScrapData: ScrapData;
-  context: string;
+  newsId?: number;
 }
 
 interface CenterContentProps {
-  selectedCard: CardData;
+  selectedCard: ScrapData;
 }
 
 const CenterContent: React.FC<CenterContentProps> = ({ selectedCard }) => {
+  // 업로드 날짜를 포맷팅
   const formattedDate =
-    selectedCard.ScrapData.uploadDatetime?.split(' ')[0].replace(/-/g, '.') ||
+    selectedCard.uploadDatetime?.split(' ')[0].replace(/-/g, '.') ||
     '날짜 불명';
+
   return (
     <CenterContentDiv>
       <CenterNewsDiv>
@@ -56,7 +54,7 @@ const CenterContent: React.FC<CenterContentProps> = ({ selectedCard }) => {
               textOverflow: 'ellipsis',
             }}
           >
-            {selectedCard.ScrapData.title}
+            {selectedCard.title}
           </TextP_24_NOTGRAY>
           <TextP_20
             style={{
@@ -67,22 +65,22 @@ const CenterContent: React.FC<CenterContentProps> = ({ selectedCard }) => {
               textOverflow: 'ellipsis',
             }}
           >
-            {selectedCard.ScrapData.description}
+            {selectedCard.description}
           </TextP_20>
 
           <CenterNewsLeftTopDiv>
-            <TextP_16>{selectedCard.ScrapData.media}</TextP_16>
+            <TextP_16>{selectedCard.media}</TextP_16>
             <TextP_16> {formattedDate}</TextP_16>
           </CenterNewsLeftTopDiv>
         </CenterNewsLeftDiv>
-        {selectedCard.ScrapData.thumbnail ? (
-          <CenterNewsRightImg src={selectedCard.ScrapData.thumbnail} />
+        {selectedCard.thumbnail ? (
+          <CenterNewsRightImg src={selectedCard.thumbnail} />
         ) : (
           <CenterNewsRightDiv />
         )}
       </CenterNewsDiv>
       <CenterNewsContextDiv>
-        <div dangerouslySetInnerHTML={{ __html: selectedCard.context }} />
+        <div dangerouslySetInnerHTML={{ __html: selectedCard.context || '' }} />
       </CenterNewsContextDiv>
     </CenterContentDiv>
   );

@@ -28,6 +28,7 @@ interface ScrapData {
   content?: string;
   stockNewsStockCodes?: string[]; // 종목 뉴스만 해당되는 부분
   stockKeywords?: string[]; // 종목 뉴스만 해당되는 부분
+  newsId?: number;
 }
 
 // interface CardData {
@@ -43,9 +44,18 @@ const ScrapDetailPage: React.FC = () => {
     [Date | null, Date | null]
   >([null, null]);
 
-  const { scrapNews, scrapStockNews, fetchScrapData, fetchScrapStockData } =
-    useScrapStore();
-  const [allScraps, setAllScraps] = useState<ScrapData[]>([]);
+  const {
+    scraps,
+    scrapNews,
+    stockScraps,
+    scrapStockNews,
+    fetchScrapData,
+    fetchScrapStockData,
+    fetchSpecificScrap,
+  } = useScrapStore();
+
+  const [scrapNewsList, setScrapNewsList] = useState<ScrapData[]>([]);
+  const [scrapList, setScrapList] = useState<ScrapData[]>([]);
 
   // 날짜 범위 변경 핸들러
   const handleDateRangeChange = (dates: [Date | null, Date | null]) => {
@@ -58,12 +68,43 @@ const ScrapDetailPage: React.FC = () => {
     fetchScrapStockData(); // 종목 뉴스 스크랩 데이터 가져오기
   }, [fetchScrapData, fetchScrapStockData]);
 
-  // 시황 뉴스와 종목 뉴스를 하나의 리스트로 통합
+  // scraps + stockScraps 통합 및 scrapNews + scrapStockNews 통합
   useEffect(() => {
-    const combinedScrapNews = [...scrapNews, ...scrapStockNews];
-    setAllScraps(combinedScrapNews);
-  }, [scrapNews, scrapStockNews]);
+    const combinedScraps = [...scraps, ...stockScraps]; // 시황 및 종목 스크랩 통합
+    const combinedScrapNews = [...scrapNews, ...scrapStockNews]; // 시황 및 종목 뉴스 통합
+    setScrapList(combinedScraps); // 스크랩 데이터
+    setScrapNewsList(combinedScrapNews); // 뉴스 데이터
+  }, [scraps, stockScraps, scrapNews, scrapStockNews]);
 
+  const handleCardClick = async (scrap: ScrapData) => {
+    console.log('해당 스크랩의 뉴스아이디 : ', scrap.id!);
+    try {
+      // 특정 스크랩 조회 요청
+      await fetchSpecificScrap(scrap.id!);
+
+      // 조회된 industryScrapDto와 industryNewsDto를 Zustand store에서 가져옴
+      const { industryScrapDto, industryNewsDto } = useScrapStore.getState();
+      console.log(industryScrapDto);
+      console.log(industryNewsDto);
+
+      // industryScrapDto와 industryNewsDto가 존재하는 경우 상태로 설정
+      if (industryScrapDto.length > 0 && industryNewsDto.length > 0) {
+        console.log('23232');
+
+        setSelectedCard({
+          ...industryScrapDto[0], // 북마크 정보 (첫 번째 요소)
+          ...industryNewsDto[0], // 관련 뉴스 정보 (첫 번째 요소)
+        });
+      } else {
+        console.log('232');
+        setSelectedCard(scrap); // 관련 뉴스가 없으면 기존 스크랩 정보만 설정
+      }
+    } catch (error) {
+      console.error('시황 뉴스 스크랩 조회 중 오류 발생:', error);
+      // 오류 메시지를 사용자에게 보여줄 수 있는 로직을 추가할 수 있음
+    }
+  };
+  console.log(selectedCard);
   return (
     <>
       <Center>
@@ -82,9 +123,10 @@ const ScrapDetailPage: React.FC = () => {
           <RightTitle onDateRangeChange={handleDateRangeChange} />
           <ScrapHr />
           <RightContent
-            onCardClick={setSelectedCard}
+            onCardClick={handleCardClick}
             selectedDateRange={selectedDateRange}
-            scrapData={allScraps}
+            scrapData={scrapList} // 통합된 스크랩 데이터 전달
+            scrapNewsData={scrapNewsList} // 통합된 뉴스 데이터 전달
           />
         </RightDiv>
       </Right>

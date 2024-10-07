@@ -22,17 +22,26 @@ interface ScrapData {
   stockKeywords?: string[]; // 종목 뉴스만 해당되는 부분
   newsType?: string;
   content?: string;
+  newsId?: number;
 }
 
 interface NewsSectionProps {
   title: string;
   datas: ScrapData[];
+  scrapDatas?: ScrapData[];
 }
 
-const NewsSection: React.FC<NewsSectionProps> = ({ title, datas }) => {
+const NewsSection: React.FC<NewsSectionProps> = ({
+  title,
+  datas,
+  scrapDatas,
+}) => {
   const handleDelete = (id: number) => {
     datas.filter((news) => news.id !== id);
   };
+
+  console.log('datas : ', datas);
+  console.log('scrapDatas: ', scrapDatas);
 
   return (
     <NewsSectionContainer>
@@ -69,14 +78,29 @@ const NewsSection: React.FC<NewsSectionProps> = ({ title, datas }) => {
         ) : (
           <CenterContentSection>
             <CenterContentSectionDiv>
-              {datas.map((data, index) => (
-                <CenterNewsCard
-                  key={index}
-                  data={data}
-                  title={title}
-                  onDelete={handleDelete}
-                />
-              ))}
+              {title.includes('스크랩') && scrapDatas
+                ? scrapDatas.map((scrapData, index) => {
+                    const matchedData = datas.find(
+                      (data) => data.id === scrapData.newsId
+                    );
+                    return (
+                      <CenterNewsCard
+                        key={index}
+                        data={matchedData || scrapData}
+                        scrapData={scrapData}
+                        title={title}
+                        onDelete={handleDelete}
+                      />
+                    );
+                  })
+                : datas.map((data, index) => (
+                    <CenterNewsCard
+                      key={index}
+                      data={data}
+                      title={title}
+                      onDelete={handleDelete}
+                    />
+                  ))}
             </CenterContentSectionDiv>
           </CenterContentSection>
         )}

@@ -9,7 +9,7 @@ import {
 } from './styledComponent';
 import { translateIndustry } from '@api/dummyData/DummyData';
 import { format } from 'date-fns';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { NewsTag } from '@features/News/NewsIconTag';
 import styled from 'styled-components';
 import useAllStockStore from '@store/useAllStockStore';
@@ -20,13 +20,25 @@ const CustomFontStyle = styled(FontStyle)`
   font-size: 0.8rem;
 `;
 
+const BlackFontStyle = styled(FontStyle)`
+  color: ${({ theme }) => theme.textColor};
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  width: calc(100% - 1.25rem); /* 부모 padding을 고려해 너비 조정 */
+  box-sizing: border-box;
+`;
+
 const BookmarkedNewsMiddleLine = styled.div`
   width: 0.09rem;
   height: 1.25rem;
   background: #e0e0e0;
 `;
 
-interface scrapData {
+interface ScrapData {
   id: number;
   title: string;
   subtitle?: string | null;
@@ -45,27 +57,31 @@ interface scrapData {
 
 interface CenterCardProps {
   title: string;
-  data: scrapData;
+  data: ScrapData;
+  scrapData?: ScrapData;
   onDelete: (id: number) => void;
 }
 
 const CenterNewsCard: React.FC<CenterCardProps> = ({
   data,
+  scrapData,
   title,
   onDelete,
 }) => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   //"YYYY-MM-DD HH:MM" => "YYYY.MM.DD"
   const formatTransactionDate = (isoDate: string): string => {
     return format(new Date(isoDate), 'yyyy.MM.dd'); // date-fns의 올바른 포맷 형식 사용
   };
 
   const handleDetail = () => {
-    if (title === '시황 뉴스') {
-      navigate(`/subnews-main/economic-news/${data.id}`);
-    } else {
-      navigate(`/subnews-main/stock-news/${data.id}`);
-    }
+    // if (title === '시황 뉴스') {
+    //   navigate(`/subnews-main/economic-news/${data.id}`);
+    // } else {
+    //   navigate(`/subnews-main/stock-news/${data.id}`);
+    // }
+    console.log('data : ', data);
+    console.log('scrapData: ', scrapData);
   };
 
   // handleDelete 정의
@@ -88,23 +104,50 @@ const CenterNewsCard: React.FC<CenterCardProps> = ({
 
   return (
     <CardContainer style={{ cursor: 'pointer' }} onClick={handleDetail}>
-      <CardTitleFontStyle>{data.title}</CardTitleFontStyle>
-      <CardContextDiv>
-        <CustomFontStyle>{data.media}</CustomFontStyle>
-        <BookmarkedNewsMiddleLine />
-        <CustomFontStyle>{formattedDate}</CustomFontStyle>
-      </CardContextDiv>
-      <CardBottomContainer>
-        {stockCode && <NewsTag $tagName={stockName}># {stockName}</NewsTag>}
-        {data.industry && (
-          <NewsTag $tagName={translateIndustry(data.industry)}>
-            #{translateIndustry(data.industry)}
-          </NewsTag>
-        )}
-        <IconWrapper>
-          <AshbhIcon id={data.id} title={title} onDelete={handleDelete} />
-        </IconWrapper>
-      </CardBottomContainer>
+      {/* scrapData가 있을 경우 */}
+      {scrapData ? (
+        <>
+          <CardTitleFontStyle>{scrapData.title}</CardTitleFontStyle>
+          <BlackFontStyle>{data.title}</BlackFontStyle>
+          <CardBottomContainer>
+            {stockCode && <NewsTag $tagName={stockName}># {stockName}</NewsTag>}
+            {data.industry && (
+              <NewsTag $tagName={translateIndustry(data.industry)}>
+                #{translateIndustry(data.industry)}
+              </NewsTag>
+            )}
+            <IconWrapper>
+              <AshbhIcon id={data.id} title={title} onDelete={handleDelete} />
+            </IconWrapper>
+          </CardBottomContainer>
+
+          {/* <CardTitleFontStyle>
+            스크랩: {scrapData.title} <br />
+            원본: {data.title}
+          </CardTitleFontStyle> */}
+        </>
+      ) : (
+        <>
+          {/* 기존 UI 렌더링 */}
+          <CardTitleFontStyle>{data.title}</CardTitleFontStyle>
+          <CardContextDiv>
+            <CustomFontStyle>{data.media}</CustomFontStyle>
+            <BookmarkedNewsMiddleLine />
+            <CustomFontStyle>{formattedDate}</CustomFontStyle>
+          </CardContextDiv>
+          <CardBottomContainer>
+            {stockCode && <NewsTag $tagName={stockName}># {stockName}</NewsTag>}
+            {data.industry && (
+              <NewsTag $tagName={translateIndustry(data.industry)}>
+                #{translateIndustry(data.industry)}
+              </NewsTag>
+            )}
+            <IconWrapper>
+              <AshbhIcon id={data.id} title={title} onDelete={handleDelete} />
+            </IconWrapper>
+          </CardBottomContainer>
+        </>
+      )}
     </CardContainer>
   );
 };

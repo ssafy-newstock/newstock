@@ -18,6 +18,7 @@ interface ScrapData {
   content?: string;
   stockNewsStockCodes?: string[]; // 종목 뉴스만 해당되는 부분
   stockKeywords?: string[]; // 종목 뉴스만 해당되는 부분
+  newsId?: number;
 }
 
 // interface CardData {
@@ -58,12 +59,14 @@ interface RightContentProps {
   onCardClick: (card: ScrapData) => void; // 클릭 시 호출되는 함수
   selectedDateRange: [Date | null, Date | null];
   scrapData: ScrapData[];
+  scrapNewsData: ScrapData[];
 }
 
 const RightContent: React.FC<RightContentProps> = ({
   onCardClick,
   selectedDateRange,
   scrapData,
+  scrapNewsData,
 }) => {
   const [filteredScrap, setFilteredScrap] = useState<ScrapData[]>(scrapData);
 
@@ -92,13 +95,22 @@ const RightContent: React.FC<RightContentProps> = ({
   return (
     <>
       {filteredScrap.length > 0 ? (
-        filteredScrap.map((scrap) => (
-          <ScrapCard
-            key={scrap.id}
-            data={scrap}
-            onClick={() => onCardClick(scrap)}
-          />
-        ))
+        filteredScrap.map((scrap, index) => {
+          // scrap.newsId와 일치하는 scrapNewsData에서 데이터를 찾음
+          const matchedNewsData = scrapNewsData.find(
+            (news) => news.id === scrap.newsId
+          );
+
+          // matchedNewsData가 있을 때만 렌더링
+          return matchedNewsData ? (
+            <ScrapCard
+              key={`${scrap.newsId}-${index}`}
+              data={matchedNewsData} // 찾은 newsData를 전달
+              scrapData={scrap} // scrapData 전달
+              onClick={() => onCardClick(scrap)}
+            />
+          ) : null; // 데이터가 없으면 렌더링하지 않음
+        })
       ) : (
         <NoMessageP>스크랩한 뉴스가 없습니다.</NoMessageP>
       )}

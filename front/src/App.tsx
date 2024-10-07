@@ -94,7 +94,7 @@ const App = () => {
         {isLogin && <StockModal isOpen={isOpen} setIsOpen={setIsOpen} />}
       </Main>
       {/* 웹소켓 연결 */}
-      <WebSocketComponent />
+      {/* <WebSocketComponent /> */}
       {/* 토스트 메세지 */}
       <ToastContainer
         position="bottom-right"

@@ -8,11 +8,26 @@ import {
 } from '@features/Scrap/scrapStyledComponent';
 import useAuthStore from '@store/useAuthStore';
 
+interface ScrapData {
+  id: number;
+  article?: string;
+  description?: string;
+  industry?: string;
+  media?: string;
+  sentiment?: string;
+  subtitle?: string | null;
+  thumbnail?: string;
+  title: string;
+  uploadDatetime?: string;
+  newsType?: string;
+  content?: string;
+  stockNewsStockCodes?: string[]; // 종목 뉴스만 해당되는 부분
+  stockKeywords?: string[]; // 종목 뉴스만 해당되는 부분
+  newsId?: number;
+}
+
 interface CenterTitleProps {
-  selectedCard: {
-    Title: string;
-    Date: string;
-  };
+  selectedCard: ScrapData
 }
 
 const CenterTitle: React.FC<CenterTitleProps> = ({ selectedCard }) => {
@@ -29,10 +44,10 @@ const CenterTitle: React.FC<CenterTitleProps> = ({ selectedCard }) => {
 
   return (
     <TitleDiv>
-      <TitleP>{selectedCard.Title}</TitleP>
+      <TitleP>{selectedCard.title}</TitleP>
       <CenterTitleBottomDiv>
         <TextP_16>
-          {memberName} | {selectedCard.Date}
+          {memberName} | {selectedCard.uploadDatetime}
         </TextP_16>
         <div>
           <ThemedButton onClick={handleEditClick}>수정</ThemedButton>
