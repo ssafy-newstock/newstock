@@ -33,7 +33,7 @@ const StockDetailPage = () => {
   const { stock } = location.state as { stock: IStock };
   const [isSimilartyShow, setIsSimilartyShow] = useState<boolean>(false);
   const [isAnalysisShow, setIsAnalysisShow] = useState<boolean>(false);
-  
+
   const { isLogin } = useAuthStore();
   // 주식 상세 정보
   const stockDetail = useFindStockByCode(stock.stockCode);
@@ -46,8 +46,13 @@ const StockDetailPage = () => {
     setIsAnalysisShow(!isAnalysisShow);
   };
 
-  const startDate = '2024-08-01';
-  const endDate = '2024-09-01';
+  // 오늘 날짜 기준으로 한 달 전과 오늘 날짜 구하기
+  const today = new Date();
+  const endDate = today.toISOString().split('T')[0]; // 오늘 날짜 (yyyy-mm-dd 형식)
+
+  const lastMonth = new Date();
+  lastMonth.setMonth(today.getMonth() - 1);
+  const startDate = lastMonth.toISOString().split('T')[0]; // 한 달 전 날짜 (yyyy-mm-dd 형식)
 
   const { data: _analysisData } = useAnalysisQuery({
     analysisStock: {
@@ -57,15 +62,6 @@ const StockDetailPage = () => {
     startDate,
     endDate,
   });
-  
-  // const response = axiosInstance.get('/newsai/summary', {
-  //   params: {
-  //     base_stock_code: stock.stockCode,
-  //     stock_name: stock.stockName,
-  //     start_date: startDate,
-  //     end_date: endDate,
-  //   },
-  // });
 
   return (
     <>
@@ -101,6 +97,8 @@ const StockDetailPage = () => {
             <AnalysisSearch
               stockCode={stock.stockCode}
               stockName={stock.stockName}
+              startDate={startDate}
+              endDate={endDate}
             />
             <HrTag />
           </>

@@ -17,6 +17,8 @@ import { FlexGap } from '@components/styledComponent';
 interface AnalysisSearchProps {
   stockCode: string;
   stockName: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 interface AnalysisFormValues {
@@ -24,18 +26,28 @@ interface AnalysisFormValues {
   end_date: string;
 }
 
-const AnalysisSearch: React.FC<AnalysisSearchProps> = ({ stockCode, stockName }) => {
+const AnalysisSearch: React.FC<AnalysisSearchProps> = ({
+  stockCode,
+  stockName,
+  startDate,
+  endDate,
+}) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const { register, handleSubmit, setValue, watch } = useForm<AnalysisFormValues>();
+  const { register, handleSubmit, setValue, watch } =
+    useForm<AnalysisFormValues>({
+      defaultValues: {
+        start_date: startDate, // 프랍으로 받은 startDate 기본값 설정
+        end_date: endDate, // 프랍으로 받은 endDate 기본값 설정
+      },
+    });
   const [searchDates, setSearchDates] = useState<{
     start_date?: string;
     end_date?: string;
-  }>({});
+  }>({ start_date: startDate, end_date: endDate });
 
   const closeAnalysis = () => {
     setIsModalOpen(false);
   };
-
 
   const analysisQuery = useAnalysisQuery({
     analysisStock: {
@@ -44,7 +56,7 @@ const AnalysisSearch: React.FC<AnalysisSearchProps> = ({ stockCode, stockName })
     },
     startDate: searchDates.start_date || '',
     endDate: searchDates.end_date || '',
-  },);
+  });
 
   // 시작일 입력 시 종료일 자동 설정
   const startDateValue = watch('start_date');
@@ -81,7 +93,7 @@ const AnalysisSearch: React.FC<AnalysisSearchProps> = ({ stockCode, stockName })
   return (
     <>
       <form onSubmit={onSubmit}>
-        <FlexGap $gap='2rem'>
+        <FlexGap $gap="2rem">
           <InputRow>
             <InputLabel>차트 분석 조회 기간:</InputLabel>
             <InputTag
@@ -104,7 +116,12 @@ const AnalysisSearch: React.FC<AnalysisSearchProps> = ({ stockCode, stockName })
           <SimilarityButton type="submit">검색</SimilarityButton>
         </FlexGap>
       </form>
-      {isModalOpen && <AnalysisModal analysisData={analysisQuery.data} onClose={closeAnalysis}/>}
+      {isModalOpen && (
+        <AnalysisModal
+          analysisData={analysisQuery.data}
+          onClose={closeAnalysis}
+        />
+      )}
     </>
   );
 };
