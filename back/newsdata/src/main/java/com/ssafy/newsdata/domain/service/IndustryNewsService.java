@@ -132,7 +132,7 @@ public class IndustryNewsService {
     }
 
     public List<IndustryNewsDto> getRecentIndustryNews() throws SQLException, ClassNotFoundException {
-        List<IndustryNewsDto> content = industryNewsRepository.findAllIndustryNews(IdUtil.generateIdFromDate(LocalDate.now()), 500);
+        List<IndustryNewsDto> content = industryNewsRepository.findAllIndustryNews(IdUtil.generateIdFromDate(LocalDate.now()), 5000);
         validateNewsListContent(content);
 
         return content;

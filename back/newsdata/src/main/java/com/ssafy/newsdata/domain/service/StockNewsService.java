@@ -172,7 +172,7 @@ public class StockNewsService {
     }
 
     public List<StockNewsResponse> getRecentStockNews() throws SQLException, ClassNotFoundException {
-        List<StockNewsDto> content = stockNewsRepository.findAllStockNews(IdUtil.generateIdFromDate(LocalDate.now()), 500);
+        List<StockNewsDto> content = stockNewsRepository.findAllStockNews(IdUtil.generateIdFromDate(LocalDate.now()), 5000);
         validateNewsListContent(content);
 
         return content.stream()
