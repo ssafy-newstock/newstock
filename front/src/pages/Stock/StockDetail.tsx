@@ -25,34 +25,31 @@ import StockHoldingError from '@features/Stock/StockDetail/StockHoldingError';
 import SimilaritySearch from '@features/Stock/StockDetail/SimilaritySearch';
 import { useFindStockByCode } from '@utils/uesFindStockByCode';
 import useAuthStore from '@store/useAuthStore';
-import AnalysisModal from '@features/Stock/StockDetail/AnalysisModal';
 import { useAnalysisQuery } from '@hooks/useAnalysisQuery';
+import AnalysisSearch from '@features/Stock/StockDetail/AnalysisSearch';
 
 const StockDetailPage = () => {
   const location = useLocation();
   const { stock } = location.state as { stock: IStock };
-  const [isShow, setIsShow] = useState<boolean>(false);
+  const [isSimilartyShow, setIsSimilartyShow] = useState<boolean>(false);
+  const [isAnalysisShow, setIsAnalysisShow] = useState<boolean>(false);
+  
   const { isLogin } = useAuthStore();
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   // 주식 상세 정보
   const stockDetail = useFindStockByCode(stock.stockCode);
 
-  const handleClick = () => {
-    setIsShow(!isShow);
+  const handleSimilartyClick = () => {
+    setIsSimilartyShow(!isSimilartyShow);
   };
 
-  const handleAnalysis = () => {
-    setIsModalOpen(true);
-  };
-
-  const closeAnalysis = () => {
-    setIsModalOpen(false);
+  const handleAnalysisClick = () => {
+    setIsAnalysisShow(!isAnalysisShow);
   };
 
   const startDate = '2024-08-01';
   const endDate = '2024-09-01';
 
-  const { data:analysisData } = useAnalysisQuery({
+  const { data: _analysisData } = useAnalysisQuery({
     analysisStock: {
       stockCode: stock.stockCode,
       stockName: stock.stockName,
@@ -60,7 +57,7 @@ const StockDetailPage = () => {
     startDate,
     endDate,
   });
-
+  
   // const response = axiosInstance.get('/newsai/summary', {
   //   params: {
   //     base_stock_code: stock.stockCode,
@@ -79,10 +76,10 @@ const StockDetailPage = () => {
           {/* 좋아요, 유사도 버튼 */}
           <FlexGap $gap="1rem">
             {isLogin && <LikeButton stockCode={stock.stockCode} />}
-            <DetailPageButton onClick={handleAnalysis}>
+            <DetailPageButton onClick={handleAnalysisClick}>
               차트 분석
             </DetailPageButton>
-            <DetailPageButton onClick={handleClick}>
+            <DetailPageButton onClick={handleSimilartyClick}>
               유사도 분석
             </DetailPageButton>
           </FlexGap>
@@ -98,8 +95,19 @@ const StockDetailPage = () => {
           <Outlet />
         </DividedSection>
 
+        {/* 차트 분석 */}
+        {isAnalysisShow && (
+          <>
+            <AnalysisSearch
+              stockCode={stock.stockCode}
+              stockName={stock.stockName}
+            />
+            <HrTag />
+          </>
+        )}
+
         {/* 유사도 분석 */}
-        {isShow && (
+        {isSimilartyShow && (
           <DividedSection>
             <StockHeader>유사도 분석</StockHeader>
             <HrTag />
@@ -132,7 +140,6 @@ const StockDetailPage = () => {
           </DividedSection>
         )}
       </Center>
-      {isModalOpen && <AnalysisModal onClose={closeAnalysis} analysisData={analysisData} />}
     </>
   );
 };
