@@ -18,4 +18,11 @@ public class StockKeyword {
     @JoinColumn(name = "stock_news_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private StockNews stockNews;
     private String keyword;
+
+    public static StockKeyword of(final StockNews stockNews, final String keyword) {
+        StockKeyword entity = new StockKeyword();
+        entity.stockNews = stockNews;
+        entity.keyword = keyword;
+        return entity;
+    }
 }

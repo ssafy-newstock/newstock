@@ -82,7 +82,7 @@ public class IndustryNewsService {
      * @param id
      * @return
      */
-    public IndustryNewsDto getIndustryNews(Long id) throws SQLException, ClassNotFoundException {
+    public IndustryNewsDto getIndustryNews(String id) throws SQLException, ClassNotFoundException {
         IndustryNewsDto findNews = industryNewsRepository.findById(id);
 
         return findNews;
@@ -130,4 +130,12 @@ public class IndustryNewsService {
     public void deleteReadIndustryNews() {
         newsSchedulerService.deleteIndustryNewsRedis();
     }
+
+    public List<IndustryNewsDto> getRecentIndustryNews() throws SQLException, ClassNotFoundException {
+        List<IndustryNewsDto> content = industryNewsRepository.findAllIndustryNews(IdUtil.generateIdFromDate(LocalDate.now()), 500);
+        validateNewsListContent(content);
+
+        return content;
+    }
+
 }

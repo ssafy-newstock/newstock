@@ -4,16 +4,22 @@ spring:
   application:
     name: news
   datasource:
-    url: jdbc:mysql://3.38.182.23:3306/news
+  #    url: jdbc:mysql://3.38.182.23:3306/news
+  #    driver-class-name: com.mysql.cj.jdbc.Driver
+  #    username: ssafy1234
+  #    password: ssafy1234
+    url: jdbc:mysql://svc.sel4.cloudtype.app:30947/news
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ssafy1234
-    password: ssafy1234
+    username: root
+    password: ssafy
   jpa:
+    show-sql: true
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
   kafka:
     bootstrap-servers: kafka-service:9092
   data:
@@ -30,3 +36,9 @@ hbase:
 logging:
   level:
     com.ssafy.news.domain.service.client.StockClient: DEBUG
+    org:
+      hibernate:
+        orm:
+          jdbc:
+            bind:
+              trace

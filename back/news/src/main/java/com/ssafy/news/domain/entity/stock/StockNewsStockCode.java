@@ -18,4 +18,11 @@ public class StockNewsStockCode {
     private StockNews stockNews;
 
     private String stockCode;
+
+    public static StockNewsStockCode of(final StockNews stockNews, final String stockCode) {
+        StockNewsStockCode stockNewsStockCode = new StockNewsStockCode();
+        stockNewsStockCode.stockNews = stockNews;
+        stockNewsStockCode.stockCode = stockCode;
+        return stockNewsStockCode;
+    }
 }
