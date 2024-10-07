@@ -27,14 +27,16 @@ const CardContentTitle = styled.p`
   font-size: 2rem;
   font-weight: bold;
   margin: 1rem;
-  color: ${({ theme }) => theme.onBoadingTextColor};
+  color : white;
 `;
 
 // 카드 내용 항목 스타일
 const CardContentItem = styled.p`
   font-size: 1.5rem;
-  margin: 0.5rem 0; /* 각 문장 사이의 여백 */
-  color: ${({ theme }) => theme.onBoadingTextColor};
+  font-weight: 600;
+  margin: 2rem 0; /* 각 문장 사이의 여백 */
+  color : white;
+  line-height: 1.5;
 `;
 
 interface SectionProps {
@@ -79,12 +81,12 @@ const SectionSecond: React.FC<SectionProps> = ({
                 <CardDescription as="ul">
                   <CardContentItem>
                     Newstock은 다양한 경제 뉴스를 실시간으로 제공하며,
-                    투자자들이 보다 전략적으로 뉴스를 활용할 수 있도록 시황
-                    뉴스와 종목별 뉴스로 분류합니다.
+                    보다 전략적으로 뉴스를 활용할 수 있도록 시황
+                    뉴스와 종목별 뉴스로 분류해드려요.
                   </CardContentItem>
                   <CardContentItem>
-                    뉴스는 감정 분석을 통해 긍정적 또는 부정적인 시장 반응을
-                    쉽게 파악할 수 있으며, 투자 결정에 도움을 줍니다.
+                    뉴스 감정 분석을 통해 긍정·부정적 시장 반응을
+                    쉽게 파악하고, 투자 결정에 도움을 드려요.
                   </CardContentItem>
                 </CardDescription>
                 <MoreButton onClick={scrollToSectionFourth}>
@@ -106,7 +108,7 @@ const SectionSecond: React.FC<SectionProps> = ({
                 ></iframe>
                 <CardTitle>주식</CardTitle>
                 <CardDescription>
-                  실시간 주식 데이터를 기반으로 모의 투자
+                  실시간 주식 데이터 기반 모의 투자
                 </CardDescription>
               </CardContentWrapper>
             ),
@@ -115,12 +117,12 @@ const SectionSecond: React.FC<SectionProps> = ({
                 <CardContentTitle>주식</CardContentTitle>
                 <CardDescription as="ul">
                   <CardContentItem>
-                    가상 포인트를 사용하여 실시간 주식 데이터를 기반으로 한 모의
-                    투자 기능을 제공합니다. 실제 시장 데이터를 통해 리스크 없는
-                    투자 실험을 할 수 있습니다.
+                    가상 포인트를 사용하여 실시간 주식 데이터 기반의 모의
+                    투자 기능을 제공해요. 실제 시장 데이터를 통해 리스크 없는
+                    투자를 경험해보세요.
                   </CardContentItem>
                   <CardContentItem>
-                    월간 및 일간 차트를 통해 투자 흐름을 쉽게 파악하고, 과거와
+                    주식 차트를 통해 투자 흐름을 쉽게 파악하고, 과거와
                     현재 시장 상황을 비교하여 투자 전략을 개선할 수 있습니다.
                   </CardContentItem>
                 </CardDescription>

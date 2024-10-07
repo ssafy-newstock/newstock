@@ -11,6 +11,8 @@ import {
   TextWrapper,
   SectionTitle,
 } from '@features/Onboading/OnboadingStyledComponent';
+import videoStockFirst from '@assets/OnBoarding/실시간 주식.gif';
+import videoStockSecond from '@assets/OnBoarding/주식 매수.gif';
 
 interface SectionProps {
   $isVisible: boolean;
@@ -20,14 +22,12 @@ interface SectionProps {
 // 이미지와 관련된 텍스트 데이터를 배열로 관리
 const slides = [
   {
-    image:
-      'https://via.placeholder.com/960x540/828282/FFFFFF?text=960x540 Image+1',
+    image: videoStockFirst,
     title: '주식 조회',
     text: 'Newstock에서는 실시간 주식 데이터를 기반으로 다양한 종목을 조회할수 있습니다. 이를 통해 사용자는 현재 시장 상황을 빠르게 파악하고,필요한 경우 빠르게 종목을 변경하거나 투자 전략을 수정할 수있습니다.',
   },
   {
-    image:
-      'https://via.placeholder.com/960x540/808080/FFFFFF?text=960x540 Image+2',
+    image: videoStockSecond,
     title: '모의 투자',
     text: '가상의 포인트를 사용해 실제 시장 데이터를 기반으로 모의 투자를진행할 수 있습니다. 이를 통해 사용자는 리스크 없이 다양한 투자전략을 실험해볼 수 있으며, 실제 시장 상황에 대한 감각을 키울 수있습니다.',
   },
