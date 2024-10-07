@@ -18,6 +18,7 @@ import { useCategoryStockQuery } from '@hooks/useCategoryStockQuery';
 import useAuthStore from '@store/useAuthStore';
 import Left from '@components/Left';
 import StockModal from '@features/MyStockModal/StockModal';
+import { useNavigate } from 'react-router-dom';
 
 const Main = styled.div`
   display: flex;
@@ -59,12 +60,22 @@ const App = () => {
   const { data: top10Stock } = useTop10StockQuery();
   const { data: allStock } = useAllStockQuery();
   const { data: categoryStock } = useCategoryStockQuery();
+  const navigate = useNavigate();
+
+  // 상태 업데이트 완료 후 navigate 호출
+  useEffect(() => {
+    if (isLogin) {
+      navigate('/news-main');
+    }
+  }, [isLogin, navigate]);
 
   useEffect(() => {
     top10Stock && setTop10Stock(top10Stock.data);
     allStock && setAllStock(allStock.data);
     categoryStock && setCategoryStock(categoryStock.data);
   }, [top10Stock, allStock, categoryStock]);
+
+  const isOnboarding = location.pathname === '/onboarding';
 
   // Modal 열기/닫기 기능 추가
   return (
@@ -73,11 +84,13 @@ const App = () => {
       <Main>
         <Header isOpen={isOpen} />
         <Content>
-          <Left />
+          {!isOnboarding && <Left />}
           <Outlet context={{ setIsOpen }} />
-          <RightVacantWrapper $isOpen={isOpen} />
+          {!isOnboarding && <RightVacantWrapper $isOpen={isOpen} />}
         </Content>
-        {isLogin && <StockModal isOpen={isOpen} setIsOpen={setIsOpen} />}
+        {isLogin && !isOnboarding && (
+          <StockModal isOpen={isOpen} setIsOpen={setIsOpen} />
+        )}
       </Main>
       {/* 웹소켓 연결 */}
       <WebSocketComponent />

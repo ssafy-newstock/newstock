@@ -8,8 +8,16 @@ import { authRequest } from '@api/axiosInstance';
 import { formatUnit } from '@utils/formatUnit';
 import usePointStore from '@store/usePointStore';
 import useSocketStore from '@store/useSocketStore';
+import { useNavigate } from 'react-router-dom';
 
-const HeaderContainer = styled.div<{ $isOpen: boolean }>`
+const HeaderContainer = styled.div<{
+  $isOpen: boolean;
+  $isOnboardingPage: boolean;
+}>`
+  position: ${({ $isOnboardingPage }) =>
+    $isOnboardingPage ? 'fixed' : 'relative'}; /* 상단 고정 */
+  top: 0;
+  left: 0;
   width: ${({ $isOpen }) => ($isOpen ? 'calc(100% - 400px)' : '100%')};
   height: 5rem;
   display: flex;
@@ -17,6 +25,11 @@ const HeaderContainer = styled.div<{ $isOpen: boolean }>`
   align-items: center;
   padding: 1rem 2.5rem;
   transition: width 0.5s ease;
+  background: ${({ $isOnboardingPage, theme }) =>
+    $isOnboardingPage
+      ? 'linear-gradient(to top, rgba(0, 0, 0, 0), rgba(16, 23, 41, 0.2), rgba(16, 23, 41, 0.5))'
+      : theme.backgroundColor}; /* 그라데이션 추가 */
+  z-index: 999; /* 상단 고정 시 다른 요소들보다 위에 위치 */
 `;
 
 const NewStock = styled.div`
@@ -123,6 +136,7 @@ const Header: React.FC<HeaderProps> = ({ isOpen }) => {
   const { memberName } = useAuthStore();
   const { theme, toggleTheme } = useThemeStore();
   const isDarkMode = theme === 'dark';
+  const navigate = useNavigate();
   // 로그인 모달 상태 추가
   const [loginOpen, setLoginOpen] = useState<boolean>(false);
   // 유저 포인트 상태
@@ -205,10 +219,14 @@ const Header: React.FC<HeaderProps> = ({ isOpen }) => {
   //   }
   // };
 
+  const isOnboardingPage = location.pathname === '/onboarding';
+
   return (
     <>
-      <HeaderContainer $isOpen={isOpen}>
-        <NewStock>NewStock</NewStock>
+      <HeaderContainer $isOpen={isOpen} $isOnboardingPage={isOnboardingPage}>
+        <NewStock onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
+          NewStock
+        </NewStock>
         <HeaderRight>
           <Slider onClick={toggleTheme}>
             {/* <div>{isDarkMode ? '🌙' : '☀️'}</div> */}
