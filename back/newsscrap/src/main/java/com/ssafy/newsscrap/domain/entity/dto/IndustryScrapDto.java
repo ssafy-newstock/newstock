@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class IndustryScrapDto {
+    private Long id;
     private String title;
     private Long newsId;
     private String newsType;
