@@ -38,6 +38,7 @@ public class IndustryNews {
         entity.subtitle = dto.getSubtitle();
         entity.thumbnail = dto.getThumbnail();
         entity.title = dto.getTitle();
+        entity.uploadDatetime = dto.getUploadDatetime();
         return entity;
     }
 }

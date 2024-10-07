@@ -36,9 +36,9 @@ hbase:
 logging:
   level:
     com.ssafy.news.domain.service.client.StockClient: DEBUG
-    org:
-      hibernate:
-        orm:
-          jdbc:
-            bind:
-              trace
+#    org:
+#      hibernate:
+#        orm:
+#          jdbc:
+#            bind:
+#              trace
