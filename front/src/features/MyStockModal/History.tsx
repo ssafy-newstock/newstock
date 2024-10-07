@@ -13,6 +13,7 @@ import {
   StockImage,
   TextP_14_NOTGRAY,
 } from '@features/MyStockModal/styledComponent';
+import { getStockImageUrl } from '@utils/getStockImageUrl';
 
 const TransactionCardLeftTopDiv = styled.div`
   display: flex;
@@ -113,8 +114,9 @@ const History: React.FC = () => {
                 <CardDiv key={transaction.stockId}>
                   <CardLeftDiv>
                     <StockImage
-                      src={`https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${transaction.stockCode}.png`}
-                      alt={blueLogo}
+                      src={getStockImageUrl(transaction.stockCode)}
+                      onError={(e) => (e.currentTarget.src = blueLogo)}
+                      alt=""
                     />
                     {/* 주식 이름 및 매수/매도 표시 */}
                     <CardLeftRightDiv>
