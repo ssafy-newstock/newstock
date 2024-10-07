@@ -22,6 +22,8 @@ public class StockNews {
     private String description;
     private String media;
     private Integer sentiment;
+    @Lob
+    @Column(name = "subtitle", columnDefinition = "TEXT")
     private String subtitle;
     private String thumbnail;
     private String title;
