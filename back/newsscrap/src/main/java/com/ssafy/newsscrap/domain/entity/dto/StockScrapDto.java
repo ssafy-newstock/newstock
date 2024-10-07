@@ -13,6 +13,7 @@ public class StockScrapDto {
 
     public static StockScrapDto of(final StockScrap stockScrap) {
         StockScrapDto dto = new StockScrapDto();
+        dto.id = stockScrap.getId();
         dto.content = stockScrap.getContent();
         dto.title = stockScrap.getTitle();
         dto.newsId = stockScrap.getNewsId();
