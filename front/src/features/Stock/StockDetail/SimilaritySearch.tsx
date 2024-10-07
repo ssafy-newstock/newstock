@@ -92,7 +92,7 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
 
   useEffect(() => {
     if (similarityQuery.data && chartQuery.data) {
-      toast.success('유사도 검색 완료');
+      toast.success('유사도 분석 완료');
     }
   }, [similarityQuery.data, chartQuery.data]);
 
