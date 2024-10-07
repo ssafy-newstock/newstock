@@ -49,6 +49,12 @@ const FavoriteStock: React.FC<FavoriteStockProps> = ({ stock }) => {
     allStock.find((s) => s.stockCode === stock.stockCode) ||
     top10Stock.find((s) => s.stockCode === stock.stockCode);
 
+  const getTextColor = (priceChange: number | undefined) => {
+    if (priceChange === undefined) return '';
+    if (priceChange > 0) return 'red'; // 상승일 때 빨간색
+    if (priceChange < 0) return 'blue'; // 하락일 때 파란색
+    return ''; // 변화가 없을 때는 색상 없음
+  };
   return (
     <StockCardColumn onClick={handleNavigate}>
       <StockCardTitle>
@@ -69,8 +75,10 @@ const FavoriteStock: React.FC<FavoriteStockProps> = ({ stock }) => {
             $isPositive={!matchedStock.prdyVrss.toString().startsWith('-')}
           >
             <SpanTag>어제보다</SpanTag>{' '}
-            {formatChange(formatNumber(matchedStock.prdyVrss))}원 (
-            {formatChange(formatNumber(matchedStock.prdyCtrt))}%)
+            <SpanTag style={{ color: getTextColor(matchedStock.prdyVrss) }}>
+              {formatChange(formatNumber(matchedStock.prdyVrss))}원 (
+              {formatChange(formatNumber(matchedStock.prdyCtrt))}%)
+            </SpanTag>
           </StockPrev>
         </>
       ) : (

@@ -21,9 +21,9 @@ const OverflowIcon: React.FC = () => (
     height="1.5rem"
     viewBox="0 0 30 32"
   >
-    <circle cx="16" cy="6" r="3" />
-    <circle cx="16" cy="17" r="3" />
-    <circle cx="16" cy="28" r="3" />
+    <circle cx="16" cy="6" r="3" fill="currentColor" />
+    <circle cx="16" cy="17" r="3" fill="currentColor" />
+    <circle cx="16" cy="28" r="3" fill="currentColor" />
   </svg>
 );
 
