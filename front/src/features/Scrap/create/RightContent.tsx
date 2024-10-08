@@ -2,7 +2,7 @@ import { NoMessageP } from '@features/Scrap/scrapStyledComponent';
 import RightNewsCard from '@features/Scrap/create/RightNewsCard';
 import { useEffect, useState } from 'react';
 import { isWithinInterval, parse } from 'date-fns';
-import { NewsData } from '@pages/News/ScrapNewsInterface';
+import { NewsData } from '@features/News/ScrapNewsInterface';
 
 interface CenterContentProps {
   selectedDateRange: [Date | null, Date | null];

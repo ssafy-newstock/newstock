@@ -6,43 +6,7 @@ import {
   CenterContentSectionTitle,
   NewsSectionContainer,
 } from '@features/MyNews/styledComponent';
-import { ScrapData, NewsData } from '@pages/News/ScrapNewsInterface';
-
-// interface ScrapData {
-//   id: any;
-//   title: string;
-//   subtitle?: string | null;
-//   media?: string;
-//   description?: string;
-//   thumbnail?: string;
-//   uploadDatetime?: string;
-//   article?: string;
-//   sentiment?: string;
-//   industry?: string;
-//   stockNewsStockCodes?: string[]; // 종목 뉴스만 해당되는 부분
-//   stockKeywords?: string[]; // 종목 뉴스만 해당되는 부분
-//   newsType?: string;
-//   content?: string;
-//   newsId?: string;
-// }
-
-// interface NewsData {
-//   id: string;
-//   title: string;
-//   subtitle?: string | null;
-//   media?: string;
-//   description?: string;
-//   thumbnail?: string;
-//   uploadDatetime?: string;
-//   article?: string;
-//   sentiment?: string;
-//   industry?: string;
-//   stockNewsStockCodes?: string[]; // 종목 뉴스만 해당되는 부분
-//   stockKeywords?: string[]; // 종목 뉴스만 해당되는 부분
-//   newsType?: string;
-//   content?: string;
-//   newsId?: number;
-// }
+import { ScrapData, NewsData } from '@features/News/ScrapNewsInterface';
 
 interface NewsSectionProps {
   title: string;
@@ -59,7 +23,7 @@ const NewsSection: React.FC<NewsSectionProps> = ({
     datas.filter((news) => Number(news.id) !== id);
     scrapDatas?.filter((news) => Number(news.newsId) !== id);
   };
-  
+
   return (
     <NewsSectionContainer>
       <CenterContentSectionBeforeDiv>

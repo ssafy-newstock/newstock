@@ -2,7 +2,7 @@ import { NoMessageP } from '@features/Scrap/scrapStyledComponent';
 import ScrapCard from '@features/Scrap/detail/ScrapCard';
 import { useEffect, useState } from 'react';
 import { isWithinInterval, parse } from 'date-fns';
-import { ScrapData, NewsData } from '@pages/News/ScrapNewsInterface';
+import { ScrapData, NewsData } from '@features/News/ScrapNewsInterface';
 
 interface RightContentProps {
   onCardClick: (scrap: ScrapData, scrapNews: NewsData) => void; // 클릭 시 호출되는 함수
@@ -29,6 +29,7 @@ const RightContent: React.FC<RightContentProps> = ({
           'yyyy.MM.dd',
           new Date()
         ); // card.Date를 Date 객체로 변환
+        // 날짜가 변환되었는지 확인 후 범위 내에 있는지 검사
         return isWithinInterval(scrapDate, {
           start: startDate, // 여기에 Date 객체 사용
           end: endDate,

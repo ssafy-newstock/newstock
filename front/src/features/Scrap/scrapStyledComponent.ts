@@ -7,6 +7,13 @@ export const TitleP = styled.p`
   margin-bottom: auto;
 `;
 
+export const TitleP_15 = styled.p`
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-top: auto;
+  margin-bottom: auto;
+`;
+
 export const TextP_16 = styled.p`
   color: #828282;
   font-size: 1rem;

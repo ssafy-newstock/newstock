@@ -9,7 +9,7 @@ import {
   ScrapHr,
   TextP_16_NOTGRAY,
   TitleDiv,
-  TitleP,
+  TitleP_15,
 } from '@features/Scrap/scrapStyledComponent';
 import {
   CenterContentDiv,
@@ -90,6 +90,10 @@ const MediaLogo = styled.img`
   border-radius: 50%;
 `;
 
+// const CustomConterTitleDiv = styled(ConterTitleDiv)`
+//   align-items: baseline;
+// `;
+
 const processArticle = (
   article: string
 ): { imageUrls: string[]; content: string } => {
@@ -151,7 +155,7 @@ const CenterContent: React.FC = () => {
       } else {
         await createScrap(title, droppedCard.id, 'industry', contentAsHTML); // 기존 시황 뉴스 작성 API 호출
       }
-      alert('스크랩 작성 완료!');
+      // alert('스크랩 작성 완료!');
       navigate(`../scrap-detail/`);
     } catch (error) {
       console.error('스크랩 작성 중 오류 발생:', error);
@@ -193,7 +197,7 @@ const CenterContent: React.FC = () => {
     <>
       <TitleDiv>
         <ConterTitleDiv>
-          <TitleP>스크랩 작성</TitleP>
+          <TitleP_15>스크랩 작성</TitleP_15>
           <ThemedButton onClick={handleCreateCompleteClick}>
             작성 완료
           </ThemedButton>

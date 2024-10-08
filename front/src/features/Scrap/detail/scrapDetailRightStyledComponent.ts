@@ -11,7 +11,7 @@ export const RightTitleBottomDiv = styled.div`
   width: 100%;
   justify-content: flex-start;
   align-items: center;
-  margin-top: 1.25rem;
+  margin-top: 0.5rem;
   gap: 2rem;
 `;
 
@@ -36,6 +36,12 @@ export const ScrapCardDiv = styled.div`
   background: ${({ theme }) => theme.newsBackgroundColor};
   box-shadow: 0rem 0.25rem 0.25rem 0rem rgba(0, 0, 0, 0.25);
   cursor: pointer;
+
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 `;
 
 export const ScrapCardLeftDiv = styled.div`
@@ -56,7 +62,7 @@ export const ScrapCardRightDiv = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  gap: 1rem;
+  gap: 0.35rem;
   flex: 1 0 0;
 `;
 

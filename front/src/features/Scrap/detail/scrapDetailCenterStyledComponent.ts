@@ -71,7 +71,7 @@ export const CenterNewsRightDiv = styled.div`
 export const CenterNewsContextDiv = styled.div`
   display: flex;
   width: 100%;
-  height: 30rem;
+  min-height: 30rem;
   padding: 1.5rem;
   flex-direction: column;
   gap: 0.625rem;
@@ -86,6 +86,7 @@ export const CustomCenterNewsRightImg = styled.img`
   height: 8.75rem;
   border-radius: 1rem;
   margin-right: 1rem;
+  object-fit: cover;
 `;
 
 export const EconomicNewsTitleText = styled.p`

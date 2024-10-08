@@ -12,7 +12,18 @@ import {
   ScrapHr,
 } from '@features/Scrap/scrapStyledComponent';
 import { useScrapStore } from '@store/useScrapStore';
-import { ScrapData, NewsData } from '@pages/News/ScrapNewsInterface';
+import { ScrapData, NewsData } from '@features/News/ScrapNewsInterface';
+import styled from 'styled-components';
+
+const CustomCenterDiv = styled(CenterDiv)`
+  min-width: 30rem;
+  max-width: 100rem;
+`;
+
+const CustomRightDiv = styled(RightDiv)`
+  min-width: 20rem;
+  max-width: 60rem;
+`;
 
 const ScrapDetailPage: React.FC = () => {
   const [selectedCard, setSelectedCard] = useState<ScrapData | null>(null);
@@ -79,7 +90,7 @@ const ScrapDetailPage: React.FC = () => {
     <>
       <Center>
         {selectedCard ? (
-          <CenterDiv>
+          <CustomCenterDiv>
             <CenterTitle
               selectedCard={selectedCard}
               selectedNewsCard={selectedNewsCard!}
@@ -89,13 +100,13 @@ const ScrapDetailPage: React.FC = () => {
               selectedCard={selectedCard}
               selectedNewsCard={selectedNewsCard!}
             />
-          </CenterDiv>
+          </CustomCenterDiv>
         ) : (
           <NoMessageP>조회할 스크랩을 선택해주세요.</NoMessageP>
         )}
       </Center>
       <Right>
-        <RightDiv>
+        <CustomRightDiv>
           <RightTitle onDateRangeChange={handleDateRangeChange} />
           <ScrapHr />
           <RightContent
@@ -104,7 +115,7 @@ const ScrapDetailPage: React.FC = () => {
             scrapDatas={scrapList} // 통합된 스크랩 데이터 전달
             scrapNewsDatas={scrapNewsList} // 통합된 뉴스 데이터 전달
           />
-        </RightDiv>
+        </CustomRightDiv>
       </Right>
     </>
   );

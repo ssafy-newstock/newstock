@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useBookmarkStore } from '@store/useBookmarkStore';
 import { useScrapStore } from '@store/useScrapStore';
-import { ScrapData, NewsData } from '@pages/News/ScrapNewsInterface';
+import { ScrapData, NewsData } from '@features/News/ScrapNewsInterface';
 
 const StyledSvgIcon = styled.svg`
   cursor: pointer; /* 클릭 가능한 커서 설정 */
@@ -40,12 +40,12 @@ const AshbhIcon: React.FC<AshbhIconProps> = ({
         if (scrapData.newsType === 'industry') {
           // 시황 스크랩 데이터, 그리고 scrapData가 북마크 뉴스인지 스크랩 뉴스인지 구분이 안가므로 Number 명시
           await deleteScrap(Number(scrapData.id));
-        // 타입이 종목이면
+          // 타입이 종목이면
         } else {
           // 종목 스크랩 데이터
           await deleteStockScrap(Number(scrapData.id));
         }
-      // 스크랩 데이터가 없고
+        // 스크랩 데이터가 없고
       } else {
         // 타입이 시황이면
         if (title === '시황 뉴스') {

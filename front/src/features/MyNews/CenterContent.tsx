@@ -4,7 +4,7 @@ import { isWithinInterval, parse } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { useBookmarkStore } from '@store/useBookmarkStore';
 import { useScrapStore } from '@store/useScrapStore';
-import { NewsData } from '@pages/News/ScrapNewsInterface';
+import { NewsData } from '@features/News/ScrapNewsInterface';
 
 interface CenterContentProps {
   selectedDateRange: [Date | null, Date | null];

@@ -13,7 +13,20 @@ import {
   MediaLogo,
 } from '@features/Scrap/detail/scrapDetailCenterStyledComponent';
 import newstockIcon from '@assets/Stock/blueLogo.png';
-import { ScrapData, NewsData } from '@pages/News/ScrapNewsInterface';
+import { ScrapData, NewsData } from '@features/News/ScrapNewsInterface';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+
+const CustomCenterNewsDiv = styled(CenterNewsDiv)`
+  gap: 1.2rem;
+  cursor: pointer;
+
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+`;
 
 interface CenterContentProps {
   selectedCard: ScrapData;
@@ -43,6 +56,7 @@ const CenterContent: React.FC<CenterContentProps> = ({
   selectedCard,
   selectedNewsCard,
 }) => {
+  const navigate = useNavigate();
   // 업로드 날짜를 포맷팅
   const formattedDate =
     selectedNewsCard.uploadDatetime?.split('T')[0].replace(/-/g, '.') ||
@@ -55,15 +69,24 @@ const CenterContent: React.FC<CenterContentProps> = ({
   // article이 undefined일 경우 기본값을 제공
   const { imageUrls, content } = processArticle(selectedNewsCard.article || '');
 
+  // CenterNewsDiv 클릭 시 상세 페이지로 이동
+  const handleNewsClick = () => {
+    if (selectedCard.newsType === 'stock') {
+      navigate(`/subnews-main/stock-news/${selectedNewsCard.id}`);
+    } else {
+      navigate(`/subnews-main/economic-news/${selectedNewsCard.id}`);
+    }
+  };
+
   return (
     <CenterContentDiv>
-      <CenterNewsDiv>
+      <CustomCenterNewsDiv onClick={handleNewsClick}>
         {selectedNewsCard.thumbnail ? (
           <CustomCenterNewsRightImg src={selectedNewsCard.thumbnail} />
         ) : (
           <CenterNewsRightDiv />
         )}
-        <CenterNewsLeftDiv>
+        <CenterNewsLeftDiv style={{ overflow: 'hidden' }}>
           <EconomicNewsTitleText
             style={{
               display: '-webkit-box',
@@ -79,7 +102,7 @@ const CenterContent: React.FC<CenterContentProps> = ({
             style={{
               display: '-webkit-box',
               WebkitBoxOrient: 'vertical',
-              WebkitLineClamp: 3,
+              WebkitLineClamp: 2,
               overflow: 'hidden',
               textOverflow: 'ellipsis',
             }}
@@ -101,7 +124,7 @@ const CenterContent: React.FC<CenterContentProps> = ({
             <FooterText> {formattedDate}</FooterText>
           </EconomicNewsFooter>
         </CenterNewsLeftDiv>
-      </CenterNewsDiv>
+      </CustomCenterNewsDiv>
       <CenterNewsContextDiv>
         <div dangerouslySetInnerHTML={{ __html: selectedCard.content || '' }} />
       </CenterNewsContextDiv>

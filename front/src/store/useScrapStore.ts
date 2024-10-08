@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { authRequest } from '@api/axiosInstance';
-import { ScrapData, NewsData } from '@pages/News/ScrapNewsInterface';
-// import { toast } from 'react-toastify';
+import { ScrapData, NewsData } from '@features/News/ScrapNewsInterface';
+import { toast } from 'react-toastify';
 
 interface ScrapStore {
   scraps: ScrapData[];
@@ -135,11 +135,13 @@ export const useScrapStore = create<ScrapStore>((set) => ({
       );
 
       if (response.data.success) {
+        toast.success('스크랩이 성공적으로 작성되었습니다.');
         console.log('스크랩 작성 성공:', response.data.data);
       } else {
         console.error('스크랩 작성 실패:', response.data);
       }
     } catch (error) {
+      toast.error('스크랩 작성에 실패했습니다.');
       console.error('스크랩 작성 중 오류 발생:', error);
     }
   },
@@ -168,11 +170,13 @@ export const useScrapStore = create<ScrapStore>((set) => ({
       );
 
       if (response.data.success) {
+        toast.success('스크랩이 성공적으로 작성되었습니다.');
         console.log('종목 스크랩 작성 성공:', response.data.data);
       } else {
         console.error('종목 스크랩 작성 실패:', response.data);
       }
     } catch (error) {
+      toast.error('스크랩 작성에 실패했습니다.');
       console.error('종목 스크랩 작성 중 오류 발생:', error);
     }
   },
@@ -184,12 +188,14 @@ export const useScrapStore = create<ScrapStore>((set) => ({
       );
 
       if (response.data.success) {
+        toast.success('스크랩이 성공적으로 삭제되었습니다.');
         console.log('시황 뉴스 스크랩 삭제 성공:', response.data.data);
         // 필요시 스토어 업데이트 로직 추가
       } else {
         console.error('시황 뉴스 스크랩 삭제 실패:', response.data);
       }
     } catch (error) {
+      toast.error('스크랩 삭제에 실패했습니다.');
       console.error('시황 뉴스 스크랩 삭제 중 오류 발생:', error);
     }
   },
@@ -200,12 +206,14 @@ export const useScrapStore = create<ScrapStore>((set) => ({
       const response = await authRequest.delete(`/news/scrap/stock/${scrapId}`);
 
       if (response.data.success) {
+        toast.success('스크랩이 성공적으로 삭제되었습니다.');
         console.log('종목 뉴스 스크랩 삭제 성공:', response.data.data);
         // 필요시 스토어 업데이트 로직 추가
       } else {
         console.error('종목 뉴스 스크랩 삭제 실패:', response.data);
       }
     } catch (error) {
+      toast.error('스크랩 삭제에 실패했습니다.');
       console.error('종목 뉴스 스크랩 삭제 중 오류 발생:', error);
     }
   },
@@ -235,12 +243,14 @@ export const useScrapStore = create<ScrapStore>((set) => ({
       );
 
       if (response.data.success) {
+        toast.success('스크랩이 성공적으로 수정되었습니다.');
         console.log('시황 뉴스 스크랩 수정 성공:', response.data.data);
         // 필요시 스토어 업데이트 로직 추가
       } else {
         console.error('시황 뉴스 스크랩 수정 실패:', response.data);
       }
     } catch (error) {
+      toast.error('스크랩 수정에 실패했습니다.');
       console.error('시황 뉴스 스크랩 수정 중 오류 발생:', error);
     }
   },
@@ -270,12 +280,14 @@ export const useScrapStore = create<ScrapStore>((set) => ({
       );
 
       if (response.data.success) {
+        toast.success('스크랩이 성공적으로 수정되었습니다.');
         console.log('종목 뉴스 스크랩 수정 성공:', response.data.data);
         // 필요시 스토어 업데이트 로직 추가
       } else {
         console.error('종목 뉴스 스크랩 수정 실패:', response.data);
       }
     } catch (error) {
+      toast.error('스크랩 수정에 실패했습니다.');
       console.error('종목 뉴스 스크랩 수정 중 오류 발생:', error);
     }
   },

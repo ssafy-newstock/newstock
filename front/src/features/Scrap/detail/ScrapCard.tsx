@@ -1,27 +1,45 @@
 import { AkarIcon } from './Icon';
 import {
-  ScrapCardDiv,
   ScrapCardLeftDiv,
   ScrapCardRightBottomDiv,
   ScrapCardRightDiv,
 } from '@features/Scrap/detail/scrapDetailRightStyledComponent';
+import {
+  CardTitleFontStyle,
+  FontStyle,
+} from '@features/MyNews/styledComponent';
 import styled from 'styled-components';
 
-import { ScrapData, NewsData } from '@pages/News/ScrapNewsInterface';
+import { ScrapData, NewsData } from '@features/News/ScrapNewsInterface';
 
-const EconomicNewsTitleText = styled.p`
-  color: ${({ theme }) => theme.textColor};
-  font-size: 1.5rem;
-  font-weight: 600;
-  line-height: 1.2;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis; /* 말줄임표 적용 */
-  width: 80%; /* 텍스트가 영역을 벗어나지 않도록 조정 */
+const CardContainer = styled.div`
+  display: flex;
+  padding: 0.8rem 1rem;
+  width: 90%;
+  height: auto; /* 모든 카드의 높이를 일정하게 유지 */
+  align-items: center;
+  gap: 1rem;
+  align-self: stretch;
+  border-radius: 1.25rem;
+  background: ${({ theme }) => theme.newsBackgroundColor};
+  box-shadow: 0rem 0.25rem 0.25rem 0rem rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  overflow: hidden; /* 내용이 넘치면 잘리도록 설정 */
+
+  cursor: pointer;
+
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 `;
+
+const CustomFontStyle = styled(FontStyle)`
+  color: ${({ theme }) => theme.grayTextColor};
+  font-size: 0.8rem;
+`;
+
 
 const EconomicNewsContent = styled.p`
   display: -webkit-box;
@@ -33,16 +51,10 @@ const EconomicNewsContent = styled.p`
   align-items: center;
   align-self: stretch;
   color: #828282;
-  font-size: 1rem;
+  font-size: 0.9rem;
   line-height: 1.5rem;
   width: 90%;
-`;
-
-const FooterText = styled.p`
-  color: #828282;
-  font-size: 1rem;
-  font-weight: 500;
-  line-height: 1.9rem;
+  margin-left: 0.2rem;
 `;
 
 interface ScrapCardProps {
@@ -51,34 +63,20 @@ interface ScrapCardProps {
   onClick?: () => void;
 }
 
-// const processArticle = (
-//   article: string
-// ): { imageUrls: string[]; content: string } => {
-//   const imageTagRegex = /<ImageTag>(.*?)<\/ImageTag>/g;
-//   const imageUrls: string[] = [];
-//   let content = article;
-//   let match;
-
-//   // 모든 ImageTag를 찾아서 이미지 URL 추출
-//   while ((match = imageTagRegex.exec(article)) !== null) {
-//     imageUrls.push(match[1]); // 이미지 URL을 배열에 추가
-//   }
-
-//   // 이미지 태그를 제거한 본문 내용
-//   content = article.replace(imageTagRegex, '').trim();
-
-//   return { imageUrls, content };
-// };
-
 const ScrapCard: React.FC<ScrapCardProps> = ({ data, scrapData, onClick }) => {
   // const { imageUrls, content } = processArticle(data.article || '');
+  const displayDate = scrapData.createdAt
+    ? scrapData.createdAt.split('T')[0].replace(/-/g, '.')
+    : data.uploadDatetime!.split('T')[0].replace(/-/g, '.');
   return (
-    <ScrapCardDiv onClick={onClick}>
+    <CardContainer onClick={onClick}>
+      {/* <CardInnerWrapper> */}
       <ScrapCardLeftDiv>
         <AkarIcon />
       </ScrapCardLeftDiv>
+
       <ScrapCardRightDiv>
-        <EconomicNewsTitleText
+        <CardTitleFontStyle
           style={{
             display: '-webkit-box',
             WebkitBoxOrient: 'vertical',
@@ -88,7 +86,7 @@ const ScrapCard: React.FC<ScrapCardProps> = ({ data, scrapData, onClick }) => {
           }}
         >
           {scrapData.title}
-        </EconomicNewsTitleText>
+        </CardTitleFontStyle>
         <ScrapCardRightBottomDiv>
           <div>
             <EconomicNewsContent
@@ -104,13 +102,10 @@ const ScrapCard: React.FC<ScrapCardProps> = ({ data, scrapData, onClick }) => {
             </EconomicNewsContent>
           </div>
         </ScrapCardRightBottomDiv>
-        <FooterText>
-          {data.uploadDatetime
-            ? data.uploadDatetime.split('T')[0].replace(/-/g, '.')
-            : ''}
-        </FooterText>
+        <CustomFontStyle>{displayDate}</CustomFontStyle>
       </ScrapCardRightDiv>
-    </ScrapCardDiv>
+      {/* </CardInnerWrapper> */}
+    </CardContainer>
   );
 };
 
