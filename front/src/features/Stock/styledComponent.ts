@@ -388,6 +388,8 @@ export const InputTag = styled.input`
   background-color: ${({ theme }) => theme.profileBackgroundColor};
   color: ${({ theme }) => theme.profileColor};
   flex-grow: 1;
+  font-size: 1rem;
+  font-weight: 500;
 `;
 
 export const TradeButtonWrapper = styled.div`
