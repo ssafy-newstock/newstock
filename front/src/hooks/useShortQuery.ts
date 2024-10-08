@@ -3,23 +3,20 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
 interface IShortParams {
-  newsId: number;
+  id: string;
   newsType: string;
 }
 
-interface INewsShort {
-  newsShort: string;
-}
-
 interface IShortResponse {
-  newsShort: INewsShort;
-  newsOriginal: string;
+  newsOne: string;
+  newsTwo: string;
+  newsThree: string;
 }
 
 // 공통 파라미터 생성 함수
-const createParams = ({ newsId, newsType }: IShortParams) => ({
+const createParams = ({ id, newsType }: IShortParams) => ({
   params: {
-    news_id: newsId,
+    news_id: id,
     news_type: newsType,
   },
 });
@@ -36,8 +33,9 @@ const fetchShort = async (params: IShortParams): Promise<IShortResponse> => {
     if (error instanceof AxiosError) {
       if (error.response?.status === 404) {
         return {
-          newsShort: { newsShort: '' },
-          newsOriginal: '',
+          newsOne: '',
+          newsTwo: '',
+          newsThree: '',
         };
       }
       throw error;
@@ -54,7 +52,7 @@ export const useShortQuery = (
       IShortResponse,
       AxiosError,
       IShortResponse,
-      [string, number, string]
+      [string, string, string]
     >,
     'queryKey' | 'queryFn'
   >
@@ -63,9 +61,9 @@ export const useShortQuery = (
     IShortResponse,
     AxiosError,
     IShortResponse,
-    [string, number, string]
+    [string, string, string]
   >({
-    queryKey: ['short', params.newsId, params.newsType],
+    queryKey: ['short', params.id, params.newsType],
     queryFn: () => fetchShort(params),
     staleTime: Infinity,
     ...options,
