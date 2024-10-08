@@ -2,7 +2,7 @@ package com.ssafy.stock.domain.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ssafy.stock.domain.entity.Redis.KospiChartiRedis;
+import com.ssafy.stock.domain.entity.Redis.KospiChartRedis;
 import com.ssafy.stock.domain.entity.Redis.KospiRedis;
 import com.ssafy.stock.domain.entity.Redis.StockIndustryRedis;
 import com.ssafy.stock.domain.repository.redis.KospiChartRedisRepository;
@@ -126,11 +126,11 @@ public class StockIndustryService {
 
         if(isWithinTradingHours()){
             kospiResponses.forEach(kospiResponse -> {
-                KospiChartiRedis kospiChartiRedis = new KospiChartiRedis(
+                KospiChartRedis kospiChartRedis = new KospiChartRedis(
                         kospiResponse.getIndustryCode(),
                         kospiResponse.getIndustryName(),
                         kospiResponse.getBstpNmixPrpr());
-                kospiChartRedisRepository.save(kospiChartiRedis);
+                kospiChartRedisRepository.save(kospiChartRedis);
             });
         }
 
@@ -237,8 +237,8 @@ public class StockIndustryService {
 
         return kospiRedisList.stream()
                 .map(kospiRedis -> {
-                    List<KospiChartiRedis> kospiChartRedisList = kospiChartRedisRepository.findAllById(kospiRedis.getIndustryCode());
-                    List<KospiChartiRedis> sortKospiChart = kospiChartRedisList.stream().sorted(Comparator.comparing(KospiChartiRedis::getTime)).toList();
+                    List<KospiChartRedis> kospiChartRedisList = kospiChartRedisRepository.findAllById(kospiRedis.getIndustryCode());
+                    List<KospiChartRedis> sortKospiChart = kospiChartRedisList.stream().sorted(Comparator.comparing(KospiChartRedis::getTime)).toList();
                     return new KospiAndChartResponse(kospiRedis, sortKospiChart);
                 }).toList();
     }
