@@ -2,7 +2,7 @@ import { axiosInstance } from '@api/axiosInstance';
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
-interface IKospi {
+export interface IKospi {
   industryCode: string;
   industryName: string;
   bstpNmixPrpr: string; // 현재가
@@ -11,7 +11,7 @@ interface IKospi {
 }
 
 // KOSPI 차트 데이터에 대한 타입 정의
-interface IKospiChart {
+export interface IKospiChart {
   industryCode: string;
   industryName: string;
   bstpNmixPrpr: string; // 가격
@@ -19,7 +19,7 @@ interface IKospiChart {
 }
 
 // 전체 데이터 구조에 대한 타입 정의
-interface IKospiData {
+export interface IKospiData {
   kospi: IKospi;
   kospiChart: IKospiChart[];
 }
@@ -33,6 +33,12 @@ interface IKospiResponse {
 const fetchKospi = async (): Promise<IKospiResponse | null> => {
   try {
     const { data } = await axiosInstance.get<IKospiResponse>('/stock/kospi');
+    // 데이터가 성공적으로 가져와졌다면, industryCode 기준으로 정렬
+    if (data && data.success) {
+      data.data.sort((a, b) =>
+        a.kospi.industryCode.localeCompare(b.kospi.industryCode)
+      );
+    }
     return data;
   } catch (error) {
     console.error('코스피 데이터 fetch 중 에러 발생:', error);
