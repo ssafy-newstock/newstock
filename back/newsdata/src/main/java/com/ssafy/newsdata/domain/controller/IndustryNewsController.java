@@ -36,7 +36,7 @@ public class IndustryNewsController {
     }
 
     @GetMapping("/{id}")
-    public CommonResponse<?> getIndustryNewsById(@PathVariable("id") Long id) throws SQLException, ClassNotFoundException {
+    public CommonResponse<?> getIndustryNewsById(@PathVariable("id") String id) throws SQLException, ClassNotFoundException {
         IndustryNewsDto industryNews = industryNewsService.getIndustryNews(id);
 
         return CommonResponse.success(industryNews);
@@ -55,5 +55,11 @@ public class IndustryNewsController {
     public CommonResponse<?> getIndustryNewsInIds(@RequestParam List<String> ids) throws SQLException, ClassNotFoundException {
         List<IndustryNewsDto> industryNewsInIds = industryNewsService.getIndustryNewsInIds(ids);
         return CommonResponse.success(industryNewsInIds);
+    }
+
+    @GetMapping("/recent")
+    public CommonResponse<?> getRecentIndustryNews() throws SQLException, ClassNotFoundException {
+        List<IndustryNewsDto> recentIndustryNews = industryNewsService.getRecentIndustryNews();
+        return CommonResponse.success(recentIndustryNews);
     }
 }

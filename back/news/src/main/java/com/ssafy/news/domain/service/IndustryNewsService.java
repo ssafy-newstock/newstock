@@ -129,4 +129,13 @@ public class IndustryNewsService {
     public void deleteReadIndustryNews(){
         newsSchedulerService.deleteIndustryNewsRedis();
     }
+
+    @Transactional
+    public void insertIndustryNews(List<IndustryNewsDto> industryNewsList) {
+
+        List<IndustryNews> list = industryNewsList.stream()
+                .map(IndustryNews::of)
+                .toList();
+        industryNewsRepository.saveAll(list);
+    }
 }

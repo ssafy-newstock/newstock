@@ -1,5 +1,6 @@
 package com.ssafy.news.domain.entity.stock;
 
+import com.ssafy.news.domain.service.client.response.StockNewsResponse;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -13,15 +14,16 @@ import java.util.Set;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class StockNews {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "stock_news_id")
-    private Long id;
-
+    private String id;
+    @Lob
+    @Column(name = "article", columnDefinition = "LONGTEXT")
     private String article;
     private String description;
     private String media;
-    private String newsId;
-    private String sentiment;
+    private Integer sentiment;
+    @Lob
+    @Column(name = "subtitle", columnDefinition = "TEXT")
     private String subtitle;
     private String thumbnail;
     private String title;
@@ -32,4 +34,23 @@ public class StockNews {
 
     @OneToMany(mappedBy = "stockNews")
     private Set<StockKeyword> stockKeywords;
+
+    public static StockNews of(StockNewsResponse stockNewsDto) {
+        StockNews entity = new StockNews();
+        entity.id = stockNewsDto.getId();
+        entity.article = stockNewsDto.getArticle();
+        entity.description = stockNewsDto.getDescription();
+        entity.media = stockNewsDto.getMedia();
+        entity.sentiment = stockNewsDto.getSentiment();
+        entity.subtitle = stockNewsDto.getSubtitle();
+        entity.thumbnail = stockNewsDto.getThumbnail();
+        entity.title = stockNewsDto.getTitle();
+        entity.uploadDatetime = stockNewsDto.getUploadDatetime();
+        return entity;
+    }
+
+    public void injectEntity(final Set<StockNewsStockCode> stockCodes, final Set<StockKeyword> stockKeywords) {
+        this.stockKeywords = stockKeywords;
+        this.stockNewsStockCodes = stockCodes;
+    }
 }

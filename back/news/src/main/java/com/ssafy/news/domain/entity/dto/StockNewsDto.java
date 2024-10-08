@@ -15,12 +15,11 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 public class StockNewsDto {
-    private Long id;
+    private String id;
     private String article;
     private String description;
     private String media;
-    private String newsId;
-    private String sentiment;
+    private Integer sentiment;
     private String subtitle;
     private String thumbnail;
     private String title;
@@ -34,7 +33,6 @@ public class StockNewsDto {
         dto.article = entity.getArticle();
         dto.description = entity.getDescription();
         dto.media = entity.getMedia();
-        dto.newsId = entity.getNewsId();
         dto.sentiment = entity.getSentiment();
         dto.subtitle = entity.getSubtitle();
         dto.thumbnail = entity.getThumbnail();
