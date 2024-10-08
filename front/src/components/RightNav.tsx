@@ -4,21 +4,21 @@ import {
   MyStockIcon,
   RankIcon,
   StarIcon,
-} from '@features/MyStockModal/Icon';
-import { TextP_12 } from '@features/MyStockModal/styledComponent';
+} from '@features/SideModal/Icon';
+import { TextP_12 } from '@features/SideModal/styledComponent';
 import styled from 'styled-components';
 
 const RightDiv = styled.div`
   position: fixed;
   right: 0;
-  min-width: 66px;
+  min-width: 68px;
   height: 100%;
   display: flex;
   flex-direction: column;
   border-left: 2px solid #b3b3b3;
   gap: 1.5rem;
   padding: 1.5rem 0.5rem;
-  z-index: 9999;
+  z-index: 10;
 `;
 
 // active 상태에 따른 TextP_12 스타일링
