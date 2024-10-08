@@ -91,7 +91,7 @@ const OnBoardingPage = () => {
 
   // 마지막 섹션에서 "시작하기" 버튼을 클릭할 때 처리
   const handleStart = () => {
-    navigate('/news-main');
+    navigate('/home');
   };
 
   return (
