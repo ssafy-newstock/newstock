@@ -18,7 +18,7 @@ const MenuSection = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.5rem;
   margin-bottom: 1.2rem;
 `;
 const MenuSectionG = styled.div<{ $isOpen: boolean }>`
@@ -26,7 +26,7 @@ const MenuSectionG = styled.div<{ $isOpen: boolean }>`
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.5rem;
   margin-bottom: ${({ $isOpen }) => ($isOpen ? `0.3rem` : '1.2rem')};
   transition: margin-bottom 0.5s ease;
 `;
