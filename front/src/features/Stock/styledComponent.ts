@@ -377,7 +377,7 @@ export const InputRow = styled.div`
 
 export const InputLabel = styled.label`
   min-width: 60px;
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 500;
 `;
 
