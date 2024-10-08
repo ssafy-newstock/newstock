@@ -116,7 +116,7 @@ const AnalysisModal: React.FC<AnalysisModalProps> = ({
   const navigate = useNavigate();
   const onClickNews = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, id: number) => {
     event.stopPropagation();
-    navigate(`/subnews-main/economic-news/${id}`);
+    navigate(`/subnews-main/stock-news/${id}`);
   }
   if (analysisData?.macroReport === '') {
     return (
