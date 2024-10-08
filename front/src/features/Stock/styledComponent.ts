@@ -126,14 +126,12 @@ export const StockPrev = styled.div<{ $isPositive: boolean }>`
 export const HoldingStockPrev = styled(StockPrev)`
   font-size: 1rem;
   font-weight: 500;
-
 `;
 
 export const SpanTag = styled.span`
   font-size: 0.8rem;
   color: ${({ theme }) => theme.textColor};
   font-weight: 500;
-
 `;
 
 export const HeartWrapper = styled.div`
@@ -184,7 +182,6 @@ export const Text = styled.div`
   font-size: 1rem;
   color: ${({ theme }) => theme.textColor};
   font-weight: 500;
-
 `;
 
 export const TextBold = styled(Text)`
@@ -205,6 +202,10 @@ export const TextLarge = styled(Text)`
 
 export const TextLeft = styled(Text)`
   text-align: left;
+`;
+
+export const TextLeftLine = styled(TextLeft)`
+  line-height: 1.2;
 `;
 
 export const TextRight = styled(Text)`
