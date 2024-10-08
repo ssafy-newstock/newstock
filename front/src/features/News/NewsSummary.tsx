@@ -1,7 +1,5 @@
 import LoadingSpinner from '@components/LoadingSpinner';
 import styled from 'styled-components';
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
 
 const NewsSummaryWrapper = styled.div`
   display: flex;
