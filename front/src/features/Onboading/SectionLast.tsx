@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-
-import ThemedButton from '@components/ThemedButton';
 import {
   SectionContainerDefault,
   SectionTitle,
+  SmallText,
   Text,
 } from '@features/Onboading/OnboadingStyledComponent';
 import { AllowIcon } from '@features/Onboading/Icon';
@@ -40,9 +39,9 @@ const SectionLastTitle = styled(SectionTitle)`
 
 // 섹션 이미지 컨테이너
 const ImageContainer = styled.div<{ $isExpanded: boolean }>`
-  width: ${({ $isExpanded }) => ($isExpanded ? '1600px' : '426px')};
+  width: ${({ $isExpanded }) => ($isExpanded ? '1280px' : '426px')};
   height: ${({ $isExpanded }) =>
-    $isExpanded ? '900px' : '240px'}; /* 16:9 비율 */
+    $isExpanded ? '720px' : '240px'}; /* 16:9 비율 */
   position: relative;
   transition:
     width 1s ease,
@@ -51,9 +50,9 @@ const ImageContainer = styled.div<{ $isExpanded: boolean }>`
 
   /* 반응형 디자인 - 이미지 크기 조정 */
   @media (max-width: 1600px) {
-    width: ${({ $isExpanded }) => ($isExpanded ? '1200px' : '356px')};
+    width: ${({ $isExpanded }) => ($isExpanded ? '1280px' : '426px')};
     height: ${({ $isExpanded }) =>
-      $isExpanded ? '675px' : '200px'}; /* 16:9 비율 */
+      $isExpanded ? '720px' : '240px'}; /* 16:9 비율 */
   }
 
   @media (max-width: 1200px) {
@@ -136,8 +135,8 @@ const SectionLast: React.FC<SectionProps> = ({
     const y = e.clientY - rect.top; // 이미지 내부에서의 Y 좌표
 
     // 기울기 값 계산 (-10 ~ 10 사이로 설정)
-    const tiltAmountX = (x / rect.width - 0.5) * 10;
-    const tiltAmountY = (y / rect.height - 0.5) * 10;
+    const tiltAmountX = (x / rect.width - 0.5) * 6;
+    const tiltAmountY = (y / rect.height - 0.5) * 6;
 
     setTiltX(tiltAmountX);
     setTiltY(tiltAmountY);
@@ -166,26 +165,20 @@ const SectionLast: React.FC<SectionProps> = ({
         )}
         <ImageContainer
           $isExpanded={isExpanded}
-          onClick={handleImageClick}
           onMouseMove={isExpanded ? handleMouseMove : undefined}
           onMouseLeave={isExpanded ? handleMouseLeave : undefined}
+          onClick={!isExpanded ? handleImageClick : handleStartClick}
         >
           <BackgroundImage
-            src="https://via.placeholder.com/1600x900"
+            src="https://via.placeholder.com/1280x720"
             alt="배경 이미지"
             $tiltX={tiltX}
             $tiltY={tiltY}
+            style={{ cursor: 'pointer' }}
           />
         </ImageContainer>
       </ImageDiv>
-      {isExpanded && (
-        <ThemedButton
-          onClick={handleStartClick}
-          style={{ width: '12rem', height: '4rem', borderRadius: '2rem' }}
-        >
-          시작하기
-        </ThemedButton>
-      )}
+      {isExpanded && <SmallText>이미지를 클릭하여 시작해보세요!</SmallText>}
     </SectionLastContainer>
   );
 };
