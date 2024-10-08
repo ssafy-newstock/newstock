@@ -14,10 +14,13 @@ import {
 import { IStock } from '@features/Stock/types';
 import NewsCard from '@features/home/NewsCard';
 import StockIndexCard from '@features/home/StockIndexCard';
+import useKospiQuery from '@hooks/useKospiQuery';
 import { useTop4NewsQuery } from '@hooks/useTop4news';
 import useTop10StockStore from '@store/useTop10StockStore';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 export const DividedSection = styled.div`
   margin: 1rem 0rem;
@@ -34,11 +37,9 @@ const Home = () => {
     navigate('/subnews-main/stock-news');
   };
 
-  const { data, isLoading } = useTop4NewsQuery();
-
-  if (isLoading) {
-    return <div>로딩중...</div>;
-  }
+  const { data: kospiData, isLoading: isKospiLoading } = useKospiQuery();
+  const { data: newsData, isLoading: isNewsLoading } = useTop4NewsQuery();
+  console.log('kospiData', kospiData);
 
   return (
     <Center style={{ padding: '1rem' }}>
@@ -46,10 +47,21 @@ const Home = () => {
       <HrTag />
       <DividedSection>
         <MainGridColumn $gap="5rem">
-          <StockIndexCard />
-          <StockIndexCard />
-          <StockIndexCard />
-          <StockIndexCard />
+          {isKospiLoading
+            ? Array.from({ length: 4 }).map((_, index) => (
+                <Skeleton
+                  key={index}
+                  style={{
+                    width: '100%',
+                    height: '7rem',
+                    borderRadius: '1.25rem',
+                  }}
+                />
+              ))
+            : kospiData &&
+              kospiData.data.map((kospiInfo, index) => (
+                <StockIndexCard key={index} kospiInfo={kospiInfo} />
+              ))}
         </MainGridColumn>
       </DividedSection>
 
@@ -80,8 +92,20 @@ const Home = () => {
       <HrTag />
       <DividedSection>
         <MainGridColumn $gap="1rem">
-          {data &&
-            data.data.map((news) => <NewsCard key={news.id} news={news} />)}
+          {isNewsLoading
+            ? Array.from({ length: 4 }).map((_, index) => (
+                <Skeleton
+                  style={{
+                    width: '100%',
+                    height: '14rem',
+                    borderRadius: '1.25rem',
+                  }}
+                  key={index}
+                />
+              ))
+            : newsData?.data.map((news) => (
+                <NewsCard key={news.id} news={news} />
+              ))}
         </MainGridColumn>
       </DividedSection>
     </Center>

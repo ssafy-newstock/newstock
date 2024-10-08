@@ -9,6 +9,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import { IKospiChart } from '@hooks/useKospiQuery';
 
 ChartJS.register(
   CategoryScale,
@@ -44,7 +45,7 @@ const filterEvenIndices = (data: IData[]) => {
   return data.filter((_, index) => index % 2 === 0);
 };
 
-const LineChart = () => {
+const LineChart = ({ kospiChart }: { kospiChart: IKospiChart[] }) => {
   const options = {
     responsive: true,
     animation: {
@@ -52,11 +53,11 @@ const LineChart = () => {
     },
     elements: {
       line: {
-        tension: 0.4, // This makes the line smoother
+        tension: 0.4, // 이 설정은 선을 부드럽게 만듭니다
       },
       point: {
-        radius: 0, // This removes the points
-        hoverRadius: 0, // Removes points on hover as well
+        radius: 0, // 점을 제거합니다
+        hoverRadius: 0, // 마우스 오버 시 점도 제거합니다
       },
     },
     plugins: {
@@ -73,7 +74,6 @@ const LineChart = () => {
       },
     },
   };
-  
 
   const dummyData: IData[] = [
     { date: '2024-10-01T00:00:00Z', price: 169 },
@@ -113,11 +113,17 @@ const LineChart = () => {
     { date: '2024-11-04T00:00:00Z', price: 150 },
     { date: '2024-11-05T00:00:00Z', price: 160 },
   ];
-  
 
-  // 짝수 인덱스의 데이터만 필터링
-  const evenData = filterEvenIndices(dummyData);
+  // kospiChart 데이터가 비어 있거나 빈 배열인 경우 더미 데이터를 사용
+  const chartData: IData[] = kospiChart.length > 0
+    ? kospiChart.map(item => ({
+        date: item.time, // kospiChart의 시간
+        price: parseFloat(item.bstpNmixPrpr), // 가격을 숫자로 변환
+      }))
+    : dummyData;
 
+  // 선택된 데이터에서 짝수 인덱스의 데이터 필터링
+  const evenData = filterEvenIndices(chartData);
   const labels = evenData.map((item) => item.date);
 
   const datasets = [
@@ -134,7 +140,7 @@ const LineChart = () => {
   };
 
   return (
-    <div style={{width: '5rem'}}>
+    <div style={{ width: '5rem' }}>
       <Line options={options} data={data} />
     </div>
   );
