@@ -81,8 +81,13 @@ const Auth = () => {
         toast.error('로그인 중 오류가 발생했습니다.');
       } finally {
         setIsLoading(false);
+        const url = localStorage.getItem('pathname');
+        console.log('이전 url', url);
+        if (url === '/onboarding') {
+          navigate('/news-main');
+        }
         // pathname이 있을 경우 해당 경로로 이동, 없을 경우 '/'로 이동
-        if (pathname) {
+        else if (pathname && url !== '/onboarding') {
           navigate(pathname);
         } else {
           navigate('/');
