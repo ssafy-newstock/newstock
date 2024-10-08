@@ -113,7 +113,7 @@ const FavoriteNews: React.FC = () => {
   }, [loadBookmarks]);
 
   // 뉴스 클릭 이벤트에서 stockNews와 industryNews를 구분하여 navigate
-  const handleNewsClick = (id: number, isStockNews: boolean) => {
+  const handleNewsClick = (id: string, isStockNews: boolean) => {
     const url = isStockNews
       ? `/subnews-main/stock-news/${id}`
       : `/subnews-main/economic-news/${id}`;
@@ -121,7 +121,7 @@ const FavoriteNews: React.FC = () => {
   };
 
   const handleBookmarkClick = async (
-    id: number,
+    id: string,
     event: React.MouseEvent,
     isStockNews: boolean
   ) => {

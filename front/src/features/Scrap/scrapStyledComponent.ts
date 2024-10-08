@@ -77,6 +77,7 @@ export const CenterDiv = styled.div`
   align-items: flex-start;
   gap: 0.625rem;
   align-self: stretch;
+  /* height: 90%; */
 `;
 
 export const RightDiv = styled.div`

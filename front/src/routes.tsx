@@ -65,7 +65,7 @@ const router = createBrowserRouter([
       { path: 'my-news', element: <MyNewsPage /> },
       { path: 'scrap-detail', element: <ScrapDetailPage /> },
       { path: 'scrap-create', element: <ScrapCreatePage /> },
-      { path: 'scrap-edit', element: <ScrapEditPage /> },
+      { path: 'scrap-edit/:scrapId', element: <ScrapEditPage /> },
 
       //주식 관련
       { path: 'stock-main', element: <StockMainPage /> },

@@ -1,72 +1,95 @@
-import { TextP_16, TextP_22 } from '@features/Scrap/scrapStyledComponent';
 import {
-  RightNewsCardBottomDiv,
-  RightNewsCardDiv,
-  RightNewsCardTagDiv,
-  RightNewsCardTagP,
-} from '@features/Scrap/create/scrapCreateRightStyledComponent';
+  CardBottomContainer,
+  CardContainer,
+  CardContextDiv,
+  CardTitleFontStyle,
+  FontStyle,
+} from '@features/MyNews/styledComponent';
+import { translateIndustry } from '@api/dummyData/DummyData';
 import { format, parseISO } from 'date-fns';
+import styled from 'styled-components';
+import { NewsTag } from '@features/News/NewsIconTag';
+import { useNavigate } from 'react-router-dom';
+import { useFindStockByCode } from '@utils/uesFindStockByCode';
+import { NewsData } from '@pages/News/ScrapNewsInterface';
 
-interface NewsData {
-  id: number;
-  title: string;
-  subtitle: string | null;
-  media: string;
-  description: string;
-  thumbnail: string;
-  uploadDatetime: string;
-  article: string;
-  sentiment: string;
-  industry?: string;
-  stockNewsStockCodes?: { stockCode: string; stockName: string }[]; // 종목 뉴스만 해당되는 부분
-  stockKeywords?: string[]; // 종목 뉴스만 해당되는 부분
-}
+const CustomFontStyle = styled(FontStyle)`
+  color: ${({ theme }) => theme.grayTextColor};
+  font-size: 0.8rem;
+`;
+
+const BookmarkedNewsMiddleLine = styled.div`
+  width: 0.09rem;
+  height: 1.25rem;
+  background: #e0e0e0;
+`;
+
 interface RightNewsProps {
   data: NewsData;
 }
 
 const RightNewsCard: React.FC<RightNewsProps> = ({ data }) => {
+  const navigate = useNavigate();
+
+  // 주식 코드가 없는 경우 빈 문자열을 기본값으로 설정
+  const stockCode = data.stockNewsStockCodes?.[0] || '';
+
+  // 주식 상세 정보
+  const stockDetail = useFindStockByCode(stockCode);
+  const stockName = stockDetail?.stockName || 'Unknown Stock';
+
+  const newsType = stockCode ? 'stock' : 'industry';
+
+  const handleDetail = () => {
+    if (newsType === 'stock') {
+      navigate(`/subnews-main/stock-news/${data.id}`);
+    } else {
+      navigate(`/subnews-main/economic-news/${data.id}`);
+    }
+  };
+
+  // 드래그 시작 시
   const handleDragStart = (e: React.DragEvent) => {
-    e.dataTransfer.setData('text/plain', JSON.stringify(data));
-    e.dataTransfer.effectAllowed = 'move'; // 이동 가능한 요소로 설정
-    document.body.style.cursor = 'grabbing'; // 드래그 시작 시 커서 변경
+    e.dataTransfer.setData(
+      'text/plain',
+      JSON.stringify({ ...data, type: newsType })
+    );
+    e.dataTransfer.effectAllowed = 'move'; // 이동 가능
+    document.body.style.cursor = 'grabbing'; // 드래그 시 커서 변경
   };
 
+  // 드래그 종료 시
   const handleDragEnd = () => {
-    document.body.style.cursor = 'default'; // 드래그 끝난 후 커서 원래대로
+    document.body.style.cursor = 'default'; // 드래그 후 커서 복구
   };
 
-  const formattedDate = format(parseISO(data.uploadDatetime), 'yyyy.MM.dd');
+  const formattedDate = data.uploadDatetime
+    ? format(parseISO(data.uploadDatetime), 'yyyy.MM.dd')
+    : ''; // 날짜가 없을 경우 빈 문자열을 설정
+
   return (
-    <RightNewsCardDiv
+    <CardContainer
       draggable
       onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd} // 드래그 끝난 후 커서 복구
-      style={{ cursor: 'grab' }} // 기본적으로 'grab' 커서
+      onDragEnd={handleDragEnd}
+      style={{ cursor: 'grab' }}
+      onClick={handleDetail}
     >
-      <TextP_22
-        style={{
-          display: '-webkit-box',
-          WebkitBoxOrient: 'vertical',
-          WebkitLineClamp: 1,
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-        }}
-      >
-        {data.title}
-      </TextP_22>
-      <RightNewsCardBottomDiv>
-        <div style={{ display: 'flex', flexDirection: 'row', gap: '1rem' }}>
-          <TextP_16>{data.media}</TextP_16>
-          <TextP_16>{formattedDate}</TextP_16>
-        </div>
-        {data.stockKeywords && (
-          <RightNewsCardTagDiv>
-            <RightNewsCardTagP>#{data.stockKeywords[0]}</RightNewsCardTagP>
-          </RightNewsCardTagDiv>
+      <CardTitleFontStyle>{data.title}</CardTitleFontStyle>
+      <CardContextDiv>
+        <CustomFontStyle>{data.media}</CustomFontStyle>
+        <BookmarkedNewsMiddleLine />
+        <CustomFontStyle>{formattedDate}</CustomFontStyle>
+      </CardContextDiv>
+      <CardBottomContainer>
+        {stockCode && <NewsTag $tagName={stockName}># {stockName}</NewsTag>}
+        {data.industry && (
+          <NewsTag $tagName={translateIndustry(data.industry)}>
+            # {translateIndustry(data.industry)}
+          </NewsTag>
         )}
-      </RightNewsCardBottomDiv>
-    </RightNewsCardDiv>
+      </CardBottomContainer>
+    </CardContainer>
   );
 };
 

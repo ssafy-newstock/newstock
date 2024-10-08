@@ -17,6 +17,7 @@ import { useCategoryStockQuery } from '@hooks/useCategoryStockQuery';
 import useAuthStore from '@store/useAuthStore';
 import Left from '@components/Left';
 import StockModal from '@features/MyStockModal/StockModal';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Main = styled.div`
   display: flex;
@@ -34,11 +35,18 @@ const Content = styled.div`
   transition: all 0.5s ease;
 `;
 
-const RightVacantWrapper = styled.div<{ $isOpen: boolean }>`
-  min-width: ${({ $isOpen }) =>
-    $isOpen ? '580px' : '300px'}; /* isOpen에 따라 width 조정 */
+const RightVacantWrapper = styled.div<{
+  $isOpen: boolean;
+  $isScrapDetail: boolean;
+}>`
+  min-width: ${({ $isOpen, $isScrapDetail }) =>
+    $isOpen
+      ? '580px'
+      : $isScrapDetail
+        ? '0px'
+        : '300px'}; /* scrap-detail 페이지에서 모달이 닫혀있을 때는 여백이 0px */
   opacity: ${({ $isOpen }) =>
-    $isOpen ? '0' : '1'}; /* isOpen에 따라 opacity 조정 */
+    $isOpen ? '0' : '1'}; /* 모달이 열리면 투명도 조정 */
   transition:
     min-width 0.5s ease,
     opacity 0.5s ease; /* 너비와 불투명도를 함께 전환 */
@@ -50,6 +58,7 @@ const App = () => {
   const currentTheme = theme === 'light' ? lightTheme : darkTheme;
   const [isOpen, setIsOpen] = useState(false);
   const { isLogin } = useAuthStore();
+  const location = useLocation();
 
   const { setAllStock } = useAllStockStore();
   const { setCategoryStock } = useCategoryStockStore();
@@ -68,6 +77,11 @@ const App = () => {
 
   const isOnboarding = location.pathname === '/onboarding';
 
+  // scrap-detail 페이지인지 확인하는 변수
+  const isScrapDetail =
+    location.pathname === '/scrap-detail' ||
+    location.pathname === '/scrap-create';
+
   // Modal 열기/닫기 기능 추가
   return (
     <ThemeProvider theme={currentTheme}>
@@ -77,14 +91,14 @@ const App = () => {
         <Content>
           {!isOnboarding && <Left />}
           <Outlet context={{ setIsOpen }} />
-          {!isOnboarding && <RightVacantWrapper $isOpen={isOpen} />}
+          <RightVacantWrapper $isOpen={isOpen} $isScrapDetail={isScrapDetail} />
         </Content>
         {isLogin && !isOnboarding && (
           <StockModal isOpen={isOpen} setIsOpen={setIsOpen} />
         )}
       </Main>
       {/* 웹소켓 연결 */}
-      <WebSocketComponent />
+      {/* <WebSocketComponent /> */}
       {/* 토스트 메세지 */}
       <ToastContainer
         position="bottom-right"

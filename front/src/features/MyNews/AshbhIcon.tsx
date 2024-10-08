@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 import { useBookmarkStore } from '@store/useBookmarkStore';
+import { useScrapStore } from '@store/useScrapStore';
+import { ScrapData, NewsData } from '@pages/News/ScrapNewsInterface';
 
 const StyledSvgIcon = styled.svg`
   cursor: pointer; /* 클릭 가능한 커서 설정 */
@@ -14,22 +16,43 @@ const StyledSvgIcon = styled.svg`
 interface AshbhIconProps {
   id: number;
   title: string;
+  // 북마크 뉴스도 오고 스크랩 뉴스도 오므로 둘다 설정
+  scrapData?: ScrapData | NewsData;
   onDelete: () => void; // 삭제 후 처리할 함수
 }
 
-const AshbhIcon: React.FC<AshbhIconProps> = ({ id, title, onDelete }) => {
+const AshbhIcon: React.FC<AshbhIconProps> = ({
+  id,
+  title,
+  scrapData,
+  onDelete,
+}) => {
   const { removeBookmark, removeStockBookmark } = useBookmarkStore();
+  const { deleteScrap, deleteStockScrap } = useScrapStore();
 
   const handleDelete = async (event: React.MouseEvent) => {
     event.stopPropagation();
 
     try {
-      if (title === '시황 뉴스') {
-        // 시황 뉴스 삭제
-        await removeBookmark(id);
+      // 스크랩 데이터가 있고
+      if (scrapData) {
+        // 타입이 시황이면
+        if (scrapData.newsType === 'industry') {
+          // 시황 스크랩 데이터, 그리고 scrapData가 북마크 뉴스인지 스크랩 뉴스인지 구분이 안가므로 Number 명시
+          await deleteScrap(Number(scrapData.id));
+        // 타입이 종목이면
+        } else {
+          // 종목 스크랩 데이터
+          await deleteStockScrap(Number(scrapData.id));
+        }
+      // 스크랩 데이터가 없고
       } else {
-        // 종목 뉴스 삭제
-        await removeStockBookmark(id);
+        // 타입이 시황이면
+        if (title === '시황 뉴스') {
+          await removeBookmark(String(id));
+        } else {
+          await removeStockBookmark(String(id));
+        }
       }
       onDelete(); // 삭제 후 UI 갱신을 위한 함수 호출
     } catch (error) {

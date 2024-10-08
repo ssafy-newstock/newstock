@@ -122,7 +122,7 @@ interface EconNewsDetailHeaderProps {
   media: string;
   uploadDate: string;
   sentiment: string;
-  id: number;
+  id: string;
 }
 
 const EconNewsDetailHeader: React.FC<EconNewsDetailHeaderProps> = ({

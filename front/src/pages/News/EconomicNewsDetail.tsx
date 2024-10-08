@@ -39,7 +39,7 @@ const NewsWrapper = styled.div`
 `;
 
 interface NewsItem {
-  id: number;
+  id: string;
   title: string;
   article: string;
   content: string;

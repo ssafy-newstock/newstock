@@ -132,7 +132,7 @@ interface StockNewsDetailHeaderProps {
   sentiment: string;
   tagList: string[];
   stockNewsStockCodes?: string[];
-  id: number;
+  id: string;
 }
 
 const StockNewsDetailHeader: React.FC<StockNewsDetailHeaderProps> = ({

@@ -5,12 +5,25 @@ import RightContent from '@features/Scrap/create/RightContent';
 import RightTitle from '@features/Scrap/create/RightTitle';
 import { RightDiv, ScrapHr } from '@features/Scrap/scrapStyledComponent';
 import { CenterDiv } from '@features/MyNews/styledComponent';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useBookmarkStore } from '@store/useBookmarkStore';
 
 const ScrapCreatePage = () => {
   const [selectedDateRange, setSelectedDateRange] = useState<
     [Date | null, Date | null]
   >([null, null]);
+
+  const {
+    bookmarkedDetailNews: economicNews,
+    bookmarkedDetailStockNews: stockNews,
+    fetchBookmarkedDetailNews,
+    fetchBookmarkedDetailStockNews,
+  } = useBookmarkStore();
+
+  useEffect(() => {
+    fetchBookmarkedDetailNews();
+    fetchBookmarkedDetailStockNews();
+  }, [fetchBookmarkedDetailNews, fetchBookmarkedDetailStockNews]);
 
   // 날짜 범위 변경 핸들러
   const handleDateRangeChange = (dates: [Date | null, Date | null]) => {
@@ -27,7 +40,11 @@ const ScrapCreatePage = () => {
         <RightDiv>
           <RightTitle onDateRangeChange={handleDateRangeChange} />
           <ScrapHr />
-          <RightContent selectedDateRange={selectedDateRange} />
+          <RightContent
+            selectedDateRange={selectedDateRange}
+            economicNews={economicNews}
+            stockNews={stockNews}
+          />
         </RightDiv>
       </Right>
     </>
