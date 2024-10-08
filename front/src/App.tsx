@@ -17,13 +17,26 @@ import { useCategoryStockQuery } from '@hooks/useCategoryStockQuery';
 import useAuthStore from '@store/useAuthStore';
 import Left from '@components/Left';
 import StockModal from '@features/MyStockModal/StockModal';
+import RightNav from '@components/RightNav';
+import MyStock from '@features/MyStockModal/MyStock';
+import History from '@features/MyStockModal/History';
+import FavoriteStock from '@features/MyStockModal/FavoriteStock';
+import FavoriteNews from '@features/MyStockModal/FavoriteNews';
+import Ranking from '@features/MyStockModal/Ranking';
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 96.5%; /* 기본 너비는 100%로 설정 */
+  height: 100%;
+`;
 
 const Main = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   width: 100%; /* 기본 너비는 100%로 설정 */
   height: 100vh;
-  transition: width 0.5s ease;
+  transition: all 0.5s ease;
 `;
 
 const Content = styled.div`
@@ -36,7 +49,7 @@ const Content = styled.div`
 
 const RightVacantWrapper = styled.div<{ $isOpen: boolean }>`
   min-width: ${({ $isOpen }) =>
-    $isOpen ? '580px' : '300px'}; /* isOpen에 따라 width 조정 */
+    $isOpen ? '530px' : '250px'}; /* isOpen에 따라 width 조정 */
   opacity: ${({ $isOpen }) =>
     $isOpen ? '0' : '1'}; /* isOpen에 따라 opacity 조정 */
   transition:
@@ -59,6 +72,7 @@ const App = () => {
   const { data: allStock } = useAllStockQuery();
   const { data: categoryStock } = useCategoryStockQuery();
   const location = useLocation();
+  const [activeComponent, setActiveComponent] = useState<string | null>(null);
 
   useEffect(() => {
     top10Stock && setTop10Stock(top10Stock.data);
@@ -68,21 +82,48 @@ const App = () => {
 
   const isOnboarding = location.pathname === '/onboarding';
 
+  const renderActiveComponent = () => {
+    switch (activeComponent) {
+      case 'MyStock':
+        return <MyStock isOpen={activeComponent === 'MyStock'} />;
+      case 'MyStockHistory':
+        return <History isOpen={activeComponent === 'MyStockHistory'} />;
+      case 'Heart':
+        return <FavoriteStock isOpen={activeComponent === 'Heart'} />;
+      case 'Star':
+        return <FavoriteNews isOpen={activeComponent === 'Star'} />;
+      case 'Rank':
+        return <Ranking isOpen={activeComponent === 'Rank'} />;
+      default:
+        return null;
+    }
+  };
+
   // Modal 열기/닫기 기능 추가
   return (
     <ThemeProvider theme={currentTheme}>
       <GlobalStyle />
       <Main>
-        <Header isOpen={isOpen} />
-        <Content>
-          {!isOnboarding && <Left />}
-          <Outlet context={{ setIsOpen }} />
-          {!isOnboarding && <RightVacantWrapper $isOpen={isOpen} />}
-        </Content>
-        {isLogin && !isOnboarding && (
-          <StockModal isOpen={isOpen} setIsOpen={setIsOpen} />
-        )}
+        <Container>
+          <Header isOpen={activeComponent !== null} />
+          <Content>
+            {!isOnboarding && <Left />}
+            <Outlet context={{ setIsOpen }} />
+            {!isOnboarding && (
+              <RightVacantWrapper $isOpen={activeComponent !== null} />
+            )}
+          </Content>
+          {isLogin && !isOnboarding && (
+            <StockModal isOpen={isOpen} setIsOpen={setIsOpen} />
+          )}
+        </Container>
+        {renderActiveComponent()}
+        <RightNav
+          activeComponent={activeComponent}
+          setActiveComponent={setActiveComponent}
+        />
       </Main>
+
       {/* 웹소켓 연결 */}
       <WebSocketComponent />
       {/* 토스트 메세지 */}
