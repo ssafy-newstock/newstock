@@ -53,7 +53,7 @@ interface NewsMainBodyProps {
   stockDetail?: IStockDetail;
   header: string;
   newsType: string;
-  id: number;
+  id: string;
   sentiment: string;
 }
 
@@ -71,7 +71,7 @@ const NewsMainBody: React.FC<NewsMainBodyProps> = ({
   const isEconomicNews = newsType === '시황';
   const navigate = useNavigate();
 
-  const handleNewsClick = (id: number, newsType: string) => {
+  const handleNewsClick = (id: string, newsType: string) => {
     if (newsType.trim() === '시황') {
       navigate(`/subnews-main/economic-news/${id}`);
     } else {

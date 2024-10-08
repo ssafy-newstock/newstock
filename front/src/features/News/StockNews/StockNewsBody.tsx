@@ -110,7 +110,7 @@ interface IStockDetail {
 }
 
 interface StockNewsBodyProps {
-  id: number;
+  id: string;
   title: string;
   content: string;
   media: string;
@@ -120,7 +120,7 @@ interface StockNewsBodyProps {
   onShowSummaryChange: (showSummary: boolean) => void;
   header: string;
   stockDetail: IStockDetail;
-  newsId: number;
+  newsId: string;
 }
 
 const StockNewsBody: React.FC<StockNewsBodyProps> = ({

@@ -107,7 +107,7 @@ const LoadingSpinner = styled.div`
 `;
 
 interface NewsItem {
-  id: number;
+  id: string;
   title: string;
   article: string;
   content: string;
@@ -248,7 +248,7 @@ const EconomicNewsPage: React.FC = () => {
     };
   }, [fetchNews, loading, initialLoadComplete]);
 
-  const handleNewsClick = (id: number) => {
+  const handleNewsClick = (id: string) => {
     navigate(`/subnews-main/economic-news/${id}`);
   };
 

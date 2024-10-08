@@ -22,6 +22,9 @@ import History from '@features/MyStockModal/History';
 import FavoriteStock from '@features/MyStockModal/FavoriteStock';
 import FavoriteNews from '@features/MyStockModal/FavoriteNews';
 import Ranking from '@features/MyStockModal/Ranking';
+import StockModal from '@features/MyStockModal/StockModal';
+import { useLocation } from 'react-router-dom';
+
 
 const Main = styled.div`
   display: flex;
@@ -46,11 +49,18 @@ const Content = styled.div`
   transition: all 0.5s ease;
 `;
 
-const RightVacantWrapper = styled.div<{ $isOpen: boolean }>`
-  min-width: ${({ $isOpen }) =>
-    $isOpen ? '530px' : '250px'}; /* isOpen에 따라 width 조정 */
+const RightVacantWrapper = styled.div<{
+  $isOpen: boolean;
+  $isScrapDetail: boolean;
+}>`
+  min-width: ${({ $isOpen, $isScrapDetail }) =>
+    $isOpen
+      ? '530px'
+      : $isScrapDetail
+        ? '0px'
+        : '250px'}; /* scrap-detail 페이지에서 모달이 닫혀있을 때는 여백이 0px */
   opacity: ${({ $isOpen }) =>
-    $isOpen ? '0' : '1'}; /* isOpen에 따라 opacity 조정 */
+    $isOpen ? '0' : '1'}; /* 모달이 열리면 투명도 조정 */
   transition:
     min-width 0.5s ease,
     opacity 0.5s ease; /* 너비와 불투명도를 함께 전환 */
@@ -61,6 +71,7 @@ const App = () => {
   const { theme } = useThemeStore();
   const currentTheme = theme === 'light' ? lightTheme : darkTheme;
   const { isLogin } = useAuthStore();
+  const location = useLocation();
 
   const { setAllStock } = useAllStockStore();
   const { setCategoryStock } = useCategoryStockStore();
@@ -96,6 +107,12 @@ const App = () => {
         return null;
     }
   };
+
+  // scrap-detail 페이지인지 확인하는 변수
+  const isScrapDetail =
+    location.pathname === '/scrap-detail' ||
+    location.pathname === '/scrap-create';
+
 
   // Modal 열기/닫기 기능 추가
   return (

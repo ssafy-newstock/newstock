@@ -29,6 +29,7 @@ import MyStockPage from '@pages/Stock/MyStock';
 import AllStockPage from '@pages/Stock/AllStock';
 import SectionStockPage from '@pages/Stock/SectionStock';
 import Auth from '@pages/Auth';
+import Home from '@pages/Home';
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="/onboarding" replace /> },
       { path: 'onboarding', element: <OnBoardingPage /> },
+      { path: 'home', element: <Home /> },
       { path: 'login/oauth2/code/*', element: <Auth /> },
 
       // 뉴스 관련
@@ -63,7 +65,7 @@ const router = createBrowserRouter([
       { path: 'my-news', element: <MyNewsPage /> },
       { path: 'scrap-detail', element: <ScrapDetailPage /> },
       { path: 'scrap-create', element: <ScrapCreatePage /> },
-      { path: 'scrap-edit', element: <ScrapEditPage /> },
+      { path: 'scrap-edit/:scrapId', element: <ScrapEditPage /> },
 
       //주식 관련
       { path: 'stock-main', element: <StockMainPage /> },
