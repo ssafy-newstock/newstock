@@ -102,7 +102,6 @@ export const SlideImage = styled.img<SlideImageProps>`
   flex: 2;
   width: 100%;
   height: auto;
-  max-width: 100%;
   object-fit: contain;
   transition: opacity 1s ease-in-out;
   position: absolute;
@@ -208,9 +207,12 @@ export const SubTitle = styled.h2`
 
 // 텍스트 스타일
 export const Text = styled.p`
-  font-size: 2rem;
+  font-size: 1.8rem;
+  font-weight: 500;
   margin-bottom: 1rem;
-  color: ${({ theme }) => theme.onBoadingTextColor};
+  color: #495057;
+  line-height: 1.8;
+
 
   /* 반응형 - 작은 화면에서 텍스트 크기 조정 */
   @media (max-width: 768px) {

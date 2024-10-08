@@ -7,6 +7,7 @@ import com.ssafy.news.domain.entity.stock.StockNewsRedis;
 import com.ssafy.news.domain.entity.stock.StockNewsStockCode;
 import com.ssafy.news.domain.repository.StockNewsRedisRepository;
 import com.ssafy.news.domain.repository.StockNewsRepository;
+import com.ssafy.news.domain.service.client.response.StockNewsResponse;
 import com.ssafy.news.domain.service.converter.NewsConverter;
 import com.ssafy.news.global.util.TokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -126,6 +127,7 @@ public class StockNewsService {
 
     /**
      * 종목 뉴스 조회 확인 메소드
+     *
      * @param newsId
      * @param token
      */
@@ -136,7 +138,8 @@ public class StockNewsService {
 
             stockNewsRedisRepository.findById(newsId + "|" + memberId)
                     .ifPresentOrElse(
-                            stockNewsRedis -> {},
+                            stockNewsRedis -> {
+                            },
                             () -> {
                                 stockNewsRedisRepository.save(new StockNewsRedis(newsId, memberId));
 
@@ -156,7 +159,30 @@ public class StockNewsService {
      */
     @Transactional
     @Scheduled(cron = "0 0 0 * * *")
-    public void deleteReadStockNews(){
+    public void deleteReadStockNews() {
         newsSchedulerService.deleteStockNewsRedis();
+    }
+
+    @Transactional
+    public void insertStockNews(List<StockNewsResponse> stockNewsDtoList) {
+        List<StockNews> list = stockNewsDtoList.stream()
+                .map(stockNewsDto -> {
+                    StockNews entity = StockNews.of(stockNewsDto);
+                    List<String> stringStockKeywords = stockNewsDto.getStockKeywords();
+                    List<String> stringStockCodes = stockNewsDto.getStockNewsStockCodes();
+
+                    Set<StockNewsStockCode> stockCodes = stringStockCodes.stream()
+                            .map(s -> StockNewsStockCode.of(entity, s))
+                            .collect(Collectors.toSet());
+                    Set<StockKeyword> stockKeywords = stringStockKeywords.stream()
+                            .map(s -> StockKeyword.of(entity, s))
+                            .collect(Collectors.toSet());
+
+                    entity.injectEntity(stockCodes, stockKeywords);
+                    return entity;
+                })
+                .toList();
+
+        stockNewsRepository.saveAll(list);
     }
 }

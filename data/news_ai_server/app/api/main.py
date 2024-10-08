@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 # from api.routes import items, login, utils
-from api.routes import similarity, summary, dummy
+from api.routes import similarity, summary, dummy, short
 from fastapi import FastAPI, WebSocket
 from starlette.websockets import WebSocketDisconnect
 app = FastAPI(
@@ -15,5 +15,6 @@ api_router = APIRouter()
 
 api_router.include_router(similarity.router, prefix="/api/newsai/similarity", tags=["similarity"])
 api_router.include_router(summary.router, prefix="/api/newsai/summary", tags=["summary"])
+api_router.include_router(short.router, prefix="/api/newsai/short", tags=["short"])
 api_router.include_router(dummy.router, prefix="/api/newsai/dummy", tags=["dummy"])
 

@@ -25,3 +25,7 @@ export const Modal = styled.div`
   z-index: 50;
   width: 300px;
 `;
+
+export const BigModal = styled(Modal)`
+  width: 1024px;
+`;

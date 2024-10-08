@@ -18,6 +18,8 @@ import {
   SimilarityButton,
 } from '@features/Stock/styledComponent';
 import { toast } from 'react-toastify';
+import { calculateEndDate } from '@utils/calculateEndDate';
+import { calculateStartDate } from '@utils/calculateStartDate';
 
 interface SimilaritySearchProps {
   stockCode: string;
@@ -36,7 +38,8 @@ const SkeletonFlex = styled.div`
 `;
 
 const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
-  const { register, handleSubmit } = useForm<SimilarityFormValues>();
+  const { register, handleSubmit, setValue, watch } =
+    useForm<SimilarityFormValues>();
   const [isSearchInitiated, setIsSearchInitiated] = useState(false);
   const [searchDates, setSearchDates] = useState<{
     start_date?: string;
@@ -61,6 +64,23 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
     isSearchInitiated
   );
 
+  // 시작일 입력시 종료일 자동 입력
+  const startDateValue = watch('start_date');
+  useEffect(() => {
+    if (startDateValue) {
+      const endDate = calculateEndDate(startDateValue);
+      setValue('end_date', endDate); // end_date 값을 설정
+    }
+  }, [startDateValue]);
+
+  const endDateValue = watch('end_date');
+  useEffect(() => {
+    if (endDateValue) {
+      const startDate = calculateStartDate(endDateValue);
+      setValue('start_date', startDate); // end_date 값을 설정
+    }
+  }, [endDateValue]);
+
   const onSubmit = handleSubmit((data) => {
     setSearchDates({
       start_date: data.start_date,
@@ -73,8 +93,7 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
     if (similarityQuery.data && chartQuery.data) {
       toast.success('유사도 검색 완료');
     }
-  }
-  , [similarityQuery.data, chartQuery.data]);
+  }, [similarityQuery.data, chartQuery.data]);
 
   return (
     <>

@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class StockScrapDto {
+    private Long id;
     private String title;
     private Long newsId;
     private String newsType;
@@ -12,6 +13,7 @@ public class StockScrapDto {
 
     public static StockScrapDto of(final StockScrap stockScrap) {
         StockScrapDto dto = new StockScrapDto();
+        dto.id = stockScrap.getId();
         dto.content = stockScrap.getContent();
         dto.title = stockScrap.getTitle();
         dto.newsId = stockScrap.getNewsId();

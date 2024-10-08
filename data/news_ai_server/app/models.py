@@ -47,3 +47,17 @@ class ReportStockData(TypedDict):
     micro_report: Annotated[str, ..., "The stock analysis with specific firm issue"]
     # macro_summary: Annotated[str, ..., "The summary for specific stock news"]
     related_news: Annotated[List[int], ..., "The related top 4 news of the report"]
+
+# 단일 뉴스 요약본
+class NewsShortResponse(TypedDict):
+    newsOne: str = Field(..., description="News short summary row 1")
+    newsTwo: str = Field(..., description="News short summary row 2")
+    newsThree: str = Field(..., description="News short summary row 3")
+
+# 단일 뉴스 요약 structure
+class ShortNewsData(TypedDict):
+    """Structured news input"""
+    newsOne: str = Field(..., description="News short summary row 1")
+    newsTwo: str = Field(..., description="News short summary row 2")
+    newsThree: str = Field(..., description="News short summary row 3")
+

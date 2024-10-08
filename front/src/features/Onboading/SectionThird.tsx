@@ -28,6 +28,7 @@ const Card = styled.div`
   justify-content: center;
   text-align: center;
   padding: 1rem;
+  
   position: relative; /* position을 relative로 설정 */
   transition:
     transform 0.3s ease,
@@ -68,7 +69,7 @@ const SectionThird: React.FC<SectionProps> = ({
           ></iframe>
           <CardTitle>빅데이터</CardTitle>
           <CardDescription>
-            최신 경제 뉴스를 처리하고 분석했습니다!
+            최신 경제 뉴스를 수집하고 분석했어요!
           </CardDescription>
           <MoreButton onClick={scrollToSectionFourth}>
             더 알아보기
@@ -83,7 +84,7 @@ const SectionThird: React.FC<SectionProps> = ({
           ></iframe>
           <CardTitle>유사도 분석</CardTitle>
           <CardDescription>
-            과거와 현재의 시장 흐름을 비교해 차트를 분석했어요!
+            과거와 현재의 시장 흐름을 비교해 유사한 차트를 찾아드려요!
           </CardDescription>
           <MoreButton onClick={scrollToSectionFifth}>
             더 알아보기
