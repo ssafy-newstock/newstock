@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface StockNewsRepository extends JpaRepository<StockNews, Long> {
+public interface StockNewsRepository extends JpaRepository<StockNews, String> {
     @Query("select s from StockNews s order by s.uploadDatetime desc")
     Page<StockNews> findAllStockNews(Pageable pageable);
 
@@ -20,6 +20,6 @@ public interface StockNewsRepository extends JpaRepository<StockNews, Long> {
             "ORDER BY sn.uploadDatetime DESC")
     Page<StockNews> findAllByStockCode(@Param("stockCode") String stockCode, Pageable pageable);
 
-    List<StockNews> findAllByIdIn(List<Long> ids);
+    List<StockNews> findAllByIdIn(List<String> ids);
 
 }

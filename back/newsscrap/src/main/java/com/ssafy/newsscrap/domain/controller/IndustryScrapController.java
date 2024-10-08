@@ -1,5 +1,6 @@
 package com.ssafy.newsscrap.domain.controller;
 
+import com.ssafy.newsscrap.domain.controller.request.IndustryWriteRequest;
 import com.ssafy.newsscrap.domain.controller.response.IndustryNewsScrapListResponse;
 import com.ssafy.newsscrap.domain.controller.response.IndustryNewsScrapResponse;
 import com.ssafy.newsscrap.domain.entity.dto.IndustryScrapDto;
@@ -50,7 +51,7 @@ public class IndustryScrapController {
         LocalDate end = endDate != null ? LocalDate.parse(endDate, DateTimeFormatter.ISO_DATE) : LocalDate.now();
 
         List<IndustryScrapDto> myStockScraps = industryScrapService.getMyIndustryScraps(memberId, page, size, start, end);
-        List<Long> scrapInStockNewsIds = industryScrapService.getScrapInIndustryNewsIn(myStockScraps);
+        List<String> scrapInStockNewsIds = industryScrapService.getScrapInIndustryNewsIn(myStockScraps);
 
         List<IndustryNewsDto> industryNews = industryNewsFeignService.getIndustryNewsInIds(scrapInStockNewsIds);
 
@@ -62,7 +63,7 @@ public class IndustryScrapController {
     @PostMapping("/write")
     public CommonResponse<?> writeScrap(
             @RequestHeader("authorization") String token,
-            @ModelAttribute IndustryScrapDto requestDto) {
+            @ModelAttribute IndustryWriteRequest requestDto) {
         Long memberId = tokenProvider.getMemberId(token);
         log.info("scrap: {}", requestDto);
         industryScrapService.writeScrap(memberId, requestDto);
@@ -74,7 +75,7 @@ public class IndustryScrapController {
     public CommonResponse<?> editScrap(
             @PathVariable("scrapId") Long scrapId,
             @RequestHeader("authorization") String token,
-            @ModelAttribute IndustryScrapDto requestDto) {
+            @ModelAttribute IndustryWriteRequest requestDto) {
         Long memberId = tokenProvider.getMemberId(token);
         industryScrapService.editScrap(memberId, scrapId, requestDto);
 

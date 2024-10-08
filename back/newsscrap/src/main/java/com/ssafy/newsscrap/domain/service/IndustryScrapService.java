@@ -1,9 +1,9 @@
 package com.ssafy.newsscrap.domain.service;
 
+import com.ssafy.newsscrap.domain.controller.request.IndustryWriteRequest;
 import com.ssafy.newsscrap.domain.entity.IndustryScrap;
 import com.ssafy.newsscrap.domain.entity.dto.IndustryScrapDto;
 import com.ssafy.newsscrap.domain.repository.IndustryScrapRepository;
-import com.ssafy.newsscrap.global.common.TokenProvider;
 import com.ssafy.newsscrap.global.exception.ScrapContentNotEmptyException;
 import com.ssafy.newsscrap.global.exception.ScrapNotFoundException;
 import com.ssafy.newsscrap.global.exception.ScrapPermissionException;
@@ -23,7 +23,7 @@ public class IndustryScrapService {
     private final IndustryScrapRepository industryScrapRepository;
 
     @Transactional
-    public void writeScrap(Long memberId, IndustryScrapDto dto) {
+    public void writeScrap(Long memberId, IndustryWriteRequest dto) {
 
         hasText(dto);
         IndustryScrap entity = IndustryScrap.of(dto, memberId);
@@ -31,7 +31,7 @@ public class IndustryScrapService {
     }
 
     @Transactional
-    public void editScrap(Long memberId, Long scrapId, IndustryScrapDto dto) {
+    public void editScrap(Long memberId, Long scrapId, IndustryWriteRequest dto) {
         IndustryScrap newsScrap = industryScrapRepository.findById(scrapId)
                 .orElseThrow(ScrapNotFoundException::new);
 
@@ -78,13 +78,13 @@ public class IndustryScrapService {
                 .toList();
     }
 
-    public List<Long> getScrapInIndustryNewsIn(List<IndustryScrapDto> scrapDtos) {
+    public List<String> getScrapInIndustryNewsIn(List<IndustryScrapDto> scrapDtos) {
         return scrapDtos.stream()
                 .map(IndustryScrapDto::getNewsId)
                 .collect(Collectors.toList());
     }
 
-    private static void hasText(final IndustryScrapDto dto) {
+    private static void hasText(final IndustryWriteRequest dto) {
         if (!StringUtils.hasText(dto.getTitle()) || !StringUtils.hasText(dto.getContent())) {
             throw new ScrapContentNotEmptyException();
         }
