@@ -2,67 +2,34 @@ import { NoMessageP } from '@features/Scrap/scrapStyledComponent';
 import ScrapCard from '@features/Scrap/detail/ScrapCard';
 import { useEffect, useState } from 'react';
 import { isWithinInterval, parse } from 'date-fns';
-
-interface NewsItem {
-  title: string;
-  description: string;
-  media: string;
-  uploadDatetime: string;
-  thumbnail?: string;
-  stockId: string;
-}
-
-interface CardData {
-  Title: string;
-  NewsItem: NewsItem;
-  Date: string;
-  context: string;
-}
-
-// 더미 데이터
-const cards: CardData[] = [
-  {
-    Title:
-      '첫번째 스크랩 입니다.첫번째 스크랩 입니다첫번째 스크랩 입니다첫번째 스크랩 입니다',
-    NewsItem: {
-      title:
-        "\"'한국'만 들어가면 난리나요\"해외에서 더 열광하는 '이것'첫번째 스크랩 입니다첫번째 스크랩 입니다첫번째 스크랩 입니다첫번째 스크랩 입니다첫번째 스크랩 입니다",
-      description:
-        '[비즈니스 포커스]‘참이슬’, ‘진로’ 등의 소주 브랜드를 보유한 하이트진로는 현재 베트남에 첫 해외 소주 공장을 짓고 있다. 동남아시아에서 소주가 큰 인기를 끌자 급증하// [비즈니스 포커스]‘참이슬’, ‘진로’ 등의 소주 브랜드를 보유한 하이트진로는 현재 베트남에 첫 해외 소주 공장을 짓고 있다. 동남아시아에서 소주가 큰 인기를 끌자 급증하',
-      media: '한경비즈니스',
-      thumbnail:
-        'https://img3.daumcdn.net/thumb/R658x0.q70/?fname=https://t1.daumcdn.net/news/202409/07/kedbiz/20240907093504339mqsb.jpg',
-      uploadDatetime: '2024-09-07 09:35:00',
-      stockId: '20240907093501345',
-    },
-    Date: '2024.08.18',
-    context: `<p><em>기울임 스타일</em></p>
-<p><del>취소선 테스트</del></p>
-<p>이건 뭐지</p>
-<p><strong>스트롱?</strong></p>
-<h3>h3 태그</h3>
-<p>😷</p>
-<p>for i in &nbsp;range(1):</p>`,
-  },
-];
+import { ScrapData, NewsData } from '@pages/News/ScrapNewsInterface';
 
 interface RightContentProps {
-  onCardClick: (card: CardData) => void; // 클릭 시 호출되는 함수
+  onCardClick: (scrap: ScrapData, scrapNews: NewsData) => void; // 클릭 시 호출되는 함수
   selectedDateRange: [Date | null, Date | null];
+  scrapDatas: ScrapData[];
+  scrapNewsDatas: NewsData[];
 }
 
 const RightContent: React.FC<RightContentProps> = ({
   onCardClick,
   selectedDateRange,
+  scrapDatas,
+  scrapNewsDatas,
 }) => {
-  const [filteredScrap, setFilteredScrap] = useState(cards);
+  const [filteredScrap, setFilteredScrap] = useState<ScrapData[]>(scrapDatas);
+
   useEffect(() => {
     if (selectedDateRange[0] && selectedDateRange[1]) {
       const [startDate, endDate] = selectedDateRange;
 
-      const filtered = cards.filter((card) => {
-        const cardDate = parse(card.Date, 'yyyy.MM.dd', new Date()); // card.Date를 Date 객체로 변환
-        return isWithinInterval(cardDate, {
+      const filtered = scrapDatas.filter((scrap) => {
+        const scrapDate = parse(
+          scrap.uploadDatetime ?? '',
+          'yyyy.MM.dd',
+          new Date()
+        ); // card.Date를 Date 객체로 변환
+        return isWithinInterval(scrapDate, {
           start: startDate, // 여기에 Date 객체 사용
           end: endDate,
         });
@@ -70,20 +37,29 @@ const RightContent: React.FC<RightContentProps> = ({
 
       setFilteredScrap(filtered);
     } else {
-      setFilteredScrap(cards); // 날짜가 없으면 전체 뉴스
+      setFilteredScrap(scrapDatas); // 날짜가 없으면 전체 뉴스
     }
-  }, [selectedDateRange, cards]);
+  }, [selectedDateRange, scrapDatas]);
 
   return (
     <>
-      {cards.length > 0 ? (
-        filteredScrap.map((data, index) => (
-          <ScrapCard
-            key={index}
-            data={data}
-            onClick={() => onCardClick(data)}
-          />
-        ))
+      {filteredScrap.length > 0 ? (
+        filteredScrap.map((scrap, index) => {
+          // scrap.newsId와 일치하는 scrapNewsData에서 데이터를 찾음
+          const matchedNewsData = scrapNewsDatas.find(
+            (news) => news.id === scrap.newsId
+          );
+
+          // matchedNewsData가 있을 때만 렌더링
+          return matchedNewsData ? (
+            <ScrapCard
+              key={`${scrap.newsId}-${index}`}
+              data={matchedNewsData} // 찾은 newsData를 전달
+              scrapData={scrap} // scrapData 전달
+              onClick={() => onCardClick(scrap, matchedNewsData)}
+            />
+          ) : null; // 데이터가 없으면 렌더링하지 않음
+        })
       ) : (
         <NoMessageP>스크랩한 뉴스가 없습니다.</NoMessageP>
       )}

@@ -12,7 +12,7 @@ import {
   TextBoldLeft,
   TextBoldLarge,
   HrTag,
-  TextLeft,
+  TextLeftLine,
 } from '@features/Stock/styledComponent';
 
 interface IRelatedNews {
@@ -127,16 +127,24 @@ const AnalysisModal: React.FC<AnalysisModalProps> = ({
         <ModalContent>
           <>
             <DivTag style={{ width: '100%' }}>
-              <TextBoldLarge>종목 분석</TextBoldLarge>
+              <TextBoldLarge>차트 분석</TextBoldLarge>
               <HrTag />
               <FlexGap $gap="1rem">
                 <Container>
-                  <Text>거시적 관점</Text>
-                  <TextLeft>{analysisData?.macroReport}</TextLeft>
+                  <Text>시장 분석</Text>
+                  <TextLeftLine
+                    dangerouslySetInnerHTML={{
+                      __html: analysisData?.macroReport,
+                    }}
+                  />
                 </Container>
                 <Container>
-                  <Text>미시적 관점</Text>
-                  <TextLeft>{analysisData?.microReport}</TextLeft>
+                  <Text>종목 분석</Text>
+                  <TextLeftLine
+                    dangerouslySetInnerHTML={{
+                      __html: analysisData?.microReport,
+                    }}
+                  />
                 </Container>
               </FlexGap>
             </DivTag>

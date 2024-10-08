@@ -75,7 +75,7 @@ const LoadingSpinner = styled.div`
 `;
 
 interface NewsItem {
-  id: number;
+  id: string;
   title: string;
   article: string;
   content: string;
@@ -84,7 +84,7 @@ interface NewsItem {
   uploadDatetime: string;
   thumbnail?: string;
   stockKeywords: string[];
-  newsId: number;
+  newsId: string;
   imageUrl?: string;
   stockNewsStockCodes?: string[];
 }
@@ -188,7 +188,7 @@ const StockNewsPage: React.FC = () => {
     };
   }, [fetchNews, loading, initialLoadComplete]);
 
-  const handleNewsClick = (id: number) => {
+  const handleNewsClick = (id: string) => {
     console.log(`Navigating to: /subnews-main/stock-news/${id}`);
     navigate(`/subnews-main/stock-news/${id}`);
   };
