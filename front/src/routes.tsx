@@ -29,6 +29,7 @@ import MyStockPage from '@pages/Stock/MyStock';
 import AllStockPage from '@pages/Stock/AllStock';
 import SectionStockPage from '@pages/Stock/SectionStock';
 import Auth from '@pages/Auth';
+import Home from '@pages/Home';
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="/onboarding" replace /> },
       { path: 'onboarding', element: <OnBoardingPage /> },
+      { path: 'home', element: <Home /> },
       { path: 'login/oauth2/code/*', element: <Auth /> },
 
       // 뉴스 관련
