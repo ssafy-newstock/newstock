@@ -14,15 +14,9 @@ import { useTop10StockQuery } from '@hooks/useTop10StockQuery';
 import { useEffect, useState } from 'react';
 import { useAllStockQuery } from '@hooks/useAllStockQuery';
 import { useCategoryStockQuery } from '@hooks/useCategoryStockQuery';
-import useAuthStore from '@store/useAuthStore';
 import Left from '@components/Left';
 import RightNav from '@components/RightNav';
-import MyStock from '@features/MyStockModal/MyStock';
-import History from '@features/MyStockModal/History';
-import FavoriteStock from '@features/MyStockModal/FavoriteStock';
-import FavoriteNews from '@features/MyStockModal/FavoriteNews';
-import Ranking from '@features/MyStockModal/Ranking';
-
+import SideModal from '@features/SideModal/SideModal';
 
 const Main = styled.div`
   display: flex;
@@ -30,12 +24,18 @@ const Main = styled.div`
   width: 100%;
   height: 100vh;
   transition: all 0.5s ease;
+  overflow: hidden;
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
 `;
 
 const Container = styled.div<{ $isOnboarding: boolean }>`
   display: flex;
   flex-direction: column;
-  width: ${({ $isOnboarding }) => ($isOnboarding ? '100%' : '96.5%')};
+  width: ${({ $isOnboarding }) =>
+    $isOnboarding ? '100%' : 'calc(100% - 68px)'};
   height: 100%;
 `;
 
@@ -53,7 +53,7 @@ const RightVacantWrapper = styled.div<{
 }>`
   min-width: ${({ $isOpen, $isScrapDetail }) =>
     $isOpen
-      ? '530px'
+      ? '500px'
       : $isScrapDetail
         ? '0px'
         : '250px'}; /* scrap-detail 페이지에서 모달이 닫혀있을 때는 여백이 0px */
@@ -68,7 +68,6 @@ const RightVacantWrapper = styled.div<{
 const App = () => {
   const { theme } = useThemeStore();
   const currentTheme = theme === 'light' ? lightTheme : darkTheme;
-  const { isLogin } = useAuthStore();
   const location = useLocation();
 
   const { setAllStock } = useAllStockStore();
@@ -88,28 +87,10 @@ const App = () => {
 
   const isOnboarding = location.pathname === '/onboarding';
 
-  const renderActiveComponent = () => {
-    switch (activeComponent) {
-      case 'MyStock':
-        return <MyStock isOpen={activeComponent === 'MyStock'} />;
-      case 'MyStockHistory':
-        return <History isOpen={activeComponent === 'MyStockHistory'} />;
-      case 'Heart':
-        return <FavoriteStock isOpen={activeComponent === 'Heart'} />;
-      case 'Star':
-        return <FavoriteNews isOpen={activeComponent === 'Star'} />;
-      case 'Rank':
-        return <Ranking isOpen={activeComponent === 'Rank'} />;
-      default:
-        return null;
-    }
-  };
-
   // scrap-detail 페이지인지 확인하는 변수
   const isScrapDetail =
     location.pathname === '/scrap-detail' ||
     location.pathname === '/scrap-create';
-
 
   // Modal 열기/닫기 기능 추가
   return (
@@ -122,11 +103,19 @@ const App = () => {
             {!isOnboarding && <Left />}
             <Outlet />
             {!isOnboarding && (
-              <RightVacantWrapper $isOpen={activeComponent !== null} $isScrapDetail={isScrapDetail}/>
+              <RightVacantWrapper
+                $isOpen={activeComponent !== null}
+                $isScrapDetail={isScrapDetail}
+              />
             )}
           </Content>
         </Container>
-        {isLogin && !isOnboarding && renderActiveComponent()}
+        {!isOnboarding && (
+          <SideModal
+            activeComponent={activeComponent}
+            isOpen={activeComponent !== null}
+          />
+        )}
         {!isOnboarding && (
           <RightNav
             activeComponent={activeComponent}
@@ -134,7 +123,6 @@ const App = () => {
           />
         )}
       </Main>
-
       {/* 웹소켓 연결 */}
       <WebSocketComponent />
       {/* 토스트 메세지 */}
