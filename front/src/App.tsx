@@ -18,7 +18,7 @@ import { useCategoryStockQuery } from '@hooks/useCategoryStockQuery';
 import useAuthStore from '@store/useAuthStore';
 import Left from '@components/Left';
 import StockModal from '@features/MyStockModal/StockModal';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Main = styled.div`
   display: flex;
@@ -83,6 +83,8 @@ const App = () => {
     categoryStock && setCategoryStock(categoryStock.data);
   }, [top10Stock, allStock, categoryStock]);
 
+  const isOnboarding = location.pathname === '/onboarding';
+
   // scrap-detail 페이지인지 확인하는 변수
   const isScrapDetail =
     location.pathname === '/scrap-detail' ||
@@ -104,7 +106,7 @@ const App = () => {
         )}
       </Main>
       {/* 웹소켓 연결 */}
-      <WebSocketComponent />
+      {/* <WebSocketComponent /> */}
       {/* 토스트 메세지 */}
       <ToastContainer
         position="bottom-right"

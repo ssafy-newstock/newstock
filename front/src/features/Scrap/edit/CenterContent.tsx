@@ -1,9 +1,9 @@
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import ThemedButton from '@components/ThemedButton';
 import { DragIcon } from '@features/Scrap/create/Icon';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Editor } from 'react-draft-wysiwyg';
-import { EditorState } from 'draft-js';
+import { EditorState, ContentState, convertFromHTML } from 'draft-js';
 import newstockIcon from '@assets/Stock/blueLogo.png';
 import {
   ScrapHr,
@@ -25,10 +25,10 @@ import {
   CenterNewsRightImg,
 } from '@features/Scrap/create/scrapCreateCenterStyledComponent';
 import { stateToHTML } from 'draft-js-export-html';
-// import { createScrap } from '@api/scrapApi';
 import { useScrapStore } from '@store/useScrapStore';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { ScrapData, NewsData } from '@pages/News/ScrapNewsInterface';
 
 const CustomCenterNewsRightImg = styled(CenterNewsRightImg)`
   border-radius: 1rem;
@@ -43,18 +43,15 @@ const EconomicNewsTitleText = styled.p`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis; /* 말줄임표 적용 */
-  width: 80%; /* 텍스트가 영역을 벗어나지 않도록 조정 */
+  width: 80%;
 `;
 
 const EconomicNewsContent = styled.p`
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* 최대 2줄까지만 표시 */
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis; /* 말줄임표 적용 */
+  text-overflow: ellipsis;
   justify-content: center;
   align-items: center;
   align-self: stretch;
@@ -86,7 +83,7 @@ const MediaWrapper = styled.div`
 const MediaLogo = styled.img`
   width: 1.5rem;
   height: 1.5rem;
-  object-fit: contain; /* 이미지 비율을 유지하면서 컨테이너 안에 맞춤 */
+  object-fit: contain;
   border-radius: 50%;
 `;
 
@@ -98,50 +95,60 @@ const processArticle = (
   let content = article;
   let match;
 
-  // 모든 ImageTag를 찾아서 이미지 URL 추출
   while ((match = imageTagRegex.exec(article)) !== null) {
-    imageUrls.push(match[1]); // 이미지 URL을 배열에 추가
+    imageUrls.push(match[1]);
   }
 
-  // 이미지 태그를 제거한 본문 내용
   content = article.replace(imageTagRegex, '').trim();
-
   return { imageUrls, content };
 };
 
-const CenterContent: React.FC = () => {
+interface CenterContentProps {
+  selectedCard: ScrapData;
+  selectedNewsCard: NewsData;
+}
+
+const CenterContent: React.FC<CenterContentProps> = ({
+  selectedCard,
+  selectedNewsCard,
+}) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  const [title, setTitle] = useState(''); // 스크랩 제목
-  const [droppedCard, setDroppedCard] = useState<any | null>(null); // 드롭된 뉴스 상태
-  const [imageUrls, setImageUrls] = useState<string[]>([]); // 이미지 URL 상태
-  const [content, setContent] = useState<string>(''); // 본문 내용 상태
+  const [title, setTitle] = useState(selectedCard.title || '');
+  const [droppedCard, setDroppedCard] = useState<any | null>(null);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [content, setContent] = useState<string>(
+    selectedNewsCard.content || ''
+  );
 
   const createScrap = useScrapStore((state) => state.createScrap);
   const createStockScrap = useScrapStore((state) => state.createStockScrap);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (selectedCard.content) {
+      const blocksFromHTML = convertFromHTML(selectedCard.content);
+      const contentState = ContentState.createFromBlockArray(
+        blocksFromHTML.contentBlocks,
+        blocksFromHTML.entityMap
+      );
+      setEditorState(EditorState.createWithContent(contentState));
+    }
+  }, [selectedCard]);
+
   const handleCreateCompleteClick = async () => {
     const contentState = editorState.getCurrentContent();
     const contentAsHTML = stateToHTML(contentState);
-    console.log('작성완료');
-    console.log('내용', contentAsHTML);
 
-    if (!setDroppedCard || !title || !contentAsHTML) {
+    if (!droppedCard || !title || !contentAsHTML) {
       alert('모든 필드를 입력하세요.');
       return;
     }
 
     try {
-      // 드롭된 카드 유형에 따라 API 호출
       if (droppedCard.type === 'stock') {
-        await createStockScrap(
-          title,
-          droppedCard.id,
-          '종목 뉴스',
-          contentAsHTML
-        ); // 종목 뉴스 작성 API 호출
+        await createStockScrap(title, droppedCard.id, 'stock', contentAsHTML);
       } else {
-        await createScrap(title, droppedCard.id, '시황 뉴스', contentAsHTML); // 기존 시황 뉴스 작성 API 호출
+        await createScrap(title, droppedCard.id, 'industry', contentAsHTML);
       }
       alert('스크랩 작성 완료!');
       navigate(`../scrap-detail/`);
@@ -158,23 +165,20 @@ const CenterContent: React.FC = () => {
     e.preventDefault();
     const data = e.dataTransfer.getData('text/plain');
     const parsedData = JSON.parse(data);
-
-    // article에서 imageUrls와 content를 분리
     const { imageUrls, content } = processArticle(parsedData.article);
-
-    setDroppedCard({ ...parsedData, content }); // 드롭된 카드 데이터 설정
-    setImageUrls(imageUrls); // 이미지 URL 설정
-    setContent(content); // 본문 내용 설정
-    document.body.style.cursor = 'default'; // 드롭 완료 후 커서 기본으로
+    setDroppedCard({ ...parsedData, content });
+    setImageUrls(imageUrls);
+    setContent(content);
+    document.body.style.cursor = 'default';
   };
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
-    document.body.style.cursor = 'copy'; // 드래그 중 커서를 'copy'로 변경
+    document.body.style.cursor = 'copy';
   };
 
   const handleDragLeave = () => {
-    document.body.style.cursor = 'default'; // 드래그가 영역을 벗어나면 기본 커서로
+    document.body.style.cursor = 'default';
   };
 
   const mediaImageUrl = droppedCard?.media
@@ -222,7 +226,7 @@ const CenterContent: React.FC = () => {
                       src={mediaImageUrl}
                       alt="media"
                       onError={(e) => {
-                        e.currentTarget.src = newstockIcon; // 이미지 로드 실패 시 기본 이미지로 대체
+                        e.currentTarget.src = newstockIcon;
                       }}
                     />
                     <FooterText>{droppedCard.media}</FooterText>
@@ -235,15 +239,6 @@ const CenterContent: React.FC = () => {
                       : ''}
                   </FooterText>
                 </EconomicNewsFooter>
-                {/* <TextP_16>
-                  {droppedCard.media}{' '}
-                  {droppedCard.uploadDatetime
-                    ? droppedCard.uploadDatetime
-                        .split('T')[0]
-                        .replace(/-/g, '.')
-                    : ''}
-                </TextP_16> */}
-                {/* <CenterNewsLeftTopDiv></CenterNewsLeftTopDiv> */}
               </CenterNewsLeftDiv>
             </CenterNewsDiv>
           ) : (

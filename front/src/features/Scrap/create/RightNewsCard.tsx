@@ -11,6 +11,7 @@ import styled from 'styled-components';
 import { NewsTag } from '@features/News/NewsIconTag';
 import { useNavigate } from 'react-router-dom';
 import { useFindStockByCode } from '@utils/uesFindStockByCode';
+import { NewsData } from '@pages/News/ScrapNewsInterface';
 
 const CustomFontStyle = styled(FontStyle)`
   color: ${({ theme }) => theme.grayTextColor};
@@ -22,21 +23,6 @@ const BookmarkedNewsMiddleLine = styled.div`
   height: 1.25rem;
   background: #e0e0e0;
 `;
-
-interface NewsData {
-  id: number;
-  title: string;
-  subtitle: string | null;
-  media: string;
-  description: string;
-  thumbnail: string;
-  uploadDatetime: string;
-  article: string;
-  sentiment: string;
-  industry?: string;
-  stockNewsStockCodes?: string[];
-  stockKeywords?: string[];
-}
 
 interface RightNewsProps {
   data: NewsData;

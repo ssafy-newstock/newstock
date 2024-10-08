@@ -12,35 +12,11 @@ import {
   ScrapHr,
 } from '@features/Scrap/scrapStyledComponent';
 import { useScrapStore } from '@store/useScrapStore';
-
-interface ScrapData {
-  id: number;
-  article?: string;
-  description?: string;
-  industry?: string;
-  media?: string;
-  sentiment?: string;
-  subtitle?: string | null;
-  thumbnail?: string;
-  title: string;
-  uploadDatetime?: string;
-  newsType?: string;
-  content?: string;
-  stockNewsStockCodes?: string[]; // 종목 뉴스만 해당되는 부분
-  stockKeywords?: string[]; // 종목 뉴스만 해당되는 부분
-  newsId?: number;
-}
-
-// interface CardData {
-//   Title: string;
-//   ScrapData: ScrapData;
-//   Date: string;
-//   context: string;
-// }
+import { ScrapData, NewsData } from '@pages/News/ScrapNewsInterface';
 
 const ScrapDetailPage: React.FC = () => {
   const [selectedCard, setSelectedCard] = useState<ScrapData | null>(null);
-  const [selectedNewsCard, setSelectedNewsCard] = useState<ScrapData | null>(
+  const [selectedNewsCard, setSelectedNewsCard] = useState<NewsData | null>(
     null
   );
   const [selectedDateRange, setSelectedDateRange] = useState<
@@ -56,8 +32,8 @@ const ScrapDetailPage: React.FC = () => {
     fetchScrapStockData,
   } = useScrapStore();
 
-  const [scrapNewsList, setScrapNewsList] = useState<ScrapData[]>([]);
   const [scrapList, setScrapList] = useState<ScrapData[]>([]);
+  const [scrapNewsList, setScrapNewsList] = useState<NewsData[]>([]);
 
   // 날짜 범위 변경 핸들러
   const handleDateRangeChange = (dates: [Date | null, Date | null]) => {
@@ -87,7 +63,7 @@ const ScrapDetailPage: React.FC = () => {
     console.log('scrap-detail의 뉴스 통합 : ', scrapNewsList);
   }, [scrapList, scrapNewsList]);
 
-  const handleCardClick = async (scrap: ScrapData, scrapNews: ScrapData) => {
+  const handleCardClick = async (scrap: ScrapData, scrapNews: NewsData) => {
     console.log('scrap : ', scrap);
     console.log('scrapNews : ', scrapNews);
     setSelectedCard(scrap);

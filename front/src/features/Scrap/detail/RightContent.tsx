@@ -2,30 +2,13 @@ import { NoMessageP } from '@features/Scrap/scrapStyledComponent';
 import ScrapCard from '@features/Scrap/detail/ScrapCard';
 import { useEffect, useState } from 'react';
 import { isWithinInterval, parse } from 'date-fns';
-
-interface ScrapData {
-  id: number;
-  article?: string;
-  description?: string;
-  industry?: string;
-  media?: string;
-  sentiment?: string;
-  subtitle?: string | null;
-  thumbnail?: string;
-  title: string;
-  uploadDatetime?: string;
-  newsType?: string;
-  content?: string;
-  stockNewsStockCodes?: string[]; // 종목 뉴스만 해당되는 부분
-  stockKeywords?: string[]; // 종목 뉴스만 해당되는 부분
-  newsId?: number;
-}
+import { ScrapData, NewsData } from '@pages/News/ScrapNewsInterface';
 
 interface RightContentProps {
-  onCardClick: (scrap: ScrapData, scrapNews: ScrapData) => void; // 클릭 시 호출되는 함수
+  onCardClick: (scrap: ScrapData, scrapNews: NewsData) => void; // 클릭 시 호출되는 함수
   selectedDateRange: [Date | null, Date | null];
   scrapDatas: ScrapData[];
-  scrapNewsDatas: ScrapData[];
+  scrapNewsDatas: NewsData[];
 }
 
 const RightContent: React.FC<RightContentProps> = ({

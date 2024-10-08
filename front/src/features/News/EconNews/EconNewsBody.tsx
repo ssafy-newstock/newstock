@@ -121,7 +121,7 @@ interface OutletContextType {
 }
 
 interface EconNewsBodyProps {
-  id: number;
+  id: string;
   title: string;
   content: string;
   media: string;

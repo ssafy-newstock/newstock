@@ -2,21 +2,7 @@ import { NoMessageP } from '@features/Scrap/scrapStyledComponent';
 import RightNewsCard from '@features/Scrap/create/RightNewsCard';
 import { useEffect, useState } from 'react';
 import { isWithinInterval, parse } from 'date-fns';
-
-interface NewsData {
-  id: number;
-  title: string;
-  subtitle: string | null;
-  media: string;
-  description: string;
-  thumbnail: string;
-  uploadDatetime: string;
-  article: string;
-  sentiment: string;
-  industry?: string;
-  stockNewsStockCodes?: string[];
-  stockKeywords?: string[];
-}
+import { NewsData } from '@pages/News/ScrapNewsInterface';
 
 interface CenterContentProps {
   selectedDateRange: [Date | null, Date | null];
@@ -36,6 +22,9 @@ const RightContent: React.FC<CenterContentProps> = ({
     if (selectedDateRange[0] && selectedDateRange[1]) {
       const [startDate, endDate] = selectedDateRange;
       const filtered = combinedNews.filter((news) => {
+        if (!news.uploadDatetime) {
+          return false;
+        }
         const newsDate = parse(news.uploadDatetime, 'yyyy.MM.dd', new Date());
         return isWithinInterval(newsDate, { start: startDate, end: endDate });
       });

@@ -7,6 +7,8 @@ import {
 } from '@features/Scrap/detail/scrapDetailRightStyledComponent';
 import styled from 'styled-components';
 
+import { ScrapData, NewsData } from '@pages/News/ScrapNewsInterface';
+
 const EconomicNewsTitleText = styled.p`
   color: ${({ theme }) => theme.textColor};
   font-size: 1.5rem;
@@ -43,26 +45,8 @@ const FooterText = styled.p`
   line-height: 1.9rem;
 `;
 
-interface ScrapData {
-  id?: number;
-  article?: string;
-  description?: string;
-  industry?: string;
-  media?: string;
-  sentiment?: string;
-  subtitle?: string | null;
-  thumbnail?: string;
-  title: string;
-  uploadDatetime?: string;
-  newsType?: string;
-  content?: string;
-  stockNewsStockCodes?: string[];
-  stockKeywords?: string[];
-  newsId?: number;
-}
-
 interface ScrapCardProps {
-  data: ScrapData;
+  data: NewsData;
   scrapData: ScrapData;
   onClick?: () => void;
 }

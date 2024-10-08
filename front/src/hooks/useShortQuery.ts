@@ -3,7 +3,7 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
 interface IShortParams {
-  newsId: number;
+  newsId: string;
   newsType: string;
 }
 
@@ -54,7 +54,7 @@ export const useShortQuery = (
       IShortResponse,
       AxiosError,
       IShortResponse,
-      [string, number, string]
+      [string, string, string]
     >,
     'queryKey' | 'queryFn'
   >
@@ -63,7 +63,7 @@ export const useShortQuery = (
     IShortResponse,
     AxiosError,
     IShortResponse,
-    [string, number, string]
+    [string, string, string]
   >({
     queryKey: ['short', params.newsId, params.newsType],
     queryFn: () => fetchShort(params),

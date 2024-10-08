@@ -1,31 +1,15 @@
 import { create } from 'zustand';
 import { authRequest } from '@api/axiosInstance';
+import { ScrapData, NewsData } from '@pages/News/ScrapNewsInterface';
 // import { toast } from 'react-toastify';
-
-interface ScrapData {
-  id: number;
-  article?: string;
-  description?: string;
-  industry?: string;
-  media?: string;
-  sentiment?: string;
-  subtitle?: string | null;
-  thumbnail?: string;
-  title: string;
-  uploadDatetime?: string;
-  newsType?: string;
-  content?: string;
-  stockNewsStockCodes?: string[]; // 종목 뉴스만 해당되는 부분
-  stockKeywords?: string[]; // 종목 뉴스만 해당되는 부분
-}
 
 interface ScrapStore {
   scraps: ScrapData[];
   stockScraps: ScrapData[];
-  scrapNews: ScrapData[]; // 시황 뉴스 스크랩
-  scrapStockNews: ScrapData[]; // 종목 뉴스 스크랩
+  scrapNews: NewsData[]; // 시황 뉴스 스크랩
+  scrapStockNews: NewsData[]; // 종목 뉴스 스크랩
   industryScrapDto: ScrapData[];
-  industryNewsDto: ScrapData[];
+  industryNewsDto: NewsData[];
   fetchScrapData: (
     page?: number,
     size?: number,
@@ -40,13 +24,13 @@ interface ScrapStore {
   ) => Promise<void>;
   createScrap: (
     title: string,
-    newsId: number,
+    newsId: string,
     newsType: string,
     content: string
   ) => Promise<void>; // 스크랩 작성 함수
   createStockScrap: (
     title: string,
-    newsId: number,
+    newsId: string,
     newsType: string,
     content: string
   ) => Promise<void>;
@@ -58,7 +42,7 @@ interface ScrapStore {
   updateScrap: (
     scrapId: number,
     title: string,
-    newsId: number,
+    newsId: string,
     newsType: string,
     content: string
   ) => Promise<void>;
@@ -66,7 +50,7 @@ interface ScrapStore {
   updateStockScrap: (
     scrapId: number,
     title: string,
-    newsId: number,
+    newsId: string,
     newsType: string,
     content: string
   ) => Promise<void>;
@@ -163,7 +147,7 @@ export const useScrapStore = create<ScrapStore>((set) => ({
   // 종목 뉴스 스크랩 작성 기능
   createStockScrap: async (
     title: string,
-    newsId: number,
+    newsId: string,
     newsType: string,
     content: string
   ) => {
@@ -230,7 +214,7 @@ export const useScrapStore = create<ScrapStore>((set) => ({
   updateScrap: async (
     scrapId: number,
     title: string,
-    newsId: number,
+    newsId: string,
     newsType: string,
     content: string
   ) => {
@@ -265,7 +249,7 @@ export const useScrapStore = create<ScrapStore>((set) => ({
   updateStockScrap: async (
     scrapId: number,
     title: string,
-    newsId: number,
+    newsId: string,
     newsType: string,
     content: string
   ) => {

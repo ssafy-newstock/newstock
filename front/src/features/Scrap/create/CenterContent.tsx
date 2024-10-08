@@ -120,6 +120,19 @@ const CenterContent: React.FC = () => {
   const createStockScrap = useScrapStore((state) => state.createStockScrap);
   const navigate = useNavigate();
 
+  // useEffect(() => {
+  //   // selectedCard와 selectedNewsCard를 사용하여 초기 상태 설정
+  //   if (selectedCard) {
+  //     setTitle(selectedCard.title);
+  //     setContent(selectedCard.content);
+  //     // 여기서 드롭된 카드 정보도 설정할 수 있다면 설정
+  //     setDroppedCard(selectedCard); // 드롭된 카드 설정
+  //   }
+
+  //   // EditorState 초기화
+  //   setEditorState(EditorState.createEmpty());
+  // }, [selectedCard]);
+
   const handleCreateCompleteClick = async () => {
     const contentState = editorState.getCurrentContent();
     const contentAsHTML = stateToHTML(contentState);
@@ -134,14 +147,9 @@ const CenterContent: React.FC = () => {
     try {
       // 드롭된 카드 유형에 따라 API 호출
       if (droppedCard.type === 'stock') {
-        await createStockScrap(
-          title,
-          droppedCard.id,
-          '종목 뉴스',
-          contentAsHTML
-        ); // 종목 뉴스 작성 API 호출
+        await createStockScrap(title, droppedCard.id, 'stock', contentAsHTML); // 종목 뉴스 작성 API 호출
       } else {
-        await createScrap(title, droppedCard.id, '시황 뉴스', contentAsHTML); // 기존 시황 뉴스 작성 API 호출
+        await createScrap(title, droppedCard.id, 'industry', contentAsHTML); // 기존 시황 뉴스 작성 API 호출
       }
       alert('스크랩 작성 완료!');
       navigate(`../scrap-detail/`);
@@ -167,6 +175,7 @@ const CenterContent: React.FC = () => {
     setContent(content); // 본문 내용 설정
     document.body.style.cursor = 'default'; // 드롭 완료 후 커서 기본으로
   };
+
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     document.body.style.cursor = 'copy'; // 드래그 중 커서를 'copy'로 변경

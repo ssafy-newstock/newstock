@@ -8,28 +8,11 @@ import {
 } from '@features/Scrap/scrapStyledComponent';
 import useAuthStore from '@store/useAuthStore';
 import { useScrapStore } from '@store/useScrapStore';
-
-interface ScrapData {
-  id: number;
-  article?: string;
-  description?: string;
-  industry?: string;
-  media?: string;
-  sentiment?: string;
-  subtitle?: string | null;
-  thumbnail?: string;
-  title: string;
-  uploadDatetime?: string;
-  newsType?: string;
-  content?: string;
-  stockNewsStockCodes?: string[]; // 종목 뉴스만 해당되는 부분
-  stockKeywords?: string[]; // 종목 뉴스만 해당되는 부분
-  newsId?: number;
-}
+import { ScrapData, NewsData } from '@pages/News/ScrapNewsInterface';
 
 interface CenterTitleProps {
   selectedCard: ScrapData;
-  selectedNewsCard: ScrapData;
+  selectedNewsCard: NewsData;
 }
 
 const CenterTitle: React.FC<CenterTitleProps> = ({
@@ -42,7 +25,12 @@ const CenterTitle: React.FC<CenterTitleProps> = ({
   const deleteStockScrap = useScrapStore((state) => state.deleteStockScrap); // 종목 스크랩 삭제 함수
 
   const handleEditClick = () => {
-    navigate(`/scrap-edit/${selectedCard.id}`);
+    navigate(`/scrap-edit/${selectedCard.id}`, {
+      state: {
+        selectedCard,
+        selectedNewsCard,
+      },
+    });
   };
 
   const handleDeleteClick = async () => {

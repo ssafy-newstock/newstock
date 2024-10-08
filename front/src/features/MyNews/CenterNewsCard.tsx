@@ -14,6 +14,7 @@ import { NewsTag } from '@features/News/NewsIconTag';
 import styled from 'styled-components';
 import useAllStockStore from '@store/useAllStockStore';
 import useTop10StockStore from '@store/useTop10StockStore';
+import { ScrapData, NewsData } from '@pages/News/ScrapNewsInterface';
 
 const CustomFontStyle = styled(FontStyle)`
   color: ${({ theme }) => theme.grayTextColor};
@@ -38,27 +39,9 @@ const BookmarkedNewsMiddleLine = styled.div`
   background: #e0e0e0;
 `;
 
-interface ScrapData {
-  id: number;
-  title: string;
-  subtitle?: string | null;
-  media?: string;
-  description?: string;
-  thumbnail?: string;
-  uploadDatetime?: string;
-  article?: string;
-  sentiment?: string;
-  industry?: string;
-  stockNewsStockCodes?: string[]; // 종목 뉴스만 해당되는 부분
-  stockKeywords?: string[]; // 종목 뉴스만 해당되는 부분
-  newsType?: string;
-  content?: string;
-  newsId?: number;
-}
-
 interface CenterCardProps {
   title: string;
-  data: ScrapData;
+  data: ScrapData | NewsData;
   scrapData?: ScrapData;
   onDelete: (id: number) => void;
 }
@@ -87,9 +70,9 @@ const CenterNewsCard: React.FC<CenterCardProps> = ({
 
   // handleDelete 정의
   const handleDelete = () => {
-    onDelete(data.id); // 삭제 작업 처리
+    onDelete(Number(data.id)); // 삭제 작업 처리
     if (scrapData) {
-      onDelete(scrapData.newsId!); // 삭제 작업 처리
+      onDelete(Number(scrapData.newsId!)); // 삭제 작업 처리
     }
   };
 
@@ -122,7 +105,7 @@ const CenterNewsCard: React.FC<CenterCardProps> = ({
             )}
             <IconWrapper>
               <AshbhIcon
-                id={data.id}
+                id={Number(data.id)}
                 title={title}
                 onDelete={handleDelete}
                 scrapData={scrapData}
@@ -152,7 +135,11 @@ const CenterNewsCard: React.FC<CenterCardProps> = ({
               </NewsTag>
             )}
             <IconWrapper>
-              <AshbhIcon id={data.id} title={title} onDelete={handleDelete} />
+              <AshbhIcon
+                id={Number(data.id)}
+                title={title}
+                onDelete={handleDelete}
+              />
             </IconWrapper>
           </CardBottomContainer>
         </>

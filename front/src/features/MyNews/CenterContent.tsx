@@ -4,23 +4,7 @@ import { isWithinInterval, parse } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { useBookmarkStore } from '@store/useBookmarkStore';
 import { useScrapStore } from '@store/useScrapStore';
-
-interface ScrapData {
-  id: number;
-  title: string;
-  subtitle?: string | null;
-  media?: string;
-  description?: string;
-  thumbnail?: string;
-  uploadDatetime?: string;
-  article?: string;
-  sentiment?: string;
-  industry?: string;
-  stockNewsStockCodes?: string[]; // 종목 뉴스만 해당되는 부분
-  stockKeywords?: string[]; // 종목 뉴스만 해당되는 부분
-  newsType?: string;
-  content?: string;
-}
+import { NewsData } from '@pages/News/ScrapNewsInterface';
 
 interface CenterContentProps {
   selectedDateRange: [Date | null, Date | null];
@@ -44,9 +28,9 @@ const CenterContent: React.FC<CenterContentProps> = ({ selectedDateRange }) => {
   } = useScrapStore();
 
   const [filteredEconomicNews, setFilteredEconomicNews] =
-    useState<ScrapData[]>(economicNews);
+    useState<NewsData[]>(economicNews);
   const [filteredStockNews, setFilteredStockNews] =
-    useState<ScrapData[]>(stockNews);
+    useState<NewsData[]>(stockNews);
 
   // zustand 스토어에서 북마크된 뉴스 데이터 불러오기
   useEffect(() => {
@@ -88,21 +72,25 @@ const CenterContent: React.FC<CenterContentProps> = ({ selectedDateRange }) => {
 
       // EconomicNews 필터링
       const filteredEconomicNews = economicNews.filter((news) => {
-        const newsDate = parse(news.uploadDatetime, 'yyyy.MM.dd', new Date()); // 뉴스 날짜를 Date 객체로 변환
-        return isWithinInterval(newsDate, {
-          start: startDate, // Date 객체로 비교
-          end: endDate,
-        });
+        if (news.uploadDatetime) {
+          const newsDate = parse(news.uploadDatetime, 'yyyy.MM.dd', new Date()); // 뉴스 날짜를 Date 객체로 변환
+          return isWithinInterval(newsDate, {
+            start: startDate, // Date 객체로 비교
+            end: endDate,
+          });
+        }
       });
       setFilteredEconomicNews(filteredEconomicNews);
 
       // StockNews 필터링
       const filteredStockNews = stockNews.filter((news) => {
-        const newsDate = parse(news.uploadDatetime, 'yyyy.MM.dd', new Date()); // 뉴스 날짜를 Date 객체로 변환
-        return isWithinInterval(newsDate, {
-          start: startDate, // Date 객체로 비교
-          end: endDate,
-        });
+        if (news.uploadDatetime) {
+          const newsDate = parse(news.uploadDatetime, 'yyyy.MM.dd', new Date()); // 뉴스 날짜를 Date 객체로 변환
+          return isWithinInterval(newsDate, {
+            start: startDate, // Date 객체로 비교
+            end: endDate,
+          });
+        }
       });
       setFilteredStockNews(filteredStockNews);
     } else {
