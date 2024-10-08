@@ -15,7 +15,7 @@ const RightDiv = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  border-left: 2px solid #b3b3b3;
+  border-left: 1px solid;
   gap: 1.5rem;
   padding: 1.5rem 0.5rem;
   z-index: 10;
