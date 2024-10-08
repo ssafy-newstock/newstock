@@ -18,7 +18,7 @@ const MenuSection = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.5rem;
   margin-bottom: 1.2rem;
 `;
 const MenuSectionG = styled.div<{ $isOpen: boolean }>`
@@ -26,7 +26,7 @@ const MenuSectionG = styled.div<{ $isOpen: boolean }>`
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.5rem;
   margin-bottom: ${({ $isOpen }) => ($isOpen ? `0.3rem` : '1.2rem')};
   transition: margin-bottom 0.5s ease;
 `;
@@ -139,7 +139,8 @@ const Left: React.FC = () => {
     if (
       ['/stock-main', '/all-stock', '/section-stock', '/my-stock'].includes(
         location.pathname
-      )
+      ) ||
+      location.pathname.includes('/stock-detail')
     ) {
       setStockDropdown(true); // 주식 드롭다운 열기
     } else {
@@ -153,11 +154,19 @@ const Left: React.FC = () => {
         '/subnews-main/economic-news',
         '/subnews-main/stock-news',
         '/my-news',
-      ].includes(location.pathname)
+      ].includes(location.pathname) ||
+      location.pathname.includes('/subnews-main/economic-news/') ||
+      location.pathname.includes('/subnews-main/stock-news/')
     ) {
       setNewsDropdown(true);
     } else {
       setNewsDropdown(false);
+    }
+    if (location.pathname.includes('/subnews-main/economic-news/')) {
+      setActiveMenu('/subnews-main/economic-news'); // 시황 뉴스 메뉴를 활성화
+    }
+    if (location.pathname.includes('/subnews-main/stock-news/')) {
+      setActiveMenu('/subnews-main/stock-news'); // 시황 뉴스 메뉴를 활성화
     }
   }, [location.pathname]);
 

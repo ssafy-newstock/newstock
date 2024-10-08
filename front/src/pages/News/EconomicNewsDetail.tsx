@@ -120,7 +120,7 @@ const EconomicNewsDetailPage: React.FC = () => {
             prevPoint !== null ? prevPoint + plusPoint : plusPoint
           );
           if (plusPoint) {
-            toast.success(`${plusPoint}원 충전되었습니다!`);
+            toast.success(`${plusPoint.toLocaleString()}원 충전되었습니다!`);
           }
         }
       );
