@@ -13,13 +13,20 @@ import {
   CardRightDiv,
   CenteredMessage,
   ContainerDiv,
+  ModalContainer,
+  ModalLeftTop,
   RightContentDiv,
   StockImage,
   TextP_14_NOTGRAY,
+  TextP_24,
 } from '@features/MyStockModal/styledComponent';
 import { getStockImageUrl } from '@utils/getStockImageUrl';
 
-const FavoriteStock: React.FC = () => {
+interface FavoriteStockProps {
+  isOpen: boolean;
+}
+
+const FavoriteStock: React.FC<FavoriteStockProps> = ({ isOpen }) => {
   const { data: favoriteStocks, isLoading, error } = useMyStockFavoriteData();
   const navigate = useNavigate();
 
@@ -47,57 +54,62 @@ const FavoriteStock: React.FC = () => {
   };
 
   return (
-    <RightContentDiv>
-      {favoriteStocks.map((stock) => {
-        // allStock 또는 top10Stock에서 해당 stockCode로 주식 찾기
-        const matchedStock =
-          allStock.find((s) => s.stockCode === stock.stockCode) ||
-          top10Stock.find((s) => s.stockCode === stock.stockCode);
+    <ModalContainer $isOpen={isOpen}>
+      <ModalLeftTop>
+        <TextP_24>보유 주식</TextP_24>
+      </ModalLeftTop>
+      <RightContentDiv>
+        {favoriteStocks.map((stock) => {
+          // allStock 또는 top10Stock에서 해당 stockCode로 주식 찾기
+          const matchedStock =
+            allStock.find((s) => s.stockCode === stock.stockCode) ||
+            top10Stock.find((s) => s.stockCode === stock.stockCode);
 
-        const handleNavigate = () => {
-          navigate(`/stock-detail/${stock.stockCode}/day-chart`, {
-            state: { stock },
-          });
-        };
+          const handleNavigate = () => {
+            navigate(`/stock-detail/${stock.stockCode}/day-chart`, {
+              state: { stock },
+            });
+          };
 
-        return (
-          <ContainerDiv
-            key={stock.stockFavoriteId}
-            style={{ cursor: 'pointer' }}
-          >
-            <CardDiv onClick={handleNavigate}>
-              <CardLeftDiv>
-                <StockImage
-                  src={getStockImageUrl(stock.stockCode)}
-                  onError={(e) => (e.currentTarget.src = blueLogo)}
-                  alt=""
-                />
-                <CardLeftRightDiv>
-                  <TextP_14_NOTGRAY>{stock.stockName}</TextP_14_NOTGRAY>
-                </CardLeftRightDiv>
-              </CardLeftDiv>
-              <CardRightDiv>
-                {matchedStock && (
-                  <>
-                    <TextP_14_NOTGRAY
-                      style={{ color: getTextColor(matchedStock.prdyVrss) }}
-                    >
-                      {matchedStock?.stckPrpr?.toLocaleString()}원
-                    </TextP_14_NOTGRAY>
-                    <TextP_14_NOTGRAY
-                      style={{ color: getTextColor(matchedStock.prdyVrss) }}
-                    >
-                      {formatChange(formatNumber(matchedStock.prdyVrss))}원 (
-                      {formatChange(formatNumber(matchedStock.prdyCtrt))}%)
-                    </TextP_14_NOTGRAY>
-                  </>
-                )}
-              </CardRightDiv>
-            </CardDiv>
-          </ContainerDiv>
-        );
-      })}
-    </RightContentDiv>
+          return (
+            <ContainerDiv
+              key={stock.stockFavoriteId}
+              style={{ cursor: 'pointer' }}
+            >
+              <CardDiv onClick={handleNavigate}>
+                <CardLeftDiv>
+                  <StockImage
+                    src={getStockImageUrl(stock.stockCode)}
+                    onError={(e) => (e.currentTarget.src = blueLogo)}
+                    alt=""
+                  />
+                  <CardLeftRightDiv>
+                    <TextP_14_NOTGRAY>{stock.stockName}</TextP_14_NOTGRAY>
+                  </CardLeftRightDiv>
+                </CardLeftDiv>
+                <CardRightDiv>
+                  {matchedStock && (
+                    <>
+                      <TextP_14_NOTGRAY
+                        style={{ color: getTextColor(matchedStock.prdyVrss) }}
+                      >
+                        {matchedStock?.stckPrpr?.toLocaleString()}원
+                      </TextP_14_NOTGRAY>
+                      <TextP_14_NOTGRAY
+                        style={{ color: getTextColor(matchedStock.prdyVrss) }}
+                      >
+                        {formatChange(formatNumber(matchedStock.prdyVrss))}원 (
+                        {formatChange(formatNumber(matchedStock.prdyCtrt))}%)
+                      </TextP_14_NOTGRAY>
+                    </>
+                  )}
+                </CardRightDiv>
+              </CardDiv>
+            </ContainerDiv>
+          );
+        })}
+      </RightContentDiv>
+    </ModalContainer>
   );
 };
 

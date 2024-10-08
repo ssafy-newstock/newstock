@@ -1,15 +1,13 @@
-import { useState } from 'react';
-import {
-  useRankHoldingData,
-  useRankTransactionData,
-} from '@hooks/useRankingQuery';
+import { useRankHoldingData } from '@hooks/useRankingQuery';
 import LoadingSpinner from '@components/LoadingSpinner';
 import {
   ContainerDiv,
-  CardDiv,
-  TextP_20,
   TextP_18,
   CenteredMessage,
+  CardDiv,
+  ModalContainer,
+  ModalLeftTop,
+  TextP_24,
 } from '@features/MyStockModal/styledComponent';
 import styled from 'styled-components';
 
@@ -19,13 +17,6 @@ const RankingCardDiv = styled(CardDiv)`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`;
-
-// active 상태에 따른 TextP_20 스타일링
-const ActiveTextP_20 = styled(TextP_20)<{ $active: boolean }>`
-  cursor: pointer;
-  color: ${({ $active }) => ($active ? '#1a73e8' : '#828282')};
-  font-weight: ${({ $active }) => ($active ? '600' : 'normal')};
 `;
 
 // 수익률에 따른 텍스트 색상 적용
@@ -57,34 +48,25 @@ const CrownIcon = () => (
   </svg>
 );
 
-const Ranking: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'holding' | 'transaction'>(
-    'holding'
-  );
-  const {
-    data: holdingData,
-    isLoading: holdingLoading,
-    error: holdingError,
-  } = useRankHoldingData();
-  const {
-    data: transactionData,
-    isLoading: transactionLoading,
-    error: transactionError,
-  } = useRankTransactionData();
+interface RankingProps {
+  isOpen: boolean;
+}
 
-  const handleTabClick = (tab: 'holding' | 'transaction') => {
-    setActiveTab(tab);
-  };
+const Ranking: React.FC<RankingProps> = ({ isOpen }) => {
+  const { data: holdingData, isLoading, error } = useRankHoldingData();
 
-  const renderData = (data: any[], isLoading: boolean, error: Error | null) => {
-    if (isLoading) return <LoadingSpinner />;
-    if (error) return <CenteredMessage>Error loading data.</CenteredMessage>;
-    if (!data || data.length === 0)
-      return <CenteredMessage>랭킹이 존재하지 않아요.</CenteredMessage>;
-
-    return (
+  if (isLoading) return <LoadingSpinner />;
+  if (error) return <CenteredMessage>Error loading data.</CenteredMessage>;
+  if (!holdingData || holdingData.length === 0) {
+    return <CenteredMessage>보유한 이 없습니다.</CenteredMessage>;
+  }
+  return (
+    <ModalContainer $isOpen={isOpen}>
+      <ModalLeftTop>
+        <TextP_24>랭킹</TextP_24>
+      </ModalLeftTop>
       <ContainerDiv>
-        {data.map((member, index) => (
+        {holdingData.map((member, index) => (
           <RankingCardDiv key={member.memberId}>
             {/* 순위 번호와 이름이 나란히 표시되도록 */}
             <div
@@ -116,42 +98,7 @@ const Ranking: React.FC = () => {
           </RankingCardDiv>
         ))}
       </ContainerDiv>
-    );
-  };
-
-  return (
-    <>
-      <div
-        style={{
-          display: 'flex',
-          marginBottom: '1rem',
-          justifyContent: 'center',
-          gap: '1rem',
-        }}
-      >
-        <ActiveTextP_20
-          onClick={() => handleTabClick('holding')}
-          $active={activeTab === 'holding'}
-        >
-          보유 수익률 랭킹
-        </ActiveTextP_20>
-        <TextP_20> | </TextP_20>
-        <ActiveTextP_20
-          onClick={() => handleTabClick('transaction')}
-          $active={activeTab === 'transaction'}
-        >
-          매매 수익률 랭킹
-        </ActiveTextP_20>
-      </div>
-
-      {activeTab === 'holding'
-        ? renderData(holdingData || [], holdingLoading, holdingError)
-        : renderData(
-            transactionData || [],
-            transactionLoading,
-            transactionError
-          )}
-    </>
+    </ModalContainer>
   );
 };
 
