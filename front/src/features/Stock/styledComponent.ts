@@ -24,6 +24,12 @@ export const StockGridColumn = styled.div`
   gap: 1.25rem;
 `;
 
+export const MainGridColumn = styled.div<{$gap: string}>`
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+gap: ${({ $gap }) => $gap};
+`
+
 export const CategoryGridColumn = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -48,6 +54,19 @@ export const StockCardColumn = styled.div`
   width: 100%;
   gap: 1rem;
   padding: 0.6rem;
+  border-radius: 1.25rem;
+  background-color: ${({ theme }) => theme.stockBackgroundColor};
+  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+`;
+
+export const MainCardRow = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+  gap: 1rem;
+  padding: 1rem 0.5rem;
   border-radius: 1.25rem;
   background-color: ${({ theme }) => theme.stockBackgroundColor};
   box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
@@ -185,7 +204,7 @@ export const Text = styled.div`
 `;
 
 export const TextBold = styled(Text)`
-  font-weight: 500;
+  font-weight: 600;
 `;
 
 export const TextBoldLeft = styled(TextBold)`
