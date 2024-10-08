@@ -55,6 +55,16 @@ spec:
               secretKeyRef:
                 name: secret-gpt
                 key: SECRET_KEY
+          - name: ELASTIC_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: secret-elastic
+                key: API_KEY
+          - name: ELASTIC_CLOUD_ID
+            valueFrom:
+              secretKeyRef:
+                name: secret-elastic
+                key: CLOUD_ID
         resources:
           requests:
             memory: "256Mi"
