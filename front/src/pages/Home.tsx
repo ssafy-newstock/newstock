@@ -24,7 +24,7 @@ const Home = () => {
     navigate('/all-stock');
   };
   return (
-    <Center>
+    <Center style={{padding:'1rem'}}>
       <StockHeader>주가지수</StockHeader>
       <HrTag />
       <DividedSection>
