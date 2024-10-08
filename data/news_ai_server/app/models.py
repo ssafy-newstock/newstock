@@ -50,10 +50,14 @@ class ReportStockData(TypedDict):
 
 # 단일 뉴스 요약본
 class NewsShortResponse(TypedDict):
-    newsShort: str = Field(..., description="News short summary from original")
-    newsOriginal: str = Field(..., description="Original news article from original") # 개발 환경에서 반환하지, 실제로는 삭제할 거임
+    newsOne: str = Field(..., description="News short summary row 1")
+    newsTwo: str = Field(..., description="News short summary row 2")
+    newsThree: str = Field(..., description="News short summary row 3")
 
+# 단일 뉴스 요약 structure
 class ShortNewsData(TypedDict):
     """Structured news input"""
-    newsShort: str = Field(..., description="News summary for input news article")
+    newsOne: str = Field(..., description="News short summary row 1")
+    newsTwo: str = Field(..., description="News short summary row 2")
+    newsThree: str = Field(..., description="News short summary row 3")
 
