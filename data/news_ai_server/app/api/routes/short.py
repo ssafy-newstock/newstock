@@ -35,16 +35,11 @@ def validate_news_type(news_type: Optional[str] = Query(None)) -> str:
 def get_news_short(
     news_id: int = Depends(validate_news_id),  # Use the custom dependency
     news_type: str = Depends(validate_news_type),  # Use the custom dependency
-    prompt: Optional[str] = Query(
-        None,
-        description="Prompt"
-    )
 ):
     # 뉴스 예외처리
-    logging.info("news short api connected")
+    logger.info("news short api connected")
     original_article = get_original_article(news_id, news_type)
-    logging.info(original_article)
-    news_short = shortLLM(original_article, prompt)
+    news_short = shortLLM(original_article)
 
     response = NewsShortResponse(
         newsOne=news_short['newsOne'],

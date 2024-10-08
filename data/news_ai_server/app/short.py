@@ -48,7 +48,7 @@ def get_original_article(news_id: str, news_type: str) -> List[str]:
     # 문자열만 추출
     return original_article
 
-def shortLLM(article: str, prompt: str) -> Dict[str, str]:
+def shortLLM(article: str) -> Dict[str, str]:
 
     model = ChatOpenAI(
         model="gpt-4o",
@@ -60,30 +60,23 @@ def shortLLM(article: str, prompt: str) -> Dict[str, str]:
     # 사전에 정한 모양으로 나오게
     structured_llm = model.with_structured_output(ShortNewsData)
     
-    # 개발 단계 기본 프롬프트
-    if prompt == None:
-        prompt = f"""
-        [YOUR ROLE] 경제뉴스 뉴스 요약 전문가
-        [YOUR WORK]
-        너는 경제 뉴스를 요약하는 전문가야. 뉴스를 요약하면서 너가 지켜야 하는 것은 다음과 같아.
-        1. 3줄 요약을 해주고, 각 3줄 요약은 newsOne, newsTwo, newsThree에 한 줄씩 저장해줘.
-        2. 이 뉴스를 읽는 사람들은 경제뉴스 용어를 잘 모르는 초보자야. 쉽게 설명해줘
-        3. 어려운 용어는 지양하고 누구나 쉽게 이해할 수 있도록 해줘
+    prompt = f"""
+    [YOUR ROLE] an expert on economic news summaries
+    [YOUR WORK]
+    You are an expert at summarizing economic news. Here's what you need to keep in summarizing the news.
+
+    Please give me a three-line summary, and save each three-line summary one line in newsOne, newsTwo, and newsThree.
+    People who read this news are beginners who don't know the terms of economic news. Please explain it easily
+    Avoid difficult terms and make it easy for anyone to understand
+    Cover the important part with <mark></mark>, only one tag per line
+    Please answer in Korean
+    [Article]
+    {article}
 
 
-        [Article]
-        {article}
-
-
-        """
-
-    else:
-        prompt += "\n" + article
-
+    """
   
     logging.info("분석 시작")
     short_summary_result = structured_llm.invoke(prompt)
-    logging.info(type(short_summary_result))
     logging.info("GPT로부터 AI뉴스 요약본 추론 완료")
-    logging.info(short_summary_result)
     return short_summary_result
