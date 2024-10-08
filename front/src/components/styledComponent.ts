@@ -16,6 +16,10 @@ export const FlexGapEnd = styled(FlexGap)`
   align-items: flex-end;
 `;
 
+export const FlexGapCenter = styled(FlexGap)`
+  align-items: center;
+`;
+
 export const FlexGapStastCenter = styled(FlexGap)`
   justify-content: start;
   align-items: center;

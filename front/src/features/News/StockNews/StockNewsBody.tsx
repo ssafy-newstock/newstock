@@ -9,6 +9,8 @@ import { NewsTag } from '../NewsIconTag';
 import { useBookmarkStore } from '@store/useBookmarkStore';
 import useAuthStore from '@store/useAuthStore';
 import { toast } from 'react-toastify';
+import { useShortQuery } from '@hooks/useShortQuery';
+import LoadingSpinner from '@components/LoadingSpinner';
 
 const StockNewsBodyWrapper = styled.div`
   display: flex;
@@ -118,6 +120,7 @@ interface StockNewsBodyProps {
   onShowSummaryChange: (showSummary: boolean) => void;
   header: string;
   stockDetail: IStockDetail;
+  newsId: number;
 }
 
 const StockNewsBody: React.FC<StockNewsBodyProps> = ({
@@ -131,6 +134,7 @@ const StockNewsBody: React.FC<StockNewsBodyProps> = ({
   onShowSummaryChange,
   header,
   stockDetail,
+  newsId,
 }) => {
   const formattedDate = date.split('T')[0].replace(/-/g, '.');
   const [showSummary, setShowSummary] = useState<boolean>(false);
@@ -179,11 +183,24 @@ const StockNewsBody: React.FC<StockNewsBodyProps> = ({
     }
   }, [fetchBookmarkedStockNews, isLogin]);
 
-  const handleSummaryClick = (event: React.MouseEvent) => {
+  // 쿼리 훅 사용하여 데이터 가져오기
+  const { data, isFetching, refetch } = useShortQuery(
+    { newsId: newsId, newsType: 'stock' }, // 예시로 'summary'를 newsType으로 사용
+    {
+      enabled: false, // 자동 실행 방지
+    }
+  );
+
+  const handleSummaryClick = async (event: React.MouseEvent) => {
     event.stopPropagation(); // 상위 클릭 이벤트 중지
     if (!showSummary) {
-      setShowSummary(true);
-      onShowSummaryChange(true);
+      try {
+        await refetch(); // 쿼리 실행
+        setShowSummary(true);
+        onShowSummaryChange(true);
+      } catch (error) {
+        console.error('Failed to fetch news summary:', error);
+      }
     }
   };
 
@@ -207,11 +224,15 @@ const StockNewsBody: React.FC<StockNewsBodyProps> = ({
         onBookmarkIconClick={handleBookmarkIconClick}
         onSummaryClick={handleSummaryClick}
       />
-      {showSummary && (
+      {showSummary && data && (
         <Overlay>
           <Background onClick={handleCloseSummary} />
           <Modal onClick={handleModalClick}>
-            <NewsSummary onClose={handleCloseSummary} />
+            {isFetching ? (
+              <LoadingSpinner />
+            ) : (
+              <NewsSummary onClose={handleCloseSummary} data={data} />
+            )}
           </Modal>
         </Overlay>
       )}

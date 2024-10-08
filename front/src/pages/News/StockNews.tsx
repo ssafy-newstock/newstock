@@ -84,7 +84,7 @@ interface NewsItem {
   uploadDatetime: string;
   thumbnail?: string;
   stockKeywords: string[];
-  newsId: string;
+  newsId: number;
   imageUrl?: string;
   stockNewsStockCodes?: string[];
 }
@@ -120,7 +120,7 @@ export const fetchStockNewsData = async (page: number): Promise<NewsItem[]> => {
       }
     );
 
-    console.log('Fetched data:', response.data); // 가져온 데이터를 출력
+    console.log('Fetched Stock data:', response.data); // 가져온 데이터를 출력
     const newsData = response.data.data.map((newsItem: NewsItem) => {
       const { imageUrl, content } = processArticle(newsItem.article);
       return { ...newsItem, content, imageUrl };
@@ -228,6 +228,7 @@ const StockNewsPage: React.FC = () => {
                     onShowSummaryChange={handleShowSummaryChange}
                     header={stockName}
                     stockDetail={stockDetail!}
+                    newsId={news.newsId}
                   />
                 </StockNewsWrapper>
               );

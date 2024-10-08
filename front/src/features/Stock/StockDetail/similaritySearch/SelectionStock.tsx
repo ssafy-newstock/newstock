@@ -51,17 +51,18 @@ const SelectionStock = ({
     : null;
 
   return (
-    <FlexGapColumnCenter $gap="0.5rem">
-      <StockTitle>
+    <FlexGapColumnCenter $gap="0.5rem" style={{width:'100%', height:'100%'}}>
+      <StockTitle style={{fontSize:'1.5rem'}}>
         <StockImage
           src={getStockImageUrl(stockCode)}
           onError={(e) => (e.currentTarget.src = blueLogo)}
           alt=""
+          style={{width:'2rem', height:'2rem'}}
         />
         {stock?.stockName}
       </StockTitle>
 
-      <TextRight>
+      <TextRight style={{fontSize:'1.5rem'}}>
         {startDate} - {endDate}
       </TextRight>
       <SimilarityChart selectionStock={selectionStock} />

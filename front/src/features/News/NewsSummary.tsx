@@ -88,11 +88,28 @@ const ButtonText = styled.p`
   line-height: 1.2; /* 19.2px */
 `;
 
-interface NewsSummaryProps {
-  onClose: (event: React.MouseEvent) => void;
+interface INewsShort {
+  newsShort: string;
 }
 
-const NewsSummary: React.FC<NewsSummaryProps> = ({ onClose }) => {
+interface IShortResponse {
+  newsShort: INewsShort;
+  newsOriginal: string;
+}
+
+interface NewsSummaryProps {
+  onClose: (event: React.MouseEvent) => void;
+  data?: IShortResponse;
+}
+
+const NewsSummary: React.FC<NewsSummaryProps> = ({ onClose, data }) => {
+  const text = data?.newsShort.newsShort || '';
+  const sentences = text.split('.');
+
+  const numberedSentences = sentences
+    .filter((sentence) => sentence.trim() !== '')
+    .map((sentence, index) => `${index + 1}. ${sentence.trim()}`);
+
   return (
     <>
       <NewsSummaryWrapper>
@@ -100,19 +117,19 @@ const NewsSummary: React.FC<NewsSummaryProps> = ({ onClose }) => {
           <NewsSummaryTitleText>뉴스 요약</NewsSummaryTitleText>
         </NewsSummaryTitle>
 
-        <NewsSummaryBody>
-          <NewsSummaryBodyText>
-            1. 박선홍이 빨리 데이터를 만들어 줬으면 좋겠다.
-          </NewsSummaryBodyText>
-        </NewsSummaryBody>
-        <NewsSummaryBody>
-          <NewsSummaryBodyText>
-            2. 박선홍이 빨리 api를 만들어 줬으면 좋겠다.
-          </NewsSummaryBodyText>
-        </NewsSummaryBody>
-        <NewsSummaryBody>
-          <NewsSummaryBodyText>3. 일해라 박선홍</NewsSummaryBodyText>
-        </NewsSummaryBody>
+        {/* 번호가 붙은 문장을 표시 */}
+        {numberedSentences.length === 0 ? (
+          numberedSentences.map((sentence, index) => (
+            <NewsSummaryBody>
+              <NewsSummaryBodyText key={index}>{sentence}</NewsSummaryBodyText>
+            </NewsSummaryBody>
+          ))
+        ) : (
+          <NewsSummaryBody>
+            <NewsSummaryBodyText>요약 정보가 없습니다.</NewsSummaryBodyText>
+          </NewsSummaryBody>
+        )}
+
         <CloseButtonWrapper>
           <CloseButton type="button" onClick={onClose}>
             <ButtonText>닫기</ButtonText>
