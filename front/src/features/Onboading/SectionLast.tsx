@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import Login from '@components/Login';
-import useAuthStore from '@store/useAuthStore';
+
 import ThemedButton from '@components/ThemedButton';
 import {
   SectionContainerDefault,
@@ -111,8 +110,6 @@ const SectionLast: React.FC<SectionProps> = ({
   sectionRef,
   onStart,
 }) => {
-  const { isLogin } = useAuthStore();
-  const [showLoginModal, setShowLoginModal] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [tiltX, setTiltX] = useState(0); // X축 기울기
   const [tiltY, setTiltY] = useState(0); // Y축 기울기
@@ -125,15 +122,7 @@ const SectionLast: React.FC<SectionProps> = ({
   }, [$isVisible]);
 
   const handleStartClick = () => {
-    if (!isLogin) {
-      setShowLoginModal(true);
-    } else {
-      onStart();
-    }
-  };
-
-  const closeLoginModal = () => {
-    setShowLoginModal(false);
+    onStart();
   };
 
   const handleImageClick = () => {
@@ -197,8 +186,6 @@ const SectionLast: React.FC<SectionProps> = ({
           시작하기
         </ThemedButton>
       )}
-
-      {showLoginModal && <Login closeLogin={closeLoginModal} />}
     </SectionLastContainer>
   );
 };
