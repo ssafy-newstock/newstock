@@ -37,8 +37,8 @@ const Home = () => {
     navigate('/subnews-main/stock-news');
   };
 
-  const { data: newsData, isLoading: isNewsLoading } = useTop4NewsQuery();
   const { data: kospiData, isLoading: isKospiLoading } = useKospiQuery();
+  const { data: newsData, isLoading: isNewsLoading } = useTop4NewsQuery();
   console.log('kospiData', kospiData);
 
   return (
@@ -47,20 +47,20 @@ const Home = () => {
       <HrTag />
       <DividedSection>
         <MainGridColumn $gap="5rem">
-          {isNewsLoading
+          {isKospiLoading
             ? Array.from({ length: 4 }).map((_, index) => (
                 <Skeleton
+                  key={index}
                   style={{
                     width: '100%',
                     height: '7rem',
                     borderRadius: '1.25rem',
                   }}
-                  key={index}
                 />
               ))
             : kospiData &&
-              kospiData.data.map((kospiInfo) => (
-                <StockIndexCard kospiInfo={kospiInfo} />
+              kospiData.data.map((kospiInfo, index) => (
+                <StockIndexCard key={index} kospiInfo={kospiInfo} />
               ))}
         </MainGridColumn>
       </DividedSection>
@@ -92,8 +92,20 @@ const Home = () => {
       <HrTag />
       <DividedSection>
         <MainGridColumn $gap="1rem">
-          {newsData &&
-            newsData.data.map((news) => <NewsCard key={news.id} news={news} />)}
+          {isNewsLoading
+            ? Array.from({ length: 4 }).map((_, index) => (
+                <Skeleton
+                  style={{
+                    width: '100%',
+                    height: '14rem',
+                    borderRadius: '1.25rem',
+                  }}
+                  key={index}
+                />
+              ))
+            : newsData?.data.map((news) => (
+                <NewsCard key={news.id} news={news} />
+              ))}
         </MainGridColumn>
       </DividedSection>
     </Center>
