@@ -4,12 +4,7 @@ import { useBookmarkStore } from '@store/useBookmarkStore';
 import { NewsTag } from '@features/News/NewsIconTag';
 import { bookmarkedIcon } from '@features/News/NewsIconTag';
 import { useNavigate } from 'react-router-dom';
-import {
-  CenteredMessage,
-  ModalContainer,
-  ModalLeftTop,
-  TextP_24,
-} from './styledComponent';
+import { CenteredMessage } from '@features/SideModal/styledComponent';
 // import noDataPng from '@assets/News/noDataPng.png';
 
 const FavoriteNewsCenter = styled.div`
@@ -80,11 +75,7 @@ const BookmarkedNewsFooter = styled.div`
   align-items: stretch;
 `;
 
-interface FavoriteNewsProps {
-  isOpen: boolean;
-}
-
-const FavoriteNews: React.FC<FavoriteNewsProps> = ({ isOpen }) => {
+const FavoriteNews: React.FC = () => {
   const {
     bookmarkedDetailNews,
     bookmarkedDetailStockNews,
@@ -144,57 +135,52 @@ const FavoriteNews: React.FC<FavoriteNewsProps> = ({ isOpen }) => {
   };
 
   return (
-    <ModalContainer $isOpen={isOpen}>
-      <ModalLeftTop>
-        <TextP_24>관심 뉴스</TextP_24>
-      </ModalLeftTop>
-      <FavoriteNewsCenter>
-        {allBookmarkedNews.length > 0 ? (
-          allBookmarkedNews.map((newsItem, index) => {
-            const uploadDate = newsItem.uploadDatetime
-              ? newsItem.uploadDatetime.split('T')[0].replace(/-/g, '.')
-              : '날짜 없음';
+    <FavoriteNewsCenter>
+      {allBookmarkedNews.length > 0 ? (
+        allBookmarkedNews.map((newsItem, index) => {
+          const uploadDate = newsItem.uploadDatetime
+            ? newsItem.uploadDatetime.split('T')[0].replace(/-/g, '.')
+            : '날짜 없음';
 
-            const isStockNews = bookmarkedDetailStockNews.includes(newsItem);
+          const isStockNews = bookmarkedDetailStockNews.includes(newsItem);
 
-            return (
-              <BookmarkedNewsWrapper
-                key={index}
-                onClick={() => handleNewsClick(newsItem.id, isStockNews)}
-              >
-                <BookmarkedNewsTitle>
-                  {newsItem.title || '제목 없음'}
-                </BookmarkedNewsTitle>
-                <BookmarkedNewsMiddle>
-                  <BookmarkedNewsMiddleText>
-                    {newsItem.media || '미디어 정보 없음'}
-                  </BookmarkedNewsMiddleText>
-                  <BookmarkedNewsMiddleLine />
-                  <BookmarkedNewsMiddleText>
-                    {uploadDate}
-                  </BookmarkedNewsMiddleText>
-                </BookmarkedNewsMiddle>
+          return (
+            <BookmarkedNewsWrapper
+              key={index}
+              onClick={() => handleNewsClick(newsItem.id, isStockNews)}
+            >
+              <BookmarkedNewsTitle>
+                {newsItem.title || '제목 없음'}
+              </BookmarkedNewsTitle>
+              <BookmarkedNewsMiddle>
+                <BookmarkedNewsMiddleText>
+                  {newsItem.media || '미디어 정보 없음'}
+                </BookmarkedNewsMiddleText>
+                <BookmarkedNewsMiddleLine />
+                <BookmarkedNewsMiddleText>
+                  {uploadDate}
+                </BookmarkedNewsMiddleText>
+              </BookmarkedNewsMiddle>
 
-                <BookmarkedNewsFooter>
-                  <NewsTag $tagName={isStockNews ? '종목' : '시황'}>
-                    #{isStockNews ? '종목' : '시황'}
-                  </NewsTag>
-                  <div
-                    onClick={(e) =>
-                      handleBookmarkClick(newsItem.id, e, isStockNews)
-                    }
-                  >
-                    {bookmarkedIcon}
-                  </div>
-                </BookmarkedNewsFooter>
-              </BookmarkedNewsWrapper>
-            );
-          })
-        ) : (
-          <CenteredMessage>데이터가 존재하지 않습니다.</CenteredMessage>
-        )}
-      </FavoriteNewsCenter>
-    </ModalContainer>
+              <BookmarkedNewsFooter>
+                <NewsTag $tagName={isStockNews ? '종목' : '시황'}>
+                  #{isStockNews ? '종목' : '시황'}
+                </NewsTag>
+                <div
+                  onClick={(e) =>
+                    handleBookmarkClick(newsItem.id, e, isStockNews)
+                  }
+                >
+                  {bookmarkedIcon}
+                </div>
+              </BookmarkedNewsFooter>
+            </BookmarkedNewsWrapper>
+          );
+        })
+      ) : (
+        <CenteredMessage>데이터가 존재하지 않습니다.</CenteredMessage>
+      )}
+    </FavoriteNewsCenter>
   );
 };
 

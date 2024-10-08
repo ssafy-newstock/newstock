@@ -1,56 +1,33 @@
 import styled from 'styled-components';
 
-export const ModalContainer = styled.div<{ $isOpen: boolean }>`
+export const ModalContainer = styled.div<{
+  $isOpen: boolean;
+  $isFullyClosed: boolean;
+}>`
   position: fixed;
-  right: ${({ $isOpen }) =>
-    $isOpen
-      ? '68px'
-      : '-332px'}; /* 모달이 열리면 66px, 닫히면 화면 밖으로 나감 */
+  right: ${({ $isOpen }) => ($isOpen ? '66px' : '-332px')};
   display: flex;
   flex-direction: column;
-  width: 332px; /* 고정된 너비 */
+  width: 332px;
   height: 100%;
   background-color: ${({ theme }) => theme.backgroundColor};
-  box-shadow: -3px 0px 10px rgba(0, 0, 0, 0.1);
-  transition: right 0.3s ease; /* right만 변경 */
+  box-shadow: -0.2rem 0rem 0.5rem rgba(0, 0, 0, 0.1);
+  transition:
+    right 0.5s ease,
+    opacity 0.5s ease; /* right는 바로, opacity는 지연 */
   overflow: auto;
-  opacity: ${({ $isOpen }) =>
-    $isOpen ? '1' : '0'}; /* 부드러운 등장/사라짐 효과 */
-  pointer-events: ${({ $isOpen }) =>
-    $isOpen ? 'auto' : 'none'}; /* 모달이 닫혔을 때는 클릭이 불가능하게 */
+  opacity: ${({ $isOpen, $isFullyClosed }) =>
+    $isOpen || !$isFullyClosed ? '1' : '0'};
+  pointer-events: ${({ $isOpen }) => ($isOpen ? 'auto' : 'none')};
   &::-webkit-scrollbar {
     width: 0;
     height: 0;
   }
-`;
-
-export const ModalButton = styled.button<{ $isOpen: boolean }>`
-  position: fixed;
-  top: 45%;
-  right: ${({ $isOpen }) =>
-    $isOpen ? '400px' : '0'}; /* 모달이 열리면 360px 왼쪽으로 이동 */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: ${({ theme }) => theme.switchBackgroundColor};
-  color: ${({ theme }) => theme.switchHandleColor};
-  border: none;
-  width: 1rem;
-  padding: 0.5rem 0.1rem;
-  border-radius: 0.625rem 0 0 0.625rem;
-  cursor: pointer;
-  transition:
-    right 0.5s ease,
-    background-color 0.5s ease,
-    height 0.5s ease;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.buttonHoverColor};
-  }
+  z-index: 0;
 `;
 
 export const ModalLeft = styled.div`
-  width: 83%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   overflow: auto;
@@ -60,29 +37,22 @@ export const ModalLeft = styled.div`
   }
 `;
 
-export const ModalLeftTop = styled.div`
+export const ModalLeftTop = styled.div<{ $isOpen: boolean }>`
   width: 100%;
-  height: 6%;
+  min-height: 4rem;
   display: flex;
   align-items: center;
   padding: 1rem;
   margin-bottom: 0.5rem;
-  border-bottom: 2px solid #b3b3b3;
-`;
-
-export const ModalRight = styled.div`
-  width: 17%;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  color: ${({ theme }) => theme.textColor};
-  border-left: 2px solid #b3b3b3;
-  padding: 0.5rem;
+  border-bottom: 0.125rem solid #b3b3b3;
+  opacity: ${({ $isOpen }) =>
+    $isOpen ? '1' : '0'}; /* 모달 열릴 때만 보이도록 */
+  gap: 1rem;
 `;
 
 export const TextP_24 = styled.p`
   font-size: 1.5rem;
-  font-weight: 600;
+  font-weight: bold;
 `;
 
 export const TextP_20 = styled.p`
@@ -114,7 +84,14 @@ export const TextP_14_NOTGRAY = styled.p`
   margin-bottom: auto;
 `;
 
-export const RightContentDiv = styled.div`
+export const TextP_14 = styled.p`
+  color: #828282;
+  font-size: 0.875rem;
+  margin-top: auto;
+  margin-bottom: auto;
+`;
+
+export const ContentDiv = styled.div`
   display: flex;
   width: 100%;
   padding: 0rem 0.5rem;
@@ -155,7 +132,7 @@ export const CardRightDiv = styled.div`
   align-items: flex-end;
   flex-direction: column;
   justify-content: center;
-  gap: 1rem;
+  gap: 0.8rem;
 `;
 
 export const CardLeftDiv = styled.div`
@@ -163,7 +140,7 @@ export const CardLeftDiv = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  gap: 0.8rem;
 `;
 
 export const CardLeftRightDiv = styled.div`
@@ -171,7 +148,7 @@ export const CardLeftRightDiv = styled.div`
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  gap: 1rem;
+  gap: 0.8rem;
 `;
 
 export const ContainerDiv = styled.div`
