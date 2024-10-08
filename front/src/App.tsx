@@ -17,7 +17,7 @@ import { useCategoryStockQuery } from '@hooks/useCategoryStockQuery';
 import useAuthStore from '@store/useAuthStore';
 import Left from '@components/Left';
 import StockModal from '@features/MyStockModal/StockModal';
-import { useLocation, useNavigate } from 'react-router-dom';
+// import { useLocation, useNavigate } from 'react-router-dom';
 
 const Main = styled.div`
   display: flex;
@@ -67,7 +67,6 @@ const App = () => {
   const { data: top10Stock } = useTop10StockQuery();
   const { data: allStock } = useAllStockQuery();
   const { data: categoryStock } = useCategoryStockQuery();
-  const location = useLocation();
 
   useEffect(() => {
     top10Stock && setTop10Stock(top10Stock.data);
