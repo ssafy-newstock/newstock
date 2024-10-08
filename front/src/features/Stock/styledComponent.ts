@@ -24,10 +24,10 @@ export const StockGridColumn = styled.div`
   gap: 1.25rem;
 `;
 
-export const MainGridColumn = styled.div`
+export const MainGridColumn = styled.div<{$gap: string}>`
 display: grid;
 grid-template-columns: repeat(4, 1fr);
-gap: 5rem;
+gap: ${({ $gap }) => $gap};
 `
 
 export const CategoryGridColumn = styled.div`

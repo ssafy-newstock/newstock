@@ -5,7 +5,6 @@ import RealTimeStock, {
 } from '@features/Stock/StockMain/RealTimeStock';
 import RealTimeStockSkeleton from '@features/Stock/StockMain/RealTimeStockSkeleton';
 import {
-  DividedSection,
   HrTag,
   MainGridColumn,
   StockGridRow,
@@ -18,12 +17,21 @@ import StockIndexCard from '@features/home/StockIndexCard';
 import { useTop4NewsQuery } from '@hooks/useTop4news';
 import useTop10StockStore from '@store/useTop10StockStore';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+
+export const DividedSection = styled.div`
+  margin: 1rem 0rem;
+`;
 
 const Home = () => {
   const navigate = useNavigate();
   const { top10Stock } = useTop10StockStore();
   const allStockNavigate = () => {
     navigate('/all-stock');
+  };
+
+  const stockNewsNavigate = () => {
+    navigate('/subnews-main/stock-news');
   };
 
   const { data, isLoading } = useTop4NewsQuery();
@@ -37,7 +45,7 @@ const Home = () => {
       <StockHeader>주가지수</StockHeader>
       <HrTag />
       <DividedSection>
-        <MainGridColumn>
+        <MainGridColumn $gap="5rem">
           <StockIndexCard />
           <StockIndexCard />
           <StockIndexCard />
@@ -51,23 +59,31 @@ const Home = () => {
           <More handlClick={allStockNavigate} />
         </StockHeaderWrapper>
         <HrTag />
-        <StockGridRow>
-          <RealTimeStockFirstRow />
-          {top10Stock.length > 0 ? (
-            top10Stock?.map((stock: IStock, index: number) => (
-              <RealTimeStock key={index} stock={stock} />
-            ))
-          ) : (
-            <RealTimeStockSkeleton />
-          )}
-        </StockGridRow>
+        <DividedSection>
+          <StockGridRow>
+            <RealTimeStockFirstRow />
+            {top10Stock.length > 0 ? (
+              top10Stock?.map((stock: IStock, index: number) => (
+                <RealTimeStock key={index} stock={stock} />
+              ))
+            ) : (
+              <RealTimeStockSkeleton />
+            )}
+          </StockGridRow>
+        </DividedSection>
       </DividedSection>
 
-      <StockHeader>종목 뉴스</StockHeader>
+      <StockHeaderWrapper>
+        <StockHeader>주요 뉴스</StockHeader>
+        <More handlClick={stockNewsNavigate} />
+      </StockHeaderWrapper>
       <HrTag />
-      {data && data.data.map((news) => (
-        <NewsCard key={news.id} news={news} />
-      ))}
+      <DividedSection>
+        <MainGridColumn $gap="1rem">
+          {data &&
+            data.data.map((news) => <NewsCard key={news.id} news={news} />)}
+        </MainGridColumn>
+      </DividedSection>
     </Center>
   );
 };
