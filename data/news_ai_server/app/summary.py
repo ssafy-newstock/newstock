@@ -283,21 +283,20 @@ def summaryLLM(
     1. MacroReport, MicroReport에는 다음 내용을 적용해줘.
     1.1. 문장은 꼭 <br><br>태그로 구분해줘. 즉, 태그 2개를 줘야해.
     1.2. 중요한 내용은 <mark></mark> 태그로 감싸줘
-    2. 뉴스 id는 꼭 related_news에 담아줘 (ex. [20240101000000001, 20240102000000012, 20240102000000013, 20240102000000012]
+    2. 뉴스 id는 MacroReport, MicroReport에는 내 내용에 담지 말고, relatedNews에 담아줘 (ex. [20240101000000001, 20240102000000012, 20240102000000013, 20240102000000012]
 
     [Required]
     0. 보고서 분석의 메인은 뉴스 기반이야. 뉴스 정보가 보고서에 많이 들어갔으면 좋겠어
     1. 해당 보고서를 읽는 사람은 경제에 대해 아무것도 모르는 사람이야. 아주 쉽게 요약해줘.
-    2. 무조건 한국어로 보고서를 적어줘. 핵심적인 내용 위주로, 글자 수는 한 단락당 공백 포함 300자 이내로 해줘.
-    3. 너가 보고서를 작성할 때는 두 단락으로 나누어. 각각의 단락은 소제목이 있어야 해.
-    4. 첫 번째는 거시적인 흐름, 전체적인 주식장의 흐름과 연관을 지어서 분석해줘
-    5. 두 번째는 해당 회사와 관련된 요소만을 중심으로 연관을 지어서 분석해 줘.
-    6. 마지막으로 너가 시황분석, 요약한 것과 가장 관련 있는, 도움이 많이 되었던 뉴스 4개를 뽑아 related_news에 담아. 주의해야 할 점은 뉴스 id만 가져와.
-    7. 주식 가격을 예측하려고 하지 마.
-    8. 최대한 주어진 뉴스에 대한 주가에 미치는 영향, 주가의 변화를 심층적으로 분석해줘.
-    9. 웬만하면 똑같은 뉴스 주제로 분석하지 말고, 최대한 다양한 뉴스로 분석해줘.
-    10. MacroReport, MicroReport에서 뉴스 ID는 절대로 언급하지마
-    
+    2. 요약과 관련 있는 뉴스를 relatedNews에 담아줘.
+    3. 무조건 한국어로 보고서를 적어줘. 핵심적인 내용 위주로, 글자 수는 한 단락당 공백 포함 300자 이내로 해줘.
+    4. 너가 보고서를 작성할 때는 두 단락으로 나누어. 각각의 단락은 소제목이 있어야 해.
+    5. 첫 번째는 거시적인 흐름, 전체적인 주식장의 흐름과 연관을 지어서 분석해줘
+    6. 두 번째는 해당 회사와 관련된 요소만을 중심으로 연관을 지어서 분석해 줘.
+    7. 마지막으로 너가 시황분석, 요약한 것과 가장 관련 있는, 도움이 많이 되었던 뉴스를 최대 4개를 뽑아 relatedNews에 담아. 주의해야 할 점은 뉴스 id만 가져와.
+    8. 주식 가격을 예측하려고 하지 마.
+    9. 최대한 주어진 뉴스에 대한 주가에 미치는 영향, 주가의 변화를 심층적으로 분석해줘.
+    10. 웬만하면 똑같은 뉴스 주제로 분석하지 말고, 최대한 다양한 뉴스로 분석해줘.
 
 
 
@@ -318,5 +317,6 @@ def summaryLLM(
     macro_report_summary = summary_result['macro_report']
     micro_resport_summary = summary_result['micro_report']
 
-    related_news_json = get_related_news_from_id(summary_result['related_news'], news_info_dict)['related_news']
+    logger.info(summary_result)
+    related_news_json = get_related_news_from_id(summary_result.get('related_news', []), news_info_dict)['related_news']
     return macro_report_summary, micro_resport_summary, related_news_json
