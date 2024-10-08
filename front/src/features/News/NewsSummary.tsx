@@ -252,7 +252,8 @@ const NewsSummary: React.FC<NewsSummaryProps> = ({ onClose, data }) => {
   const newsOne = data?.newsOne || '요약 정보가 없습니다.';
   const newsTwo = data?.newsTwo || '요약 정보가 없습니다.';
   const newsThree = data?.newsThree || '요약 정보가 없습니다.';
-
+  console.log(newsOne, newsTwo, newsThree);
+  
   return (
     <>
       <NewsSummaryWrapper>
