@@ -75,6 +75,14 @@ export const TextP_24 = styled.p`
   font-weight: 600;
 `;
 
+export const TextP_20 = styled.p`
+  font-size: 1.25rem;
+`;
+
+export const TextP_18 = styled.p`
+  font-size: 1.125rem;
+`;
+
 export const IconDiv = styled.div`
   display: flex;
   align-items: center;
@@ -82,6 +90,7 @@ export const IconDiv = styled.div`
   flex-direction: column;
   gap: 0.5rem;
   cursor: pointer;
+  transition: color 0.5s ease;
 `;
 
 export const TextP_12 = styled.p`

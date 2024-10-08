@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { SimilarityFormValues } from '@features/Stock/types';
 import { useSimilaritySearchQuery } from '@hooks/useSimilaritySearchQuery';
 import { useStockChartQuery } from '@hooks/useStockChartQuery';
@@ -18,25 +18,29 @@ import {
   SimilarityButton,
 } from '@features/Stock/styledComponent';
 import { toast } from 'react-toastify';
+import { calculateEndDate } from '@utils/calculateEndDate';
+import { calculateStartDate } from '@utils/calculateStartDate';
 
 interface SimilaritySearchProps {
   stockCode: string;
 }
 
-const SimilarityFlex = styled.div`
+const SimilarityGrid = styled.div`
   width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-`;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 2rem;
 
-const SkeletonFlex = styled.div`
-  display: flex;
-  justify-content: space-between;
+  & > :first-child {
+    grid-row: 1 / span 2; /* 첫 번째 자식이 첫 번째와 두 번째 행을 차지 */
+    grid-column: 1 / span 2; /* 첫 번째 자식이 첫 번째와 두 번째 열을 차지 */
+  }
 `;
 
 const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
-  const { register, handleSubmit } = useForm<SimilarityFormValues>();
+  const { register, handleSubmit, setValue, watch } =
+    useForm<SimilarityFormValues>();
   const [isSearchInitiated, setIsSearchInitiated] = useState(false);
   const [searchDates, setSearchDates] = useState<{
     start_date?: string;
@@ -61,6 +65,23 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
     isSearchInitiated
   );
 
+  // 시작일 입력시 종료일 자동 입력
+  const startDateValue = watch('start_date');
+  useEffect(() => {
+    if (startDateValue) {
+      const endDate = calculateEndDate(startDateValue);
+      setValue('end_date', endDate); // end_date 값을 설정
+    }
+  }, [startDateValue]);
+
+  const endDateValue = watch('end_date');
+  useEffect(() => {
+    if (endDateValue) {
+      const startDate = calculateStartDate(endDateValue);
+      setValue('start_date', startDate); // end_date 값을 설정
+    }
+  }, [endDateValue]);
+
   const onSubmit = handleSubmit((data) => {
     setSearchDates({
       start_date: data.start_date,
@@ -71,13 +92,12 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
 
   useEffect(() => {
     if (similarityQuery.data && chartQuery.data) {
-      toast.success('유사도 검색 완료');
+      toast.success('유사도 분석 완료');
     }
-  }
-  , [similarityQuery.data, chartQuery.data]);
+  }, [similarityQuery.data, chartQuery.data]);
 
   return (
-    <>
+    <Fragment>
       <form onSubmit={onSubmit}>
         <FlexGap $gap="2rem">
           <InputRow>
@@ -106,11 +126,12 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
       {isSearchInitiated && (
         <DividedSection>
           {(similarityQuery.isPending || chartQuery.isPending) && (
-            <SkeletonFlex>
+            <SimilarityGrid>
+                <SkeletonDiv $width="38rem" $height="32rem" />
               {Array.from({ length: 4 }).map((_, index) => (
                 <SkeletonDiv key={index} $width="19rem" $height="16rem" />
               ))}
-            </SkeletonFlex>
+            </SimilarityGrid>
           )}
           {(similarityQuery.error || chartQuery.error) && (
             <p>
@@ -119,7 +140,7 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
             </p>
           )}
           {similarityQuery.data && chartQuery.data && (
-            <SimilarityFlex>
+            <SimilarityGrid>
               <SelectionStock
                 selectionStock={chartQuery.data.data}
                 stockCode={stockCode}
@@ -133,11 +154,11 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
                   otherStock={otherStock}
                 />
               ))}
-            </SimilarityFlex>
+            </SimilarityGrid>
           )}
         </DividedSection>
       )}
-    </>
+    </Fragment>
   );
 };
 

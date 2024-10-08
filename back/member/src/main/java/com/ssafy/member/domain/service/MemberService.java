@@ -4,6 +4,7 @@ package com.ssafy.member.domain.service;
 import com.ssafy.member.domain.controller.response.MemberPointResponse;
 import com.ssafy.member.domain.entity.Member;
 import com.ssafy.member.domain.entity.dto.MemberDetailDto;
+import com.ssafy.member.domain.entity.dto.MemberRankDto;
 import com.ssafy.member.domain.repository.MemberRepository;
 import com.ssafy.member.global.exception.MemberNotFoundException;
 import com.ssafy.member.global.exception.NotEnoughPointsException;
@@ -138,10 +139,32 @@ public class MemberService {
     }
 
     /**
-     * 등락률(ChangeRate) 상위 10명 멤버 조회
-     * @return List<Member>
+     * 보유 수익률 랭킹 10명
+     * @return List<MemberRankDto>
      */
-    public List<Member> getTopFiveRank(){
-        return memberRepository.getTopFiveRank();
+    public List<MemberRankDto> getHoldingRank(){
+        List<Member> holdingRankList = memberRepository.getHoldingRank();
+
+        return holdingRankList.stream()
+                .map(transactionRank -> {
+                    return new MemberRankDto(transactionRank.getId(),
+                                                transactionRank.getMemberName(),
+                                                transactionRank.getHoldingChangeRate());
+                }).toList();
+    }
+
+    /**
+     * 매매 수익률 랭킹 10명
+     * @return List<MemberRankDto>
+     */
+    public List<MemberRankDto> getTransactionRank(){
+        List<Member> transactionRankList = memberRepository.getTransactionRank();
+
+        return transactionRankList.stream()
+                .map(transactionRank -> {
+                    return new MemberRankDto(transactionRank.getId(),
+                            transactionRank.getMemberName(),
+                            transactionRank.getTransactionChangeRate());
+                }).toList();
     }
 }

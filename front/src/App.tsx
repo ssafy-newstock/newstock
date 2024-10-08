@@ -68,6 +68,14 @@ const App = () => {
   const { data: top10Stock } = useTop10StockQuery();
   const { data: allStock } = useAllStockQuery();
   const { data: categoryStock } = useCategoryStockQuery();
+  const navigate = useNavigate();
+
+  // 상태 업데이트 완료 후 navigate 호출
+  useEffect(() => {
+    if (isLogin) {
+      navigate('/news-main');
+    }
+  }, [isLogin, navigate]);
 
   useEffect(() => {
     top10Stock && setTop10Stock(top10Stock.data);
@@ -87,14 +95,16 @@ const App = () => {
       <Main>
         <Header isOpen={isOpen} />
         <Content>
-          <Left />
+          {!isOnboarding && <Left />}
           <Outlet context={{ setIsOpen }} />
           <RightVacantWrapper $isOpen={isOpen} $isScrapDetail={isScrapDetail} />
         </Content>
-        {isLogin && <StockModal isOpen={isOpen} setIsOpen={setIsOpen} />}
+        {isLogin && !isOnboarding && (
+          <StockModal isOpen={isOpen} setIsOpen={setIsOpen} />
+        )}
       </Main>
       {/* 웹소켓 연결 */}
-      {/* <WebSocketComponent /> */}
+      <WebSocketComponent />
       {/* 토스트 메세지 */}
       <ToastContainer
         position="bottom-right"

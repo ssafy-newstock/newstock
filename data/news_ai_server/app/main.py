@@ -20,7 +20,7 @@ app = FastAPI(
 # CORS 설정
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:5500", "https://newstock.info"],  # 모든 도메인 허용 (보안을 위해 실제 도메인으로 변경해야 함)
+    allow_origins=["http://localhost:5173/", "http://localhost:5500/", "https://newstock.info/"],  # 모든 도메인 허용 (보안을 위해 실제 도메인으로 변경해야 함)
     allow_credentials=True,
     allow_methods=["*"],  # 모든 HTTP 메서드 허용
     allow_headers=["*"],  # 모든 헤더 허용
