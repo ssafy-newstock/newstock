@@ -18,14 +18,14 @@ public class StockNewsFeignService {
     private final StockNewsClient stockNewsClient;
     private final ObjectMapper objectMapper;
 
-    public StockNewsDto getStockNews(Long newsId) {
+    public StockNewsDto getStockNews(String newsId) {
         // 주식 서버 호출
         CommonResponse<?> response = stockNewsClient.getStockNews(newsId);
 
         return objectMapper.convertValue(response.getData(), StockNewsDto.class);
     }
 
-    public List<StockNewsDto> getStockNewsInIds(final List<Long> scrapInStockNewsIds) {
+    public List<StockNewsDto> getStockNewsInIds(final List<String> scrapInStockNewsIds) {
         CommonResponse<?> response = stockNewsClient.getStockNewsInIds(scrapInStockNewsIds);
 
         // ObjectMapper를 사용해 List<IndustryNewsDto>로 변환
