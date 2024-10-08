@@ -120,7 +120,7 @@ const StockNewsDetailPage: React.FC = () => {
             prevPoint !== null ? prevPoint + plusPoint : plusPoint
           );
           if (plusPoint) {
-            toast.success('10만원이 충전되었습니다!');
+            toast.success(`${plusPoint}원 충전되었습니다!`);
           }
         }
       );

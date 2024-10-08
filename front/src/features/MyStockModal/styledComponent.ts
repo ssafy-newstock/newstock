@@ -3,14 +3,25 @@ import styled from 'styled-components';
 export const ModalContainer = styled.div<{ $isOpen: boolean }>`
   position: fixed;
   right: ${({ $isOpen }) =>
-    $isOpen ? '0' : '-400px'}; /* 모달이 열리면 0, 닫히면 -360px */
+    $isOpen
+      ? '68px'
+      : '-332px'}; /* 모달이 열리면 66px, 닫히면 화면 밖으로 나감 */
   display: flex;
-  flex-direction: row;
-  width: 400px; /* 고정된 너비 */
+  flex-direction: column;
+  width: 332px; /* 고정된 너비 */
   height: 100%;
   background-color: ${({ theme }) => theme.backgroundColor};
   box-shadow: -3px 0px 10px rgba(0, 0, 0, 0.1);
-  transition: right 0.5s ease; /* 슬라이드 애니메이션 */
+  transition: right 0.3s ease; /* right만 변경 */
+  overflow: auto;
+  opacity: ${({ $isOpen }) =>
+    $isOpen ? '1' : '0'}; /* 부드러운 등장/사라짐 효과 */
+  pointer-events: ${({ $isOpen }) =>
+    $isOpen ? 'auto' : 'none'}; /* 모달이 닫혔을 때는 클릭이 불가능하게 */
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
 `;
 
 export const ModalButton = styled.button<{ $isOpen: boolean }>`
@@ -47,7 +58,6 @@ export const ModalLeft = styled.div`
     width: 0;
     height: 0;
   }
-  color: ${({ theme }) => theme.textColor};
 `;
 
 export const ModalLeftTop = styled.div`

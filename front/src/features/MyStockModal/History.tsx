@@ -9,9 +9,12 @@ import {
   CardRightDiv,
   CenteredMessage,
   ContainerDiv,
+  ModalContainer,
+  ModalLeftTop,
   RightContentDiv,
   StockImage,
   TextP_14_NOTGRAY,
+  TextP_24,
 } from '@features/MyStockModal/styledComponent';
 import { getStockImageUrl } from '@utils/getStockImageUrl';
 
@@ -36,7 +39,11 @@ const HistoryhrDiv = styled.div`
   border-bottom: 1px solid #b3b3b3;
 `;
 
-const History: React.FC = () => {
+interface HistoryProps {
+  isOpen: boolean;
+}
+
+const History: React.FC<HistoryProps> = ({ isOpen }) => {
   // 커스텀 훅으로 거래 내역 데이터를 가져옴
   const { data: transactions, isLoading, error } = useMyTransactionData();
 
@@ -90,75 +97,80 @@ const History: React.FC = () => {
   );
 
   return (
-    <RightContentDiv>
-      {sortedDates.map((dateKey) => (
-        <ContainerDiv key={dateKey}>
-          {/* 날짜 표시 */}
-          <DateTitle>{dateKey}</DateTitle>
+    <ModalContainer $isOpen={isOpen}>
+      <ModalLeftTop>
+        <TextP_24>거래 내역</TextP_24>
+      </ModalLeftTop>
+      <RightContentDiv>
+        {sortedDates.map((dateKey) => (
+          <ContainerDiv key={dateKey}>
+            {/* 날짜 표시 */}
+            <DateTitle>{dateKey}</DateTitle>
 
-          {groupedTransactions[dateKey]
-            .sort(
-              (a, b) =>
-                new Date(
-                  addNineHours(new Date(b.stockTransactionDate))
-                ).getTime() -
-                new Date(
-                  addNineHours(new Date(a.stockTransactionDate))
-                ).getTime()
-            ) // 시간을 기준으로 내림차순 정렬
-            .map((transaction) => {
-              const transactionDate = addNineHours(
-                new Date(transaction.stockTransactionDate)
-              );
-              return (
-                <CardDiv key={transaction.stockId}>
-                  <CardLeftDiv>
-                    <StockImage
-                      src={getStockImageUrl(transaction.stockCode)}
-                      onError={(e) => (e.currentTarget.src = blueLogo)}
-                      alt=""
-                    />
-                    {/* 주식 이름 및 매수/매도 표시 */}
-                    <CardLeftRightDiv>
-                      <TextP_14_NOTGRAY>
-                        {transaction.stockName}
-                      </TextP_14_NOTGRAY>
-                      {/* 거래 날짜와 시간 표시 */}
-                      <TextP_14_NOTGRAY>
-                        {transactionDate.toLocaleTimeString()}{' '}
-                        {/* 9시간 더한 시간 */}
-                      </TextP_14_NOTGRAY>
-                    </CardLeftRightDiv>
-                  </CardLeftDiv>
+            {groupedTransactions[dateKey]
+              .sort(
+                (a, b) =>
+                  new Date(
+                    addNineHours(new Date(b.stockTransactionDate))
+                  ).getTime() -
+                  new Date(
+                    addNineHours(new Date(a.stockTransactionDate))
+                  ).getTime()
+              ) // 시간을 기준으로 내림차순 정렬
+              .map((transaction) => {
+                const transactionDate = addNineHours(
+                  new Date(transaction.stockTransactionDate)
+                );
+                return (
+                  <CardDiv key={transaction.stockId}>
+                    <CardLeftDiv>
+                      <StockImage
+                        src={getStockImageUrl(transaction.stockCode)}
+                        onError={(e) => (e.currentTarget.src = blueLogo)}
+                        alt=""
+                      />
+                      {/* 주식 이름 및 매수/매도 표시 */}
+                      <CardLeftRightDiv>
+                        <TextP_14_NOTGRAY>
+                          {transaction.stockName}
+                        </TextP_14_NOTGRAY>
+                        {/* 거래 날짜와 시간 표시 */}
+                        <TextP_14_NOTGRAY>
+                          {transactionDate.toLocaleTimeString()}{' '}
+                          {/* 9시간 더한 시간 */}
+                        </TextP_14_NOTGRAY>
+                      </CardLeftRightDiv>
+                    </CardLeftDiv>
 
-                  {/* 거래 금액 및 수량 표시 */}
-                  <CardRightDiv>
-                    <TextP_14_NOTGRAY>
-                      {transaction.stockTransactionAmount.toLocaleString()}주
-                      {' / '}
-                      {transaction.stockTransactionPrice.toLocaleString()}원
-                    </TextP_14_NOTGRAY>
-                    <TransactionCardLeftTopDiv>
+                    {/* 거래 금액 및 수량 표시 */}
+                    <CardRightDiv>
                       <TextP_14_NOTGRAY>
-                        {transaction.stockTransactionTotalPrice.toLocaleString()}
-                        원
+                        {transaction.stockTransactionAmount.toLocaleString()}주
+                        {' / '}
+                        {transaction.stockTransactionPrice.toLocaleString()}원
                       </TextP_14_NOTGRAY>
-                      <TransactionTypeText
-                        $type={transaction.stockTransactionType}
-                      >
-                        {transaction.stockTransactionType === 'BUY'
-                          ? '매수'
-                          : '매도'}
-                      </TransactionTypeText>
-                    </TransactionCardLeftTopDiv>
-                  </CardRightDiv>
-                </CardDiv>
-              );
-            })}
-          <HistoryhrDiv />
-        </ContainerDiv>
-      ))}
-    </RightContentDiv>
+                      <TransactionCardLeftTopDiv>
+                        <TextP_14_NOTGRAY>
+                          {transaction.stockTransactionTotalPrice.toLocaleString()}
+                          원
+                        </TextP_14_NOTGRAY>
+                        <TransactionTypeText
+                          $type={transaction.stockTransactionType}
+                        >
+                          {transaction.stockTransactionType === 'BUY'
+                            ? '매수'
+                            : '매도'}
+                        </TransactionTypeText>
+                      </TransactionCardLeftTopDiv>
+                    </CardRightDiv>
+                  </CardDiv>
+                );
+              })}
+            <HistoryhrDiv />
+          </ContainerDiv>
+        ))}
+      </RightContentDiv>
+    </ModalContainer>
   );
 };
 
