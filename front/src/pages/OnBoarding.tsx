@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import useAuthStore from '@store/useAuthStore';
 import SectionFirst from '@features/Onboading/SectionFirst';
@@ -9,15 +9,6 @@ import SectionFourth from '@features/Onboading/SectionFourth';
 import SectionFifth from '@features/Onboading/SectionFifth';
 import SectionSixth from '@features/Onboading/SectionSixth';
 import SectionLast from '@features/Onboading/SectionLast';
-function usePrevious<T>(value: T): T | undefined {
-  const ref = useRef<T>();
-
-  useEffect(() => {
-    ref.current = value;
-  }, [value]);
-
-  return ref.current;
-}
 
 // 스크롤 컨테이너 스타일: 스크롤이 발생하고 각 섹션이 스냅되는 스타일
 const Container = styled.div`
@@ -41,7 +32,6 @@ const SectionContainer = styled.div`
 const OnBoardingPage = () => {
   const { isLogin } = useAuthStore(); // 로그인 상태 확인
   const navigate = useNavigate();
-  const location = useLocation();
 
   // 각 섹션의 가시성 상태를 관리하는 상태 (섹션별로 true/false 설정)
   const [isSectionVisible, setIsSectionVisible] = useState({
@@ -64,23 +54,6 @@ const OnBoardingPage = () => {
     SectionSixth: useRef<HTMLDivElement | null>(null),
     SectionLast: useRef<HTMLDivElement | null>(null),
   };
-
-  const prevIsLogin = usePrevious(isLogin);
-
-  useEffect(() => {
-    console.log('OnBoardingPage useEffect 호출');
-    console.log('현재 isLogin 상태:', isLogin);
-    console.log('이전 isLogin 상태:', prevIsLogin);
-    console.log('현재 경로:', location.pathname);
-
-    // 로그인 시도 후에만 리다이렉트
-    if (isLogin && location.pathname === '/onboarding') {
-      console.log(
-        '로그인 상태가 false에서 true로 변경되었습니다. /news-main으로 이동합니다.'
-      );
-      navigate('/news-main');
-    }
-  }, [isLogin, prevIsLogin, location.pathname, navigate]);
 
   useEffect(() => {
     // IntersectionObserver 생성
