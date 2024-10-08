@@ -6,7 +6,6 @@ import com.ssafy.news.domain.entity.dto.IndustryNewsDto;
 import com.ssafy.news.domain.service.client.NewsDataClient;
 import com.ssafy.news.domain.service.client.response.StockNewsResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
@@ -27,7 +26,7 @@ public class NewsHBaseService {
 //
 //    }
 
-    @Scheduled(cron = "0 0 0 1 * *")
+//    @Scheduled(cron = "0 0 0 1 * *")
     public void getRecentIndustryNews() throws SQLException, ClassNotFoundException {
         Object data = newsDataClient.getRecentIndustryNews().getData();
 
@@ -43,7 +42,7 @@ public class NewsHBaseService {
         }
     }
 
-    @Scheduled(cron = "0 0 0 1 * *")
+//    @Scheduled(cron = "0 0 0 1 * *")
     public void getRecentStockNews() throws SQLException, ClassNotFoundException {
         Object data = newsDataClient.getRecentStockNews().getData();
 
