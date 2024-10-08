@@ -152,6 +152,9 @@ const AnalysisModal: React.FC<AnalysisModalProps> = ({
             <DivTag style={{ width: '100%' }}>
               <TextBoldLarge>관련 뉴스</TextBoldLarge>
               <HrTag />
+              {analysisData?.relatedNews.length === 0 && (
+                <Text>관련 뉴스가 없습니다.</Text>
+              )}
               <NewsGrid>
                 {analysisData?.relatedNews.map((news) => (
                   <>
