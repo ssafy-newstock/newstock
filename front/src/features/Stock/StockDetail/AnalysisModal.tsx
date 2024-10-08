@@ -129,55 +129,55 @@ const AnalysisModal: React.FC<AnalysisModalProps> = ({
             <DivTag style={{ width: '100%' }}>
               <TextBoldLarge>종목 분석</TextBoldLarge>
               <HrTag />
-            <FlexGap $gap="1rem">
-              <Container>
-                <Text>거시적 관점</Text>
-                <TextLeft>{analysisData?.macroReport}</TextLeft>
-              </Container>
-              <Container>
-                <Text>미시적 관점</Text>
-                <TextLeft>{analysisData?.microReport}</TextLeft>
-              </Container>
-            </FlexGap>
+              <FlexGap $gap="1rem">
+                <Container>
+                  <Text>거시적 관점</Text>
+                  <TextLeft>{analysisData?.macroReport}</TextLeft>
+                </Container>
+                <Container>
+                  <Text>미시적 관점</Text>
+                  <TextLeft>{analysisData?.microReport}</TextLeft>
+                </Container>
+              </FlexGap>
             </DivTag>
 
             <DivTag style={{ width: '100%' }}>
               <TextBoldLarge>관련 뉴스</TextBoldLarge>
               <HrTag />
-            <NewsGrid>
-              {analysisData?.relatedNews.map((news) => (
-                <>
-                  <NewsContainer key={news.id}>
-                    <ImgTag
-                      src={news.thumbnail || newstockIcon}
-                      alt={news.title}
-                    />
-                    <FlexGapColumn $gap="0.5rem">
-                      <TextBoldLeft>{news.title}</TextBoldLeft>
+              <NewsGrid>
+                {analysisData?.relatedNews.map((news) => (
+                  <>
+                    <NewsContainer key={news.id}>
+                      <ImgTag
+                        src={news.thumbnail || newstockIcon}
+                        alt={news.title}
+                      />
+                      <FlexGapColumn $gap="0.5rem">
+                        <TextBoldLeft>{news.title}</TextBoldLeft>
 
-                      <FlexGapCenter
-                        $gap="0.5rem"
-                        style={{ paddingLeft: '0.5rem' }}
-                      >
-                        <img
-                          style={{
-                            width: '1.5rem',
-                            height: '1.5rem',
-                            borderRadius: '50%',
-                          }}
-                          src={`https://stock.vaiv.kr/resources/images/news/${news.media}.png`}
-                          onError={(e) => {
-                            e.currentTarget.src = newstockIcon;
-                          }}
-                        />
-                        <Text>{news.media}</Text>
-                        <Text>{news.upload_datetime.split(' ')[0]}</Text>
-                      </FlexGapCenter>
-                    </FlexGapColumn>
-                  </NewsContainer>
-                </>
-              ))}
-            </NewsGrid>
+                        <FlexGapCenter
+                          $gap="0.5rem"
+                          style={{ paddingLeft: '0.5rem' }}
+                        >
+                          <img
+                            style={{
+                              width: '1.5rem',
+                              height: '1.5rem',
+                              borderRadius: '50%',
+                            }}
+                            src={`https://stock.vaiv.kr/resources/images/news/${news.media}.png`}
+                            onError={(e) => {
+                              e.currentTarget.src = newstockIcon;
+                            }}
+                          />
+                          <Text>{news.media}</Text>
+                          <Text>{news.upload_datetime.split(' ')[0]}</Text>
+                        </FlexGapCenter>
+                      </FlexGapColumn>
+                    </NewsContainer>
+                  </>
+                ))}
+              </NewsGrid>
             </DivTag>
             <CloseButton onClick={onClose}>닫기</CloseButton>
           </>

@@ -2,7 +2,7 @@ import styled, { keyframes } from 'styled-components';
 
 export const StockHeader = styled.div`
   font-size: 1.5rem;
-  font-weight: bolder;
+  font-weight: bold;
 `;
 
 export const StockHeaderWrapper = styled.div`
@@ -84,7 +84,7 @@ export const StockCardTitle = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: 0.5rem;
-  font-weight: bold;
+  font-weight: 500;
 `;
 
 export const StockTitle = styled.div`
@@ -92,7 +92,7 @@ export const StockTitle = styled.div`
   align-items: center;
   gap: 0.5rem;
   font-size: 1rem;
-  font-weight: bold;
+  font-weight: 500;
 
   // 한줄로 넘칠 경우 ...으로 표시
   white-space: nowrap;
@@ -113,26 +113,27 @@ export const StockImageDetail = styled(StockImage)`
 
 export const StckPrice = styled.div`
   font-size: 1rem;
-  font-weight: bold;
+  font-weight: 500;
 `;
 
 export const StockPrev = styled.div<{ $isPositive: boolean }>`
   font-size: 1rem;
   color: ${({ $isPositive, theme }) =>
     $isPositive ? theme.stockBlue : theme.stockRed};
-  font-weight: bold;
+  font-weight: 500;
 `;
 
 export const HoldingStockPrev = styled(StockPrev)`
   font-size: 1rem;
-  font-weight: bold;
+  font-weight: 500;
 
 `;
 
 export const SpanTag = styled.span`
   font-size: 0.8rem;
   color: ${({ theme }) => theme.textColor};
-  font-weight: bold;
+  font-weight: 500;
+
 `;
 
 export const HeartWrapper = styled.div`
@@ -182,11 +183,12 @@ export const CategoryCardRow = styled(StockCardRow)`
 export const Text = styled.div`
   font-size: 1rem;
   color: ${({ theme }) => theme.textColor};
-  font-weight: bold;
+  font-weight: 500;
+
 `;
 
 export const TextBold = styled(Text)`
-  font-weight: bolder;
+  font-weight: 500;
 `;
 
 export const TextBoldLeft = styled(TextBold)`
@@ -305,7 +307,7 @@ export const SearchInput = styled.input`
   background-color: ${({ theme }) => theme.stockBackgroundColor};
   color: ${({ theme }) => theme.textColor};
   font-size: 1rem;
-  font-weight: bold;
+  font-weight: 500;
 `;
 
 export const IconWrapper = styled.div`
@@ -324,7 +326,7 @@ export const DetailPageButton = styled.div`
   border-radius: 1rem;
   padding: 0.5rem 1rem;
   cursor: pointer;
-  font-weight: bold;
+  font-weight: 500;
 `;
 
 export const FormWrapper = styled.div`
@@ -355,8 +357,8 @@ export const InputRow = styled.div`
 
 export const InputLabel = styled.label`
   min-width: 60px;
-  font-weight: bold;
   font-size: 1rem;
+  font-weight: 500;
 `;
 
 export const InputTag = styled.input`
@@ -386,7 +388,7 @@ export const TradeButton = styled.button<{ $variant: 'buy' | 'sell' }>`
   &:hover {
     opacity: 0.8;
   }
-  font-weight: bold;
+  font-weight: 500;
 `;
 
 export const TradeModalOverlay = styled.div`
