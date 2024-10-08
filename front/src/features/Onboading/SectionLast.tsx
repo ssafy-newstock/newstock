@@ -11,9 +11,9 @@ import {
 import { AllowIcon } from '@features/Onboading/Icon';
 
 const SectionLastContainer = styled(SectionContainerDefault)<{
-  isExpanded: boolean;
+  $isExpanded: boolean;
 }>`
-  gap: ${({ isExpanded }) => (isExpanded ? '1rem' : '10rem')};
+  gap: ${({ $isExpanded }) => ($isExpanded ? '1rem' : '10rem')};
 `;
 
 // SectionLast 컴포넌트 props 타입 정의
@@ -70,14 +70,14 @@ const ImageContainer = styled.div<{ $isExpanded: boolean }>`
   }
 `;
 // 이미지 스타일
-const BackgroundImage = styled.img<{ tiltX: number; tiltY: number }>`
+const BackgroundImage = styled.img<{ $tiltX: number; $tiltY: number }>`
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 2rem;
   transition: transform 0.1s ease;
-  transform: perspective(1000px) rotateX(${({ tiltY }) => tiltY}deg)
-    rotateY(${({ tiltX }) => tiltX}deg);
+  transform: perspective(1000px) rotateX(${({ $tiltY }) => $tiltY}deg)
+    rotateY(${({ $tiltX }) => $tiltX}deg);
 `;
 
 const ImageDiv = styled.div`
@@ -165,7 +165,7 @@ const SectionLast: React.FC<SectionProps> = ({
       ref={sectionRef}
       $isVisible={$isVisible}
       data-section="sectionLast"
-      isExpanded={isExpanded}
+      $isExpanded={isExpanded}
     >
       {!isExpanded && <SectionLastTitle>뉴스톡과 함께하기</SectionLastTitle>}
       <ImageDiv>
@@ -184,8 +184,8 @@ const SectionLast: React.FC<SectionProps> = ({
           <BackgroundImage
             src="https://via.placeholder.com/1600x900"
             alt="배경 이미지"
-            tiltX={tiltX}
-            tiltY={tiltY}
+            $tiltX={tiltX}
+            $tiltY={tiltY}
           />
         </ImageContainer>
       </ImageDiv>

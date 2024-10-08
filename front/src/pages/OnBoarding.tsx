@@ -93,12 +93,7 @@ const OnBoardingPage = () => {
 
   // 마지막 섹션에서 "시작하기" 버튼을 클릭할 때 처리
   const handleStart = () => {
-    // 로그인 여부에 따라 페이지 이동
-    if (isLogin) {
-      navigate('/news-main'); // 로그인 시 news-main으로 이동
-    } else {
-      navigate('/login'); // 로그인하지 않았을 경우 로그인 페이지로 이동
-    }
+    navigate('/news-main');
   };
 
   return (
