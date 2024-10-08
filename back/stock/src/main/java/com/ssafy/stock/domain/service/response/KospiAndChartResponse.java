@@ -1,6 +1,6 @@
 package com.ssafy.stock.domain.service.response;
 
-import com.ssafy.stock.domain.entity.Redis.KospiChartiRedis;
+import com.ssafy.stock.domain.entity.Redis.KospiChartRedis;
 import com.ssafy.stock.domain.entity.Redis.KospiRedis;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -13,5 +13,5 @@ import java.util.List;
 @Getter
 public class KospiAndChartResponse {
     private final KospiRedis kospi;
-    private final List<KospiChartiRedis> kospiChart;
+    private final List<KospiChartRedis> kospiChart;
 }

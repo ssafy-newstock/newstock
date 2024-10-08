@@ -12,14 +12,14 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @RedisHash(value = "KospiChartRedis")
-public class KospiChartiRedis {
+public class KospiChartRedis {
     @Id
     private String industryCode; // 업종 코드
     private String industryName; // 업종 이름
     private String bstpNmixPrpr;  // 업종 지수 현재가
     private LocalDateTime time;
 
-    public KospiChartiRedis(String industryCode, String industryName, String bstpNmixPrpr) {
+    public KospiChartRedis(String industryCode, String industryName, String bstpNmixPrpr) {
         this.industryCode = industryCode;
         this.industryName = industryName;
         this.bstpNmixPrpr = bstpNmixPrpr;
