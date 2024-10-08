@@ -3,6 +3,7 @@ from typing import List, Tuple
 from langchain_openai import ChatOpenAI
 import logging
 import os
+from typing import Dict
 from models import ShortNewsData
 from exception import NewsArticleEmptyException
 
@@ -12,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 # news_id로부터 값 가져오는 코드
-def get_original_article(news_id: str, news_type: str) -> str:
+def get_original_article(news_id: str, news_type: str) -> List[str]:
 
     query = ""
     # 시황 뉴스일 때
@@ -47,7 +48,7 @@ def get_original_article(news_id: str, news_type: str) -> str:
     # 문자열만 추출
     return original_article
 
-def shortLLM(article: str, prompt: str):
+def shortLLM(article: str, prompt: str) -> Dict[str, str]:
 
     model = ChatOpenAI(
         model="gpt-4o",
@@ -65,12 +66,10 @@ def shortLLM(article: str, prompt: str):
         [YOUR ROLE] 경제뉴스 뉴스 요약 전문가
         [YOUR WORK]
         너는 경제 뉴스를 요약하는 전문가야. 뉴스를 요약하면서 너가 지켜야 하는 것은 다음과 같아.
-        1. 최대한 4줄 이상 넘어가지 않게 해줘.
+        1. 3줄 요약을 해주고, 각 3줄 요약은 newsOne, newsTwo, newsThree에 한 줄씩 저장해줘.
         2. 이 뉴스를 읽는 사람들은 경제뉴스 용어를 잘 모르는 초보자야. 쉽게 설명해줘
         3. 어려운 용어는 지양하고 누구나 쉽게 이해할 수 있도록 해줘
 
-
-    
 
         [Article]
         {article}
@@ -84,6 +83,7 @@ def shortLLM(article: str, prompt: str):
   
     logging.info("분석 시작")
     short_summary_result = structured_llm.invoke(prompt)
+    logging.info(type(short_summary_result))
     logging.info("GPT로부터 AI뉴스 요약본 추론 완료")
-    
+    logging.info(short_summary_result)
     return short_summary_result

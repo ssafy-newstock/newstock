@@ -47,7 +47,9 @@ def get_news_short(
     news_short = shortLLM(original_article, prompt)
 
     response = NewsShortResponse(
-        newsShort=news_short,
-        newsOriginal=original_article
+        newsOne=news_short['newsOne'],
+        newsTwo=news_short['newsTwo'],
+        newsThree=news_short['newsThree'],
+
     )
     return response
