@@ -311,9 +311,9 @@ def summaryLLM(
     """
 
   
-    logging.info("분석 시작")
+    logger.info("GPT 한달 요약 분석 시작")
     summary_result = structured_llm.invoke(prompt)
-    logging.info("GPT로부터 추론 완료")
+    logger.info("GPT로부터 한달 요약 추론 완료")
     macro_report_summary = summary_result['macro_report']
     micro_resport_summary = summary_result['micro_report']
 
