@@ -18,12 +18,12 @@ const HeaderContainer = styled.div<{
     $isOnboardingPage ? 'fixed' : 'relative'}; /* 상단 고정 */
   top: 0;
   left: 0;
-  width: ${({ $isOpen }) => ($isOpen ? 'calc(100% - 400px)' : '100%')};
+  width: ${({ $isOpen }) => ($isOpen ? 'calc(100% - 530px)' : '100%')};
   height: 5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2.5rem;
+  padding: 1rem 1rem 1rem 2.5rem;
   transition: width 0.5s ease;
   background: ${({ $isOnboardingPage, theme }) =>
     $isOnboardingPage
