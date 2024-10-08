@@ -5,6 +5,8 @@ import com.ssafy.news.domain.entity.stock.StockKeyword;
 import com.ssafy.news.domain.entity.stock.StockNews;
 import com.ssafy.news.domain.entity.stock.StockNewsRedis;
 import com.ssafy.news.domain.entity.stock.StockNewsStockCode;
+import com.ssafy.news.domain.repository.StockKeywordRepository;
+import com.ssafy.news.domain.repository.StockNewsCodeRepository;
 import com.ssafy.news.domain.repository.StockNewsRedisRepository;
 import com.ssafy.news.domain.repository.StockNewsRepository;
 import com.ssafy.news.domain.service.client.response.StockNewsResponse;
@@ -36,7 +38,8 @@ public class StockNewsService {
     private final StockNewsRedisRepository stockNewsRedisRepository;
     private final NewsSchedulerService newsSchedulerService;
     private final KafkaTemplate<String, Object> kafkaTemplate;
-
+    private final StockNewsCodeRepository stockNewsCodeRepository;
+    private final StockKeywordRepository stockKeywordRepository;
     /**
      * 최근 4개의 주식 뉴스를 조회하는 메소드
      * 특정 주식이 아닌 전체 뉴스 중 4개를 조회함
@@ -168,6 +171,9 @@ public class StockNewsService {
         List<StockNews> list = stockNewsDtoList.stream()
                 .map(stockNewsDto -> {
                     StockNews entity = StockNews.of(stockNewsDto);
+
+                    stockNewsRepository.save(entity);
+
                     List<String> stringStockKeywords = stockNewsDto.getStockKeywords();
                     List<String> stringStockCodes = stockNewsDto.getStockNewsStockCodes();
 
@@ -177,6 +183,9 @@ public class StockNewsService {
                     Set<StockKeyword> stockKeywords = stringStockKeywords.stream()
                             .map(s -> StockKeyword.of(entity, s))
                             .collect(Collectors.toSet());
+
+                    stockNewsCodeRepository.saveAll(stockCodes);
+                    stockKeywordRepository.saveAll(stockKeywords);
 
                     entity.injectEntity(stockCodes, stockKeywords);
                     return entity;
