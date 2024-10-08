@@ -277,7 +277,7 @@ export const SortButton = styled.button<{ $isActive: boolean }>`
     bottom: -0.3rem;
     left: 50%;
     transform: translateX(-50%);
-    width: ${({ $isActive }) => ($isActive ? '2rem' : '0')};
+    width: ${({ $isActive }) => ($isActive ? '2.5rem' : '0')};
     height: 0.15rem;
     background-color: ${({ theme }) => theme.textColor};
     transition: width 0.3s ease;
@@ -286,7 +286,7 @@ export const SortButton = styled.button<{ $isActive: boolean }>`
 
 export const CategorySortButton = styled(SortButton)`
   &::after {
-    width: ${({ $isActive }) => ($isActive ? '3rem' : '0')};
+    width: ${({ $isActive }) => ($isActive ? '4rem' : '0')};
   }
 `;
 
