@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface IndustryNewsRepository extends JpaRepository<IndustryNews, Long> {
+public interface IndustryNewsRepository extends JpaRepository<IndustryNews, String> {
     @Query("SELECT ins " +
             "FROM IndustryNews ins " +
             "WHERE ins.industry = :industry " +
@@ -23,7 +23,7 @@ public interface IndustryNewsRepository extends JpaRepository<IndustryNews, Long
             "ORDER BY ins.uploadDatetime DESC")
     Page<IndustryNewsDto> findAllIndustryNewsPreview(Pageable pageable);
 
-    List<IndustryNews> findAllByIdIn(List<Long> ids);
+    List<IndustryNews> findAllByIdIn(List<String> ids);
 
 //    List<IndustryNews>
 }

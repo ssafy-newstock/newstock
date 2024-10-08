@@ -81,13 +81,13 @@ public class IndustryNewsService {
      * @param id
      * @return
      */
-    public IndustryNewsDto getIndustryNews(Long id) {
+    public IndustryNewsDto getIndustryNews(String id) {
         Optional<IndustryNews> findNews = industryNewsRepository.findById(id);
         validateNewsContent(findNews);
         return IndustryNewsDto.of(findNews.get());
     }
 
-    public List<IndustryNewsDto> getIndustryNewsInIds(List<Long> industryIds) {
+    public List<IndustryNewsDto> getIndustryNewsInIds(List<String> industryIds) {
         List<IndustryNews> industryNewsByIdIn = industryNewsRepository.findAllByIdIn(industryIds);
         return industryNewsByIdIn.stream()
                 .map(IndustryNewsDto::of)
@@ -100,7 +100,7 @@ public class IndustryNewsService {
      * @param token
      */
     @Transactional
-    public void checkReadIndustryNews(Long newsId, String token) {
+    public void checkReadIndustryNews(String newsId, String token) {
         if (token != null && !token.isEmpty()) {
             Long memberId = tokenProvider.getMemberId(token);
 

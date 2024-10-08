@@ -101,7 +101,7 @@ public class StockNewsService {
      * @param id
      * @return
      */
-    public StockNewsDto getStockNewsDetail(Long id) {
+    public StockNewsDto getStockNewsDetail(String id) {
         Optional<StockNews> findNews = stockNewsRepository.findById(id);
         validateNewsContent(findNews);
 
@@ -112,7 +112,7 @@ public class StockNewsService {
         return StockNewsDto.of(stockNews, stockCodes, keywords);
     }
 
-    public List<StockNewsDto> getStockNewsInIds(final List<Long> scrapInStockNewsIds) {
+    public List<StockNewsDto> getStockNewsInIds(final List<String> scrapInStockNewsIds) {
         List<StockNews> industryNewsByIdIn = stockNewsRepository.findAllByIdIn(scrapInStockNewsIds);
 
         return industryNewsByIdIn.stream()
@@ -135,7 +135,7 @@ public class StockNewsService {
      * @param token
      */
     @Transactional
-    public void checkReadStockNews(Long newsId, String token) {
+    public void checkReadStockNews(String newsId, String token) {
         if (token != null && !token.isEmpty()) {
             Long memberId = tokenProvider.getMemberId(token);
 
