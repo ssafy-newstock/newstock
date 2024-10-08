@@ -8,9 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface FavoriteStockNewsRepository extends JpaRepository<FavoriteStockNews, Long> {
-    boolean existsByMemberIdAndStockNewsId(Long memberId, Long stockNewsId);
+    boolean existsByMemberIdAndStockNewsId(Long memberId, String stockNewsId);
 
-    void deleteByMemberIdAndStockNewsId(Long memberId, Long stockNewsId);
+    void deleteByMemberIdAndStockNewsId(Long memberId, String stockNewsId);
 
     @Query("select fsn " +
             "from FavoriteStockNews fsn " +

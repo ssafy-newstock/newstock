@@ -50,7 +50,7 @@ public class StockScrapController {
         LocalDate end = endDate != null ? LocalDate.parse(endDate, DateTimeFormatter.ISO_DATE) : LocalDate.now();
 
         List<StockScrapDto> myStockScraps = stockScrapService.getMyStockScraps(memberId, page, size, start, end);
-        List<Long> scrapInStockNewsIds = stockScrapService.getScrapInStockNewsIn(myStockScraps);
+        List<String> scrapInStockNewsIds = stockScrapService.getScrapInStockNewsIn(myStockScraps);
 
         List<StockNewsDto> stockNewsInIds = stockNewsFeignService.getIndustryNewsInIds(scrapInStockNewsIds);
 
