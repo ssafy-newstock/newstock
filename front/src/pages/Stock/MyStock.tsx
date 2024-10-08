@@ -24,7 +24,6 @@ import TradingHistoryList, {
 import FavoriteStockList from '@features/MyStock/FavoriteStockList';
 
 import { Flex } from '@components/styledComponent';
-import { useOutletContext } from 'react-router-dom';
 import MyStockSkeleton from '@features/MyStock/skeleton/MyStockSkeleton';
 
 interface StockHolding {
@@ -55,12 +54,8 @@ interface stockFavoriteDto {
   stockName: string;
 }
 
-interface OutletContext {
-  setIsOpen: (isOpen: boolean) => void;
-}
 const MyStock: React.FC = () => {
   const { data, isLoading } = useMyStockData();
-  const { setIsOpen } = useOutletContext<OutletContext>();
   const FavoriteData = data?.stockFavoriteDtoList || [];
   console.log(FavoriteData);
   // 보유 내역 총액 계산 함수
@@ -86,10 +81,6 @@ const MyStock: React.FC = () => {
           new Date(a.stockTransactionDate).getTime()
       )
       .slice(0, 10) || [];
-
-  const handleMoreClick = () => {
-    setIsOpen(true);
-  };
 
   if (isLoading) {
     return <MyStockSkeleton />;
@@ -117,10 +108,7 @@ const MyStock: React.FC = () => {
           <CenterContent />
           <Flex>
             <CenterHistoryDiv>
-              <SectionTitle
-                title="내 주식 TOP 10"
-                onMoreClick={() => handleMoreClick()}
-              />
+              <SectionTitle title="내 주식 TOP 10" />
               <MyStockHr />
               {stockDataTop10.length > 0 ? (
                 <MyStockGridRow>
@@ -138,10 +126,7 @@ const MyStock: React.FC = () => {
               )}
             </CenterHistoryDiv>
             <CenterHistoryDiv>
-              <SectionTitle
-                title="최근 거래 내역"
-                onMoreClick={() => handleMoreClick()}
-              />
+              <SectionTitle title="최근 거래 내역" />
               <MyStockHr />
               {TradingDataTop10.length > 0 ? (
                 <MyStockGridRow>
