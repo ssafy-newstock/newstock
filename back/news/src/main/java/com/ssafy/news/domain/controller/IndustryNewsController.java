@@ -34,14 +34,14 @@ public class IndustryNewsController {
     }
 
     @GetMapping("/{id}")
-    public CommonResponse<?> getIndustryNewsById(@PathVariable("id") Long id) {
+    public CommonResponse<?> getIndustryNewsById(@PathVariable("id") String id) {
         IndustryNewsDto industryNews = industryNewsService.getIndustryNews(id);
 
         return CommonResponse.success(industryNews);
     }
 
     @GetMapping("/{id}/read")
-    public ResponseEntity<?> checkReadIndustryNews(@PathVariable("id") Long id,
+    public ResponseEntity<?> checkReadIndustryNews(@PathVariable("id") String id,
                                                     @RequestHeader(value = "authorization",required = false) String token) {
         industryNewsService.checkReadIndustryNews(id, token);
 
@@ -50,7 +50,7 @@ public class IndustryNewsController {
     }
 
     @GetMapping("/bulk")
-    public CommonResponse<?> getIndustryNewsInIds(@RequestParam List<Long> ids) {
+    public CommonResponse<?> getIndustryNewsInIds(@RequestParam List<String> ids) {
         List<IndustryNewsDto> industryNewsInIds = industryNewsService.getIndustryNewsInIds(ids);
         return CommonResponse.success(industryNewsInIds);
     }

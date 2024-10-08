@@ -11,8 +11,8 @@ import java.util.List;
 @FeignClient(name = "industryNewsClient", url = "${industry-news-client.url}")
 public interface IndustryNewsClient {
     @GetMapping("/{id}")
-    CommonResponse<?> getIndustryNewsById(@PathVariable("id") Long id);
+    CommonResponse<?> getIndustryNewsById(@PathVariable("id") String id);
 
     @GetMapping("/bulk")
-    CommonResponse<?> getIndustryNewsInIds(@RequestParam List<Long> ids);
+    CommonResponse<?> getIndustryNewsInIds(@RequestParam List<String> ids);
 }

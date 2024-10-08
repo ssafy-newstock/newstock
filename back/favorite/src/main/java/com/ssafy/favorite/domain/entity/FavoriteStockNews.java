@@ -16,9 +16,9 @@ public class FavoriteStockNews extends BaseEntity {
 
     private Long memberId;
 
-    private Long stockNewsId;
+    private String stockNewsId;
 
-    public static FavoriteStockNews of(Long memberId, Long stockNewsId) {
+    public static FavoriteStockNews of(Long memberId, String stockNewsId) {
         FavoriteStockNews entity = new FavoriteStockNews();
         entity.stockNewsId = stockNewsId;
         entity.memberId = memberId;

@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 public class StockNewsDto {
-    private Long id;
+    private String id;
     private String article;
     private String description;
     private String media;

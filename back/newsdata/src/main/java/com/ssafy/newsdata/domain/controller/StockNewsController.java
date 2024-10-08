@@ -23,7 +23,7 @@ public class StockNewsController {
      * @return
      */
     @GetMapping("/top4")
-    public CommonResponse<?> getTop4() throws Exception{
+    public CommonResponse<?> getTop4() throws Exception {
         List<StockNewsDto> recentTop4 = stockNewsService.getRecentStockNewsTop4();
 
         List<StockNewsResponse> responses = stockNewsService.convertResponseBulk(recentTop4);
@@ -54,7 +54,7 @@ public class StockNewsController {
     }
 
     @GetMapping("/{id}")
-    public CommonResponse<?> getStockNews(@PathVariable("id") Long id) throws Exception{
+    public CommonResponse<?> getStockNews(@PathVariable("id") Long id) throws Exception {
         StockNewsDto stockNews = stockNewsService.getStockNewsDetail(id);
         StockNewsResponse response = stockNewsService.convertResponse(stockNews);
         return CommonResponse.success(response);
@@ -62,7 +62,7 @@ public class StockNewsController {
 
     @GetMapping("/{id}/read")
     public ResponseEntity<?> checkReadStockNews(@PathVariable("id") Long id,
-                                                @RequestHeader(value = "authorization",required = false) String token) {
+                                                @RequestHeader(value = "authorization", required = false) String token) {
         stockNewsService.checkReadStockNews(id, token);
 
         return ResponseEntity.noContent()
@@ -73,5 +73,11 @@ public class StockNewsController {
     public CommonResponse<?> getStockNewsInIds(@RequestParam List<String> ids) throws SQLException, ClassNotFoundException {
         List<StockNewsResponse> stockNewsInIds = stockNewsService.getStockNewsInIds(ids);
         return CommonResponse.success(stockNewsInIds);
+    }
+
+    @GetMapping("/recent")
+    public CommonResponse<?> getRecentStockNews() throws SQLException, ClassNotFoundException {
+        List<StockNewsResponse> responses = stockNewsService.getRecentStockNews();
+        return CommonResponse.success(responses);
     }
 }
