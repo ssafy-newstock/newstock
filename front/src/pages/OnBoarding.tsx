@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import useAuthStore from '@store/useAuthStore';
 import SectionFirst from '@features/Onboading/SectionFirst';
 import SectionSecond from '@features/Onboading/SectionSecond';
 import SectionThird from '@features/Onboading/SectionThird';
