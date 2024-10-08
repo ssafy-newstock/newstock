@@ -237,7 +237,7 @@ public class StockIndustryService {
 
         return kospiRedisList.stream()
                 .map(kospiRedis -> {
-                    List<KospiChartRedis> kospiChartRedisList = kospiChartRedisRepository.findAllById(kospiRedis.getIndustryCode());
+                    List<KospiChartRedis> kospiChartRedisList = kospiChartRedisRepository.findAllByIndustryCode(kospiRedis.getIndustryCode());
                     List<KospiChartRedis> sortKospiChart = kospiChartRedisList.stream().sorted(Comparator.comparing(KospiChartRedis::getTime)).toList();
                     return new KospiAndChartResponse(kospiRedis, sortKospiChart);
                 }).toList();

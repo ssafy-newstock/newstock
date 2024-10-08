@@ -8,5 +8,5 @@ import java.util.List;
 public interface KospiChartRedisRepository extends CrudRepository<KospiChartRedis, String> {
     List<KospiChartRedis> findAll();
 
-    List<KospiChartRedis>  findAllById(String industryCode);
+    List<KospiChartRedis> findAllByIndustryCode(String industryCode);
 }
