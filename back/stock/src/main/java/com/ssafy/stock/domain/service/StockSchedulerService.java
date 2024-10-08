@@ -8,12 +8,9 @@ import com.ssafy.stock.domain.entity.STOCKPRICE;
 import com.ssafy.stock.domain.entity.Stocks;
 import com.ssafy.stock.domain.entity.StocksPrice;
 import com.ssafy.stock.domain.error.custom.StockNotFoundException;
-import com.ssafy.stock.domain.repository.redis.StocksPriceDailyChartRedisRepository;
-import com.ssafy.stock.domain.repository.redis.StocksPriceLiveRedisRepository;
+import com.ssafy.stock.domain.repository.redis.*;
 import com.ssafy.stock.domain.repository.StocksPriceRepository;
 import com.ssafy.stock.domain.repository.StocksRepository;
-import com.ssafy.stock.domain.repository.redis.StocksPriceLiveDailyChartRedisRepository;
-import com.ssafy.stock.domain.repository.redis.StocksPriceRedisRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -33,6 +30,7 @@ public class StockSchedulerService {
     private final StocksPriceRedisRepository stocksPriceRedisRepository;
     private final StocksPriceDailyChartRedisRepository stocksPriceDailyChartRedisRepository;
     private final StocksPriceLiveDailyChartRedisRepository stocksPriceLiveDailyChartRedisRepository;
+    private final KospiChartRedisRepository kospiChartRedisRepository;
     private final StocksPriceRepository stocksPriceRepository;
     private final StocksRepository stocksRepository;
 
@@ -71,6 +69,7 @@ public class StockSchedulerService {
     public void deleteStockPriceDailyChart(){
         stocksPriceLiveDailyChartRedisRepository.deleteAll();
         stocksPriceRedisRepository.deleteAll();
+        kospiChartRedisRepository.deleteAll();
     }
 
     /**
