@@ -2,9 +2,8 @@ import styled, { ThemeProvider } from 'styled-components';
 import { GlobalStyle } from '@styles/GlobalStyle';
 import { lightTheme, darkTheme } from '@styles/theme';
 import { useThemeStore } from '@store/themeStore';
-// import Navbar from '@components/Navbar';
 import Header from '@components/Header';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import useAllStockStore from '@store/useAllStockStore';
 import useCategoryStockStore from '@store/useCategoryStockStore';
 import useTop10StockStore from '@store/useTop10StockStore';
@@ -68,14 +67,7 @@ const App = () => {
   const { data: top10Stock } = useTop10StockQuery();
   const { data: allStock } = useAllStockQuery();
   const { data: categoryStock } = useCategoryStockQuery();
-  const navigate = useNavigate();
-
-  // 상태 업데이트 완료 후 navigate 호출
-  useEffect(() => {
-    if (isLogin) {
-      navigate('/news-main');
-    }
-  }, [isLogin, navigate]);
+  const location = useLocation();
 
   useEffect(() => {
     top10Stock && setTop10Stock(top10Stock.data);
