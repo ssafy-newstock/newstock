@@ -22,8 +22,6 @@ import History from '@features/MyStockModal/History';
 import FavoriteStock from '@features/MyStockModal/FavoriteStock';
 import FavoriteNews from '@features/MyStockModal/FavoriteNews';
 import Ranking from '@features/MyStockModal/Ranking';
-import StockModal from '@features/MyStockModal/StockModal';
-import { useLocation } from 'react-router-dom';
 
 
 const Main = styled.div`
@@ -80,7 +78,6 @@ const App = () => {
   const { data: top10Stock } = useTop10StockQuery();
   const { data: allStock } = useAllStockQuery();
   const { data: categoryStock } = useCategoryStockQuery();
-  const location = useLocation();
   const [activeComponent, setActiveComponent] = useState<string | null>(null);
 
   useEffect(() => {
@@ -125,7 +122,7 @@ const App = () => {
             {!isOnboarding && <Left />}
             <Outlet />
             {!isOnboarding && (
-              <RightVacantWrapper $isOpen={activeComponent !== null} />
+              <RightVacantWrapper $isOpen={activeComponent !== null} $isScrapDetail={isScrapDetail}/>
             )}
           </Content>
         </Container>
