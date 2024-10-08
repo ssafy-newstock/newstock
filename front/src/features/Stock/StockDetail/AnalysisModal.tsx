@@ -14,6 +14,7 @@ import {
   HrTag,
   TextLeftLine,
 } from '@features/Stock/styledComponent';
+import { useNavigate } from 'react-router-dom';
 
 interface IRelatedNews {
   id: number;
@@ -105,12 +106,18 @@ const NewsContainer = styled.div`
   background-color: ${({ theme }) => theme.backgroundColor};
   padding: 0.5rem 1rem;
   align-items: center;
+  cursor: pointer;
 `;
 
 const AnalysisModal: React.FC<AnalysisModalProps> = ({
   onClose,
   analysisData,
 }) => {
+  const navigate = useNavigate();
+  const onClickNews = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, id: number) => {
+    event.stopPropagation();
+    navigate(`/subnews-main/economic-news/${id}`);
+  }
   if (analysisData?.macroReport === '') {
     return (
       <ModalOverlay>
@@ -157,8 +164,8 @@ const AnalysisModal: React.FC<AnalysisModalProps> = ({
               )}
               <NewsGrid>
                 {analysisData?.relatedNews.map((news) => (
-                  <>
-                    <NewsContainer key={news.id}>
+                    <NewsContainer key={news.id} onClick={(event) => onClickNews(event, news.id)}>
+                    {/* <NewsContainer key={news.id} onClick={onClickNews}> */}
                       <ImgTag
                         src={news.thumbnail || newstockIcon}
                         alt={news.title}
@@ -186,7 +193,6 @@ const AnalysisModal: React.FC<AnalysisModalProps> = ({
                         </FlexGapCenter>
                       </FlexGapColumn>
                     </NewsContainer>
-                  </>
                 ))}
               </NewsGrid>
             </DivTag>
