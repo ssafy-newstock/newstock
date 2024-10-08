@@ -30,7 +30,6 @@ const SectionContainer = styled.div`
 `;
 
 const OnBoardingPage = () => {
-  const { isLogin } = useAuthStore(); // 로그인 상태 확인
   const navigate = useNavigate();
 
   // 각 섹션의 가시성 상태를 관리하는 상태 (섹션별로 true/false 설정)
