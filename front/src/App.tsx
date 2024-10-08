@@ -16,7 +16,6 @@ import { useAllStockQuery } from '@hooks/useAllStockQuery';
 import { useCategoryStockQuery } from '@hooks/useCategoryStockQuery';
 import useAuthStore from '@store/useAuthStore';
 import Left from '@components/Left';
-import StockModal from '@features/MyStockModal/StockModal';
 import RightNav from '@components/RightNav';
 import MyStock from '@features/MyStockModal/MyStock';
 import History from '@features/MyStockModal/History';
@@ -24,26 +23,26 @@ import FavoriteStock from '@features/MyStockModal/FavoriteStock';
 import FavoriteNews from '@features/MyStockModal/FavoriteNews';
 import Ranking from '@features/MyStockModal/Ranking';
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 96.5%; /* 기본 너비는 100%로 설정 */
-  height: 100%;
-`;
-
 const Main = styled.div`
   display: flex;
   flex-direction: row;
-  width: 100%; /* 기본 너비는 100%로 설정 */
+  width: 100%;
   height: 100vh;
   transition: all 0.5s ease;
+`;
+
+const Container = styled.div<{ $isOnboarding: boolean }>`
+  display: flex;
+  flex-direction: column;
+  width: ${({ $isOnboarding }) => ($isOnboarding ? '100%' : '96.5%')};
+  height: 100%;
 `;
 
 const Content = styled.div`
   display: flex;
   height: 100%;
   flex-direction: row;
-  width: 100%; /* 기본적으로 100% 너비 */
+  width: 100%;
   transition: all 0.5s ease;
 `;
 
@@ -61,7 +60,6 @@ const RightVacantWrapper = styled.div<{ $isOpen: boolean }>`
 const App = () => {
   const { theme } = useThemeStore();
   const currentTheme = theme === 'light' ? lightTheme : darkTheme;
-  const [isOpen, setIsOpen] = useState(false);
   const { isLogin } = useAuthStore();
 
   const { setAllStock } = useAllStockStore();
@@ -104,24 +102,23 @@ const App = () => {
     <ThemeProvider theme={currentTheme}>
       <GlobalStyle />
       <Main>
-        <Container>
+        <Container $isOnboarding={isOnboarding}>
           <Header isOpen={activeComponent !== null} />
           <Content>
             {!isOnboarding && <Left />}
-            <Outlet context={{ setIsOpen }} />
+            <Outlet />
             {!isOnboarding && (
               <RightVacantWrapper $isOpen={activeComponent !== null} />
             )}
           </Content>
-          {isLogin && !isOnboarding && (
-            <StockModal isOpen={isOpen} setIsOpen={setIsOpen} />
-          )}
         </Container>
-        {renderActiveComponent()}
-        <RightNav
-          activeComponent={activeComponent}
-          setActiveComponent={setActiveComponent}
-        />
+        {isLogin && !isOnboarding && renderActiveComponent()}
+        {!isOnboarding && (
+          <RightNav
+            activeComponent={activeComponent}
+            setActiveComponent={setActiveComponent}
+          />
+        )}
       </Main>
 
       {/* 웹소켓 연결 */}
