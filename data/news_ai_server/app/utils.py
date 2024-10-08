@@ -6,10 +6,10 @@ import pandas as pd
 from dotenv import load_dotenv
 from exception import StockInfoEmptyException
 import jaydebeapi
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 
 from langchain_openai import ChatOpenAI
-
+from elasticsearch import Elasticsearch
 # .env파일 로드
 load_dotenv(os.path.join('core', '.env'))
 
@@ -216,3 +216,14 @@ def execute_hbase_prepared_query(query: str, params: List) -> List[Tuple]:
             connection.commit()
             connection.close()
         logger.info("Connection closed successfully!")
+
+def connect_elasticsearch():
+    """
+    ElasticCloud connection 객체 반환
+    """
+    es = Elasticsearch(
+        cloud_id=os.getenv("ELASTIC_CLOUD_ID"),
+        api_key=os.getenv("ELASTIC_API_KEY")
+    )
+
+    return es
