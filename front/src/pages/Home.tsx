@@ -14,6 +14,7 @@ import {
 import { IStock } from '@features/Stock/types';
 import NewsCard from '@features/home/NewsCard';
 import StockIndexCard from '@features/home/StockIndexCard';
+import useKospiQuery from '@hooks/useKospiQuery';
 import { useTop4NewsQuery } from '@hooks/useTop4news';
 import useTop10StockStore from '@store/useTop10StockStore';
 import { useNavigate } from 'react-router-dom';
@@ -34,7 +35,8 @@ const Home = () => {
     navigate('/subnews-main/stock-news');
   };
 
-  const { data, isLoading } = useTop4NewsQuery();
+  const { data:newsData, isLoading } = useTop4NewsQuery();
+  const { data:kospiData } = useKospiQuery(); 
 
   if (isLoading) {
     return <div>로딩중...</div>;
@@ -80,8 +82,8 @@ const Home = () => {
       <HrTag />
       <DividedSection>
         <MainGridColumn $gap="1rem">
-          {data &&
-            data.data.map((news) => <NewsCard key={news.id} news={news} />)}
+          {newsData &&
+            newsData.data.map((news) => <NewsCard key={news.id} news={news} />)}
         </MainGridColumn>
       </DividedSection>
     </Center>
