@@ -179,7 +179,7 @@ public class StockNewsService {
                 .map(stockNewsDto -> {
                     List<String> stockCodes = StringParsingUtils.toList(stockNewsDto.getStockCodes());
                     List<String> keywords = StringParsingUtils.toList(stockNewsDto.getKeywords());
-                    return StockNewsResponse.of(stockNewsDto, stockCodes, keywords);
+                    return StockNewsResponse.of(stockNewsDto, keywords, stockCodes);
                 })
                 .toList();
     }
