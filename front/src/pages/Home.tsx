@@ -7,11 +7,13 @@ import RealTimeStockSkeleton from '@features/Stock/StockMain/RealTimeStockSkelet
 import {
   DividedSection,
   HrTag,
+  MainGridColumn,
   StockGridRow,
   StockHeader,
   StockHeaderWrapper,
 } from '@features/Stock/styledComponent';
 import { IStock } from '@features/Stock/types';
+import StockIndexCard from '@features/home/StockIndexCard';
 import useTop10StockStore from '@store/useTop10StockStore';
 import { useNavigate } from 'react-router-dom';
 
@@ -25,6 +27,14 @@ const Home = () => {
     <Center>
       <StockHeader>주가지수</StockHeader>
       <HrTag />
+      <DividedSection>
+        <MainGridColumn>
+          <StockIndexCard />
+          <StockIndexCard />
+          <StockIndexCard />
+          <StockIndexCard />
+        </MainGridColumn>
+      </DividedSection>
 
       <DividedSection>
         <StockHeaderWrapper>
@@ -46,7 +56,6 @@ const Home = () => {
 
       <StockHeader>종목 뉴스</StockHeader>
       <HrTag />
-      
     </Center>
   );
 };
