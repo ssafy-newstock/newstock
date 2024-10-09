@@ -15,21 +15,22 @@ import {
   TextLeftLine,
 } from '@features/Stock/styledComponent';
 import { useNavigate } from 'react-router-dom';
+import { IAnalysisResponse } from '@hooks/useAnalysisQuery';
 
-interface IRelatedNews {
-  id: number;
-  upload_datetime: string;
-  title: string;
-  sentiment: number;
-  thumbnail: string;
-  media: string;
-}
+// interface IRelatedNews {
+//   id: string;
+//   upload_datetime: string;
+//   title: string;
+//   sentiment: number;
+//   thumbnail: string;
+//   media: string;
+// }
 
-interface IAnalysisResponse {
-  macroReport: string;
-  microReport: string;
-  relatedNews: IRelatedNews[];
-}
+// interface IAnalysisResponse {
+//   macroReport: string;
+//   microReport: string;
+//   relatedNews: IRelatedNews[];
+// }
 
 interface AnalysisModalProps {
   onClose?: () => void;
@@ -114,7 +115,7 @@ const AnalysisModal: React.FC<AnalysisModalProps> = ({
   analysisData,
 }) => {
   const navigate = useNavigate();
-  const onClickNews = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, id: number) => {
+  const onClickNews = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, id: string) => {
     event.stopPropagation();
     navigate(`/subnews-main/stock-news/${id}`);
   }
