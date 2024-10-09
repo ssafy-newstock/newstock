@@ -67,7 +67,7 @@ const CenterContent: React.FC<CenterContentProps> = ({
     : '';
 
   // article이 undefined일 경우 기본값을 제공
-  const { imageUrls, content } = processArticle(selectedNewsCard.article || '');
+  const { content } = processArticle(selectedNewsCard.article || '');
 
   // CenterNewsDiv 클릭 시 상세 페이지로 이동
   const handleNewsClick = () => {

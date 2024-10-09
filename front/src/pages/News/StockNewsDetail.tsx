@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import StockNewsDetailHeader from '@features/News/StockNewsDetail/StockNewsDetailHeader';
 import StockNewsDetailBody from '@features/News/StockNewsDetail/StockNewsDetailBody';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import NewsDetailSkeleton from '@features/News/skeleton/NewsDetailSkeleton';

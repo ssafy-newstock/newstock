@@ -15,7 +15,6 @@ import { useEffect, useState } from 'react';
 import { useAllStockQuery } from '@hooks/useAllStockQuery';
 import { useCategoryStockQuery } from '@hooks/useCategoryStockQuery';
 import Left from '@components/Left';
-import StockModal from '@features/MyStockModal/StockModal';
 import RightNav from '@components/RightNav';
 import SideModal from '@features/SideModal/SideModal';
 

@@ -5,7 +5,6 @@ import EconNewsDetailBody from '@features/News/EconNewsDetail/EconNewsDetailBody
 import useAuthStore from '@store/useAuthStore';
 import usePointStore from '@store/usePointStore';
 import useSocketStore from '@store/useSocketStore';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import NewsDetailSkeleton from '@features/News/skeleton/NewsDetailSkeleton';
 import { authRequest, axiosInstance } from '@api/axiosInstance';
