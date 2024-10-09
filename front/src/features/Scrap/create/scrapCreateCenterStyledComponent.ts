@@ -214,6 +214,7 @@ export const CenterNewsLeftDiv = styled.div`
   flex-direction: column;
   align-items: flex-start;
   gap: 10px;
+  overflow: hidden;
 `;
 
 export const CenterNewsLeftTopDiv = styled.div`
