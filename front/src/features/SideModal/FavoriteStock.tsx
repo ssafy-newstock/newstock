@@ -71,7 +71,11 @@ const FavoriteStock: React.FC = () => {
         };
 
         return (
-          <CardDiv onClick={handleNavigate} style={{ cursor: 'pointer' }}>
+          <CardDiv
+            key={stock.stockCode} // 여기에서 고유한 key를 추가
+            onClick={handleNavigate}
+            style={{ cursor: 'pointer' }}
+          >
             <CardLeftDiv>
               <StockImage
                 src={getStockImageUrl(stock.stockCode)}

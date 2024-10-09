@@ -103,7 +103,7 @@ const History: React.FC = () => {
   return (
     <ContentDiv>
       {sortedDates.map((dateKey) => (
-        <ContainerDiv key={dateKey}>
+        <ContainerDiv key={`date-${dateKey}`}>
           {/* 날짜 표시 */}
           <DateTitle>{dateKey}</DateTitle>
 
@@ -117,12 +117,12 @@ const History: React.FC = () => {
                   addNineHours(new Date(a.stockTransactionDate))
                 ).getTime()
             ) // 시간을 기준으로 내림차순 정렬
-            .map((transaction) => {
+            .map((transaction, index) => {
               const transactionDate = addNineHours(
                 new Date(transaction.stockTransactionDate)
               );
               return (
-                <CardDiv key={transaction.stockId}>
+                <CardDiv key={`${transaction.stockId}-${index}`}>
                   <CardLeftDiv>
                     <StockImage
                       src={getStockImageUrl(transaction.stockCode)}
