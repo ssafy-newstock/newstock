@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import NewsDetailSkeleton from '@features/News/skeleton/NewsDetailSkeleton';
 import { authRequest, axiosInstance } from '@api/axiosInstance';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const SubCenter = styled.div`
   display: flex;
@@ -53,38 +54,50 @@ interface NewsItem {
 }
 
 const fetchDetailNewsData = async (id: string): Promise<NewsItem | null> => {
-  try {
-    const referrer = document.referrer;
-    let apiUrl = `/news/industry/${id}`;
-
-    if (
-      referrer.includes('/ai-chat-bot') ||
-      referrer.includes('/stock-detail/')
-    ) {
-      apiUrl = `/newsdata/industry/${id}`;
+  const urls = [`/news/industry/${id}`, `/newsdata/industry/${id}`];
+  
+  for (const url of urls) {
+    try {
+      console.log('Attempting API URL: ', url);
+      const response = await axiosInstance.get(url);
+      return response.data.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        if (url === urls[urls.length - 1]) {
+          // If this was the last URL to try
+          console.error('Failed to fetch economic news from all endpoints:', error);
+          return null;
+        }
+        // If not the last URL, continue to the next one
+        continue;
+      }
+      // For other types of errors, log and return null
+      console.error(`Failed to fetch economic news from ${url}:`, error);
+      return null;
     }
-
-    const response = await axiosInstance.get(apiUrl);
-    return response.data.data;
-  } catch (error) {
-    console.error('Failed to fetch EconomicDetailNews: ', error);
-    return null;
   }
+  
+  return null;
 };
 
 const EconomicNewsDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [detailNews, setDetailNews] = useState<NewsItem | null>(null);
   const { client, connectSocket } = useSocketStore();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadNews = async () => {
       if (id) {
         // id가 존재하는 경우에만 데이터를 가져옴
-        const detailNewsData = await fetchDetailNewsData(id);
-        setDetailNews(detailNewsData);
-      } else {
-        console.error('No id provided in the URL'); // id가 없는 경우 오류 처리
+        try {
+          const detailNewsData = await fetchDetailNewsData(id);
+          setDetailNews(detailNewsData);
+        } catch (err) {
+          setDetailNews(null);
+        } finally {
+          setIsLoading(false);
+        }
       }
     };
     loadNews();
@@ -143,7 +156,8 @@ const EconomicNewsDetailPage: React.FC = () => {
   return (
     <div>
       <SubCenter>
-        {detailNews ? (
+
+        {isLoading ? (<NewsDetailSkeleton />) : (detailNews ? (
           <NewsWrapper>
             <EconNewsDetailHeader
               title={detailNews.title}
@@ -158,8 +172,8 @@ const EconomicNewsDetailPage: React.FC = () => {
             />
           </NewsWrapper>
         ) : (
-          <NewsDetailSkeleton />
-        )}
+          <h1>요청하신 뉴스를 찾을 수 없습니다.</h1>
+        ))}
       </SubCenter>
     </div>
   );
