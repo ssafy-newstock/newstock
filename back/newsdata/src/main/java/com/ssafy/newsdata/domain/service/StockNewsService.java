@@ -83,7 +83,7 @@ public class StockNewsService {
      * @param id
      * @return
      */
-    public StockNewsDto getStockNewsDetail(Long id) throws Exception {
+    public StockNewsDto getStockNewsDetail(String id) throws Exception {
         StockNewsDto findNews = stockNewsRepository.findById(id);
 
         return findNews;
@@ -112,7 +112,7 @@ public class StockNewsService {
      * @param token
      */
     @Transactional
-    public void checkReadStockNews(Long newsId, String token) {
+    public void checkReadStockNews(String newsId, String token) {
         if (token != null && !token.isEmpty()) {
             Long memberId = tokenProvider.getMemberId(token);
 

@@ -43,7 +43,7 @@ public class IndustryNewsController {
     }
 
     @GetMapping("/{id}/read")
-    public ResponseEntity<?> checkReadIndustryNews(@PathVariable("id") Long id,
+    public ResponseEntity<?> checkReadIndustryNews(@PathVariable("id") String id,
                                                    @RequestHeader(value = "authorization", required = false) String token) {
         industryNewsService.checkReadIndustryNews(id, token);
 

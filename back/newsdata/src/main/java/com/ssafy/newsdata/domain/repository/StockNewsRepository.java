@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 @Repository
 public class StockNewsRepository {
-    public StockNewsDto findById(Long id) throws SQLException, ClassNotFoundException {
+    public StockNewsDto findById(String id) throws SQLException, ClassNotFoundException {
         Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rst = null;
@@ -35,7 +35,7 @@ public class StockNewsRepository {
 
             // PreparedStatement 생성 및 id 값 바인딩
             pstmt = conn.prepareStatement(query);
-            pstmt.setLong(1, id);
+            pstmt.setBigDecimal(1, new BigDecimal(id));
 
             // 쿼리 실행
             rst = pstmt.executeQuery();

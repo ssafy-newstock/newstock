@@ -100,7 +100,7 @@ public class IndustryNewsService {
      * @param token
      */
     @Transactional
-    public void checkReadIndustryNews(Long newsId, String token) {
+    public void checkReadIndustryNews(String newsId, String token) {
         if (token != null && !token.isEmpty()) {
             Long memberId = tokenProvider.getMemberId(token);
 
