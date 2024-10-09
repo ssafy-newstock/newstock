@@ -12,10 +12,10 @@ import org.springframework.data.redis.core.RedisHash;
 public class IndustryNewsRedis {
     private String id;
 
-    private Long industryNewsId;
+    private String industryNewsId;
     private Long memberId;
 
-    public IndustryNewsRedis(Long industryNewsId, Long memberId) {
+    public IndustryNewsRedis(String industryNewsId, Long memberId) {
         this.id = industryNewsId + "|" + memberId;
         this.industryNewsId = industryNewsId;
         this.memberId = memberId;

@@ -54,14 +54,14 @@ public class StockNewsController {
     }
 
     @GetMapping("/{id}")
-    public CommonResponse<?> getStockNews(@PathVariable("id") Long id) throws Exception {
+    public CommonResponse<?> getStockNews(@PathVariable("id") String id) throws Exception {
         StockNewsDto stockNews = stockNewsService.getStockNewsDetail(id);
         StockNewsResponse response = stockNewsService.convertResponse(stockNews);
         return CommonResponse.success(response);
     }
 
     @GetMapping("/{id}/read")
-    public ResponseEntity<?> checkReadStockNews(@PathVariable("id") Long id,
+    public ResponseEntity<?> checkReadStockNews(@PathVariable("id") String id,
                                                 @RequestHeader(value = "authorization", required = false) String token) {
         stockNewsService.checkReadStockNews(id, token);
 
