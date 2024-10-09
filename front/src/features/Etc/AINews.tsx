@@ -28,7 +28,7 @@ const NewsItemWrapper = styled.div`
   height: 12.5rem;
   padding: 1.25rem 1rem;
   border: 1px solid #d1d1d1;
-  border-radius: 0.3rem;
+  border-radius: 1rem;
   background-color: ${({ theme }) => theme.newsBackgroundColor};
   display: flex;
   flex-direction: column;
@@ -42,13 +42,11 @@ const NewsMedia = styled.h3`
 `;
 
 const NewsTitle = styled.p`
-  font-size: 0.9rem;
-  color: #666;
+  font-size: 1.2rem;
 `;
 
 const NewsDate = styled.p`
-  font-size: 0.625rem;
-  color: #e0e0e0;
+  font-size: 0.8rem;
   margin-bottom: 1rem;
 `;
 

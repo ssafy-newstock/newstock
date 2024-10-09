@@ -1,4 +1,11 @@
-import { useState, useEffect, useRef, ChangeEvent, KeyboardEvent } from 'react';
+import {
+  useState,
+  useEffect,
+  useRef,
+  ChangeEvent,
+  KeyboardEvent,
+  forwardRef,
+} from 'react';
 import { Center } from '@components/Center';
 import styled, { useTheme } from 'styled-components';
 import chatbotImg from '@assets/Chat/chatbotImg.png';
@@ -8,8 +15,10 @@ import AINews from '@features/Etc/AINews';
 import WelcomeMessage from '@features/Etc/WelcomeMessage';
 import CalendarIcon from '@features/MyNews/CalendarIcon';
 import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css'; // 날짜 선택 UI를 위한 CSS
+import 'react-datepicker/dist/react-datepicker.css';
 import { axiosInstance } from '@api/axiosInstance';
+import { useChatStore, Message } from '@store/useChatBotStore';
+import { ko } from 'date-fns/locale';
 
 const ChatCenter = styled.div`
   display: flex;
@@ -23,6 +32,7 @@ const DateWrapper = styled.div`
   justify-content: center;
   align-items: center;
   padding: 0 1rem;
+  cursor: pointer;
 `;
 
 const ChatOuterWrapper = styled.div`
@@ -35,7 +45,7 @@ const ChatOuterWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 0.625rem;
+  gap: 1rem;
   border-radius: 1.875rem;
 `;
 
@@ -45,8 +55,7 @@ const ChatBodyWrapper = styled.div`
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  overflow: auto;
+  gap: 1rem;
   &::-webkit-scrollbar {
     width: 0;
     height: 0;
@@ -57,7 +66,6 @@ const ChatMessageOuterWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
 `;
 
 const ChatMessageInnerWrapper = styled.div<{ $isMine: boolean }>`
@@ -93,6 +101,14 @@ const ChatInputWrapper = styled.div`
   align-items: center;
   border-radius: 1.875rem;
   border: 1px solid #ccc;
+  position: relative;
+
+  /* 포커스 시 스타일 */
+  &:focus-within {
+    border-color: ${({ theme }) =>
+      theme.highlightColor}; /* 포커스 시 하이라이트 색상 */
+    box-shadow: 0 0 5px ${({ theme }) => theme.highlightColor}; /* 포커스 시 외곽선 강조 */
+  }
 `;
 
 const ChatInput = styled.input`
@@ -101,9 +117,17 @@ const ChatInput = styled.input`
   border-radius: 1.875rem;
   border: none;
   background-color: transparent;
-  color: #828282;
+  color: ${({ theme }) => theme.textColor};
   font-size: 1rem;
   outline: none;
+`;
+
+const DatePickerWrapper = styled.div`
+  display: flex;
+  margin-right: auto;
+  margin-left: 1rem;
+  gap: 1rem;
+  align-items: center;
 `;
 
 const SendIconWrapper = styled.div`
@@ -118,6 +142,12 @@ const SendIcon = styled.svg`
   fill: ${({ theme }) => theme.sendIconColor};
 `;
 
+const DatePickerText = styled.p`
+  color: ${({ theme }) => theme.profileColor};
+  font-weight: 500;
+  font-size: 1.2rem;
+`;
+
 const sendIcon = (
   <SendIcon
     xmlns="http://www.w3.org/2000/svg"
@@ -129,32 +159,64 @@ const sendIcon = (
   </SendIcon>
 );
 
-interface Message {
-  content: string;
-  isMine: boolean;
+const CustomInput = styled.input`
+  padding: 0.5rem;
+  border-radius: 1rem;
+  border: none;
+  background-color: ${({ theme }) => theme.profileBackgroundColor};
+  color: ${({ theme }) => theme.profileColor};
+  font-size: 1rem;
+  font-weight: 500;
+  width: 100%;
+  outline: none;
+  cursor: pointer;
+  text-align: center;
+
+  &::placeholder {
+    color: ${({ theme }) => theme.profileColor};
+    opacity: 0.7;
+  }
+`;
+
+// ForwardRef component for the custom input
+interface CustomDateInputProps {
+  value?: string;
+  onClick?: () => void;
 }
 
-interface NewsItem {
-  id: number;
-  upload_datetime: string;
-  title: string;
-  media: string;
-  thumbnail?: string;
-  sentiment: number;
-  type: string;
-}
+const CustomDateInput = forwardRef<HTMLInputElement, CustomDateInputProps>(
+  ({ value, onClick }, ref) => (
+    <CustomInput
+      onClick={onClick}
+      ref={ref}
+      value={value || '연도-월-일'} // value가 없을 때 "연도-월-일" 표시
+      readOnly
+    />
+  )
+);
+
+CustomDateInput.displayName = 'CustomDateInput'; // forwardRef 사용 시 displayName 설정
+
+// Styled DatePicker with props type extensions
+const StyledDatePicker = styled(DatePicker as any)`
+  .react-datepicker-wrapper {
+    width: 100%;
+  }
+`;
 
 const AIChatBotPage: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState<string>('');
-  const [startDate, setStartDate] = useState<Date | null>(new Date());
-  const [endDate, setEndDate] = useState<Date | null>(new Date());
-  const [showDatePicker, setShowDatePicker] = useState<boolean>(false); // DatePicker 표시 여부
   const chatBodyRef = useRef<HTMLDivElement>(null);
   const theme = useTheme();
 
-  // API 응답 상태
-  const [relatedNews, setRelatedNews] = useState<NewsItem[]>([]);
+  const messages = useChatStore((state) => state.messages);
+  const addMessage = useChatStore((state) => state.addMessage);
+  const startDate = useChatStore((state) => state.startDate);
+  const endDate = useChatStore((state) => state.endDate);
+  const showDatePicker = useChatStore((state) => state.showDatePicker);
+  const setStartDate = useChatStore((state) => state.setStartDate);
+  const setEndDate = useChatStore((state) => state.setEndDate);
+  const toggleDatePicker = useChatStore((state) => state.toggleDatePicker);
 
   useEffect(() => {
     if (chatBodyRef.current) {
@@ -166,7 +228,6 @@ const AIChatBotPage: React.FC = () => {
     setInput(e.target.value);
   };
 
-  // 뉴스 AI API 호출 함수
   const fetchNewsAI = async (query: string) => {
     try {
       if (!startDate || !endDate) return;
@@ -187,10 +248,9 @@ const AIChatBotPage: React.FC = () => {
       const aiResponse: Message = {
         content: answer || '관련 뉴스를 찾을 수 없습니다.',
         isMine: false,
+        relatedNews: relatedNews.length > 0 ? relatedNews : undefined,
       };
-      setMessages((prevMessages) => [...prevMessages, aiResponse]);
-
-      setRelatedNews(relatedNews);
+      addMessage(aiResponse);
     } catch (error) {
       console.error('API 호출 에러:', error);
     }
@@ -199,7 +259,7 @@ const AIChatBotPage: React.FC = () => {
   const sendMessage = () => {
     if (input.trim()) {
       const newMessage: Message = { content: input, isMine: true };
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      addMessage(newMessage);
       setInput('');
 
       fetchNewsAI(input);
@@ -214,10 +274,6 @@ const AIChatBotPage: React.FC = () => {
     if (e.key === 'Enter') {
       sendMessage();
     }
-  };
-
-  const toggleDatePicker = () => {
-    setShowDatePicker((prev) => !prev);
   };
 
   return (
@@ -243,18 +299,54 @@ const AIChatBotPage: React.FC = () => {
                         {msg.content}
                       </ChatMessage>
                       <ChatImage
-                        src={theme.mode === 'dark' ? darkUserImg : lightUserImg}
+                        src={
+                          theme.textColor === '#4C506B'
+                            ? lightUserImg
+                            : darkUserImg
+                        }
                         alt="userImg"
                       />
                     </>
                   )}
                 </ChatMessageInnerWrapper>
-                {!msg.isMine && relatedNews.length > 0 && (
-                  <AINews newsList={relatedNews} />
+                {!msg.isMine && msg.relatedNews && (
+                  <AINews newsList={msg.relatedNews} />
                 )}
               </ChatMessageOuterWrapper>
             ))}
           </ChatBodyWrapper>
+          <DatePickerWrapper>
+            {showDatePicker && (
+              <StyledDatePicker
+                selected={startDate ? startDate : null}
+                onChange={(date: Date | null) => {
+                  setStartDate(date);
+                }}
+                selectsStart
+                startDate={startDate ?? null}
+                endDate={endDate ?? null}
+                dateFormat="yyyy-MM-dd"
+                customInput={<CustomDateInput />}
+                locale={ko}
+              />
+            )}
+            {showDatePicker && <DatePickerText> ~ </DatePickerText>}
+            {showDatePicker && (
+              <StyledDatePicker
+                selected={endDate ? endDate : null}
+                onChange={(date: Date | null) => {
+                  setEndDate(date);
+                }}
+                selectsEnd
+                startDate={startDate ?? null}
+                endDate={endDate ?? null}
+                minDate={startDate ?? null}
+                dateFormat="yyyy-MM-dd"
+                customInput={<CustomDateInput />}
+                locale={ko}
+              />
+            )}
+          </DatePickerWrapper>
           <ChatInputWrapper>
             <DateWrapper onClick={toggleDatePicker}>
               <CalendarIcon />
@@ -269,31 +361,10 @@ const AIChatBotPage: React.FC = () => {
               {sendIcon}
             </SendIconWrapper>
           </ChatInputWrapper>
-          {showDatePicker && (
-            <div>
-              <DatePicker
-                selected={startDate ?? undefined} // null일 경우 undefined로 설정
-                onChange={(date: Date | null) => {
-                  if (date) setStartDate(date);
-                }}
-                selectsStart
-                startDate={startDate ?? undefined} // null일 경우 undefined로 설정
-                endDate={endDate ?? undefined} // null일 경우 undefined로 설정
-                dateFormat="yyyy-MM-dd"
-              />
-              <DatePicker
-                selected={endDate ?? undefined} // null일 경우 undefined로 설정
-                onChange={(date: Date | null) => {
-                  if (date) setEndDate(date);
-                }}
-                selectsEnd
-                startDate={startDate ?? undefined} // null일 경우 undefined로 설정
-                endDate={endDate ?? undefined} // null일 경우 undefined로 설정
-                minDate={startDate ?? undefined} // null일 경우 undefined로 설정
-                dateFormat="yyyy-MM-dd"
-              />
-            </div>
-          )}
+          <DatePickerText>
+            우측 하단의 달력 버튼을 클릭 후 날짜를 선택하고 대화를 시작해
+            주세요.
+          </DatePickerText>
         </ChatOuterWrapper>
       </ChatCenter>
     </Center>
