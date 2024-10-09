@@ -1,14 +1,15 @@
 import { useState, useEffect, useRef, ChangeEvent, KeyboardEvent } from 'react';
 import { Center } from '@components/Center';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import chatbotImg from '@assets/Chat/chatbotImg.png';
 import darkUserImg from '@assets/Chat/darkUser.png';
+import lightUserImg from '@assets/Chat/user.png';
 import AINews from '@features/Etc/AINews';
 import WelcomeMessage from '@features/Etc/WelcomeMessage';
 import CalendarIcon from '@features/MyNews/CalendarIcon';
-
-// import 'react-datepicker/dist/react-datepicker.css'; // 날짜 선택 UI를 위한 CSS
-// import DatePicker from 'react-datepicker';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css'; // 날짜 선택 UI를 위한 CSS
+import { axiosInstance } from '@api/axiosInstance';
 
 const ChatCenter = styled.div`
   display: flex;
@@ -21,18 +22,11 @@ const DateWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  /* margin: 0 0.625rem; */
   padding: 0 1rem;
 `;
 
-// const DateText = styled.p`
-//   color: #828282;
-//   font-size: 1rem;
-//   line-height: 1.875rem;
-// `;
-
 const ChatOuterWrapper = styled.div`
-  width: 70%;
+  width: 100%;
   max-width: 106rem;
   height: 95%;
   display: flex;
@@ -52,6 +46,11 @@ const ChatBodyWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  overflow: auto;
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
 `;
 
 const ChatMessageOuterWrapper = styled.div`
@@ -73,7 +72,6 @@ const ChatImage = styled.img`
   width: auto;
   height: 100%;
   max-height: 2.5rem;
-  /* border-radius: 50%; */
 `;
 
 const ChatMessage = styled.div<{ $isMine: boolean }>`
@@ -82,33 +80,19 @@ const ChatMessage = styled.div<{ $isMine: boolean }>`
   background-color: ${({ $isMine, theme }) =>
     $isMine ? theme.chatBalloonColor : 'transparent'};
   color: ${({ theme }) => theme.textColor};
-  max-width: ${({ $isMine }) =>
-    $isMine ? '60%' : '100%'}; /* 사용자 메시지는 60%, AI는 100% */
+  max-width: ${({ $isMine }) => ($isMine ? '60%' : '100%')};
   word-wrap: break-word;
-  border-radius: ${({ $isMine }) =>
-    $isMine ? '0.5rem' : '0'}; /* 사용자 메시지에만 테두리 */
-  text-align: ${({ $isMine }) =>
-    $isMine ? 'right' : 'left'}; /* 텍스트 정렬 */
-`;
-
-const InfoWrapper = styled.div`
-  width: 100%;
-  border: 1px solid #d1d1d1;
-  border-radius: 0.3rem;
-  padding: 1.25rem 1rem;
-  line-height: 1.75rem;
+  border-radius: ${({ $isMine }) => ($isMine ? '0.5rem' : '0')};
+  text-align: ${({ $isMine }) => ($isMine ? 'right' : 'left')};
 `;
 
 const ChatInputWrapper = styled.div`
   display: flex;
   width: 100%;
-  /* height: 15%; */
-  /* padding: 0 14px; */
   justify-content: center;
   align-items: center;
   border-radius: 1.875rem;
   border: 1px solid #ccc;
-  /* background-color: transparent; */
 `;
 
 const ChatInput = styled.input`
@@ -116,8 +100,7 @@ const ChatInput = styled.input`
   padding: 0.94rem 1.25rem 0.94rem 0.1rem;
   border-radius: 1.875rem;
   border: none;
-  background-color: transparent; /* 입력 필드의 배경색 투명화 */
-  align-items: center;
+  background-color: transparent;
   color: #828282;
   font-size: 1rem;
   outline: none;
@@ -151,15 +134,28 @@ interface Message {
   isMine: boolean;
 }
 
+interface NewsItem {
+  id: number;
+  upload_datetime: string;
+  title: string;
+  media: string;
+  thumbnail?: string;
+  sentiment: number;
+  type: string;
+}
+
 const AIChatBotPage: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState<string>('');
-  // const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
-
-  // 스크롤 제어를 위한 Ref 생성
+  const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [endDate, setEndDate] = useState<Date | null>(new Date());
+  const [showDatePicker, setShowDatePicker] = useState<boolean>(false); // DatePicker 표시 여부
   const chatBodyRef = useRef<HTMLDivElement>(null);
+  const theme = useTheme();
 
-  // 사용자가 채팅을 보낼 때만 스크롤을 아래로 이동
+  // API 응답 상태
+  const [relatedNews, setRelatedNews] = useState<NewsItem[]>([]);
+
   useEffect(() => {
     if (chatBodyRef.current) {
       chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
@@ -170,20 +166,43 @@ const AIChatBotPage: React.FC = () => {
     setInput(e.target.value);
   };
 
+  // 뉴스 AI API 호출 함수
+  const fetchNewsAI = async (query: string) => {
+    try {
+      if (!startDate || !endDate) return;
+
+      const formattedStartDate = startDate.toISOString().split('T')[0];
+      const formattedEndDate = endDate.toISOString().split('T')[0];
+
+      const response = await axiosInstance.get('/newsai/chat', {
+        params: {
+          query,
+          start_date: formattedStartDate,
+          end_date: formattedEndDate,
+        },
+      });
+
+      const { answer, relatedNews } = response.data;
+
+      const aiResponse: Message = {
+        content: answer || '관련 뉴스를 찾을 수 없습니다.',
+        isMine: false,
+      };
+      setMessages((prevMessages) => [...prevMessages, aiResponse]);
+
+      setRelatedNews(relatedNews);
+    } catch (error) {
+      console.error('API 호출 에러:', error);
+    }
+  };
+
   const sendMessage = () => {
     if (input.trim()) {
       const newMessage: Message = { content: input, isMine: true };
       setMessages((prevMessages) => [...prevMessages, newMessage]);
       setInput('');
 
-      // 일단 무엇이든지 채팅을 치면 ai가 자동으로 응답을 하게끔 임의로 설정함
-      setTimeout(() => {
-        const aiResponse: Message = {
-          content: '무슨 말씀인지 모르겠어요',
-          isMine: false,
-        };
-        setMessages((prevMessages) => [...prevMessages, aiResponse]);
-      }, 1000);
+      fetchNewsAI(input);
     }
   };
 
@@ -197,67 +216,87 @@ const AIChatBotPage: React.FC = () => {
     }
   };
 
+  const toggleDatePicker = () => {
+    setShowDatePicker((prev) => !prev);
+  };
+
   return (
-    <>
-      {/* left는 없애고, 관련 뉴스는 채팅을 쳤을 때 제공하도록 하는게 나을듯? */}
-      {/* <LeftNews /> */}
-      <Center>
-        <ChatCenter>
-          <ChatOuterWrapper>
-            <ChatBodyWrapper ref={chatBodyRef}>
-              {messages.length === 0 && <WelcomeMessage />}
-              {messages.map((msg, index) => (
-                <ChatMessageOuterWrapper key={index}>
-                  <ChatMessageInnerWrapper $isMine={msg.isMine}>
-                    {!msg.isMine && (
-                      <>
-                        <ChatImage src={chatbotImg} alt="userImg" />
-                        <ChatMessage key={index} $isMine={msg.isMine}>
-                          {msg.content}
-                        </ChatMessage>
-                      </>
-                    )}
-                    {msg.isMine && (
-                      <>
-                        <ChatMessage key={index} $isMine={msg.isMine}>
-                          {msg.content}
-                        </ChatMessage>
-                        <ChatImage src={darkUserImg} alt="userImg" />
-                      </>
-                    )}
-                  </ChatMessageInnerWrapper>
+    <Center>
+      <ChatCenter>
+        <ChatOuterWrapper>
+          <ChatBodyWrapper ref={chatBodyRef}>
+            {messages.length === 0 && <WelcomeMessage />}
+            {messages.map((msg, index) => (
+              <ChatMessageOuterWrapper key={index}>
+                <ChatMessageInnerWrapper $isMine={msg.isMine}>
                   {!msg.isMine && (
-                    <InfoWrapper>
-                      NewStock AI는 매 질문에 대해 최근 한 달간의 관련 뉴스를
-                      제공합니다.
-                      <br /> 만약 뉴스 제공 기간을 변경하고 싶다면, 입력창 옆의
-                      날짜 아이콘을 클릭해 주세요.
-                    </InfoWrapper>
+                    <>
+                      <ChatImage src={chatbotImg} alt="userImg" />
+                      <ChatMessage key={index} $isMine={msg.isMine}>
+                        {msg.content}
+                      </ChatMessage>
+                    </>
                   )}
-                  {/* AI의 메시지 아래에 AINews 출력 */}
-                  {!msg.isMine && <AINews />}
-                </ChatMessageOuterWrapper>
-              ))}
-            </ChatBodyWrapper>
-            {/* <ChatDataWrapper></ChatDataWrapper> */}
-            <ChatInputWrapper>
-              <DateWrapper>
-                <CalendarIcon />
-              </DateWrapper>
-              <ChatInput
-                value={input}
-                onChange={handleInputChange}
-                onKeyDown={handleKeyPress}
-                placeholder="Type a message..."
+                  {msg.isMine && (
+                    <>
+                      <ChatMessage key={index} $isMine={msg.isMine}>
+                        {msg.content}
+                      </ChatMessage>
+                      <ChatImage
+                        src={theme.mode === 'dark' ? darkUserImg : lightUserImg}
+                        alt="userImg"
+                      />
+                    </>
+                  )}
+                </ChatMessageInnerWrapper>
+                {!msg.isMine && relatedNews.length > 0 && (
+                  <AINews newsList={relatedNews} />
+                )}
+              </ChatMessageOuterWrapper>
+            ))}
+          </ChatBodyWrapper>
+          <ChatInputWrapper>
+            <DateWrapper onClick={toggleDatePicker}>
+              <CalendarIcon />
+            </DateWrapper>
+            <ChatInput
+              value={input}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyPress}
+              placeholder="Type a message..."
+            />
+            <SendIconWrapper onClick={handleSendClick}>
+              {sendIcon}
+            </SendIconWrapper>
+          </ChatInputWrapper>
+          {showDatePicker && (
+            <div>
+              <DatePicker
+                selected={startDate ?? undefined} // null일 경우 undefined로 설정
+                onChange={(date: Date | null) => {
+                  if (date) setStartDate(date);
+                }}
+                selectsStart
+                startDate={startDate ?? undefined} // null일 경우 undefined로 설정
+                endDate={endDate ?? undefined} // null일 경우 undefined로 설정
+                dateFormat="yyyy-MM-dd"
               />
-              <SendIconWrapper onClick={handleSendClick}>
-                {sendIcon}
-              </SendIconWrapper>
-            </ChatInputWrapper>
-          </ChatOuterWrapper>
-        </ChatCenter>
-      </Center>
-    </>
+              <DatePicker
+                selected={endDate ?? undefined} // null일 경우 undefined로 설정
+                onChange={(date: Date | null) => {
+                  if (date) setEndDate(date);
+                }}
+                selectsEnd
+                startDate={startDate ?? undefined} // null일 경우 undefined로 설정
+                endDate={endDate ?? undefined} // null일 경우 undefined로 설정
+                minDate={startDate ?? undefined} // null일 경우 undefined로 설정
+                dateFormat="yyyy-MM-dd"
+              />
+            </div>
+          )}
+        </ChatOuterWrapper>
+      </ChatCenter>
+    </Center>
   );
 };
 

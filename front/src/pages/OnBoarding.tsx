@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import useAuthStore from '@store/useAuthStore';
 import SectionFirst from '@features/Onboading/SectionFirst';
 import SectionSecond from '@features/Onboading/SectionSecond';
 import SectionThird from '@features/Onboading/SectionThird';
@@ -30,7 +29,6 @@ const SectionContainer = styled.div`
 `;
 
 const OnBoardingPage = () => {
-  const { isLogin } = useAuthStore(); // 로그인 상태 확인
   const navigate = useNavigate();
 
   // 각 섹션의 가시성 상태를 관리하는 상태 (섹션별로 true/false 설정)
@@ -93,12 +91,7 @@ const OnBoardingPage = () => {
 
   // 마지막 섹션에서 "시작하기" 버튼을 클릭할 때 처리
   const handleStart = () => {
-    // 로그인 여부에 따라 페이지 이동
-    if (isLogin) {
-      navigate('/news-main'); // 로그인 시 news-main으로 이동
-    } else {
-      navigate('/login'); // 로그인하지 않았을 경우 로그인 페이지로 이동
-    }
+    navigate('/home');
   };
 
   return (

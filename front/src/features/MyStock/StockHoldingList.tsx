@@ -12,7 +12,6 @@ import { getStockImageUrl } from '@utils/getStockImageUrl';
 import useAllStockStore from '@store/useAllStockStore'; // Zustand 스토어에서 allStock 데이터 참조
 import useTop10StockStore from '@store/useTop10StockStore'; // Zustand 스토어에서 top10Stock 데이터 참조
 
-
 // 인터페이스 정의
 interface StockHolding {
   stockId: number;
@@ -67,11 +66,19 @@ const StockHoldingList = ({ stock }: { stock: StockHolding }) => {
     : stock.stockHoldingBuyPrice + stock.stockHoldingChange;
   const TotalPrice = StockCurrentPrice * stock.stockHoldingBuyAmount;
 
+  // 수익률 계산 (현재가 - 구매가) / 구매가 * 100
+  const profitRate =
+    matchedStock && stock.stockHoldingBuyPrice
+      ? ((matchedStock.stckPrpr - stock.stockHoldingBuyPrice) /
+          stock.stockHoldingBuyPrice) *
+        100
+      : 0;
+
   // 수익률 상태 판단
   const profitStatus: 'positive' | 'negative' | 'zero' =
-    matchedStock && matchedStock.prdyVrss > 0
+    matchedStock && profitRate > 0
       ? 'positive'
-      : matchedStock && matchedStock.prdyVrss < 0
+      : matchedStock && profitRate < 0
         ? 'negative'
         : 'zero';
 
@@ -85,23 +92,26 @@ const StockHoldingList = ({ stock }: { stock: StockHolding }) => {
     <MyStockCardRow onClick={handleNavigate} style={{ cursor: 'pointer' }}>
       <StockTitle>
         <StockImage
-            src={getStockImageUrl(stock.stockCode)}
-            onError={(e) => (e.currentTarget.src = blueLogo)}
-            alt=""
+          src={getStockImageUrl(stock.stockCode)}
+          onError={(e) => (e.currentTarget.src = blueLogo)}
+          alt=""
         />
+        {/* 종목명 */}
         {stock.stockName}
       </StockTitle>
+      {/* 구매가 */}
       <Text>{stock.stockHoldingBuyPrice.toLocaleString()}원</Text>
+      {/* 현재가 */}
       <ColoredText $profitStatus={profitStatus}>
         {StockCurrentPrice.toLocaleString()}원
       </ColoredText>
+      {/*수익률*/}
       <ColoredText $profitStatus={profitStatus}>
-        {matchedStock
-          ? matchedStock.prdyCtrt.toFixed(2)
-          : stock.stockHoldingChangeRate.toFixed(2)}
-        %
+        {profitRate.toFixed(2)}%
       </ColoredText>
+      {/* 보유량 */}
       <Text>{stock.stockHoldingBuyAmount.toLocaleString()}주</Text>
+      {/* 총액 */}
       <Text>{TotalPrice.toLocaleString()}원</Text>
     </MyStockCardRow>
   );

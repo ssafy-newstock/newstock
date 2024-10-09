@@ -24,6 +24,12 @@ export const StockGridColumn = styled.div`
   gap: 1.25rem;
 `;
 
+export const MainGridColumn = styled.div<{$gap: string}>`
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+gap: ${({ $gap }) => $gap};
+`
+
 export const CategoryGridColumn = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -48,6 +54,19 @@ export const StockCardColumn = styled.div`
   width: 100%;
   gap: 1rem;
   padding: 0.6rem;
+  border-radius: 1.25rem;
+  background-color: ${({ theme }) => theme.stockBackgroundColor};
+  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+`;
+
+export const MainCardRow = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+  gap: 1rem;
+  padding: 1rem 0.5rem;
   border-radius: 1.25rem;
   background-color: ${({ theme }) => theme.stockBackgroundColor};
   box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
@@ -84,6 +103,7 @@ export const StockCardTitle = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: 0.5rem;
+  font-weight: 500;
 `;
 
 export const StockTitle = styled.div`
@@ -91,7 +111,7 @@ export const StockTitle = styled.div`
   align-items: center;
   gap: 0.5rem;
   font-size: 1rem;
-  font-weight: bold;
+  font-weight: 500;
 
   // 한줄로 넘칠 경우 ...으로 표시
   white-space: nowrap;
@@ -112,21 +132,25 @@ export const StockImageDetail = styled(StockImage)`
 
 export const StckPrice = styled.div`
   font-size: 1rem;
+  font-weight: 500;
 `;
 
 export const StockPrev = styled.div<{ $isPositive: boolean }>`
-  font-size: 0.8rem;
+  font-size: 1rem;
   color: ${({ $isPositive, theme }) =>
     $isPositive ? theme.stockBlue : theme.stockRed};
+  font-weight: 500;
 `;
 
 export const HoldingStockPrev = styled(StockPrev)`
   font-size: 1rem;
+  font-weight: 500;
 `;
 
 export const SpanTag = styled.span`
   font-size: 0.8rem;
   color: ${({ theme }) => theme.textColor};
+  font-weight: 500;
 `;
 
 export const HeartWrapper = styled.div`
@@ -176,10 +200,11 @@ export const CategoryCardRow = styled(StockCardRow)`
 export const Text = styled.div`
   font-size: 1rem;
   color: ${({ theme }) => theme.textColor};
+  font-weight: 500;
 `;
 
 export const TextBold = styled(Text)`
-  font-weight: bold;
+  font-weight: 600;
 `;
 
 export const TextBoldLeft = styled(TextBold)`
@@ -196,6 +221,10 @@ export const TextLarge = styled(Text)`
 
 export const TextLeft = styled(Text)`
   text-align: left;
+`;
+
+export const TextLeftLine = styled(TextLeft)`
+  line-height: 1.2;
 `;
 
 export const TextRight = styled(Text)`
@@ -262,15 +291,16 @@ export const SortButton = styled.button<{ $isActive: boolean }>`
   cursor: pointer;
   color: ${({ theme }) => theme.textColor};
   position: relative;
+  font-size: 1rem;
 
   &::after {
     content: '';
     position: absolute;
-    bottom: -0.2rem;
+    bottom: -0.3rem;
     left: 50%;
     transform: translateX(-50%);
-    width: ${({ $isActive }) => ($isActive ? '2rem' : '0')};
-    height: 0.2rem;
+    width: ${({ $isActive }) => ($isActive ? '2.5rem' : '0')};
+    height: 0.15rem;
     background-color: ${({ theme }) => theme.textColor};
     transition: width 0.3s ease;
   }
@@ -278,7 +308,7 @@ export const SortButton = styled.button<{ $isActive: boolean }>`
 
 export const CategorySortButton = styled(SortButton)`
   &::after {
-    width: ${({ $isActive }) => ($isActive ? '3rem' : '0')};
+    width: ${({ $isActive }) => ($isActive ? '4rem' : '0')};
   }
 `;
 
@@ -297,6 +327,7 @@ export const SearchInput = styled.input`
   background-color: ${({ theme }) => theme.stockBackgroundColor};
   color: ${({ theme }) => theme.textColor};
   font-size: 1rem;
+  font-weight: 500;
 `;
 
 export const IconWrapper = styled.div`
@@ -315,6 +346,7 @@ export const DetailPageButton = styled.div`
   border-radius: 1rem;
   padding: 0.5rem 1rem;
   cursor: pointer;
+  font-weight: 500;
 `;
 
 export const FormWrapper = styled.div`
@@ -345,8 +377,8 @@ export const InputRow = styled.div`
 
 export const InputLabel = styled.label`
   min-width: 60px;
-  font-weight: bold;
-  font-size: 1rem;
+  font-size: 1.2rem;
+  font-weight: 500;
 `;
 
 export const InputTag = styled.input`
@@ -356,6 +388,8 @@ export const InputTag = styled.input`
   background-color: ${({ theme }) => theme.profileBackgroundColor};
   color: ${({ theme }) => theme.profileColor};
   flex-grow: 1;
+  font-size: 1rem;
+  font-weight: 500;
 `;
 
 export const TradeButtonWrapper = styled.div`
@@ -376,6 +410,7 @@ export const TradeButton = styled.button<{ $variant: 'buy' | 'sell' }>`
   &:hover {
     opacity: 0.8;
   }
+  font-weight: 500;
 `;
 
 export const TradeModalOverlay = styled.div`
@@ -424,6 +459,7 @@ export const CategoryModalOverlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 `;
 
 export const CategoryModalContent = styled.div`

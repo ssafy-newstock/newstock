@@ -1,10 +1,9 @@
-import { useNavigate } from 'react-router-dom';
 import {
   TextP_16,
-  TextP_20_bold,
+  TitleP_15,
   TitleDiv,
 } from '@features/Scrap/scrapStyledComponent';
-import { CalendarIcon, GoIcon } from '@features/Scrap/create/Icon';
+import { CalendarIcon } from '@features/Scrap/create/Icon';
 import {
   RightTitleBottomDiv,
   RightTitleBottomFilterDiv,
@@ -49,21 +48,12 @@ const RightTitle: React.FC<{
     </div>
   ));
 
-  const navigate = useNavigate();
-
-  // Navigate to saved news page
-  const handleGoIconClick = () => {
-    navigate('/my-news');
-  };
 
   return (
     <TitleDiv>
-      <RightTitleTopDiv
-        onClick={handleGoIconClick}
-        style={{ cursor: 'pointer' }}
-      >
-        <TextP_20_bold>저장한 뉴스</TextP_20_bold>
-        <GoIcon />
+      <RightTitleTopDiv>
+        <TitleP_15>관심 뉴스</TitleP_15>
+        {/* <GoIcon /> */}
       </RightTitleTopDiv>
       <RightTitleBottomDiv>
         <TextP_16 onClick={handleReset} style={{ cursor: 'pointer' }}>

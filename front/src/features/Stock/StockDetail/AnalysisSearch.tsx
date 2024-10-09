@@ -85,7 +85,7 @@ const AnalysisSearch: React.FC<AnalysisSearchProps> = ({
   });
 
   useEffect(() => {
-    if (analysisQuery.data) {
+    if (analysisQuery.data && isModalOpen) {
       toast.success('차트 분석 완료');
     }
   }, [analysisQuery.data]);

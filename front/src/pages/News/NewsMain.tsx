@@ -12,7 +12,7 @@ import useTop10StockStore from '@store/useTop10StockStore';
 import NewsMainSkeleton from '@features/News/skeleton/NewsMainSkeleton';
 
 interface NewsData {
-  id: number;
+  id: string;
   title: string;
   description: string;
   media: string;

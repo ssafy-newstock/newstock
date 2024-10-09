@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 
 import { useBookmarkStore } from '@store/useBookmarkStore';
 import useAuthStore from '@store/useAuthStore';
+import { useShortQuery } from '@hooks/useShortQuery';
 
 const EconomicNewsBody = styled.div`
   display: flex;
@@ -121,7 +122,7 @@ interface OutletContextType {
 }
 
 interface EconNewsBodyProps {
-  id: number;
+  id: string;
   title: string;
   content: string;
   media: string;
@@ -190,11 +191,25 @@ const EconNewsBody: React.FC<EconNewsBodyProps> = ({
     }
   }, [fetchBookmarkedNews, isLogin]);
 
-  const handleSummaryClick = (event: React.MouseEvent) => {
+    // 쿼리 훅 사용하여 데이터 가져오기
+    const { data, refetch } = useShortQuery(
+      { id: id, newsType: 'industry' },
+      {
+        enabled: false, // 자동 실행 방지
+      }
+    );
+
+
+  const handleSummaryClick = async (event: React.MouseEvent) => {
     event.stopPropagation(); // 상위 클릭 이벤트 중지
     if (!showSummary) {
       setShowSummary(true);
       onShowSummaryChange(true);
+      try {
+        await refetch(); // 쿼리 실행
+      } catch (error) {
+        console.error('Failed to fetch news summary:', error);
+      }
     }
   };
 
@@ -224,7 +239,7 @@ const EconNewsBody: React.FC<EconNewsBodyProps> = ({
         <Overlay>
           <Background onClick={handleCloseSummary} />
           <Modal onClick={handleModalClick}>
-            <NewsSummary onClose={handleCloseSummary} />
+            <NewsSummary onClose={handleCloseSummary} data={data} />
           </Modal>
         </Overlay>
       )}

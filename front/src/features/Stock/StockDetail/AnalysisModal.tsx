@@ -1,8 +1,20 @@
-import { Flex, FlexColumn } from '@components/styledComponent';
-import SentimentIcon from '@features/News/PNSubicon';
+import {
+  DivTag,
+  FlexGap,
+  FlexGapCenter,
+  FlexGapColumn,
+} from '@components/styledComponent';
 import styled from 'styled-components';
-import newstockIcon from '@assets/Stock/blueLogo.png';
+import newstockIcon from '@assets/Stock/Logo.png';
 import LoadingSpinner from '@components/LoadingSpinner';
+import {
+  Text,
+  TextBoldLeft,
+  TextBoldLarge,
+  HrTag,
+  TextLeftLine,
+} from '@features/Stock/styledComponent';
+import { useNavigate } from 'react-router-dom';
 
 interface IRelatedNews {
   id: number;
@@ -38,7 +50,8 @@ const ModalOverlay = styled.div`
 `;
 
 const ModalContent = styled.div`
-  width: 50%;
+  min-width: 20rem;
+  max-width: 60rem;
   background-color: ${({ theme }) => theme.stockBackgroundColor};
   padding: 1rem;
   border-radius: 1rem;
@@ -46,7 +59,7 @@ const ModalContent = styled.div`
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 2rem;
   align-items: center;
 `;
 
@@ -60,60 +73,135 @@ const CloseButton = styled.button`
     background-color: #ccc;
   }
 `;
+
+const ImgTag = styled.img`
+  object-fit: fill;
+  width: 8rem;
+  height: 6rem;
+  border-radius: 1rem;
+`;
+
+const NewsGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(auto-fill, 1fr, 1fr);
+  gap: 2rem;
+`;
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  border-radius: 1rem;
+  background-color: ${({ theme }) => theme.backgroundColor};
+  padding: 0.5rem 1rem;
+`;
+
+const NewsContainer = styled.div`
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  border-radius: 1rem;
+  background-color: ${({ theme }) => theme.backgroundColor};
+  padding: 0.5rem 1rem;
+  align-items: center;
+  cursor: pointer;
+`;
+
 const AnalysisModal: React.FC<AnalysisModalProps> = ({
   onClose,
   analysisData,
 }) => {
+  const navigate = useNavigate();
+  const onClickNews = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, id: number) => {
+    event.stopPropagation();
+    navigate(`/subnews-main/stock-news/${id}`);
+  }
+  if (analysisData?.macroReport === '') {
+    return (
+      <ModalOverlay>
+        <ModalContent>
+          <Text>분석 결과가 없습니다.</Text>
+          <CloseButton onClick={onClose}>닫기</CloseButton>
+        </ModalContent>
+      </ModalOverlay>
+    );
+  }
   return (
     <ModalOverlay>
-      <ModalContent>
-        {analysisData ? (
+      {analysisData ? (
+        <ModalContent>
           <>
-            <h2>Analysis</h2>
-            <p>{analysisData?.macroReport}</p>
-            <p>{analysisData?.microReport}</p>
-            <h3>Related News</h3>
-            <ul>
-              {analysisData?.relatedNews.map((news) => (
-                <li key={news.id}>
-                  <Flex>
-                    <img
-                      src={news.thumbnail || newstockIcon}
-                      alt={news.title}
-                      style={{ width: '10rem' }}
-                    />
-                    <FlexColumn>
-                      <Flex>
-                        <SentimentIcon sentiment={String(news.sentiment)} />
-                        <p>{news.title}</p>
-                      </Flex>
+            <DivTag style={{ width: '100%' }}>
+              <TextBoldLarge>차트 분석</TextBoldLarge>
+              <HrTag />
+              <FlexGap $gap="1rem">
+                <Container>
+                  <Text>시장 분석</Text>
+                  <TextLeftLine
+                    dangerouslySetInnerHTML={{
+                      __html: analysisData?.macroReport,
+                    }}
+                  />
+                </Container>
+                <Container>
+                  <Text>종목 분석</Text>
+                  <TextLeftLine
+                    dangerouslySetInnerHTML={{
+                      __html: analysisData?.microReport,
+                    }}
+                  />
+                </Container>
+              </FlexGap>
+            </DivTag>
 
-                      <Flex>
-                        <img
-                          style={{
-                            width: '1.5rem',
-                            height: '1.5rem',
-                            borderRadius: '50%',
-                          }}
-                          src={`https://stock.vaiv.kr/resources/images/news/${news.media}.png`}
-                          onError={(e) => {
-                            e.currentTarget.src = newstockIcon;
-                          }}
-                        />
-                        <p>{news.media}</p>
-                        <p>{news.upload_datetime}</p>
-                      </Flex>
-                    </FlexColumn>
-                  </Flex>
-                </li>
-              ))}
-            </ul>
-            <CloseButton onClick={onClose}>Close</CloseButton>
+            <DivTag style={{ width: '100%' }}>
+              <TextBoldLarge>관련 뉴스</TextBoldLarge>
+              <HrTag />
+              {analysisData?.relatedNews.length === 0 && (
+                <Text>관련 뉴스가 없습니다.</Text>
+              )}
+              <NewsGrid>
+                {analysisData?.relatedNews.map((news) => (
+                    <NewsContainer key={news.id} onClick={(event) => onClickNews(event, news.id)}>
+                    {/* <NewsContainer key={news.id} onClick={onClickNews}> */}
+                      <ImgTag
+                        src={news.thumbnail || newstockIcon}
+                        alt={news.title}
+                      />
+                      <FlexGapColumn $gap="0.5rem">
+                        <TextBoldLeft>{news.title}</TextBoldLeft>
+
+                        <FlexGapCenter
+                          $gap="0.5rem"
+                          style={{ paddingLeft: '0.5rem' }}
+                        >
+                          <img
+                            style={{
+                              width: '1.5rem',
+                              height: '1.5rem',
+                              borderRadius: '50%',
+                            }}
+                            src={`https://stock.vaiv.kr/resources/images/news/${news.media}.png`}
+                            onError={(e) => {
+                              e.currentTarget.src = newstockIcon;
+                            }}
+                          />
+                          <Text>{news.media}</Text>
+                          <Text>{news.upload_datetime.split(' ')[0]}</Text>
+                        </FlexGapCenter>
+                      </FlexGapColumn>
+                    </NewsContainer>
+                ))}
+              </NewsGrid>
+            </DivTag>
+            <CloseButton onClick={onClose}>닫기</CloseButton>
           </>
-        ) : (
-          <LoadingSpinner />
-        )}
-      </ModalContent>
+        </ModalContent>
+      ) : (
+        <LoadingSpinner />
+      )}
     </ModalOverlay>
   );
 };

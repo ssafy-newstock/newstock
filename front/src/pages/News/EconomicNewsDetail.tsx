@@ -5,10 +5,9 @@ import EconNewsDetailBody from '@features/News/EconNewsDetail/EconNewsDetailBody
 import useAuthStore from '@store/useAuthStore';
 import usePointStore from '@store/usePointStore';
 import useSocketStore from '@store/useSocketStore';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import NewsDetailSkeleton from '@features/News/skeleton/NewsDetailSkeleton';
-import { authRequest } from '@api/axiosInstance';
+import { authRequest, axiosInstance } from '@api/axiosInstance';
 import { toast } from 'react-toastify';
 
 const SubCenter = styled.div`
@@ -35,11 +34,11 @@ const NewsWrapper = styled.div`
   border-radius: 2rem;
   background-color: ${({ theme }) => theme.newsBackgroundColor};
   box-shadow: 0rem 0.25rem 0.25rem rgba(0, 0, 0, 0.1);
-  width: 90%;
+  width: 100%;
 `;
 
 interface NewsItem {
-  id: number;
+  id: string;
   title: string;
   article: string;
   content: string;
@@ -54,9 +53,17 @@ interface NewsItem {
 
 const fetchDetailNewsData = async (id: string): Promise<NewsItem | null> => {
   try {
-    const response = await axios.get(
-      `https://newstock.info/api/news/industry/${id}`
-    );
+    const referrer = document.referrer;
+    let apiUrl = `/news/industry/${id}`;
+
+    if (
+      referrer.includes('/ai-chat-bot') ||
+      referrer.includes('/stock-detail/')
+    ) {
+      apiUrl = `/newsdata/industry/${id}`;
+    }
+
+    const response = await axiosInstance.get(apiUrl);
     return response.data.data;
   } catch (error) {
     console.error('Failed to fetch EconomicDetailNews: ', error);
@@ -120,7 +127,7 @@ const EconomicNewsDetailPage: React.FC = () => {
             prevPoint !== null ? prevPoint + plusPoint : plusPoint
           );
           if (plusPoint) {
-            toast.success('10만원이 충전되었습니다!');
+            toast.success(`${plusPoint.toLocaleString()}원 충전되었습니다!`);
           }
         }
       );

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import newstockIcon from '@assets/Stock/blueLogo.png';
+import newstockIcon from '@assets/Stock/Logo.png';
 
 const EconomicSubNewsWrapper = styled.div`
   display: flex;

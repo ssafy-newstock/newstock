@@ -9,6 +9,7 @@ import { NewsTag } from '../NewsIconTag';
 import { useBookmarkStore } from '@store/useBookmarkStore';
 import useAuthStore from '@store/useAuthStore';
 import { toast } from 'react-toastify';
+import { useShortQuery } from '@hooks/useShortQuery';
 
 const StockNewsBodyWrapper = styled.div`
   display: flex;
@@ -108,7 +109,7 @@ interface IStockDetail {
 }
 
 interface StockNewsBodyProps {
-  id: number;
+  id: string;
   title: string;
   content: string;
   media: string;
@@ -179,11 +180,24 @@ const StockNewsBody: React.FC<StockNewsBodyProps> = ({
     }
   }, [fetchBookmarkedStockNews, isLogin]);
 
-  const handleSummaryClick = (event: React.MouseEvent) => {
+  // 쿼리 훅 사용하여 데이터 가져오기
+  const { data, refetch } = useShortQuery(
+    { id: id, newsType: 'stock' }, // 예시로 'summary'를 newsType으로 사용
+    {
+      enabled: false, // 자동 실행 방지
+    }
+  );
+
+  const handleSummaryClick = async (event: React.MouseEvent) => {
     event.stopPropagation(); // 상위 클릭 이벤트 중지
     if (!showSummary) {
       setShowSummary(true);
       onShowSummaryChange(true);
+      try {
+        await refetch(); // 쿼리 실행
+      } catch (error) {
+        console.error('Failed to fetch news summary:', error);
+      }
     }
   };
 
@@ -198,58 +212,61 @@ const StockNewsBody: React.FC<StockNewsBodyProps> = ({
   };
 
   return (
-    <StockNewsBodyWrapper>
-      {/* stockName을 전달 */}
-      <StockNewsHeader
-        header={header}
-        stockDetail={stockDetail!}
-        isBookmarked={isBookmarked}
-        onBookmarkIconClick={handleBookmarkIconClick}
-        onSummaryClick={handleSummaryClick}
-      />
-      {showSummary && (
-        <Overlay>
-          <Background onClick={handleCloseSummary} />
-          <Modal onClick={handleModalClick}>
-            <NewsSummary onClose={handleCloseSummary} />
-          </Modal>
-        </Overlay>
-      )}
-      <StockNewsTitleWrapper>
-        <SentimentIcon sentiment={sentiment} /> {/* SentimentIcon 사용 */}
-        <StockNewsTitle>
-          <StockNewsTitleText>{title}</StockNewsTitleText>
-        </StockNewsTitle>
-      </StockNewsTitleWrapper>
-
-      <StockNewsContent>{content}</StockNewsContent>
-
-      <StockNewsFooter>
-        <MediaWrapper>
-          <MediaLogo
-            src={mediaImageUrl}
-            alt={media}
-            onError={(e) => {
-              e.currentTarget.src = newstockIcon; // 이미지 로드 실패 시 기본 이미지로 대체
-            }}
-          />
-          <FooterText>{media}</FooterText>
-        </MediaWrapper>
-        <FooterText>{formattedDate}</FooterText>
-      </StockNewsFooter>
-
-      <BookmarkedNewsTagWrapper>
-        {Array.isArray(keywords) && keywords.length > 0 ? (
-          keywords.map((keyword, index) => (
-            <NewsTag key={index} $tagName={keyword}>
-              # {keyword}
-            </NewsTag>
-          ))
-        ) : (
-          <p>키워드 없음</p> // 키워드가 없을 경우 처리
+    <>
+      <StockNewsBodyWrapper>
+        {/* stockName을 전달 */}
+        <StockNewsHeader
+          header={header}
+          stockDetail={stockDetail!}
+          isBookmarked={isBookmarked}
+          onBookmarkIconClick={handleBookmarkIconClick}
+          onSummaryClick={handleSummaryClick}
+        />
+        {showSummary && (
+          <Overlay>
+            <Background onClick={handleCloseSummary} />
+            <Modal onClick={handleModalClick}>
+              {/* {isFetching && <LoadingSpinner />} */}
+              <NewsSummary onClose={handleCloseSummary} data={data} />
+            </Modal>
+          </Overlay>
         )}
-      </BookmarkedNewsTagWrapper>
-    </StockNewsBodyWrapper>
+        <StockNewsTitleWrapper>
+          <SentimentIcon sentiment={sentiment} /> {/* SentimentIcon 사용 */}
+          <StockNewsTitle>
+            <StockNewsTitleText>{title}</StockNewsTitleText>
+          </StockNewsTitle>
+        </StockNewsTitleWrapper>
+
+        <StockNewsContent>{content}</StockNewsContent>
+
+        <StockNewsFooter>
+          <MediaWrapper>
+            <MediaLogo
+              src={mediaImageUrl}
+              alt={media}
+              onError={(e) => {
+                e.currentTarget.src = newstockIcon; // 이미지 로드 실패 시 기본 이미지로 대체
+              }}
+            />
+            <FooterText>{media}</FooterText>
+          </MediaWrapper>
+          <FooterText>{formattedDate}</FooterText>
+        </StockNewsFooter>
+
+        <BookmarkedNewsTagWrapper>
+          {Array.isArray(keywords) && keywords.length > 0 ? (
+            keywords.map((keyword, index) => (
+              <NewsTag key={index} $tagName={keyword}>
+                # {keyword}
+              </NewsTag>
+            ))
+          ) : (
+            <p>키워드 없음</p> // 키워드가 없을 경우 처리
+          )}
+        </BookmarkedNewsTagWrapper>
+      </StockNewsBodyWrapper>
+    </>
   );
 };
 

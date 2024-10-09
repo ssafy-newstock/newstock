@@ -8,7 +8,7 @@ import { groupTopItems } from '@utils/groupTopItems';
 
 const ChartContainer = styled.div`
   position: relative;
-  width: 100%;
+  width: 80%;
   max-width: 500px;
   margin: 0 auto;
 `;

@@ -16,7 +16,7 @@ const SubCenter = styled.div`
   align-self: stretch;
   max-width: 100rem;
   min-width: 50rem;
-  width: 90%;
+  width: 100%;
 `;
 
 const StockNewsWrapper = styled.div<{ $showSummary: boolean }>`
@@ -75,7 +75,7 @@ const LoadingSpinner = styled.div`
 `;
 
 interface NewsItem {
-  id: number;
+  id: string;
   title: string;
   article: string;
   content: string;
@@ -120,7 +120,7 @@ export const fetchStockNewsData = async (page: number): Promise<NewsItem[]> => {
       }
     );
 
-    console.log('Fetched data:', response.data); // 가져온 데이터를 출력
+    console.log('Fetched Stock data:', response.data); // 가져온 데이터를 출력
     const newsData = response.data.data.map((newsItem: NewsItem) => {
       const { imageUrl, content } = processArticle(newsItem.article);
       return { ...newsItem, content, imageUrl };
@@ -188,7 +188,7 @@ const StockNewsPage: React.FC = () => {
     };
   }, [fetchNews, loading, initialLoadComplete]);
 
-  const handleNewsClick = (id: number) => {
+  const handleNewsClick = (id: string) => {
     console.log(`Navigating to: /subnews-main/stock-news/${id}`);
     navigate(`/subnews-main/stock-news/${id}`);
   };

@@ -1,3 +1,4 @@
+import LoadingSpinner from '@components/LoadingSpinner';
 import styled from 'styled-components';
 
 const NewsSummaryWrapper = styled.div`
@@ -11,11 +12,11 @@ const NewsSummaryWrapper = styled.div`
   background-color: ${({ theme }) => theme.backgroundColor};
   border-radius: 1.875rem;
   box-shadow: 0rem 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
-  position: fixed; /* 위치를 절대값으로 설정 */
+  position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%); /* 정확히 중앙으로 이동 */
-  z-index: 10; /* 다른 요소보다 위에 위치하도록 설정 */
+  transform: translate(-50%, -50%);
+  z-index: 10;
 `;
 
 const NewsSummaryTitle = styled.div`
@@ -31,23 +32,28 @@ const NewsSummaryTitleText = styled.p`
   color: ${({ theme }) => theme.textColor};
   font-size: 1.5rem;
   font-weight: 700;
-  line-height: 1.875rem; /* 125% */
+  line-height: 1.875rem;
 `;
 
 const NewsSummaryBody = styled.div`
   display: flex;
-  justify-content: flex-end;
-  align-items: center;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
   gap: 0.625rem;
   align-self: stretch;
 `;
 
 const NewsSummaryBodyText = styled.div`
-  color: #828282;
-  font-size: 1rem;
-  font-weight: 700;
-  line-height: 1.2; /* 19.2px */
+  color: #000000;
+  font-size: 1.3rem;
+  font-weight: 600;
+  line-height: 1.8;
   flex: 1 0 0;
+  text-align: left;
+  max-width: 35rem; /* 최대 폭 설정 */
+  margin-bottom: 0.5rem; /* 문장 간 간격 추가 */
+  margin: 0 auto; /* 가운데 정렬 느낌으로 문단 위치 조정 */
 `;
 
 const CloseButtonWrapper = styled.div`
@@ -67,32 +73,45 @@ const CloseButton = styled.button`
   align-items: center;
   gap: 0.5rem;
   border-radius: 0.9375rem;
-  /* background-color: var(--black-01, rgba(26, 26, 26, 0.1)); */
   background-color: ${({ theme }) => theme.profileBackgroundColor};
   box-shadow: 0rem 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
   cursor: pointer;
   border: none;
 
   &:hover {
-    background-color: rgba(0, 109, 255, 0.8); /* hover 시 배경색 변경 */
-    color: #ffffff; /* hover 시 글씨색 변경 */
-    transition: background-color 0.3s ease; /* 부드러운 전환 효과 */
+    background-color: rgba(0, 109, 255, 0.8);
+    color: #ffffff;
+    transition: background-color 0.3s ease;
   }
 `;
 
 const ButtonText = styled.p`
-  /* color: var(--Black, #1a1a1a); */
   color: ${({ theme }) => theme.profileColor};
   font-size: 1rem;
   font-weight: 500;
-  line-height: 1.2; /* 19.2px */
+  line-height: 1.2;
 `;
+
+interface IShortResponse {
+  newsOne: string;
+  newsTwo: string;
+  newsThree: string;
+}
 
 interface NewsSummaryProps {
   onClose: (event: React.MouseEvent) => void;
+  data?: IShortResponse;
 }
 
-const NewsSummary: React.FC<NewsSummaryProps> = ({ onClose }) => {
+const NewsSummary: React.FC<NewsSummaryProps> = ({ onClose, data }) => {
+  // 데이터가 없을 때 빈 문자열로 처리
+  const newsOne = data?.newsOne || '요약 정보가 없습니다.';
+  const newsTwo = data?.newsTwo || '요약 정보가 없습니다.';
+  const newsThree = data?.newsThree || '요약 정보가 없습니다.';
+  console.log(newsOne, newsTwo, newsThree);
+  if (!data) {
+    return <LoadingSpinner />;
+  }
   return (
     <>
       <NewsSummaryWrapper>
@@ -100,19 +119,23 @@ const NewsSummary: React.FC<NewsSummaryProps> = ({ onClose }) => {
           <NewsSummaryTitleText>뉴스 요약</NewsSummaryTitleText>
         </NewsSummaryTitle>
 
+        {/* 뉴스 요약 정보를 표시 */}
         <NewsSummaryBody>
-          <NewsSummaryBodyText>
-            1. 박선홍이 빨리 데이터를 만들어 줬으면 좋겠다.
-          </NewsSummaryBodyText>
+          <NewsSummaryBodyText
+            dangerouslySetInnerHTML={{ __html: `1. ${data?.newsOne || ''}` }}
+          />
         </NewsSummaryBody>
         <NewsSummaryBody>
-          <NewsSummaryBodyText>
-            2. 박선홍이 빨리 api를 만들어 줬으면 좋겠다.
-          </NewsSummaryBodyText>
+          <NewsSummaryBodyText
+            dangerouslySetInnerHTML={{ __html: `2. ${data?.newsTwo || ''}` }}
+          />
         </NewsSummaryBody>
         <NewsSummaryBody>
-          <NewsSummaryBodyText>3. 일해라 박선홍</NewsSummaryBodyText>
+          <NewsSummaryBodyText
+            dangerouslySetInnerHTML={{ __html: `3. ${data?.newsThree || ''}` }}
+          />
         </NewsSummaryBody>
+
         <CloseButtonWrapper>
           <CloseButton type="button" onClick={onClose}>
             <ButtonText>닫기</ButtonText>

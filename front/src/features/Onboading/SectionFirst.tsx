@@ -38,8 +38,8 @@ const CenterDiv = styled.div`
 
 const ScrollButton = styled(motion.button)`
   position: absolute;
-  bottom: 7rem;
-  padding: 1rem 2rem;
+  bottom: 5rem;
+  padding: 1rem 1.8rem;
   background-color: ${({ theme }) => theme.buttonBackgroundColor};
   color: ${({ theme }) => theme.buttonTextColor};
   border: none;

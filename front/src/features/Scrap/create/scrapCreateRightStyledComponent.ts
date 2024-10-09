@@ -14,7 +14,7 @@ export const RightTitleBottomDiv = styled.div`
   justify-content: flex-start;
   gap: 2rem;
   align-items: center;
-  margin-top: 1.25rem;
+  margin-top: 0.5rem;
 `;
 
 export const RightTitleBottomFilterDiv = styled.div`

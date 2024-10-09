@@ -1,11 +1,10 @@
 import styled from 'styled-components';
 import StockNewsDetailHeader from '@features/News/StockNewsDetail/StockNewsDetailHeader';
 import StockNewsDetailBody from '@features/News/StockNewsDetail/StockNewsDetailBody';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import NewsDetailSkeleton from '@features/News/skeleton/NewsDetailSkeleton';
-import { authRequest } from '@api/axiosInstance';
+import { authRequest, axiosInstance } from '@api/axiosInstance';
 import usePointStore from '@store/usePointStore';
 import useSocketStore from '@store/useSocketStore';
 import useAuthStore from '@store/useAuthStore';
@@ -35,11 +34,11 @@ const NewsWrapper = styled.div`
   border-radius: 2rem;
   background-color: ${({ theme }) => theme.newsBackgroundColor};
   box-shadow: 0rem 0.25rem 0.25rem rgba(0, 0, 0, 0.1);
-  width: 90%;
+  width: 100%;
 `;
 
 interface NewsItem {
-  id: number;
+  id: string;
   title: string;
   article: string;
   content: string;
@@ -55,9 +54,17 @@ interface NewsItem {
 
 const fetchDetailNewsData = async (id: string): Promise<NewsItem | null> => {
   try {
-    const response = await axios.get(
-      `https://newstock.info/api/news/stock/${id}`
-    );
+    const referrer = document.referrer;
+    let apiUrl = `/news/stock/${id}`;
+
+    if (
+      referrer.includes('/ai-chat-bot') ||
+      referrer.includes('/stock-detail/')
+    ) {
+      apiUrl = `/newsdata/stock/${id}`;
+    }
+
+    const response = await axiosInstance.get(apiUrl);
     return response.data.data;
   } catch (error) {
     console.error('Failed to fetch EconomicDetailNews: ', error);
@@ -120,7 +127,7 @@ const StockNewsDetailPage: React.FC = () => {
             prevPoint !== null ? prevPoint + plusPoint : plusPoint
           );
           if (plusPoint) {
-            toast.success('10만원이 충전되었습니다!');
+            toast.success(`${plusPoint.toLocaleString()}원 충전되었습니다!`);
           }
         }
       );
