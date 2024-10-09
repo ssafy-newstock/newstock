@@ -243,7 +243,7 @@ public class StockNewsRepository {
     private static StockNewsDto mapResultSetToDto(ResultSet rst) throws SQLException {
         StockNewsDto stockNewsDto = new StockNewsDto();
 
-        stockNewsDto.setNewsId(rst.getLong("news_id"));
+        stockNewsDto.setNewsId(rst.getString("news_id"));
         stockNewsDto.setArticle(rst.getString("article"));
         stockNewsDto.setDescription(rst.getString("description"));
         stockNewsDto.setMedia(rst.getString("media"));

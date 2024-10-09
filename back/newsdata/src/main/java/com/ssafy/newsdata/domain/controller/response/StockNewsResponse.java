@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StockNewsResponse {
-    private Long id;
+    private String id;
     private String article;
     private String description;
     private String media;

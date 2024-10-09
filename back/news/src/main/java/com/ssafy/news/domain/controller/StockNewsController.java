@@ -50,14 +50,14 @@ public class StockNewsController {
     }
 
     @GetMapping("/{id}")
-    public CommonResponse<?> getStockNews(@PathVariable("id") Long id) {
+    public CommonResponse<?> getStockNews(@PathVariable("id") String id) {
         StockNewsDto stockNews = stockNewsService.getStockNewsDetail(id);
 
         return CommonResponse.success(stockNews);
     }
 
     @GetMapping("/{id}/read")
-    public ResponseEntity<?> checkReadStockNews(@PathVariable("id") Long id,
+    public ResponseEntity<?> checkReadStockNews(@PathVariable("id") String id,
                                                 @RequestHeader(value = "authorization",required = false) String token) {
         stockNewsService.checkReadStockNews(id, token);
 
@@ -66,7 +66,7 @@ public class StockNewsController {
     }
 
     @GetMapping("/bulk")
-    public CommonResponse<?> getStockNewsInIds(@RequestParam List<Long> ids) {
+    public CommonResponse<?> getStockNewsInIds(@RequestParam List<String> ids) {
         List<StockNewsDto> stockNewsInIds = stockNewsService.getStockNewsInIds(ids);
         return CommonResponse.success(stockNewsInIds);
     }

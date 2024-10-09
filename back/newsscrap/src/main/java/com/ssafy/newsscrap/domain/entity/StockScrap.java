@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class StockScrap extends BaseEntity{
+public class StockScrap extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "stock_news_scrap_id")
@@ -24,7 +24,7 @@ public class StockScrap extends BaseEntity{
     private Long memberId;
 
     // 뉴스 서버에서 사용하는 뉴스 조회용 ID
-    private Long newsId;
+    private String newsId;
 
     private String newsType;
 

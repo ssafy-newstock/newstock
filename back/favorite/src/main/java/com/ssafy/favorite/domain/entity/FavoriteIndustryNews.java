@@ -17,9 +17,9 @@ public class FavoriteIndustryNews extends BaseEntity{
     // 좋아요한 멤버 DB 아이디
     private Long memberId;
 
-    private Long industryNewsId;
+    private String industryNewsId;
 
-    public static FavoriteIndustryNews of(Long memberId, Long industryNewsId) {
+    public static FavoriteIndustryNews of(Long memberId, String industryNewsId) {
         FavoriteIndustryNews entity = new FavoriteIndustryNews();
         entity.memberId = memberId;
         entity.industryNewsId = industryNewsId;

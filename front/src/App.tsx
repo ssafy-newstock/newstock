@@ -14,24 +14,37 @@ import { useTop10StockQuery } from '@hooks/useTop10StockQuery';
 import { useEffect, useState } from 'react';
 import { useAllStockQuery } from '@hooks/useAllStockQuery';
 import { useCategoryStockQuery } from '@hooks/useCategoryStockQuery';
-import useAuthStore from '@store/useAuthStore';
 import Left from '@components/Left';
 import StockModal from '@features/MyStockModal/StockModal';
-// import { useLocation, useNavigate } from 'react-router-dom';
+import RightNav from '@components/RightNav';
+import SideModal from '@features/SideModal/SideModal';
 
 const Main = styled.div`
   display: flex;
-  flex-direction: column;
-  width: 100%; /* 기본 너비는 100%로 설정 */
+  flex-direction: row;
+  width: 100%;
   height: 100vh;
-  transition: width 0.5s ease;
+  transition: all 0.5s ease;
+  overflow: auto;
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+`;
+
+const Container = styled.div<{ $isOnboarding: boolean }>`
+  display: flex;
+  flex-direction: column;
+  width: ${({ $isOnboarding }) =>
+    $isOnboarding ? '100%' : 'calc(100% - 68px)'};
+  height: 100%;
 `;
 
 const Content = styled.div`
   display: flex;
   height: 100%;
   flex-direction: row;
-  width: 100%; /* 기본적으로 100% 너비 */
+  width: 100%;
   transition: all 0.5s ease;
 `;
 
@@ -41,10 +54,10 @@ const RightVacantWrapper = styled.div<{
 }>`
   min-width: ${({ $isOpen, $isScrapDetail }) =>
     $isOpen
-      ? '580px'
+      ? '500px'
       : $isScrapDetail
         ? '0px'
-        : '300px'}; /* scrap-detail 페이지에서 모달이 닫혀있을 때는 여백이 0px */
+        : '250px'}; /* scrap-detail 페이지에서 모달이 닫혀있을 때는 여백이 0px */
   opacity: ${({ $isOpen }) =>
     $isOpen ? '0' : '1'}; /* 모달이 열리면 투명도 조정 */
   transition:
@@ -56,8 +69,6 @@ const RightVacantWrapper = styled.div<{
 const App = () => {
   const { theme } = useThemeStore();
   const currentTheme = theme === 'light' ? lightTheme : darkTheme;
-  const [isOpen, setIsOpen] = useState(false);
-  const { isLogin } = useAuthStore();
   const location = useLocation();
 
   const { setAllStock } = useAllStockStore();
@@ -67,6 +78,7 @@ const App = () => {
   const { data: top10Stock } = useTop10StockQuery();
   const { data: allStock } = useAllStockQuery();
   const { data: categoryStock } = useCategoryStockQuery();
+  const [activeComponent, setActiveComponent] = useState<string | null>(null);
 
   useEffect(() => {
     top10Stock && setTop10Stock(top10Stock.data);
@@ -84,18 +96,34 @@ const App = () => {
     <ThemeProvider theme={currentTheme}>
       <GlobalStyle />
       <Main>
-        <Header isOpen={isOpen} />
-        <Content>
-          {!isOnboarding && <Left />}
-          <Outlet context={{ setIsOpen }} />
-          <RightVacantWrapper $isOpen={isOpen} $isScrapDetail={isScrapDetail} />
-        </Content>
-        {isLogin && !isOnboarding && (
-          <StockModal isOpen={isOpen} setIsOpen={setIsOpen} />
+        <Container $isOnboarding={isOnboarding}>
+          <Header isOpen={activeComponent !== null} />
+          <Content>
+            {!isOnboarding && <Left />}
+            <Outlet />
+            {!isOnboarding && (
+              <RightVacantWrapper
+                $isOpen={activeComponent !== null}
+                $isScrapDetail={isScrapDetail}
+              />
+            )}
+          </Content>
+        </Container>
+        {!isOnboarding && (
+          <SideModal
+            activeComponent={activeComponent}
+            isOpen={activeComponent !== null}
+          />
+        )}
+        {!isOnboarding && (
+          <RightNav
+            activeComponent={activeComponent}
+            setActiveComponent={setActiveComponent}
+          />
         )}
       </Main>
       {/* 웹소켓 연결 */}
-      {/* <WebSocketComponent /> */}
+      <WebSocketComponent />
       {/* 토스트 메세지 */}
       <ToastContainer
         position="bottom-right"

@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Data
 public class IndustryNewsDto {
-    private Long id;
+    private String id;
     private String title;
     private String subtitle;
     private String description;

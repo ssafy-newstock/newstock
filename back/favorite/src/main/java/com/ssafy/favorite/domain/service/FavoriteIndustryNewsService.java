@@ -23,7 +23,7 @@ public class FavoriteIndustryNewsService {
     private final ObjectMapper objectMapper;
 
     @Transactional
-    public void favoriteNews(Long memberId, Long industryNewsId) {
+    public void favoriteNews(Long memberId, String industryNewsId) {
         // 이미 관심 목록에 등록한 경우
         if (favoriteIndustryNewsRepository.existsByMemberIdAndIndustryNewsId(memberId, industryNewsId)) {
             throw new AlreadyFavoriteNews();
@@ -36,7 +36,7 @@ public class FavoriteIndustryNewsService {
     }
 
     @Transactional
-    public void unFavoriteNews(Long memberId, Long industryNewsId) {
+    public void unFavoriteNews(Long memberId, String industryNewsId) {
         // 관심목록에 등록한 적이 없는 경우 (관심 상태가 아닌데 취소하는 경우)
         if (!favoriteIndustryNewsRepository.existsByMemberIdAndIndustryNewsId(memberId, industryNewsId)) {
             throw new NotExistFavoriteNews();
@@ -51,7 +51,7 @@ public class FavoriteIndustryNewsService {
         Page<FavoriteIndustryNews> result = favoriteIndustryNewsRepository.findAllFavoriteNewsByMemberId(memberId, pageRequest);
         List<FavoriteIndustryNews> content = result.getContent();
 
-        List<Long> newsIds = content.stream()
+        List<String> newsIds = content.stream()
                 .map(FavoriteIndustryNews::getIndustryNewsId)
                 .toList();
 

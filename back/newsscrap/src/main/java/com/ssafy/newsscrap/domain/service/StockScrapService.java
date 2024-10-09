@@ -85,7 +85,7 @@ public class StockScrapService {
     }
 
 
-    public List<Long> getScrapInStockNewsIn(final List<StockScrapDto> myStockScraps) {
+    public List<String> getScrapInStockNewsIn(final List<StockScrapDto> myStockScraps) {
         return myStockScraps.stream()
                 .map(StockScrapDto::getNewsId)
                 .collect(Collectors.toList());

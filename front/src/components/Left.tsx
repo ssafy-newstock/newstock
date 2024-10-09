@@ -6,7 +6,7 @@ import Login from './Login';
 
 const LeftDiv = styled.div`
   display: flex;
-  min-width: 300px;
+  min-width: 250px;
   padding: 20px 20px 20px 40px;
   flex-direction: column;
   align-items: flex-start;
@@ -18,16 +18,16 @@ const MenuSection = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 30px;
+  gap: 0.5rem;
+  margin-bottom: 1.2rem;
 `;
 const MenuSectionG = styled.div<{ $isOpen: boolean }>`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  gap: 10px;
-  margin-bottom: ${({ $isOpen }) => ($isOpen ? `10px` : '30px')};
+  gap: 0.5rem;
+  margin-bottom: ${({ $isOpen }) => ($isOpen ? `0.3rem` : '1.2rem')};
   transition: margin-bottom 0.5s ease;
 `;
 const MenuSectionGG = styled.div`
@@ -35,19 +35,19 @@ const MenuSectionGG = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  gap: 2px;
+  gap: 0.125rem;
 `;
 const TextDiv = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  gap: 5px;
+  gap: 0.3rem;
   margin-bottom: 0.5rem;
 `;
 
 const TextTitle = styled.p`
   color: #828282;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: 600;
   line-height: 30px;
 `;
@@ -75,9 +75,9 @@ const StockFrame = styled.div<{ $isOpen: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 25px;
-  height: 25px;
-  border: 2.5px solid ${({ $isOpen }) => ($isOpen ? '#1a73e8' : '#828282')}; // 활성화된 메뉴일 경우 색상 변경;
+  width: 1.3rem;
+  height: 1.3rem;
+  border: 0.15rem solid ${({ $isOpen }) => ($isOpen ? '#1a73e8' : '#828282')}; // 활성화된 메뉴일 경우 색상 변경;
   flex-shrink: 0;
   cursor: pointer;
 `;
@@ -89,7 +89,6 @@ const DropdownMenu = styled.div<{ $isOpen: boolean; $maxHeight: number }>`
   max-height: ${({ $isOpen, $maxHeight }) =>
     $isOpen ? `${$maxHeight}px` : '0'};
   transition: max-height 0.5s ease;
-  margin-left: 3px;
 `;
 
 const StyledSVG = styled.svg<{ $active: boolean }>`
@@ -140,7 +139,8 @@ const Left: React.FC = () => {
     if (
       ['/stock-main', '/all-stock', '/section-stock', '/my-stock'].includes(
         location.pathname
-      )
+      ) ||
+      location.pathname.includes('/stock-detail')
     ) {
       setStockDropdown(true); // 주식 드롭다운 열기
     } else {
@@ -154,11 +154,20 @@ const Left: React.FC = () => {
         '/subnews-main/economic-news',
         '/subnews-main/stock-news',
         '/scrap-detail',
-      ].includes(location.pathname)
+        '/my-news',
+      ].includes(location.pathname) ||
+      location.pathname.includes('/subnews-main/economic-news/') ||
+      location.pathname.includes('/subnews-main/stock-news/')
     ) {
       setNewsDropdown(true);
     } else {
       setNewsDropdown(false);
+    }
+    if (location.pathname.includes('/subnews-main/economic-news/')) {
+      setActiveMenu('/subnews-main/economic-news'); // 시황 뉴스 메뉴를 활성화
+    }
+    if (location.pathname.includes('/subnews-main/stock-news/')) {
+      setActiveMenu('/subnews-main/stock-news'); // 시황 뉴스 메뉴를 활성화
     }
   }, [location.pathname]);
 
@@ -200,14 +209,12 @@ const Left: React.FC = () => {
       >
         <StyledSVG
           xmlns="http://www.w3.org/2000/svg"
-          width="25"
-          height="25"
+          width="1.3rem"
+          height="1.3rem"
           viewBox="0 0 40 40"
           $active={activeMenu === '/home'}
         >
-          <path
-            d="M36.0246 15.9997C36.0246 15.4693 35.8139 14.9606 35.4388 14.5855C35.0637 14.2104 34.555 13.9997 34.0246 13.9997C33.4941 13.9997 32.9854 14.2104 32.6104 14.5855C32.2353 14.9606 32.0246 15.4693 32.0246 15.9997H36.0246ZM8.02458 15.9997C8.02458 15.4693 7.81386 14.9606 7.43879 14.5855C7.06372 14.2104 6.55501 13.9997 6.02458 13.9997C5.49414 13.9997 4.98544 14.2104 4.61036 14.5855C4.23529 14.9606 4.02458 15.4693 4.02458 15.9997H8.02458ZM36.6106 21.4138C36.9878 21.7781 37.493 21.9797 38.0174 21.9752C38.5418 21.9706 39.0434 21.7603 39.4142 21.3894C39.785 21.0186 39.9954 20.517 39.9999 19.9926C40.0045 19.4682 39.8029 18.963 39.4386 18.5858L36.6106 21.4138ZM20.0246 1.99959L21.4386 0.585579C21.0635 0.210633 20.5549 0 20.0246 0C19.4942 0 18.9856 0.210633 18.6106 0.585579L20.0246 1.99959ZM0.610576 18.5858C0.419556 18.7703 0.267192 18.991 0.162374 19.235C0.0575557 19.479 0.00238315 19.7414 7.55134e-05 20.007C-0.00223212 20.2725 0.0483713 20.5359 0.148933 20.7817C0.249495 21.0275 0.398001 21.2508 0.585786 21.4386C0.773572 21.6264 0.996875 21.7749 1.24267 21.8755C1.48846 21.976 1.75182 22.0266 2.01738 22.0243C2.28294 22.022 2.54538 21.9668 2.78939 21.862C3.03339 21.7572 3.25408 21.6048 3.43858 21.4138L0.610576 18.5858ZM10.0246 40H30.0246V36H10.0246V40ZM36.0246 33.9999V15.9997H32.0246V33.9999H36.0246ZM8.02458 33.9999V15.9997H4.02458V33.9999H8.02458ZM39.4386 18.5858L21.4386 0.585579L18.6106 3.41361L36.6106 21.4138L39.4386 18.5858ZM18.6106 0.585579L0.610576 18.5858L3.43858 21.4138L21.4386 3.41361L18.6106 0.585579ZM30.0246 40C31.6159 40 33.142 39.3679 34.2672 38.2426C35.3924 37.1174 36.0246 35.5913 36.0246 33.9999H32.0246C32.0246 34.5304 31.8139 35.0391 31.4388 35.4142C31.0637 35.7892 30.555 36 30.0246 36V40ZM10.0246 36C9.49414 36 8.98543 35.7892 8.61036 35.4142C8.23529 35.0391 8.02458 34.5304 8.02458 33.9999H4.02458C4.02458 35.5913 4.65672 37.1174 5.78194 38.2426C6.90715 39.3679 8.43328 40 10.0246 40V36Z"
-          />
+          <path d="M36.0246 15.9997C36.0246 15.4693 35.8139 14.9606 35.4388 14.5855C35.0637 14.2104 34.555 13.9997 34.0246 13.9997C33.4941 13.9997 32.9854 14.2104 32.6104 14.5855C32.2353 14.9606 32.0246 15.4693 32.0246 15.9997H36.0246ZM8.02458 15.9997C8.02458 15.4693 7.81386 14.9606 7.43879 14.5855C7.06372 14.2104 6.55501 13.9997 6.02458 13.9997C5.49414 13.9997 4.98544 14.2104 4.61036 14.5855C4.23529 14.9606 4.02458 15.4693 4.02458 15.9997H8.02458ZM36.6106 21.4138C36.9878 21.7781 37.493 21.9797 38.0174 21.9752C38.5418 21.9706 39.0434 21.7603 39.4142 21.3894C39.785 21.0186 39.9954 20.517 39.9999 19.9926C40.0045 19.4682 39.8029 18.963 39.4386 18.5858L36.6106 21.4138ZM20.0246 1.99959L21.4386 0.585579C21.0635 0.210633 20.5549 0 20.0246 0C19.4942 0 18.9856 0.210633 18.6106 0.585579L20.0246 1.99959ZM0.610576 18.5858C0.419556 18.7703 0.267192 18.991 0.162374 19.235C0.0575557 19.479 0.00238315 19.7414 7.55134e-05 20.007C-0.00223212 20.2725 0.0483713 20.5359 0.148933 20.7817C0.249495 21.0275 0.398001 21.2508 0.585786 21.4386C0.773572 21.6264 0.996875 21.7749 1.24267 21.8755C1.48846 21.976 1.75182 22.0266 2.01738 22.0243C2.28294 22.022 2.54538 21.9668 2.78939 21.862C3.03339 21.7572 3.25408 21.6048 3.43858 21.4138L0.610576 18.5858ZM10.0246 40H30.0246V36H10.0246V40ZM36.0246 33.9999V15.9997H32.0246V33.9999H36.0246ZM8.02458 33.9999V15.9997H4.02458V33.9999H8.02458ZM39.4386 18.5858L21.4386 0.585579L18.6106 3.41361L36.6106 21.4138L39.4386 18.5858ZM18.6106 0.585579L0.610576 18.5858L3.43858 21.4138L21.4386 3.41361L18.6106 0.585579ZM30.0246 40C31.6159 40 33.142 39.3679 34.2672 38.2426C35.3924 37.1174 36.0246 35.5913 36.0246 33.9999H32.0246C32.0246 34.5304 31.8139 35.0391 31.4388 35.4142C31.0637 35.7892 30.555 36 30.0246 36V40ZM10.0246 36C9.49414 36 8.98543 35.7892 8.61036 35.4142C8.23529 35.0391 8.02458 34.5304 8.02458 33.9999H4.02458C4.02458 35.5913 4.65672 37.1174 5.78194 38.2426C6.90715 39.3679 8.43328 40 10.0246 40V36Z" />
         </StyledSVG>
         <ActiveTitle $active={activeMenu === '/home'}>홈</ActiveTitle>
       </MenuSection>
@@ -220,7 +227,7 @@ const Left: React.FC = () => {
         <StockFrame $isOpen={stockDropdown}>
           <IsOpenSVGstroke
             xmlns="http://www.w3.org/2000/svg"
-            width="25"
+            width="1.2rem"
             height="10"
             viewBox="0 0 37 18"
             fill="none"
@@ -239,8 +246,8 @@ const Left: React.FC = () => {
           {!stockDropdown && (
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="1.5rem"
-              height="1.5rem"
+              width="1.2rem"
+              height="1.2rem"
               viewBox="0 0 24 24"
             >
               <g fill="none" fillRule="evenodd">
@@ -255,8 +262,8 @@ const Left: React.FC = () => {
           {stockDropdown && (
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="1.5rem"
-              height="1.5rem"
+              width="1.2rem"
+              height="1.2rem"
               viewBox="0 0 24 24"
             >
               <g fill="none" fillRule="evenodd">
@@ -362,8 +369,8 @@ const Left: React.FC = () => {
       >
         <IsOpenSVGfill
           xmlns="http://www.w3.org/2000/svg"
-          width="25"
-          height="25"
+          width="1.3rem"
+          height="1.3rem"
           viewBox="0 0 40 40"
           $isOpen={newsDropdown}
         >
@@ -374,8 +381,8 @@ const Left: React.FC = () => {
           {!newsDropdown && (
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="1.5rem"
-              height="1.5rem"
+              width="1.2rem"
+              height="1.2rem"
               viewBox="0 0 24 24"
             >
               <g fill="none" fillRule="evenodd">
@@ -390,8 +397,8 @@ const Left: React.FC = () => {
           {newsDropdown && (
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="1.5rem"
-              height="1.5rem"
+              width="1.2rem"
+              height="1.2rem"
               viewBox="0 0 24 24"
             >
               <g fill="none" fillRule="evenodd">
@@ -487,8 +494,8 @@ const Left: React.FC = () => {
       >
         <StyledSVGstroke
           xmlns="http://www.w3.org/2000/svg"
-          width="25"
-          height="25"
+          width="1.3rem"
+          height="1.3rem"
           viewBox="0 0 44 44"
           fill="none"
           $active={activeMenu === '/ai-chat-bot'}

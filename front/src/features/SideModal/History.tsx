@@ -9,10 +9,10 @@ import {
   CardRightDiv,
   CenteredMessage,
   ContainerDiv,
-  RightContentDiv,
+  ContentDiv,
   StockImage,
   TextP_14_NOTGRAY,
-} from '@features/MyStockModal/styledComponent';
+} from '@features/SideModal/styledComponent';
 import { getStockImageUrl } from '@utils/getStockImageUrl';
 
 const TransactionCardLeftTopDiv = styled.div`
@@ -41,7 +41,11 @@ const History: React.FC = () => {
   const { data: transactions, isLoading, error } = useMyTransactionData();
 
   if (isLoading) {
-    return <LoadingSpinner />;
+    return (
+      <CenteredMessage>
+        <LoadingSpinner />
+      </CenteredMessage>
+    );
   }
 
   if (error || !transactions) {
@@ -90,7 +94,7 @@ const History: React.FC = () => {
   );
 
   return (
-    <RightContentDiv>
+    <ContentDiv>
       {sortedDates.map((dateKey) => (
         <ContainerDiv key={dateKey}>
           {/* 날짜 표시 */}
@@ -158,7 +162,7 @@ const History: React.FC = () => {
           <HistoryhrDiv />
         </ContainerDiv>
       ))}
-    </RightContentDiv>
+    </ContentDiv>
   );
 };
 

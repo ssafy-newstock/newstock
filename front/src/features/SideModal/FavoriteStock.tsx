@@ -12,11 +12,10 @@ import {
   CardLeftRightDiv,
   CardRightDiv,
   CenteredMessage,
-  ContainerDiv,
-  RightContentDiv,
+  ContentDiv,
   StockImage,
   TextP_14_NOTGRAY,
-} from '@features/MyStockModal/styledComponent';
+} from '@features/SideModal/styledComponent';
 import { getStockImageUrl } from '@utils/getStockImageUrl';
 
 const FavoriteStock: React.FC = () => {
@@ -28,7 +27,11 @@ const FavoriteStock: React.FC = () => {
   const top10Stock = useTop10StockStore((state) => state.top10Stock);
 
   if (isLoading) {
-    return <LoadingSpinner />;
+    return (
+      <CenteredMessage>
+        <LoadingSpinner />
+      </CenteredMessage>
+    );
   }
 
   if (error || !favoriteStocks) {
@@ -47,7 +50,7 @@ const FavoriteStock: React.FC = () => {
   };
 
   return (
-    <RightContentDiv>
+    <ContentDiv>
       {favoriteStocks.map((stock) => {
         // allStock 또는 top10Stock에서 해당 stockCode로 주식 찾기
         const matchedStock =
@@ -61,43 +64,38 @@ const FavoriteStock: React.FC = () => {
         };
 
         return (
-          <ContainerDiv
-            key={stock.stockFavoriteId}
-            style={{ cursor: 'pointer' }}
-          >
-            <CardDiv onClick={handleNavigate}>
-              <CardLeftDiv>
-                <StockImage
-                  src={getStockImageUrl(stock.stockCode)}
-                  onError={(e) => (e.currentTarget.src = blueLogo)}
-                  alt=""
-                />
-                <CardLeftRightDiv>
-                  <TextP_14_NOTGRAY>{stock.stockName}</TextP_14_NOTGRAY>
-                </CardLeftRightDiv>
-              </CardLeftDiv>
-              <CardRightDiv>
-                {matchedStock && (
-                  <>
-                    <TextP_14_NOTGRAY
-                      style={{ color: getTextColor(matchedStock.prdyVrss) }}
-                    >
-                      {matchedStock?.stckPrpr?.toLocaleString()}원
-                    </TextP_14_NOTGRAY>
-                    <TextP_14_NOTGRAY
-                      style={{ color: getTextColor(matchedStock.prdyVrss) }}
-                    >
-                      {formatChange(formatNumber(matchedStock.prdyVrss))}원 (
-                      {formatChange(formatNumber(matchedStock.prdyCtrt))}%)
-                    </TextP_14_NOTGRAY>
-                  </>
-                )}
-              </CardRightDiv>
-            </CardDiv>
-          </ContainerDiv>
+          <CardDiv onClick={handleNavigate} style={{ cursor: 'pointer' }}>
+            <CardLeftDiv>
+              <StockImage
+                src={getStockImageUrl(stock.stockCode)}
+                onError={(e) => (e.currentTarget.src = blueLogo)}
+                alt=""
+              />
+              <CardLeftRightDiv>
+                <TextP_14_NOTGRAY>{stock.stockName}</TextP_14_NOTGRAY>
+              </CardLeftRightDiv>
+            </CardLeftDiv>
+            <CardRightDiv>
+              {matchedStock && (
+                <>
+                  <TextP_14_NOTGRAY
+                    style={{ color: getTextColor(matchedStock.prdyVrss) }}
+                  >
+                    {matchedStock?.stckPrpr?.toLocaleString()}원
+                  </TextP_14_NOTGRAY>
+                  <TextP_14_NOTGRAY
+                    style={{ color: getTextColor(matchedStock.prdyVrss) }}
+                  >
+                    {formatChange(formatNumber(matchedStock.prdyVrss))}원 (
+                    {formatChange(formatNumber(matchedStock.prdyCtrt))}%)
+                  </TextP_14_NOTGRAY>
+                </>
+              )}
+            </CardRightDiv>
+          </CardDiv>
         );
       })}
-    </RightContentDiv>
+    </ContentDiv>
   );
 };
 

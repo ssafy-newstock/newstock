@@ -18,12 +18,12 @@ const HeaderContainer = styled.div<{
     $isOnboardingPage ? 'fixed' : 'relative'}; /* 상단 고정 */
   top: 0;
   left: 0;
-  width: ${({ $isOpen }) => ($isOpen ? 'calc(100% - 400px)' : '100%')};
+  width: ${({ $isOpen }) => ($isOpen ? 'calc(100% - 350px)' : '100%')};
   height: 5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2.5rem;
+  padding: 1rem 1rem 1rem 2.5rem;
   transition: width 0.5s ease;
   background: ${({ $isOnboardingPage, theme }) =>
     $isOnboardingPage
@@ -34,7 +34,7 @@ const HeaderContainer = styled.div<{
 
 const NewStock = styled.div`
   font-family: Inter;
-  font-size: 3rem;
+  font-size: 2.7rem;
   font-weight: 800;
   color: ${({ theme }) => theme.highlightColor};
 `;
@@ -62,15 +62,15 @@ const Icon = styled.svg`
   cursor: pointer;
 `;
 
-const UserName = styled.h1`
+const UserName = styled.p`
   color: ${({ theme }) => theme.profileColor};
-  font-size: 1rem;
+  font-size: 0.8rem;
   font-weight: 600;
 `;
 
 const LoginAlert = styled.h1`
   color: ${({ theme }) => theme.profileColor};
-  font-size: 1rem;
+  font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
 `;
