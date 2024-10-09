@@ -22,7 +22,7 @@ class StockData(BaseModel):
 
 # 관련 뉴스
 class RelatedNewsData(BaseModel):
-    id: int = Field(..., description="The unique identifier of the news article.")
+    id: str = Field(..., description="The unique identifier of the news article.")
     upload_datetime: str = Field(..., description="The upload date and time of the news article.")
     title: str = Field(..., description="The title of the news article.")
     sentiment: int = Field(..., description="The sentiment analysis score of the article. Typically, 1 for positive, -1 for negative, 0 for neutral.")
