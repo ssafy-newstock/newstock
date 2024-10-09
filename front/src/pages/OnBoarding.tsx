@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import useAuthStore from '@store/useAuthStore';
 import SectionFirst from '@features/Onboading/SectionFirst';
 import SectionSecond from '@features/Onboading/SectionSecond';
 import SectionThird from '@features/Onboading/SectionThird';
@@ -92,7 +91,7 @@ const OnBoardingPage = () => {
 
   // 마지막 섹션에서 "시작하기" 버튼을 클릭할 때 처리
   const handleStart = () => {
-    navigate('/news-main');
+    navigate('/home');
   };
 
   return (

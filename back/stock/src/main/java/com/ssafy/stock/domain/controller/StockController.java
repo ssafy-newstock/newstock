@@ -74,6 +74,17 @@ public class StockController{
     }
 
     /**
+     * 코스피 지수 정보 조회
+     * @return
+     */
+    @GetMapping("/kospi")
+    public ResponseEntity<?> getKospi(){
+        List<KospiAndChartResponse> response = stockIndustryService.getKospi();
+        return ResponseEntity.ok()
+                .body(response);
+    }
+
+    /**
      * 주식 상세페이지 일봉 데이터 조회
      * @param stockCode
      * @param stockCandleRequestDto

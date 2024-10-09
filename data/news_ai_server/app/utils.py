@@ -6,7 +6,7 @@ import pandas as pd
 from dotenv import load_dotenv
 from exception import StockInfoEmptyException
 import jaydebeapi
-import time
+from typing import List, Tuple
 
 from langchain_openai import ChatOpenAI
 
@@ -187,7 +187,7 @@ def connect_jdbc() -> jaydebeapi.Connection:
     # 연결 객체 반환
     return connection
 
-def execute_hbase_prepared_query(query, params):
+def execute_hbase_prepared_query(query: str, params: List) -> List[Tuple]:
     """
     PreparedStatement를 사용하여 쿼리를 실행하고 결과를 반환하는 메소드.
     """

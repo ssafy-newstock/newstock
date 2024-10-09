@@ -228,7 +228,6 @@ const StockNewsPage: React.FC = () => {
                     onShowSummaryChange={handleShowSummaryChange}
                     header={stockName}
                     stockDetail={stockDetail!}
-                    newsId={news.newsId}
                   />
                 </StockNewsWrapper>
               );

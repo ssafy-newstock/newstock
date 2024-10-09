@@ -2,8 +2,14 @@ package com.ssafy.stock.domain.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.stock.domain.entity.Redis.KospiChartRedis;
+import com.ssafy.stock.domain.entity.Redis.KospiRedis;
 import com.ssafy.stock.domain.entity.Redis.StockIndustryRedis;
+import com.ssafy.stock.domain.repository.redis.KospiChartRedisRepository;
+import com.ssafy.stock.domain.repository.redis.KospiRedisRepository;
 import com.ssafy.stock.domain.repository.redis.StockIndustryRedisRepository;
+import com.ssafy.stock.domain.service.response.KospiAndChartResponse;
+import com.ssafy.stock.domain.service.response.KospiResponse;
 import com.ssafy.stock.domain.service.response.StockIndustryResponse;
 import com.ssafy.stock.global.token.KISTokenService;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +25,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -61,16 +66,22 @@ public class StockIndustryService {
             Map.entry("0024", "증권"),
             Map.entry("0025", "보험"),
             Map.entry("0026", "서비스업"),
-            Map.entry("0027", "제조업")
+            Map.entry("0027", "제조업"),
+            Map.entry("0001", "KOSPI"),
+            Map.entry("2001", "KOSPI 200"),
+            Map.entry("2007", "KOSPI 100"),
+            Map.entry("2008", "KOSPI 50")
     );
 
     private List<String> industryCodes = new ArrayList<>(industryCodeNameMap.keySet());
     private String todayDate = LocalDate.now().toString().replace("-", "");
     private final SimpMessageSendingOperations simpMessageSendingOperations;
     private final StockIndustryRedisRepository stockIndustryRedisRepository;
+    private final KospiRedisRepository kospiRedisRepository;
+    private final KospiChartRedisRepository kospiChartRedisRepository;
     private final KISTokenService kisTokenService;
 
-    @Scheduled(fixedRate = 600000)   // 10분 단위 갱신
+    @Scheduled(fixedRate = 600000)   // 10분(600000) 단위 갱신
     public void fetchDailyIndexPrice() {
         RestTemplate restTemplate = new RestTemplate();
         List<String> industryCodes1 = industryCodes.subList(0, industryCodes.size() / 2);
@@ -85,9 +96,11 @@ public class StockIndustryService {
         headers.set("tr_id", "FHKUP03500100");
 
         ArrayList<StockIndustryResponse> stockIndustryResponses = new ArrayList<>();
+        ArrayList<KospiResponse> kospiResponses = new ArrayList<>();
 
-        fetchIndustryData(restTemplate, headers, industryCodes1, stockIndustryResponses);
-        fetchIndustryData(restTemplate, headers, industryCodes2, stockIndustryResponses);
+
+        fetchIndustryData(restTemplate, headers, industryCodes1, stockIndustryResponses, kospiResponses);
+        fetchIndustryData(restTemplate, headers, industryCodes2, stockIndustryResponses, kospiResponses);
 
         List<StockIndustryRedis> stockIndustryRedisList = stockIndustryResponses.stream()
                 .map(stockIndustryResponse -> new StockIndustryRedis(
@@ -102,11 +115,33 @@ public class StockIndustryService {
         stockIndustryRedisRepository.deleteAll();
         stockIndustryRedisRepository.saveAll(stockIndustryRedisList);
 
+        List<KospiRedis> kospiRedisList = kospiResponses.stream()
+                .map(kospiResponse -> new KospiRedis(
+                        kospiResponse.getIndustryCode(),
+                        kospiResponse.getIndustryName(),
+                        kospiResponse.getBstpNmixPrpr(),
+                        kospiResponse.getBstpNmixPrdyVrss(),
+                        kospiResponse.getBstpNmixPrdyCtrt()
+                )).toList();
+
+        if(isWithinTradingHours()){
+            kospiResponses.forEach(kospiResponse -> {
+                KospiChartRedis kospiChartRedis = new KospiChartRedis(
+                        kospiResponse.getIndustryCode(),
+                        kospiResponse.getIndustryName(),
+                        kospiResponse.getBstpNmixPrpr());
+                kospiChartRedisRepository.save(kospiChartRedis);
+            });
+        }
+
+        kospiRedisRepository.deleteAll();
+        kospiRedisRepository.saveAll(kospiRedisList);
+
         log.info("스케줄러 : 종목 카테고리 정보 갱신 성공");
         simpMessageSendingOperations.convertAndSend("/api/sub/stock/industry/info", stockIndustryResponses);
     }
 
-    private void fetchIndustryData(RestTemplate restTemplate, HttpHeaders headers, List<String> industryCodes, ArrayList<StockIndustryResponse> stockIndustryResponses) {
+    private void fetchIndustryData(RestTemplate restTemplate, HttpHeaders headers, List<String> industryCodes, ArrayList<StockIndustryResponse> stockIndustryResponses, ArrayList<KospiResponse> kospiResponses) {
 
         for (String industryCode : industryCodes) {
             // 쿼리 파라미터 설정
@@ -144,17 +179,29 @@ public class StockIndustryService {
                 String bstpNmixPrdyCtrt = output1.path("bstp_nmix_prdy_ctrt").asText(); // 업종 지수 전일 대비율
                 String acmlTrPbmn = output1.path("acml_tr_pbmn").asText();  // 오늘 하루 누적 거래 대금
 
-                // StockIndustryResponse 생성
-                StockIndustryResponse stockIndustryResponse = new StockIndustryResponse(
-                        industryCode,
-                        industryCodeNameMap.get(industryCode),  // industryName을 추가
-                        bstpNmixPrpr,
-                        bstpNmixPrdyVrss,
-                        bstpNmixPrdyCtrt,
-                        acmlTrPbmn
-                );
-
-                stockIndustryResponses.add(stockIndustryResponse);
+                // 특정 업종 코드에 따라 다른 객체 생성
+                if (List.of("0001", "2001", "2007", "2008").contains(industryCode)) {
+                    // KospiResponse 생성
+                    KospiResponse kospiResponse = new KospiResponse(
+                            industryCode,
+                            industryCodeNameMap.get(industryCode),  // industryName을 추가
+                            bstpNmixPrpr,
+                            bstpNmixPrdyVrss,
+                            bstpNmixPrdyCtrt
+                    );
+                    kospiResponses.add(kospiResponse);
+                } else {
+                    // StockIndustryResponse 생성
+                    StockIndustryResponse stockIndustryResponse = new StockIndustryResponse(
+                            industryCode,
+                            industryCodeNameMap.get(industryCode),  // industryName을 추가
+                            bstpNmixPrpr,
+                            bstpNmixPrdyVrss,
+                            bstpNmixPrdyCtrt,
+                            acmlTrPbmn
+                    );
+                    stockIndustryResponses.add(stockIndustryResponse);
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -179,5 +226,33 @@ public class StockIndustryService {
 
     public Iterable<StockIndustryRedis> getStockIndustryRedisList() {
         return stockIndustryRedisRepository.findAll();
+    }
+
+    /**
+     * 코스피 지수 정보 조회
+     * @return
+     */
+    public List<KospiAndChartResponse> getKospi() {
+        List<KospiRedis> kospiRedisList = kospiRedisRepository.findAll();
+
+        return kospiRedisList.stream()
+                .map(kospiRedis -> {
+                    List<KospiChartRedis> kospiChartRedisList = kospiChartRedisRepository.findAllByIndustryCode(kospiRedis.getIndustryCode());
+                    List<KospiChartRedis> sortKospiChart = kospiChartRedisList.stream().sorted(Comparator.comparing(KospiChartRedis::getTime)).toList();
+                    return new KospiAndChartResponse(kospiRedis, sortKospiChart);
+                }).toList();
+    }
+
+    private boolean isWithinTradingHours() {
+        // 아시아/서울 시간대의 현재 시간을 가져옵니다.
+        LocalTime now = LocalTime.now(ZoneId.of("Asia/Seoul"));
+
+        // 오전 9시
+        LocalTime start = LocalTime.of(9, 0);
+        // 오후 3시 30분
+        LocalTime end = LocalTime.of(15, 30);
+
+        // 현재 시간이 9시에서 15시 30분 사이인지 확인합니다.
+        return now.isAfter(start) && now.isBefore(end);
     }
 }

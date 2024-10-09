@@ -19,7 +19,7 @@ public class FavoriteIndustryNewsController {
     @PostMapping("/{id}")
     public CommonResponse<?> favoriteIndustryNews(
             @RequestHeader("authorization") String token,
-            @PathVariable("id") Long newsId) {
+            @PathVariable("id") String newsId) {
         Long memberId = tokenProvider.getMemberId(token);
         favoriteIndustryNewsService.favoriteNews(memberId, newsId);
         return CommonResponse.success("성공");
@@ -28,7 +28,7 @@ public class FavoriteIndustryNewsController {
     @DeleteMapping("/{id}")
     public CommonResponse<?> unFavoriteIndustryNews(
             @RequestHeader("authorization") String token,
-            @PathVariable("id") Long newsId) {
+            @PathVariable("id") String newsId) {
         Long memberId = tokenProvider.getMemberId(token);
         favoriteIndustryNewsService.unFavoriteNews(memberId, newsId);
         return CommonResponse.success("성공");

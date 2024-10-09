@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StockNewsDto {
-    private Long newsId;
+    private String newsId;
     private String article;
     private String description;
     private String media;

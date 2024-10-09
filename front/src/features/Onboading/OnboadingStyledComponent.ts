@@ -30,7 +30,7 @@ export const SectionContainerWhite = styled.div<{ $isVisible: boolean }>`
 // Section 2 ~ 7
 // 섹션 타이틀 스타일
 export const SectionTitle = styled.p`
-  font-size: 3.5rem;
+  font-size: 3rem;
   font-weight: bold;
   color: ${({ theme }) => theme.onBoadingTextColor};
 `;
@@ -40,7 +40,7 @@ export const SectionTitle = styled.p`
 export const CardTitle = styled.p`
   font-size: 2rem;
   font-weight: bold;
-  margin-top: 1.5rem; /* iframe과 CardTitle 사이의 여백 */
+  margin-top: 1rem; /* iframe과 CardTitle 사이의 여백 */
   color: ${({ theme }) => theme.onBoadingTextColor};
 `;
 
@@ -207,12 +207,11 @@ export const SubTitle = styled.h2`
 
 // 텍스트 스타일
 export const Text = styled.p`
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-weight: 500;
   margin-bottom: 1rem;
   color: #495057;
   line-height: 1.8;
-
 
   /* 반응형 - 작은 화면에서 텍스트 크기 조정 */
   @media (max-width: 768px) {
@@ -221,5 +220,24 @@ export const Text = styled.p`
 
   @media (max-width: 480px) {
     font-size: 1.4rem;
+  }
+`;
+
+export const SmallText = styled.p`
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #828282;
+  animation: pulse 2s infinite; /* 2초 동안 반복되는 애니메이션 */
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1); /* 기본 크기 */
+    }
+    50% {
+      transform: scale(1.1); /* 살짝 커짐 */
+    }
+    100% {
+      transform: scale(1); /* 원래 크기로 돌아옴 */
+    }
   }
 `;

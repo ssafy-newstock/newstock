@@ -14,10 +14,10 @@ public class IndustryNewsRedis {
     @Id
     private String id;
 
-    private Long industryNewsId;
+    private String industryNewsId;
     private Long memberId;
 
-    public IndustryNewsRedis(Long industryNewsId, Long memberId) {
+    public IndustryNewsRedis(String industryNewsId, Long memberId) {
         this.id = industryNewsId + "|" + memberId;
         this.industryNewsId = industryNewsId;
         this.memberId = memberId;

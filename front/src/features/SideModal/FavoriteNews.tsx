@@ -4,6 +4,7 @@ import { useBookmarkStore } from '@store/useBookmarkStore';
 import { NewsTag } from '@features/News/NewsIconTag';
 import { bookmarkedIcon } from '@features/News/NewsIconTag';
 import { useNavigate } from 'react-router-dom';
+import { CenteredMessage } from '@features/SideModal/styledComponent';
 // import noDataPng from '@assets/News/noDataPng.png';
 
 const FavoriteNewsCenter = styled.div`
@@ -177,7 +178,7 @@ const FavoriteNews: React.FC = () => {
           );
         })
       ) : (
-        <p>데이터가 존재하지 않습니다...</p>
+        <CenteredMessage>데이터가 존재하지 않습니다.</CenteredMessage>
       )}
     </FavoriteNewsCenter>
   );

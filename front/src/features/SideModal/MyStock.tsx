@@ -11,10 +11,10 @@ import {
   CardLeftRightDiv,
   CardRightDiv,
   CenteredMessage,
-  RightContentDiv,
+  ContentDiv,
   StockImage,
   TextP_14_NOTGRAY,
-} from '@features/MyStockModal/styledComponent';
+} from '@features/SideModal/styledComponent';
 import { getStockImageUrl } from '@utils/getStockImageUrl';
 
 const ColoredText = styled(TextP_14_NOTGRAY)<{ $color: string }>`
@@ -32,7 +32,11 @@ const MyStock: React.FC = () => {
   const top10Stock = useTop10StockStore((state) => state.top10Stock);
 
   if (isLoading) {
-    return <LoadingSpinner />;
+    return (
+      <CenteredMessage>
+        <LoadingSpinner />
+      </CenteredMessage>
+    );
   }
 
   if (error || !stocks) {
@@ -44,7 +48,7 @@ const MyStock: React.FC = () => {
   }
 
   return (
-    <RightContentDiv>
+    <ContentDiv>
       {stocks.map((stock) => {
         // allStock 또는 top10Stock에서 해당 stockCode로 주식 찾기
         const matchedStock =
@@ -120,7 +124,7 @@ const MyStock: React.FC = () => {
           </CardDiv>
         );
       })}
-    </RightContentDiv>
+    </ContentDiv>
   );
 };
 

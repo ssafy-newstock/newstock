@@ -5,8 +5,11 @@ import com.ssafy.news.domain.entity.stock.StockKeyword;
 import com.ssafy.news.domain.entity.stock.StockNews;
 import com.ssafy.news.domain.entity.stock.StockNewsRedis;
 import com.ssafy.news.domain.entity.stock.StockNewsStockCode;
+import com.ssafy.news.domain.repository.StockKeywordRepository;
+import com.ssafy.news.domain.repository.StockNewsCodeRepository;
 import com.ssafy.news.domain.repository.StockNewsRedisRepository;
 import com.ssafy.news.domain.repository.StockNewsRepository;
+import com.ssafy.news.domain.service.client.response.StockNewsResponse;
 import com.ssafy.news.domain.service.converter.NewsConverter;
 import com.ssafy.news.global.util.TokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +38,8 @@ public class StockNewsService {
     private final StockNewsRedisRepository stockNewsRedisRepository;
     private final NewsSchedulerService newsSchedulerService;
     private final KafkaTemplate<String, Object> kafkaTemplate;
-
+    private final StockNewsCodeRepository stockNewsCodeRepository;
+    private final StockKeywordRepository stockKeywordRepository;
     /**
      * 최근 4개의 주식 뉴스를 조회하는 메소드
      * 특정 주식이 아닌 전체 뉴스 중 4개를 조회함
@@ -97,7 +101,7 @@ public class StockNewsService {
      * @param id
      * @return
      */
-    public StockNewsDto getStockNewsDetail(Long id) {
+    public StockNewsDto getStockNewsDetail(String id) {
         Optional<StockNews> findNews = stockNewsRepository.findById(id);
         validateNewsContent(findNews);
 
@@ -108,7 +112,7 @@ public class StockNewsService {
         return StockNewsDto.of(stockNews, stockCodes, keywords);
     }
 
-    public List<StockNewsDto> getStockNewsInIds(final List<Long> scrapInStockNewsIds) {
+    public List<StockNewsDto> getStockNewsInIds(final List<String> scrapInStockNewsIds) {
         List<StockNews> industryNewsByIdIn = stockNewsRepository.findAllByIdIn(scrapInStockNewsIds);
 
         return industryNewsByIdIn.stream()
@@ -126,17 +130,19 @@ public class StockNewsService {
 
     /**
      * 종목 뉴스 조회 확인 메소드
+     *
      * @param newsId
      * @param token
      */
     @Transactional
-    public void checkReadStockNews(Long newsId, String token) {
+    public void checkReadStockNews(String newsId, String token) {
         if (token != null && !token.isEmpty()) {
             Long memberId = tokenProvider.getMemberId(token);
 
             stockNewsRedisRepository.findById(newsId + "|" + memberId)
                     .ifPresentOrElse(
-                            stockNewsRedis -> {},
+                            stockNewsRedis -> {
+                            },
                             () -> {
                                 stockNewsRedisRepository.save(new StockNewsRedis(newsId, memberId));
 
@@ -156,7 +162,36 @@ public class StockNewsService {
      */
     @Transactional
     @Scheduled(cron = "0 0 0 * * *")
-    public void deleteReadStockNews(){
+    public void deleteReadStockNews() {
         newsSchedulerService.deleteStockNewsRedis();
+    }
+
+    @Transactional
+    public void insertStockNews(List<StockNewsResponse> stockNewsDtoList) {
+        List<StockNews> list = stockNewsDtoList.stream()
+                .map(stockNewsDto -> {
+                    StockNews entity = StockNews.of(stockNewsDto);
+
+                    stockNewsRepository.save(entity);
+
+                    List<String> stringStockKeywords = stockNewsDto.getStockKeywords();
+                    List<String> stringStockCodes = stockNewsDto.getStockNewsStockCodes();
+
+                    Set<StockNewsStockCode> stockCodes = stringStockCodes.stream()
+                            .map(s -> StockNewsStockCode.of(entity, s))
+                            .collect(Collectors.toSet());
+                    Set<StockKeyword> stockKeywords = stringStockKeywords.stream()
+                            .map(s -> StockKeyword.of(entity, s))
+                            .collect(Collectors.toSet());
+
+                    stockNewsCodeRepository.saveAll(stockCodes);
+                    stockKeywordRepository.saveAll(stockKeywords);
+
+                    entity.injectEntity(stockCodes, stockKeywords);
+                    return entity;
+                })
+                .toList();
+
+        stockNewsRepository.saveAll(list);
     }
 }
