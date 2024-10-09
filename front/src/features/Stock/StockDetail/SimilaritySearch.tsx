@@ -6,7 +6,7 @@ import { useStockChartQuery } from '@hooks/useStockChartQuery';
 import BaseStock from '@features/Stock/StockDetail/similaritySearch/BaseStock';
 import OtherStock from '@features/Stock/StockDetail/similaritySearch/OtherStock';
 import SelectionStock from '@features/Stock/StockDetail/similaritySearch/SelectionStock';
-import { FlexGap } from '@components/styledComponent';
+import { FlexGap, FlexGapCenter } from '@components/styledComponent';
 import styled from 'styled-components';
 import {
   DividedSection,
@@ -16,6 +16,7 @@ import {
   SkeletonDiv,
   Text,
   SimilarityButton,
+  ErrorMessage,
 } from '@features/Stock/styledComponent';
 import { toast } from 'react-toastify';
 import { calculateEndDate } from '@utils/calculateEndDate';
@@ -39,8 +40,13 @@ const SimilarityGrid = styled.div`
 `;
 
 const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
-  const { register, handleSubmit, setValue, watch } =
-    useForm<SimilarityFormValues>();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<SimilarityFormValues>();
   const [isSearchInitiated, setIsSearchInitiated] = useState(false);
   const [searchDates, setSearchDates] = useState<{
     start_date?: string;
@@ -82,6 +88,9 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
     }
   }, [endDateValue]);
 
+  // 현재 날짜 구하기
+  const today = new Date().toISOString().split('T')[0];
+
   const onSubmit = handleSubmit((data) => {
     setSearchDates({
       start_date: data.start_date,
@@ -99,13 +108,18 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
   return (
     <Fragment>
       <form onSubmit={onSubmit}>
-        <FlexGap $gap="2rem">
+        <FlexGapCenter $gap="1rem">
           <InputRow>
             <InputLabel>조회 기간: </InputLabel>
             <InputTag
               id="start_date"
               type="date"
-              {...register('start_date')}
+              {...register('start_date', {
+                required: '시작 날짜를 입력해주세요',
+                validate: (value) =>
+                  value <= today ||
+                  '시작일과 종료일을 오늘 이전으로 선택해주세요. ',
+              })}
               required
               style={{ textAlign: 'center' }}
             />
@@ -113,21 +127,30 @@ const SimilaritySearch = ({ stockCode }: SimilaritySearchProps) => {
             <InputTag
               id="end_date"
               type="date"
-              {...register('end_date')}
+              {...register('end_date', {
+                required: '종료 날짜를 입력해주세요',
+                validate: (value) =>
+                  value <= today || '종료일을 오늘 이전으로 선택해주세요.',
+              })}
               required
               style={{ textAlign: 'center' }}
             />
           </InputRow>
-
           <SimilarityButton type="submit">검색</SimilarityButton>
-        </FlexGap>
+          {errors.start_date && errors.end_date && (
+            <ErrorMessage>{errors.start_date.message}</ErrorMessage>
+          )}
+          {!errors.start_date && errors.end_date && (
+            <ErrorMessage>{errors.end_date.message}</ErrorMessage>
+          )}
+        </FlexGapCenter>
       </form>
 
       {isSearchInitiated && (
         <DividedSection>
           {(similarityQuery.isPending || chartQuery.isPending) && (
             <SimilarityGrid>
-                <SkeletonDiv $width="38rem" $height="32rem" />
+              <SkeletonDiv $width="38rem" $height="32rem" />
               {Array.from({ length: 4 }).map((_, index) => (
                 <SkeletonDiv key={index} $width="19rem" $height="16rem" />
               ))}

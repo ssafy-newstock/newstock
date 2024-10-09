@@ -1,3 +1,4 @@
+import exp from 'constants';
 import styled, { keyframes } from 'styled-components';
 
 export const StockHeader = styled.div`
@@ -497,6 +498,7 @@ export const SimilarityButton = styled.button`
   border: none;
   padding: 0.5rem 1rem;
   cursor: pointer;
+  font-size: 1.2rem;
 `;
 
 export const AnalysisButton = styled(DetailPageButton)`
@@ -522,4 +524,10 @@ export const ErrorBuuton = styled(SimilarityButton)`
   &:hover {
     background-color: white; /* 호버 효과 */
   }
+`;
+
+export const ErrorMessage = styled.div`
+  color: ${({ theme }) => theme.stockRed};
+  font-size: 1rem;
+  font-weight: 500;
 `;
