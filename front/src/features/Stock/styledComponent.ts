@@ -1,4 +1,3 @@
-import exp from 'constants';
 import styled, { keyframes } from 'styled-components';
 
 export const StockHeader = styled.div`

@@ -6,7 +6,7 @@ import { useStockChartQuery } from '@hooks/useStockChartQuery';
 import BaseStock from '@features/Stock/StockDetail/similaritySearch/BaseStock';
 import OtherStock from '@features/Stock/StockDetail/similaritySearch/OtherStock';
 import SelectionStock from '@features/Stock/StockDetail/similaritySearch/SelectionStock';
-import { FlexGap, FlexGapCenter } from '@components/styledComponent';
+import { FlexGapCenter } from '@components/styledComponent';
 import styled from 'styled-components';
 import {
   DividedSection,
