@@ -76,14 +76,6 @@ const BookmarkedNewsFooter = styled.div`
   align-items: stretch;
 `;
 
-const LoadingDiv = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-`;
-
 const FavoriteNews: React.FC = () => {
   const navigate = useNavigate();
   const {
