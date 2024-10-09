@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { useMyTransactionData } from '@hooks/useStockHoldings';
 import blueLogo from '@assets/Stock/blueLogo.png';
 import LoadingSpinner from '@components/LoadingSpinner';
@@ -22,7 +22,8 @@ const TransactionCardLeftTopDiv = styled.div`
 `;
 
 const TransactionTypeText = styled.p<{ $type: string }>`
-  color: ${({ $type }) => ($type === 'BUY' ? 'red' : 'blue')};
+  color: ${({ $type, theme }) =>
+    $type === 'BUY' ? theme.stockRed || 'red' : theme.stockBlue || 'blue'};
 `;
 
 const DateTitle = styled.h3`

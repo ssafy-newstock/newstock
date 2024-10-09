@@ -6,7 +6,7 @@ import {
   CardDiv,
   ContentDiv,
 } from '@features/SideModal/styledComponent';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 const RankingCardDiv = styled(CardDiv)`
   border-bottom: 1px solid #b3b3b3;
@@ -16,37 +16,38 @@ const RankingCardDiv = styled(CardDiv)`
   align-items: center;
 `;
 
-// 수익률에 따른 텍스트 색상 적용
-const getChangeRateColor = (changeRate: number) => {
-  if (changeRate > 0) return 'red';
-  if (changeRate < 0) return 'blue';
-  return 'black';
-};
-
-// 순위 텍스트 스타일링 (1, 2, 3등은 볼드 처리)
-const getRankTextStyle = (index: number) => {
-  return {
-    fontWeight: index < 3 ? 'bold' : 'normal',
-  };
-};
-
-// SVG 아이콘 추가
-const CrownIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="25"
-    height="25"
-    viewBox="0 0 24 24"
-  >
-    <path
-      fill="#828282"
-      d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14z"
-    />
-  </svg>
-);
-
 const Ranking: React.FC = () => {
+  const theme = useTheme();
   const { data: holdingData, isLoading, error } = useRankHoldingData();
+
+  // 수익률에 따른 텍스트 색상 적용
+  const getChangeRateColor = (changeRate: number) => {
+    if (changeRate > 0) return theme.stockRed || 'red';
+    if (changeRate < 0) return theme.stockBlue || 'blue';
+    return theme.textColor;
+  };
+
+  // 순위 텍스트 스타일링 (1, 2, 3등은 볼드 처리)
+  const getRankTextStyle = (index: number) => {
+    return {
+      fontWeight: index < 3 ? 'bold' : 'normal',
+    };
+  };
+
+  // SVG 아이콘 추가
+  const CrownIcon = () => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="25"
+      height="25"
+      viewBox="0 0 24 24"
+    >
+      <path
+        fill="#828282"
+        d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14z"
+      />
+    </svg>
+  );
 
   if (isLoading)
     return (

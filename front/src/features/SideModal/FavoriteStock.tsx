@@ -17,11 +17,12 @@ import {
   TextP_14_NOTGRAY,
 } from '@features/SideModal/styledComponent';
 import { getStockImageUrl } from '@utils/getStockImageUrl';
+import { useTheme } from 'styled-components';
 
 const FavoriteStock: React.FC = () => {
   const { data: favoriteStocks, isLoading, error } = useMyStockFavoriteData();
   const navigate = useNavigate();
-
+  const theme = useTheme();
   // 스토어에서 allStock과 top10Stock 가져오기
   const allStock = useAllStockStore((state) => state.allStock);
   const top10Stock = useTop10StockStore((state) => state.top10Stock);
@@ -43,9 +44,9 @@ const FavoriteStock: React.FC = () => {
   }
 
   const getTextColor = (priceChange: number | undefined) => {
-    if (priceChange === undefined) return '';
-    if (priceChange > 0) return 'red'; // 상승일 때 빨간색
-    if (priceChange < 0) return 'blue'; // 하락일 때 파란색
+    if (priceChange === undefined) return theme.textColor;
+    if (priceChange > 0) return theme.stockRed || 'red'; // 상승일 때 빨간색
+    if (priceChange < 0) return theme.stockBlue || 'blue'; // 하락일 때 파란색
     return ''; // 변화가 없을 때는 색상 없음
   };
 
