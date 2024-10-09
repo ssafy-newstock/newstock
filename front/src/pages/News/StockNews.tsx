@@ -35,6 +35,7 @@ const SubCenter = styled.div`
   max-width: 100rem;
   min-width: 50rem;
   width: 100%;
+  gap: 2rem;
 `;
 
 const StockNewsWrapper = styled.div<{ $showSummary: boolean }>`
@@ -46,7 +47,7 @@ const StockNewsWrapper = styled.div<{ $showSummary: boolean }>`
   border-radius: 2rem;
   /* background-color: ${({ theme }) => theme.newsBackgroundColor}; */
   /* box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.1); */
-  width: 98%;
+  width: 100%;
   gap: 2rem;
 
   cursor: pointer;
