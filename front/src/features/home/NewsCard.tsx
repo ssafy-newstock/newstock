@@ -1,6 +1,7 @@
 import { IStockNews } from '@hooks/useTop4news';
 import styled from 'styled-components';
 import newstockIcon from '@assets/Stock/Logo.png';
+import { useNavigate } from 'react-router-dom';
 
 const NewsCardContainer = styled.div`
   display: flex;
@@ -54,8 +55,12 @@ const timeAgo = (uploadDatetime: string) => {
 }
 
 const NewsCard = ({ news }: { news: IStockNews }) => {
+  const navigate = useNavigate();
+  const onNewsClick = () => {
+    navigate(`/subnews-main/stock-news/${news.id}`);
+  };
   return (
-    <NewsCardContainer>
+    <NewsCardContainer onClick={onNewsClick}>
       <ImgTag src={news.thumbnail || newstockIcon} alt=""/>
       <NewsTitle>{news.title}</NewsTitle>
       <NewsInfo>{news.media} · {timeAgo(news.uploadDatetime)}</NewsInfo>

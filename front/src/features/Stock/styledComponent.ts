@@ -377,7 +377,7 @@ export const InputRow = styled.div`
 
 export const InputLabel = styled.label`
   min-width: 60px;
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 500;
 `;
 
@@ -388,6 +388,8 @@ export const InputTag = styled.input`
   background-color: ${({ theme }) => theme.profileBackgroundColor};
   color: ${({ theme }) => theme.profileColor};
   flex-grow: 1;
+  font-size: 1rem;
+  font-weight: 500;
 `;
 
 export const TradeButtonWrapper = styled.div`
@@ -457,6 +459,7 @@ export const CategoryModalOverlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 `;
 
 export const CategoryModalContent = styled.div`

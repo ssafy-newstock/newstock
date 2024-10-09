@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import NewsDetailSkeleton from '@features/News/skeleton/NewsDetailSkeleton';
-import { authRequest } from '@api/axiosInstance';
+import { authRequest, axiosInstance } from '@api/axiosInstance';
 import usePointStore from '@store/usePointStore';
 import useSocketStore from '@store/useSocketStore';
 import useAuthStore from '@store/useAuthStore';
@@ -55,9 +55,17 @@ interface NewsItem {
 
 const fetchDetailNewsData = async (id: string): Promise<NewsItem | null> => {
   try {
-    const response = await axios.get(
-      `https://newstock.info/api/news/stock/${id}`
-    );
+    const referrer = document.referrer;
+    let apiUrl = `/news/stock/${id}`;
+
+    if (
+      referrer.includes('/ai-chat-bot') ||
+      referrer.includes('/stock-detail/')
+    ) {
+      apiUrl = `/newsdata/stock/${id}`;
+    }
+
+    const response = await axiosInstance.get(apiUrl);
     return response.data.data;
   } catch (error) {
     console.error('Failed to fetch EconomicDetailNews: ', error);
