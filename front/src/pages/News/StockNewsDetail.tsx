@@ -9,6 +9,7 @@ import usePointStore from '@store/usePointStore';
 import useSocketStore from '@store/useSocketStore';
 import useAuthStore from '@store/useAuthStore';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const SubCenter = styled.div`
   display: flex;
@@ -53,23 +54,30 @@ interface NewsItem {
 }
 
 const fetchDetailNewsData = async (id: string): Promise<NewsItem | null> => {
-  try {
-    const referrer = document.referrer;
-    let apiUrl = `/news/stock/${id}`;
-
-    if (
-      referrer.includes('/ai-chat-bot') ||
-      referrer.includes('/stock-detail/')
-    ) {
-      apiUrl = `/newsdata/stock/${id}`;
+  const urls = [`/news/stock/${id}`, `/newsdata/stock/${id}`];
+  
+  for (const url of urls) {
+    try {
+      console.log('Attempting API URL: ', url);
+      const response = await axiosInstance.get(url);
+      return response.data.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        if (url === urls[urls.length - 1]) {
+          // If this was the last URL to try
+          console.error('Failed to fetch news from all endpoints:', error);
+          return null;
+        }
+        // If not the last URL, continue to the next one
+        continue;
+      }
+      // For other types of errors, log and return null
+      console.error(`Failed to fetch news from ${url}:`, error);
+      return null;
     }
-
-    const response = await axiosInstance.get(apiUrl);
-    return response.data.data;
-  } catch (error) {
-    console.error('Failed to fetch EconomicDetailNews: ', error);
-    return null;
   }
+  
+  return null;
 };
 
 const StockNewsDetailPage: React.FC = () => {
