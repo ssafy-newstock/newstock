@@ -61,3 +61,25 @@ class ShortNewsData(TypedDict):
     newsTwo: str = Field(..., description="News short summary row 2")
     newsThree: str = Field(..., description="News short summary row 3")
 
+# 챗봇 LLM structure
+class ChatAnswerData(TypedDict):
+    answer: str = Field(..., description="Chatbot answer for user query")
+    related_news: Annotated[List[int], ..., "The related top 3 news for query and answer"]
+
+# 챗봇 저장
+class RelatedChatNewsData(BaseModel):
+    id: int = Field(..., description="The unique identifier of the news article.")
+    upload_datetime: str = Field(..., description="The upload date and time of the news article.")
+    title: str = Field(..., description="The title of the news article.")
+    sentiment: int = Field(..., description="The sentiment analysis score of the article. Typically, 1 for positive, -1 for negative, 0 for neutral.")
+    thumbnail: Optional[str] = Field(None, description="The thumbnail image URL of the news article.")
+    media: str = Field(..., description="The media source of the news article.")
+    type: str = Field(..., description="The type of news(Industry or Stock)")
+
+
+# 챗봇 답변 반환 객체
+class ChatResponse(BaseModel):
+    answer: str = Field(..., description="Chatbot answer for user query")
+    relatedNews: List[RelatedChatNewsData] = Field(..., description="The related news of the user query and answer")
+
+
