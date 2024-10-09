@@ -18,14 +18,20 @@ import {
 } from '@features/SideModal/styledComponent';
 import { getStockImageUrl } from '@utils/getStockImageUrl';
 import { useTheme } from 'styled-components';
+import useAuthStore from '@store/useAuthStore';
 
 const FavoriteStock: React.FC = () => {
   const { data: favoriteStocks, isLoading, error } = useMyStockFavoriteData();
   const navigate = useNavigate();
   const theme = useTheme();
+  const { isLogin } = useAuthStore();
   // 스토어에서 allStock과 top10Stock 가져오기
   const allStock = useAllStockStore((state) => state.allStock);
   const top10Stock = useTop10StockStore((state) => state.top10Stock);
+
+  if (!isLogin) {
+    return <CenteredMessage>로그인 후 이용해주세요.</CenteredMessage>;
+  }
 
   if (isLoading) {
     return (
@@ -36,7 +42,7 @@ const FavoriteStock: React.FC = () => {
   }
 
   if (error || !favoriteStocks) {
-    return <CenteredMessage>Error loading data.</CenteredMessage>;
+    return <CenteredMessage>데이터 불러오는 중 에러 발생</CenteredMessage>;
   }
 
   if (favoriteStocks.length === 0) {

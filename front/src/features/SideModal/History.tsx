@@ -1,4 +1,4 @@
-import styled, { useTheme } from 'styled-components';
+import styled from 'styled-components';
 import { useMyTransactionData } from '@hooks/useStockHoldings';
 import blueLogo from '@assets/Stock/blueLogo.png';
 import LoadingSpinner from '@components/LoadingSpinner';
@@ -14,6 +14,7 @@ import {
   TextP_14_NOTGRAY,
 } from '@features/SideModal/styledComponent';
 import { getStockImageUrl } from '@utils/getStockImageUrl';
+import useAuthStore from '@store/useAuthStore';
 
 const TransactionCardLeftTopDiv = styled.div`
   display: flex;
@@ -38,8 +39,13 @@ const HistoryhrDiv = styled.div`
 `;
 
 const History: React.FC = () => {
+  const { isLogin } = useAuthStore();
   // 커스텀 훅으로 거래 내역 데이터를 가져옴
   const { data: transactions, isLoading, error } = useMyTransactionData();
+
+  if (!isLogin) {
+    return <CenteredMessage>로그인 후 이용해주세요.</CenteredMessage>;
+  }
 
   if (isLoading) {
     return (
@@ -50,7 +56,7 @@ const History: React.FC = () => {
   }
 
   if (error || !transactions) {
-    return <CenteredMessage>Error loading data.</CenteredMessage>;
+    return <CenteredMessage>데이터 불러오는 중 에러 발생</CenteredMessage>;
   }
 
   if (transactions.length === 0) {

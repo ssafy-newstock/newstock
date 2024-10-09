@@ -7,6 +7,7 @@ import {
   ContentDiv,
 } from '@features/SideModal/styledComponent';
 import styled, { useTheme } from 'styled-components';
+import useAuthStore from '@store/useAuthStore';
 
 const RankingCardDiv = styled(CardDiv)`
   border-bottom: 1px solid #b3b3b3;
@@ -18,6 +19,7 @@ const RankingCardDiv = styled(CardDiv)`
 
 const Ranking: React.FC = () => {
   const theme = useTheme();
+  const { isLogin } = useAuthStore();
   const { data: holdingData, isLoading, error } = useRankHoldingData();
 
   // 수익률에 따른 텍스트 색상 적용
@@ -49,16 +51,24 @@ const Ranking: React.FC = () => {
     </svg>
   );
 
+  if (!isLogin) {
+    return <CenteredMessage>로그인 후 이용해주세요.</CenteredMessage>;
+  }
+
   if (isLoading)
     return (
       <CenteredMessage>
         <LoadingSpinner />
       </CenteredMessage>
     );
-  if (error) return <CenteredMessage>Error loading data.</CenteredMessage>;
+
+  if (error)
+    return <CenteredMessage>데이터 불러오는 중 에러 발생</CenteredMessage>;
+
   if (!holdingData || holdingData.length === 0) {
     return <CenteredMessage>랭킹이 없습니다.</CenteredMessage>;
   }
+
   return (
     <ContentDiv>
       {holdingData.map((member, index) => (
