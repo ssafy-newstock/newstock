@@ -239,7 +239,7 @@ def get_related_news_from_id(related_news_list: List[int], news_info_dict: Dict[
         news_dict = {}
         news_data = news_info_dict[news_id]
 
-        news_dict['id'] = news_id
+        news_dict['id'] = str(news_id)
         news_dict['upload_datetime'] = news_data[0]
         news_dict['title']  = news_data[1]
         news_dict['sentiment']  = news_data[2]
@@ -276,7 +276,7 @@ def summaryLLM(
     prompt = f"""
     [YOUR ROLE] 시황 보고서 작성 애널리스트
     [YOUR WORK]
-   너는 내가 준 대한민국 코스피의 {start_date} ~ {end_date} 기간 내 {stock_code} 종목을 내가 준 뉴스 및 의 주가 가격을 고려해서 시황 및 종목 분석 보고서를 작성해 줘야해.
+   너는 내가 준 대한민국 코스피의 {start_date} ~ {end_date} 기간 내 {stock_name}({stock_code}) 종목을 내가 준 뉴스 및 의 주가 가격을 고려해서 시황 및 종목 분석 보고서를 작성해 줘야해.
     분석할 때는 다음과 같은 조건을 지켜야 해
 
     [Structure]
@@ -304,7 +304,7 @@ def summaryLLM(
     [News Title]
     {news_str}
 
-    [{stock_code} price]
+    [{stock_name} price]
     {stock_price_str}
 
 
