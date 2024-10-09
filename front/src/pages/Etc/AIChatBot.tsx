@@ -124,6 +124,18 @@ const AIChatBotPage: React.FC = () => {
 
   const sendMessage = () => {
     if (input.trim()) {
+      if (!startDate || !endDate) {
+        // 날짜가 선택되지 않은 경우 챗봇 메시지 추가
+        const dateRequiredMessage: Message = {
+          content:
+            '좌측 하단의 달력을 클릭 후 날짜를 선택하고 대화를 시작해 주세요.',
+          isMine: false,
+        };
+        addMessage(dateRequiredMessage);
+        setInput('');
+        return; // 메시지 전송을 중단
+      }
+
       const newMessage: Message = { content: input, isMine: true };
       addMessage(newMessage);
       setInput('');
@@ -228,8 +240,7 @@ const AIChatBotPage: React.FC = () => {
             </SendIconWrapper>
           </ChatInputWrapper>
           <DatePickerText>
-            우측 하단의 달력 버튼을 클릭 후 날짜를 선택하고 대화를 시작해
-            주세요.
+            좌측 하단의 달력을 클릭 후 날짜를 선택하고 대화를 시작해 주세요.
           </DatePickerText>
         </ChatOuterWrapper>
       </ChatCenter>
