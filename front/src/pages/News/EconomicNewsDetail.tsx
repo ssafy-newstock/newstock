@@ -83,15 +83,20 @@ const EconomicNewsDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [detailNews, setDetailNews] = useState<NewsItem | null>(null);
   const { client, connectSocket } = useSocketStore();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadNews = async () => {
       if (id) {
         // id가 존재하는 경우에만 데이터를 가져옴
-        const detailNewsData = await fetchDetailNewsData(id);
-        setDetailNews(detailNewsData);
-      } else {
-        console.error('No id provided in the URL'); // id가 없는 경우 오류 처리
+        try {
+          const detailNewsData = await fetchDetailNewsData(id);
+          setDetailNews(detailNewsData);
+        } catch (err) {
+          setDetailNews(null);
+        } finally {
+          setIsLoading(false);
+        }
       }
     };
     loadNews();
@@ -150,7 +155,8 @@ const EconomicNewsDetailPage: React.FC = () => {
   return (
     <div>
       <SubCenter>
-        {detailNews ? (
+
+        {isLoading ? (<NewsDetailSkeleton />) : (detailNews ? (
           <NewsWrapper>
             <EconNewsDetailHeader
               title={detailNews.title}
@@ -165,8 +171,8 @@ const EconomicNewsDetailPage: React.FC = () => {
             />
           </NewsWrapper>
         ) : (
-          <NewsDetailSkeleton />
-        )}
+          <h1>요청하신 뉴스를 찾을 수 없습니다.</h1>
+        ))}
       </SubCenter>
     </div>
   );

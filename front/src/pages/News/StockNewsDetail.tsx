@@ -55,7 +55,7 @@ interface NewsItem {
 
 const fetchDetailNewsData = async (id: string): Promise<NewsItem | null> => {
   const urls = [`/news/stock/${id}`, `/newsdata/stock/${id}`];
-  
+
   for (const url of urls) {
     try {
       console.log('Attempting API URL: ', url);
@@ -76,7 +76,7 @@ const fetchDetailNewsData = async (id: string): Promise<NewsItem | null> => {
       return null;
     }
   }
-  
+
   return null;
 };
 
@@ -84,15 +84,19 @@ const StockNewsDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [detailNews, setDetailNews] = useState<NewsItem | null>(null);
   const { client, connectSocket } = useSocketStore();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadNews = async () => {
       if (id) {
-        // id가 존재하는 경우에만 데이터를 가져옴
-        const detailNewsData = await fetchDetailNewsData(id);
-        setDetailNews(detailNewsData);
-      } else {
-        console.error('No id provided in the URL'); // id가 없는 경우 오류 처리
+        try {
+          const detailNewsData = await fetchDetailNewsData(id);
+          setDetailNews(detailNewsData);
+        } catch (err) {
+          setDetailNews(null);
+        } finally {
+          setIsLoading(false);
+        }
       }
     };
     loadNews();
@@ -150,7 +154,9 @@ const StockNewsDetailPage: React.FC = () => {
   return (
     <div>
       <SubCenter>
-        {detailNews ? (
+        {isLoading ? (
+          <NewsDetailSkeleton />
+        ) : detailNews ? (
           <NewsWrapper>
             <StockNewsDetailHeader
               title={detailNews.title}
@@ -167,7 +173,7 @@ const StockNewsDetailPage: React.FC = () => {
             />
           </NewsWrapper>
         ) : (
-          <NewsDetailSkeleton />
+          <h1>요청하신 뉴스를 찾을 수 없습니다.</h1>
         )}
       </SubCenter>
     </div>
