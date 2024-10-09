@@ -20,13 +20,13 @@ const SubCenter = styled.div`
   max-width: 100rem;
   min-width: 50rem;
   width: 100%;
-  margin-top: 1.2rem;
+  margin-top: 0.6rem;
 `;
 
 const NewsWrapper = styled.div`
   display: flex;
   /* padding: 1.6rem 1.25rem; */
-  padding: 2rem 2rem;
+  padding: 1.2rem 1.2rem;
   flex-direction: column;
   align-items: flex-start;
   gap: 0.625rem;
