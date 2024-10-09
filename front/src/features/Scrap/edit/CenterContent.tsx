@@ -9,7 +9,7 @@ import {
   ScrapHr,
   TextP_16_NOTGRAY,
   TitleDiv,
-  TitleP,
+  TitleP_15,
 } from '@features/Scrap/scrapStyledComponent';
 import {
   CenterContentDiv,
@@ -28,7 +28,7 @@ import { stateToHTML } from 'draft-js-export-html';
 import { useScrapStore } from '@store/useScrapStore';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { ScrapData, NewsData } from '@pages/News/ScrapNewsInterface';
+import { ScrapData, NewsData } from '@features/News/ScrapNewsInterface';
 
 const CustomCenterNewsRightImg = styled(CenterNewsRightImg)`
   border-radius: 1rem;
@@ -120,8 +120,8 @@ const CenterContent: React.FC<CenterContentProps> = ({
     selectedNewsCard.content || ''
   );
 
-  const createScrap = useScrapStore((state) => state.createScrap);
-  const createStockScrap = useScrapStore((state) => state.createStockScrap);
+  const updateScrap = useScrapStore((state) => state.updateScrap);
+  const updateStockScrap = useScrapStore((state) => state.updateStockScrap);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -133,7 +133,12 @@ const CenterContent: React.FC<CenterContentProps> = ({
       );
       setEditorState(EditorState.createWithContent(contentState));
     }
-  }, [selectedCard]);
+
+    // selectedNewsCard가 존재하면 드래그 앤 드롭 영역에 미리 보여줌
+    if (selectedNewsCard) {
+      setDroppedCard(selectedNewsCard);
+    }
+  }, [selectedCard, selectedNewsCard]);
 
   const handleCreateCompleteClick = async () => {
     const contentState = editorState.getCurrentContent();
@@ -145,15 +150,33 @@ const CenterContent: React.FC<CenterContentProps> = ({
     }
 
     try {
-      if (droppedCard.type === 'stock') {
-        await createStockScrap(title, droppedCard.id, 'stock', contentAsHTML);
-      } else {
-        await createScrap(title, droppedCard.id, 'industry', contentAsHTML);
+      // selectedCard의 newsType이 'industry'일 때
+      if (selectedCard.newsType === 'industry') {
+        await updateScrap(
+          selectedCard.id, // 스크랩 ID
+          title, // 새로운 제목
+          droppedCard.id, // 뉴스 ID
+          'industry', // 뉴스 타입 (industry)
+          contentAsHTML // 새롭게 작성된 HTML 내용
+        );
+        // alert('시황 뉴스 스크랩 수정 완료!');
       }
-      alert('스크랩 작성 완료!');
+      // selectedCard의 newsType이 'stock'일 때
+      else if (selectedCard.newsType === 'stock') {
+        await updateStockScrap(
+          selectedCard.id, // 스크랩 ID
+          title, // 새로운 제목
+          droppedCard.id, // 뉴스 ID
+          'stock', // 뉴스 타입 (stock)
+          contentAsHTML // 새롭게 작성된 HTML 내용
+        );
+        // alert('종목 뉴스 스크랩 수정 완료!');
+      }
+
+      // 수정 완료 후 상세 페이지로 이동
       navigate(`../scrap-detail/`);
     } catch (error) {
-      console.error('스크랩 작성 중 오류 발생:', error);
+      console.error('스크랩 수정 중 오류 발생:', error);
     }
   };
 
@@ -189,7 +212,7 @@ const CenterContent: React.FC<CenterContentProps> = ({
     <>
       <TitleDiv>
         <ConterTitleDiv>
-          <TitleP>스크랩 편집</TitleP>
+          <TitleP_15>스크랩 편집</TitleP_15>
           <ThemedButton onClick={handleCreateCompleteClick}>
             작성 완료
           </ThemedButton>

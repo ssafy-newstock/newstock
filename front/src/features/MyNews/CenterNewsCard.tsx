@@ -14,11 +14,15 @@ import { NewsTag } from '@features/News/NewsIconTag';
 import styled from 'styled-components';
 import useAllStockStore from '@store/useAllStockStore';
 import useTop10StockStore from '@store/useTop10StockStore';
-import { ScrapData, NewsData } from '@pages/News/ScrapNewsInterface';
+import { ScrapData, NewsData } from '@features/News/ScrapNewsInterface';
+import { useNavigate } from 'react-router-dom';
 
 const CustomFontStyle = styled(FontStyle)`
   color: ${({ theme }) => theme.grayTextColor};
   font-size: 0.8rem;
+  white-space: nowrap; /* 한 줄로 표시 */
+  overflow: hidden; /* 넘치는 부분을 숨김 */
+  text-overflow: ellipsis; /* 넘치는 부분을 ...으로 처리 */
 `;
 
 const BlackFontStyle = styled(FontStyle)`
@@ -52,20 +56,26 @@ const CenterNewsCard: React.FC<CenterCardProps> = ({
   title,
   onDelete,
 }) => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   //"YYYY-MM-DD HH:MM" => "YYYY.MM.DD"
   const formatTransactionDate = (isoDate: string): string => {
     return format(new Date(isoDate), 'yyyy.MM.dd'); // date-fns의 올바른 포맷 형식 사용
   };
 
   const handleDetail = () => {
-    // if (title === '시황 뉴스') {
-    //   navigate(`/subnews-main/economic-news/${data.id}`);
-    // } else {
-    //   navigate(`/subnews-main/stock-news/${data.id}`);
-    // }
-    console.log('data : ', data);
-    console.log('scrapData: ', scrapData);
+    if (scrapData) {
+      if (scrapData.newsType === 'industry') {
+        navigate(`../scrap-detail`);
+      } else {
+        navigate(`../scrap-detail`);
+      }
+    } else {
+      if (title === '시황 뉴스') {
+        navigate(`/subnews-main/economic-news/${data.id}`);
+      } else {
+        navigate(`/subnews-main/stock-news/${data.id}`);
+      }
+    }
   };
 
   // handleDelete 정의

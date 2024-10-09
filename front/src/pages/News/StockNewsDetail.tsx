@@ -35,7 +35,7 @@ const NewsWrapper = styled.div`
   border-radius: 2rem;
   background-color: ${({ theme }) => theme.newsBackgroundColor};
   box-shadow: 0rem 0.25rem 0.25rem rgba(0, 0, 0, 0.1);
-  width: 90%;
+  width: 100%;
 `;
 
 interface NewsItem {

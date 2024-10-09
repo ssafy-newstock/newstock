@@ -11,7 +11,7 @@ import styled from 'styled-components';
 import { NewsTag } from '@features/News/NewsIconTag';
 import { useNavigate } from 'react-router-dom';
 import { useFindStockByCode } from '@utils/uesFindStockByCode';
-import { NewsData } from '@pages/News/ScrapNewsInterface';
+import { NewsData } from '@features/News/ScrapNewsInterface';
 
 const CustomFontStyle = styled(FontStyle)`
   color: ${({ theme }) => theme.grayTextColor};

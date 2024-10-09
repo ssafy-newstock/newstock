@@ -9,11 +9,16 @@ import { useNavigate } from 'react-router-dom';
 import {
   TextP_16,
   TitleDiv,
-  TitleP,
+  TitleP_15
 } from '@features/Scrap/scrapStyledComponent';
 import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import { ko } from 'date-fns/locale';
+import styled from 'styled-components';
+
+const CustomTitleDiv = styled(TitleDiv)`
+  gap: 1.2rem;
+`;
 
 const RightTitle: React.FC<{
   onDateRangeChange: (dates: [Date | null, Date | null]) => void;
@@ -53,9 +58,9 @@ const RightTitle: React.FC<{
   };
 
   return (
-    <TitleDiv>
+    <CustomTitleDiv>
       <RightTitleTopDiv>
-        <TitleP>스크랩 관리</TitleP>
+        <TitleP_15>스크랩 관리</TitleP_15>
         <ThemedButton onClick={handleCreateClick}>스크랩 만들기</ThemedButton>
       </RightTitleTopDiv>
       <TextP_16>뉴스를 스크랩하고 스크랩한 뉴스를 관리할 수 있어요.</TextP_16>
@@ -77,7 +82,7 @@ const RightTitle: React.FC<{
           />
         </RightTitleBottomFilterDiv>
       </RightTitleBottomDiv>
-    </TitleDiv>
+    </CustomTitleDiv>
   );
 };
 

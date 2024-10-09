@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { authRequest } from '@api/axiosInstance';
 import { toast } from 'react-toastify';
-import { NewsData } from '@pages/News/ScrapNewsInterface';
+import { NewsData } from '@features/News/ScrapNewsInterface';
 
 // interface NewsDetail {
 //   id: string;

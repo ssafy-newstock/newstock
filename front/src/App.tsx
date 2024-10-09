@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react';
 import { useAllStockQuery } from '@hooks/useAllStockQuery';
 import { useCategoryStockQuery } from '@hooks/useCategoryStockQuery';
 import Left from '@components/Left';
+import StockModal from '@features/MyStockModal/StockModal';
 import RightNav from '@components/RightNav';
 import SideModal from '@features/SideModal/SideModal';
 
@@ -88,9 +89,7 @@ const App = () => {
   const isOnboarding = location.pathname === '/onboarding';
 
   // scrap-detail 페이지인지 확인하는 변수
-  const isScrapDetail =
-    location.pathname === '/scrap-detail' ||
-    location.pathname === '/scrap-create';
+  const isScrapDetail = location.pathname.includes('scrap');
 
   // Modal 열기/닫기 기능 추가
   return (

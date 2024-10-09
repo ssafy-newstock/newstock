@@ -7,6 +7,17 @@ import { RightDiv, ScrapHr } from '@features/Scrap/scrapStyledComponent';
 import { CenterDiv } from '@features/MyNews/styledComponent';
 import { useState, useEffect } from 'react';
 import { useBookmarkStore } from '@store/useBookmarkStore';
+import styled from 'styled-components';
+
+const CustomCenterDiv = styled(CenterDiv)`
+  min-width: 30rem;
+  max-width: 100rem;
+`;
+
+const CustomRightDiv = styled(RightDiv)`
+  min-width: 20rem;
+  max-width: 60rem;
+`;
 
 const ScrapCreatePage = () => {
   const [selectedDateRange, setSelectedDateRange] = useState<
@@ -32,12 +43,12 @@ const ScrapCreatePage = () => {
   return (
     <>
       <Center>
-        <CenterDiv>
+        <CustomCenterDiv>
           <CenterContent />
-        </CenterDiv>
+        </CustomCenterDiv>
       </Center>
       <Right>
-        <RightDiv>
+        <CustomRightDiv>
           <RightTitle onDateRangeChange={handleDateRangeChange} />
           <ScrapHr />
           <RightContent
@@ -45,7 +56,7 @@ const ScrapCreatePage = () => {
             economicNews={economicNews}
             stockNews={stockNews}
           />
-        </RightDiv>
+        </CustomRightDiv>
       </Right>
     </>
   );

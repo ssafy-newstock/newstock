@@ -14,6 +14,7 @@ export interface ScrapData {
   newsType?: string;
   content?: string;
   newsId?: string;
+  createdAt?: string;
 }
 
 export interface NewsData {

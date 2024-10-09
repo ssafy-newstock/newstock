@@ -16,7 +16,7 @@ const SubCenter = styled.div`
   align-self: stretch;
   max-width: 100rem;
   min-width: 50rem;
-  width: 90%;
+  width: 100%;
 `;
 
 const StockNewsWrapper = styled.div<{ $showSummary: boolean }>`

@@ -36,7 +36,7 @@ const SubNewsBoarder = styled.hr`
   justify-content: center;
   align-items: center;
   gap: 0.625rem;
-  width: 90%;
+  width: 100%;
   min-width: 50rem;
   height: 0.1rem;
   background-color: ${({ theme }) => theme.textColor};
@@ -47,7 +47,7 @@ const CategoryWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   align-items: start;
-  width: 85%;
+  width: 98%;
   padding-left: 0.3rem;
   flex-wrap: nowrap;
   white-space: nowrap;
@@ -58,7 +58,7 @@ const CategoryWrapper = styled.div`
 
 const CategoryText = styled.p<{ $isSelected: boolean }>`
   /* font-size: 0.8rem; */
-  font-size: 1rem;
+  font-size: 1.15rem;
   font-weight: ${({ $isSelected }) => ($isSelected ? '600' : '400')};
   line-height: 1.9rem; /* 187.5% */
   color: ${({ $isSelected, theme }) =>

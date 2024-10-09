@@ -71,7 +71,7 @@ const CenterTitle: React.FC<{
 
   return (
     <CenterTitleDiv>
-      <CenterTitleFontStyle>저장한 뉴스</CenterTitleFontStyle>
+      <CenterTitleFontStyle>관심 뉴스</CenterTitleFontStyle>
       <FontStyle>중요한 뉴스를 저장하고 관리할 수 있어요.</FontStyle>
       <CenterMenu>
         <CenterMenuLeft>
