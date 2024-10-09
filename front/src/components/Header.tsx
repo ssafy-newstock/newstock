@@ -18,7 +18,8 @@ const HeaderContainer = styled.div<{
     $isOnboardingPage ? 'fixed' : 'relative'}; /* 상단 고정 */
   top: 0;
   left: 0;
-  width: ${({ $isOpen }) => ($isOpen ? 'calc(100% - 350px)' : '100%')};
+  width: ${({ $isOnboardingPage, $isOpen }) =>
+    $isOnboardingPage ? '100%' : $isOpen ? 'calc(100% - 350px)' : '100%'};
   height: 5rem;
   display: flex;
   justify-content: space-between;
@@ -130,9 +131,10 @@ const PointWrapper = styled(motion.div)`
 
 interface HeaderProps {
   isOpen: boolean;
+  isOnboarding: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ isOpen }) => {
+const Header: React.FC<HeaderProps> = ({ isOpen, isOnboarding }) => {
   const { memberName } = useAuthStore();
   const { theme, toggleTheme } = useThemeStore();
   const isDarkMode = theme === 'dark';
@@ -203,6 +205,14 @@ const Header: React.FC<HeaderProps> = ({ isOpen }) => {
     }
   }, [client, memberId]);
 
+  const handleNewStock = () => {
+    if (isOnboarding) {
+      navigate('/home');
+    } else {
+      navigate('/');
+    }
+  };
+
   // API 생성 후 대체
   // const handleLogout = async () => {
   //   try {
@@ -219,12 +229,10 @@ const Header: React.FC<HeaderProps> = ({ isOpen }) => {
   //   }
   // };
 
-  const isOnboardingPage = location.pathname === '/onboarding';
-
   return (
     <>
-      <HeaderContainer $isOpen={isOpen} $isOnboardingPage={isOnboardingPage}>
-        <NewStock onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
+      <HeaderContainer $isOpen={isOpen} $isOnboardingPage={isOnboarding}>
+        <NewStock onClick={handleNewStock} style={{ cursor: 'pointer' }}>
           NewStock
         </NewStock>
         <HeaderRight>

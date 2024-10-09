@@ -69,7 +69,6 @@ const App = () => {
   const { theme } = useThemeStore();
   const currentTheme = theme === 'light' ? lightTheme : darkTheme;
   const location = useLocation();
-
   const { setAllStock } = useAllStockStore();
   const { setCategoryStock } = useCategoryStockStore();
   const { setTop10Stock } = useTop10StockStore();
@@ -96,7 +95,10 @@ const App = () => {
       <GlobalStyle />
       <Main>
         <Container $isOnboarding={isOnboarding}>
-          <Header isOpen={activeComponent !== null} />
+          <Header
+            isOpen={activeComponent !== null}
+            isOnboarding={isOnboarding}
+          />
           <Content>
             {!isOnboarding && <Left />}
             <Outlet />
