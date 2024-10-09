@@ -24,11 +24,6 @@ const Main = styled.div`
   width: 100%;
   height: 100vh;
   transition: all 0.5s ease;
-  overflow: auto;
-  &::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-  }
 `;
 
 const Container = styled.div<{ $isOnboarding: boolean }>`
@@ -45,6 +40,11 @@ const Content = styled.div`
   flex-direction: row;
   width: 100%;
   transition: all 0.5s ease;
+  overflow: auto;
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
 `;
 
 const RightVacantWrapper = styled.div<{
@@ -88,7 +88,7 @@ const App = () => {
   const isOnboarding = location.pathname === '/onboarding';
 
   // scrap-detail 페이지인지 확인하는 변수
-  const isScrapDetail = location.pathname.includes('scrap');
+  const isScrapDetail = location.pathname.includes('/scrap');
 
   // Modal 열기/닫기 기능 추가
   return (
