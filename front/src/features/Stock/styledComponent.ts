@@ -24,11 +24,11 @@ export const StockGridColumn = styled.div`
   gap: 1.25rem;
 `;
 
-export const MainGridColumn = styled.div<{$gap: string}>`
-display: grid;
-grid-template-columns: repeat(4, 1fr);
-gap: ${({ $gap }) => $gap};
-`
+export const MainGridColumn = styled.div<{ $gap: string }>`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: ${({ $gap }) => $gap};
+`;
 
 export const CategoryGridColumn = styled.div`
   display: grid;
@@ -501,4 +501,25 @@ export const SimilarityButton = styled.button`
 
 export const AnalysisButton = styled(DetailPageButton)`
   align-self: flex-end;
+`;
+
+const pulse = keyframes`
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+`;
+
+export const ErrorBuuton = styled(SimilarityButton)`
+  font-size: 2rem;
+  font-weight: 500;
+  animation: ${pulse} 1.5s infinite;
+  &:hover {
+    background-color: white; /* 호버 효과 */
+  }
 `;

@@ -61,3 +61,8 @@ export const FlexBetweenEnd = styled(FlexBetween)`
 export const FlexColumn = styled(Flex)`
   flex-direction: column;
 `;
+
+export const FlexColumnStartCenter = styled(FlexColumn)`
+  justify-content: start;
+  align-items: center;
+`;
