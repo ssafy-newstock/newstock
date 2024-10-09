@@ -52,7 +52,7 @@ export const RowNewsCardSkeleton = styled.div`
   /* align-self: stretch; */
   border-radius: 2rem;
   height: 100px;
-  width: 85%;
+  width: 100%;
   height: 100%;
   gap: 2rem;
   background-color: ${({ theme }) => theme.newsBackgroundColor};
