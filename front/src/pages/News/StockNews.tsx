@@ -7,28 +7,47 @@ import axios, { AxiosResponse } from 'axios';
 import useAllStockStore from '@store/useAllStockStore';
 import useTop10StockStore from '@store/useTop10StockStore';
 import StockNewsSkeleton from '@features/News/skeleton/StockNewsSkeleton';
+import { UpIcon, UpIconWrapper } from '@features/News/UpIcon';
+
+const ScrollToTopButton = styled(UpIconWrapper)`
+  position: fixed;
+  bottom: 1.5rem;
+  right: 6rem;
+  /* background-color: ${({ theme }) => theme.backgroundColor}; */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+`;
 
 const SubCenter = styled.div`
   display: flex;
   padding: 1rem;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: center;
   align-self: stretch;
   max-width: 100rem;
   min-width: 50rem;
   width: 100%;
+  gap: 2rem;
 `;
 
 const StockNewsWrapper = styled.div<{ $showSummary: boolean }>`
   display: flex;
-  margin: 0 0 2.5rem 0;
+  margin: 0 1.25rem;
   align-items: center;
   justify-content: space-between;
   align-self: stretch;
   border-radius: 2rem;
   /* background-color: ${({ theme }) => theme.newsBackgroundColor}; */
   /* box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.1); */
-  width: 98%;
+  width: 100%;
   gap: 2rem;
 
   cursor: pointer;
@@ -146,6 +165,7 @@ const StockNewsPage: React.FC = () => {
 
   const observerRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
+  const firstNewsRef = useRef<HTMLDivElement | null>(null);
 
   const fetchNews = useCallback(async () => {
     setLoading(true);
@@ -197,12 +217,19 @@ const StockNewsPage: React.FC = () => {
     setShowSummary(newShowSummary);
   };
 
+  // 첫 번째 뉴스 항목으로 스크롤 이동
+  const handleScrollToTop = () => {
+    if (firstNewsRef.current) {
+      firstNewsRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <>
       {loading && <StockNewsSkeleton />}
       <SubCenter>
         {newsList.length > 0
-          ? newsList.map((news) => {
+          ? newsList.map((news, index) => {
               // stockNewsStockCodes의 첫 번째 stockCode를 기반으로 stockDetail 찾기
               const stockCode = news.stockNewsStockCodes?.[0];
               const stockDetail =
@@ -213,6 +240,7 @@ const StockNewsPage: React.FC = () => {
               return (
                 <StockNewsWrapper
                   key={news.id}
+                  ref={index === 0 ? firstNewsRef : null}
                   onClick={() => handleNewsClick(news.id)}
                   $showSummary={showSummary}
                 >
@@ -240,6 +268,10 @@ const StockNewsPage: React.FC = () => {
         )}
         <ObserverTrigger ref={observerRef} />
       </SubCenter>
+
+      <ScrollToTopButton onClick={handleScrollToTop}>
+        <UpIcon />
+      </ScrollToTopButton>
     </>
   );
 };

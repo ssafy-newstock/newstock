@@ -11,21 +11,40 @@ import {
 
 import axios, { AxiosResponse } from 'axios';
 import EconNewsSkeleton from '@features/News/skeleton/EconNewsSkeleton';
+import { UpIcon, UpIconWrapper } from '@features/News/UpIcon';
+
+const ScrollToTopButton = styled(UpIconWrapper)`
+  position: fixed;
+  bottom: 1.5rem;
+  right: 6rem;
+  /* background-color: ${({ theme }) => theme.backgroundColor}; */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+`;
 
 const SubCenter = styled.div`
   display: flex;
   padding: 1rem;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: center;
   align-self: stretch;
   max-width: 100rem;
   min-width: 50rem;
   width: 100%;
+  gap: 2rem;
 `;
 
 const EconomicNewsWrapper = styled.div<{ $showSummary: boolean }>`
   display: flex;
-  margin: 0 0 2.5rem 0;
+  margin: 0 1.25rem;
   align-items: center;
   justify-content: space-between;
   align-self: stretch;
@@ -181,7 +200,6 @@ const fetchEconomyNewsData = async (
 };
 
 const EconomicNewsPage: React.FC = () => {
-  // const { economic } = getNewsData();
   const location = useLocation();
   const selectedCategory = location.state?.selectedCategory || '전체 기사';
 
@@ -195,6 +213,7 @@ const EconomicNewsPage: React.FC = () => {
 
   const observerRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
+  const firstNewsRef = useRef<HTMLDivElement | null>(null); // 첫 번째 뉴스 항목을 참조
 
   const fetchNews = useCallback(async () => {
     setLoading(true);
@@ -256,10 +275,18 @@ const EconomicNewsPage: React.FC = () => {
     setShowSummary(newShowSummary);
   };
 
+  // 첫 번째 뉴스 항목으로 스크롤 이동
+  const handleScrollToTop = () => {
+    if (firstNewsRef.current) {
+      firstNewsRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <>
       {loading && <EconNewsSkeleton />}
       <SubCenter>
+        {/* <UpIcon /> */}
         {newsList.length === 0 && !loading && (
           <NoDataContainer>
             {/* <NoDataImage>
@@ -276,6 +303,7 @@ const EconomicNewsPage: React.FC = () => {
         {newsList.map((news, index) => (
           <EconomicNewsWrapper
             key={`${news.id}-${index}`} // id와 index 결합하여 고유한 key 생성
+            ref={index === 0 ? firstNewsRef : null}
             onClick={() => handleNewsClick(news.id)}
             $showSummary={showSummary}
           >
@@ -300,6 +328,10 @@ const EconomicNewsPage: React.FC = () => {
         {/* <div ref={observerRef} style={{ height: '1px' }}></div> */}
         {hasMoreNews && <ObserverTrigger ref={observerRef} />}
       </SubCenter>
+
+      <ScrollToTopButton onClick={handleScrollToTop}>
+        <UpIcon />
+      </ScrollToTopButton>
     </>
   );
 };
