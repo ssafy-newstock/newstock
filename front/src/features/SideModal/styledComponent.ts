@@ -132,7 +132,7 @@ export const CardRightDiv = styled.div`
   align-items: flex-end;
   flex-direction: column;
   justify-content: center;
-  gap: 0.8rem;
+  gap: 0.5rem;
 `;
 
 export const CardLeftDiv = styled.div`
@@ -148,7 +148,7 @@ export const CardLeftRightDiv = styled.div`
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  gap: 0.8rem;
+  gap: 0.5rem;
 `;
 
 export const ContainerDiv = styled.div`
