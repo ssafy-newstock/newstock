@@ -6,8 +6,8 @@ import { useNavigate } from 'react-router-dom';
 const NewsCardContainer = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: start;
-  align-items: center;
+  justify-content: cen;
+  align-items: start;
   cursor: pointer;
   transition: transform 0.3s ease;
   &:hover {
