@@ -47,7 +47,7 @@ const CategoryWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   align-items: start;
-  width: 98%;
+  width: 100%;
   padding-left: 0.3rem;
   flex-wrap: nowrap;
   white-space: nowrap;

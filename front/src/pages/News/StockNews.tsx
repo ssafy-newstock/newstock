@@ -35,7 +35,7 @@ const SubCenter = styled.div`
   max-width: 100rem;
   min-width: 50rem;
   width: 100%;
-  gap: 2rem;
+  gap: 2.5rem;
 `;
 
 const StockNewsWrapper = styled.div<{ $showSummary: boolean }>`

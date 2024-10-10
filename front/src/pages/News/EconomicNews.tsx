@@ -39,7 +39,7 @@ const SubCenter = styled.div`
   max-width: 100rem;
   min-width: 50rem;
   width: 100%;
-  gap: 2rem;
+  gap: 2.5rem;
 `;
 
 const EconomicNewsWrapper = styled.div<{ $showSummary: boolean }>`
@@ -49,7 +49,7 @@ const EconomicNewsWrapper = styled.div<{ $showSummary: boolean }>`
   justify-content: space-between;
   align-self: stretch;
   border-radius: 2rem;
-  width: 98%;
+  width: 100%;
   gap: 2rem;
 
   cursor: pointer;
