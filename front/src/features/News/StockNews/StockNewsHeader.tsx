@@ -8,6 +8,7 @@ import blueLogo from '@assets/Stock/blueLogo.png';
 import { useFindStockByCode } from '@utils/uesFindStockByCode';
 import { Fragment, useState } from 'react';
 import { FlexGap, FlexGapCenter } from '@components/styledComponent';
+import { useNavigate } from 'react-router-dom';
 
 const StockNewsOuter = styled.div`
   width: 100%;
@@ -29,6 +30,7 @@ const StockNewsCorpText = styled.p`
 const CustomStockImage = styled(StockImage)`
   width: 2.25rem;
   height: 2.25rem;
+  cursor: pointer;
 `;
 
 const StockNewsPrice = styled.div`
@@ -72,30 +74,33 @@ const StockNewsHeader: React.FC<StockNewsHeaderProps> = ({
   const [selectedStockCode, setSelectedStockCode] = useState(
     stockNewsStockCodes[0]
   );
+  const navigate = useNavigate();
 
-  const stockDetail = useFindStockByCode(selectedStockCode);
+  const stock = useFindStockByCode(selectedStockCode);
 
-  if (!stockDetail) {
+  if (!stock) {
     return <div>Loading...</div>; // Handle loading or empty state
   }
 
   const handleStockClick = (stockCode: string) => {
     setSelectedStockCode(stockCode);
   };
-  // if (!stockDetail) {
-  //   console.log('stockDetail이 아직 정의되지 않음.');
-  //   return null; // 또는 로딩 상태 등을 반환할 수 있습니다.
-  // }
+
+  // 주식 상세 페이지 + 월봉 차트 조회
+  const handleNavigate = () => {
+    navigate(`/stock-detail/${stock.stockCode}/day-chart`, { state: { stock } });
+  };
 
   return (
     <StockNewsOuter>
       <FlexGap $gap="0.5rem">
         <CustomStockImage
-          src={`https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stockDetail.stockCode}.png`}
+          src={`https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stock.stockCode}.png`}
           alt="stock image"
           onError={(e) => {
             e.currentTarget.src = blueLogo;
-          }} // 이미지 로드 실패 시 기본 이미지로 대체
+          }}
+          onClick={handleNavigate} // Add onClick event handler
         />
         <FlexGapCenter $gap="0.5rem">
           {stockNewsStockCodes.slice(0, 3).map((code, index) => (
@@ -136,13 +141,13 @@ const StockNewsHeader: React.FC<StockNewsHeaderProps> = ({
 
       <StockNewsPrice>
         <StockNewsCorpText>
-          {formatNumber(stockDetail.stckPrpr)}원
+          {formatNumber(stock.stckPrpr)}원
         </StockNewsCorpText>
         <CustomStockPrev
-          $isPositive={stockDetail.prdyVrss.toString().startsWith('-')}
+          $isPositive={stock.prdyVrss.toString().startsWith('-')}
         >
-          {formatChange(formatNumber(stockDetail.prdyVrss))} (
-          {stockDetail.prdyCtrt}%)
+          {formatChange(formatNumber(stock.prdyVrss))} (
+          {stock.prdyCtrt}%)
         </CustomStockPrev>
       </StockNewsPrice>
     </StockNewsOuter>
