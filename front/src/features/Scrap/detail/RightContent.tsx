@@ -2,6 +2,7 @@ import { NoMessageP } from '@features/Scrap/scrapStyledComponent';
 import ScrapCard from '@features/Scrap/detail/ScrapCard';
 import { useEffect, useState } from 'react';
 import { ScrapData, NewsData } from '@features/News/ScrapNewsInterface';
+import LoadingSpinner from '@components/LoadingSpinner'; // 로딩 스피너 컴포넌트 임포트
 import { CenteredMessage } from '@features/SideModal/styledComponent'; // CenteredMessage 임포트
 
 interface RightContentProps {
@@ -15,24 +16,24 @@ const RightContent: React.FC<RightContentProps> = ({
   scrapDatas,
   scrapNewsDatas,
 }) => {
-  const [error, setError] = useState<string | null>(null); // 에러 상태 추가
+  const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
 
   useEffect(() => {
-    setError(null); // 에러 상태 초기화
-
-    // 데이터를 불러오는 작업을 시뮬레이션
-    try {
-      if (scrapDatas.length === 0 && scrapNewsDatas.length === 0) {
-        throw new Error('데이터가 없습니다.');
-      }
-    } catch (err) {
-      setError((err as Error).message);
+    // 데이터 로딩이 완료되면 로딩 상태를 해제
+    if (scrapDatas.length === 0 && scrapNewsDatas.length === 0) {
+      setIsLoading(true);
+    } else {
+      setIsLoading(false);
     }
   }, [scrapDatas, scrapNewsDatas]);
 
-  // 에러가 발생한 경우 에러 메시지 표시
-  if (error) {
-    return <CenteredMessage>{error}</CenteredMessage>;
+  // 로딩 중일 때 로딩 스피너 표시
+  if (isLoading) {
+    return (
+      <CenteredMessage>
+        <LoadingSpinner />
+      </CenteredMessage>
+    );
   }
 
   // 데이터가 없을 때 메시지 표시

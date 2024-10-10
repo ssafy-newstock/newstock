@@ -3,7 +3,7 @@ import { authRequest } from '@api/axiosInstance';
 
 // 1. 타입 정의
 
-interface StockNews {
+export interface StockNews {
   id: number;
   article: string;
   description: string;
@@ -21,7 +21,7 @@ interface StockNews {
   stockKeywords: string[];
 }
 
-interface IndustryNews {
+export interface IndustryNews {
   id: number;
   article: string;
   description: string;

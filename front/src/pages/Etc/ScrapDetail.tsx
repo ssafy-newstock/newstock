@@ -102,9 +102,7 @@ const ScrapDetailPage: React.FC = () => {
         <CustomRightDiv>
           <RightTitle />
           <ScrapHr />
-          {scrapList.length === 0 ? (
-            <CenteredMessage>스크랩한 뉴스가 없습니다.</CenteredMessage>
-          ) : (
+          {scrapList && (
             <RightContent
               onCardClick={handleCardClick}
               scrapDatas={scrapList} // 통합된 스크랩 데이터 전달

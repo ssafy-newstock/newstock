@@ -11,7 +11,7 @@ import styled from 'styled-components';
 import { NewsTag } from '@features/News/NewsIconTag';
 import { useNavigate } from 'react-router-dom';
 import { useFindStockByCode } from '@utils/uesFindStockByCode';
-import { NewsData } from '@features/News/ScrapNewsInterface';
+import { IndustryNews, StockNews } from '@hooks/useFavoriteNewsQuery';
 
 const CustomFontStyle = styled(FontStyle)`
   color: ${({ theme }) => theme.grayTextColor};
@@ -25,14 +25,16 @@ const BookmarkedNewsMiddleLine = styled.div`
 `;
 
 interface RightNewsProps {
-  data: NewsData;
+  data: IndustryNews | StockNews;
 }
 
 const RightNewsCard: React.FC<RightNewsProps> = ({ data }) => {
   const navigate = useNavigate();
 
-  // 주식 코드가 없는 경우 빈 문자열을 기본값으로 설정
-  const stockCode = data.stockNewsStockCodes?.[0] || '';
+  const stockCode =
+    'stockNewsStockCodes' in data && data.stockNewsStockCodes?.[0]?.stockCode
+      ? data.stockNewsStockCodes[0].stockCode
+      : '';
 
   // 주식 상세 정보
   const stockDetail = useFindStockByCode(stockCode);

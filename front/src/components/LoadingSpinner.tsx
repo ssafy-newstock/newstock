@@ -20,8 +20,7 @@ const SpinnerWrapper = styled.div`
 `;
 
 const AnimatedLogo = styled.img`
-  width: 120%; /* 로고 크기 */
-  height: 120%;
+  width: 400px; /* 로고 크기 */
   animation: ${waveAnimation} 2s linear infinite;
   mask-image: linear-gradient(
     90deg,

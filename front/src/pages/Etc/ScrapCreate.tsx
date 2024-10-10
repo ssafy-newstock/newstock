@@ -20,12 +20,8 @@ const CustomRightDiv = styled(RightDiv)`
 `;
 
 const ScrapCreatePage = () => {
-  const {
-    bookmarkedDetailNews: economicNews,
-    bookmarkedDetailStockNews: stockNews,
-    fetchBookmarkedDetailNews,
-    fetchBookmarkedDetailStockNews,
-  } = useBookmarkStore();
+  const { fetchBookmarkedDetailNews, fetchBookmarkedDetailStockNews } =
+    useBookmarkStore();
 
   useEffect(() => {
     fetchBookmarkedDetailNews();
@@ -43,7 +39,7 @@ const ScrapCreatePage = () => {
         <CustomRightDiv>
           <RightTitle />
           <ScrapHr />
-          <RightContent economicNews={economicNews} stockNews={stockNews} />
+          <RightContent />
         </CustomRightDiv>
       </Right>
     </>

@@ -15,12 +15,8 @@ const ScrapEditPage = () => {
   const { selectedCard, selectedNewsCard } = location.state || {};
   // const { scrapId } = useParams<{ scrapId: string }>();
 
-  const {
-    bookmarkedDetailNews: economicNews,
-    bookmarkedDetailStockNews: stockNews,
-    fetchBookmarkedDetailNews,
-    fetchBookmarkedDetailStockNews,
-  } = useBookmarkStore();
+  const { fetchBookmarkedDetailNews, fetchBookmarkedDetailStockNews } =
+    useBookmarkStore();
 
   useEffect(() => {
     fetchBookmarkedDetailNews();
@@ -45,7 +41,7 @@ const ScrapEditPage = () => {
         <RightDiv>
           <RightTitle />
           <ScrapHr />
-          <RightContent economicNews={economicNews} stockNews={stockNews} />
+          <RightContent />
         </RightDiv>
       </Right>
     </>
