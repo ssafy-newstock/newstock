@@ -18,7 +18,7 @@ public class IndustryScrap extends BaseEntity{
     @Column(name = "industry_news_scrap_title")
     private String title;
 
-    @Column(name = "industry_news_scrap_content")
+    @Column(name = "industry_news_scrap_content", columnDefinition = "LONGTEXT")
     private String content;
 
     private Long memberId;
