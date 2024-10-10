@@ -16,8 +16,8 @@ import { useShortQuery } from '@hooks/useShortQuery';
 const EconomicNewsBody = styled.div`
   display: flex;
   /* max-width: 72%; */
-  width: 74%;
-  margin-right: 1.25rem;
+  width: 90%;
+  /* margin-right: 1.25rem; */
   flex-direction: column;
   align-items: flex-start;
   gap: 0.5rem;
