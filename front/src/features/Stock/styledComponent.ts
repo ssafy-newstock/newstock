@@ -519,6 +519,7 @@ const pulse = keyframes`
 `;
 
 export const ErrorBuuton = styled(SimilarityButton)`
+  font-family:"Toss Product Sans";
   font-size: 2rem;
   font-weight: 500;
   animation: ${pulse} 1.5s infinite;
