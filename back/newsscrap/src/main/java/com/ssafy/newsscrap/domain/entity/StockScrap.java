@@ -18,7 +18,7 @@ public class StockScrap extends BaseEntity {
     @Column(name = "stock_news_scrap_title")
     private String title;
 
-    @Column(name = "stock_news_scrap_content")
+    @Column(name = "stock_news_scrap_content", columnDefinition = "LONGTEXT")
     private String content;
 
     private Long memberId;
