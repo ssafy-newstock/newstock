@@ -5,7 +5,7 @@ metadata:
   labels:
     app: newstock-stock-stock
 spec:
-  replicas: 1  # 원하는 레플리카 수 설정
+  replicas: 2  # 원하는 레플리카 수 설정
   selector:
     matchLabels:
       app: newstock-stock-stock
