@@ -48,7 +48,7 @@ const StockNewsWrapper = styled.div<{ $showSummary: boolean }>`
   /* background-color: ${({ theme }) => theme.newsBackgroundColor}; */
   /* box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.1); */
   width: 100%;
-  gap: 1.5rem;
+  gap: 1rem;
 
   cursor: pointer;
 

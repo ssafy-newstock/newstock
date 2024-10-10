@@ -51,7 +51,7 @@ const EconomicNewsWrapper = styled.div<{ $showSummary: boolean }>`
   align-self: stretch;
   border-radius: 2rem;
   width: 100%;
-  gap: 1.6rem;
+  gap: 1rem;
 
   cursor: pointer;
 

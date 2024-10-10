@@ -3,10 +3,10 @@ import newstockIcon from '@assets/Stock/Logo.png';
 
 const EconomicSubNewsWrapper = styled.div`
   display: flex;
-  width: 22.5%;
+  width: 24.5%;
   height: auto;
   /* padding: 0.6rem; */
-  max-width: 18rem;
+  max-width: 16rem;
   min-width: 13rem;
 `;
 
