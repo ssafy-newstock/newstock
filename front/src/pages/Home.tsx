@@ -23,7 +23,7 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 export const DividedSection = styled.div`
-  margin: 1rem 0rem;
+  margin: 1rem 0rem 2rem 0rem;
 `;
 
 const Home = () => {

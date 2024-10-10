@@ -68,7 +68,7 @@ export const MainCardRow = styled.div`
   align-items: center;
   width: 100%;
   gap: 1rem;
-  padding: 1rem 0.5rem;
+  padding: 0rem 0.5rem;
   border-radius: 1.25rem;
   background-color: ${({ theme }) => theme.stockBackgroundColor};
   box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
