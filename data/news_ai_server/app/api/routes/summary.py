@@ -19,7 +19,7 @@ def get_summary(
         None,
         description="Stock code for summary."
     ),
-    base_stock_name: Optional[str] = Query(
+    stock_name: Optional[str] = Query(
         None,
         description="Stock name for summary."
     ),
@@ -40,7 +40,7 @@ def get_summary(
 #    타이틀 가져오기
     news_titles, news_info_dict = get_stock_news_title(base_stock_code, start_date, end_date)
 
-    macro_report_summary, micro_resport_summary, related_news_json = summaryLLM(base_stock_code, base_stock_name, start_date, end_date, news_titles, news_info_dict, stock_price_df)
+    macro_report_summary, micro_resport_summary, related_news_json = summaryLLM(base_stock_code, stock_name, start_date, end_date, news_titles, news_info_dict, stock_price_df)
 
 
     response = StockSummaryResponse(
