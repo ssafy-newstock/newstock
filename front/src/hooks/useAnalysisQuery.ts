@@ -2,19 +2,19 @@ import { axiosInstance } from '@api/axiosInstance';
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
-interface IStockParmas {
+export interface IStockParmas {
   stockCode: string;
   stockName: string;
 }
 
-interface IAnalysisParams {
+export interface IAnalysisParams {
   analysisStock: IStockParmas;
   startDate: string;
   endDate: string;
 }
 
-interface IRelatedNews {
-  id: number;
+export interface IRelatedNews {
+  id: string;
   upload_datetime: string;
   title: string;
   sentiment: number;
@@ -22,7 +22,7 @@ interface IRelatedNews {
   media: string;
 }
 
-interface IAnalysisResponse {
+export interface IAnalysisResponse {
   macroReport: string;
   microReport: string;
   relatedNews: IRelatedNews[];

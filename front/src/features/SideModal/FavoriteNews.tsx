@@ -1,10 +1,12 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { useBookmarkStore } from '@store/useBookmarkStore';
 import { NewsTag } from '@features/News/NewsIconTag';
 import { bookmarkedIcon } from '@features/News/NewsIconTag';
 import { useNavigate } from 'react-router-dom';
 import { CenteredMessage } from '@features/SideModal/styledComponent';
+import LoadingSpinner from '@components/LoadingSpinner';
+import useAuthStore from '@store/useAuthStore';
 // import noDataPng from '@assets/News/noDataPng.png';
 
 const FavoriteNewsCenter = styled.div`
@@ -76,6 +78,8 @@ const BookmarkedNewsFooter = styled.div`
 `;
 
 const FavoriteNews: React.FC = () => {
+  const { isLogin } = useAuthStore();
+  const navigate = useNavigate();
   const {
     bookmarkedDetailNews,
     bookmarkedDetailStockNews,
@@ -84,9 +88,7 @@ const FavoriteNews: React.FC = () => {
     removeBookmark,
     removeStockBookmark,
   } = useBookmarkStore();
-
-  const navigate = useNavigate();
-
+  const [isLoading, setIsLoading] = useState(true);
   const allBookmarkedNews = [
     ...new Set([...bookmarkedDetailNews, ...bookmarkedDetailStockNews]),
   ];
@@ -100,6 +102,8 @@ const FavoriteNews: React.FC = () => {
       ]);
     } catch (error) {
       console.error('Failed to load bookmarks:', error);
+    } finally {
+      setIsLoading(false);
     }
   }, [
     fetchBookmarkedDetailNews,
@@ -133,6 +137,18 @@ const FavoriteNews: React.FC = () => {
       await removeBookmark(id); // 시황 뉴스 북마크 삭제
     }
   };
+
+  if (!isLogin) {
+    return <CenteredMessage>로그인 후 이용해주세요.</CenteredMessage>;
+  }
+
+  if (isLoading) {
+    return (
+      <CenteredMessage>
+        <LoadingSpinner />
+      </CenteredMessage>
+    );
+  }
 
   return (
     <FavoriteNewsCenter>
@@ -178,7 +194,9 @@ const FavoriteNews: React.FC = () => {
           );
         })
       ) : (
-        <CenteredMessage>데이터가 존재하지 않습니다.</CenteredMessage>
+        <CenteredMessage>
+          뉴스 페이지에서 관심 뉴스를 추가해보세요.
+        </CenteredMessage>
       )}
     </FavoriteNewsCenter>
   );

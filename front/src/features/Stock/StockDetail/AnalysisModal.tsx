@@ -15,21 +15,7 @@ import {
   TextLeftLine,
 } from '@features/Stock/styledComponent';
 import { useNavigate } from 'react-router-dom';
-
-interface IRelatedNews {
-  id: number;
-  upload_datetime: string;
-  title: string;
-  sentiment: number;
-  thumbnail: string;
-  media: string;
-}
-
-interface IAnalysisResponse {
-  macroReport: string;
-  microReport: string;
-  relatedNews: IRelatedNews[];
-}
+import { IAnalysisResponse } from '@hooks/useAnalysisQuery';
 
 interface AnalysisModalProps {
   onClose?: () => void;
@@ -42,7 +28,6 @@ const ModalOverlay = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  /* background: rgba(0, 0, 0, 0.5); */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -114,7 +99,7 @@ const AnalysisModal: React.FC<AnalysisModalProps> = ({
   analysisData,
 }) => {
   const navigate = useNavigate();
-  const onClickNews = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, id: number) => {
+  const onClickNews = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, id: string) => {
     event.stopPropagation();
     navigate(`/subnews-main/stock-news/${id}`);
   }

@@ -163,7 +163,7 @@ def get_related_news_from_id_es(related_news_list: List[int], related_documents:
         
         # 챗봇 답변에서 related_news가 있는 경우에만 추출
         if related_document is not None:
-            news_dict['id'] = news_id
+            news_dict['id'] = str(news_id)
             news_dict['upload_datetime'] = related_document['uploadDatetime']
             news_dict['title'] = related_document['title']
             news_dict['sentiment'] = related_document['sentiment']

@@ -9,10 +9,11 @@ import {
   InputRow,
   SimilarityButton,
   Text,
+  ErrorMessage,
 } from '@features/Stock/styledComponent';
 import { toast } from 'react-toastify';
 import AnalysisModal from './AnalysisModal';
-import { FlexGap } from '@components/styledComponent';
+import { FlexGapCenter } from '@components/styledComponent';
 
 interface AnalysisSearchProps {
   stockCode: string;
@@ -33,13 +34,18 @@ const AnalysisSearch: React.FC<AnalysisSearchProps> = ({
   endDate,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const { register, handleSubmit, setValue, watch } =
-    useForm<AnalysisFormValues>({
-      defaultValues: {
-        start_date: startDate, // 프랍으로 받은 startDate 기본값 설정
-        end_date: endDate, // 프랍으로 받은 endDate 기본값 설정
-      },
-    });
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm<AnalysisFormValues>({
+    defaultValues: {
+      start_date: startDate, // 프랍으로 받은 startDate 기본값 설정
+      end_date: endDate, // 프랍으로 받은 endDate 기본값 설정
+    },
+  });
   const [searchDates, setSearchDates] = useState<{
     start_date?: string;
     end_date?: string;
@@ -76,6 +82,9 @@ const AnalysisSearch: React.FC<AnalysisSearchProps> = ({
     }
   }, [endDateValue]);
 
+  // 현재 날짜 구하기
+  const today = new Date().toISOString().split('T')[0];
+
   const onSubmit = handleSubmit((data) => {
     setIsModalOpen(true);
     setSearchDates({
@@ -93,28 +102,40 @@ const AnalysisSearch: React.FC<AnalysisSearchProps> = ({
   return (
     <>
       <form onSubmit={onSubmit}>
-        <FlexGap $gap="2rem">
+        <FlexGapCenter $gap="1rem">
           <InputRow>
             <InputLabel>차트 분석 조회 기간:</InputLabel>
             <InputTag
               id="start_date"
               type="date"
-              {...register('start_date')}
-              required
+              {...register('start_date', {
+                required: '시작 날짜를 입력해주세요',
+                validate: (value) =>
+                  value <= today ||
+                  '시작일과 종료일을 오늘 이전으로 선택해주세요. ',
+              })}
               style={{ textAlign: 'center' }}
             />
             <Text>~</Text>
             <InputTag
               id="end_date"
               type="date"
-              {...register('end_date')}
-              required
+              {...register('end_date', {
+                required: '종료 날짜를 입력해주세요',
+                validate: (value) =>
+                  value <= today || '종료일을 오늘 이전으로 선택해주세요.',
+              })}
               style={{ textAlign: 'center' }}
             />
           </InputRow>
-
           <SimilarityButton type="submit">검색</SimilarityButton>
-        </FlexGap>
+          {errors.start_date && errors.end_date && (
+            <ErrorMessage>{errors.start_date.message}</ErrorMessage>
+          )}
+          {!errors.start_date && errors.end_date && (
+            <ErrorMessage>{errors.end_date.message}</ErrorMessage>
+          )}
+        </FlexGapCenter>
       </form>
       {isModalOpen && (
         <AnalysisModal

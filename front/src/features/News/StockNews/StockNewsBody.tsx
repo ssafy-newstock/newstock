@@ -10,15 +10,13 @@ import { useBookmarkStore } from '@store/useBookmarkStore';
 import useAuthStore from '@store/useAuthStore';
 import { toast } from 'react-toastify';
 import { useShortQuery } from '@hooks/useShortQuery';
+import { useNavigate } from 'react-router-dom';
 
 const StockNewsBodyWrapper = styled.div`
   display: flex;
-  /* max-width: 72%; */
-  width: 72%;
-  margin-right: 1.25rem;
+  width: 90%;
   flex-direction: column;
   align-items: flex-start;
-  padding: 0.625rem 0;
 `;
 
 const StockNewsTitleWrapper = styled.div`
@@ -97,17 +95,6 @@ const MediaLogo = styled.img`
   border-radius: 50%;
 `;
 
-interface IStockDetail {
-  stockCode: string;
-  stockName: string;
-  stockIndustry: string;
-  stckPrpr: number;
-  prdyVrss: number;
-  prdyCtrt: number;
-  acmlVol: number;
-  acmlTrPbmn: number;
-}
-
 interface StockNewsBodyProps {
   id: string;
   title: string;
@@ -117,8 +104,7 @@ interface StockNewsBodyProps {
   keywords: string[];
   sentiment: string;
   onShowSummaryChange: (showSummary: boolean) => void;
-  header: string;
-  stockDetail: IStockDetail;
+  stockNewsStockCodes: string[];
 }
 
 const StockNewsBody: React.FC<StockNewsBodyProps> = ({
@@ -130,12 +116,16 @@ const StockNewsBody: React.FC<StockNewsBodyProps> = ({
   keywords,
   sentiment,
   onShowSummaryChange,
-  header,
-  stockDetail,
+  stockNewsStockCodes,
 }) => {
   const formattedDate = date.split('T')[0].replace(/-/g, '.');
   const [showSummary, setShowSummary] = useState<boolean>(false);
   const mediaImageUrl = `https://stock.vaiv.kr/resources/images/news/${media}.png`;
+  const navigate = useNavigate();
+  
+  const handleNewsClick: React.MouseEventHandler<HTMLDivElement> = (_event) => {
+    navigate(`/subnews-main/stock-news/${id}`);
+  };
 
   // zustand store에서 북마크 상태 관리 함수와 데이터 가져오기
   const {
@@ -216,11 +206,10 @@ const StockNewsBody: React.FC<StockNewsBodyProps> = ({
       <StockNewsBodyWrapper>
         {/* stockName을 전달 */}
         <StockNewsHeader
-          header={header}
-          stockDetail={stockDetail!}
           isBookmarked={isBookmarked}
           onBookmarkIconClick={handleBookmarkIconClick}
           onSummaryClick={handleSummaryClick}
+          stockNewsStockCodes={stockNewsStockCodes}
         />
         {showSummary && (
           <Overlay>
@@ -231,28 +220,30 @@ const StockNewsBody: React.FC<StockNewsBodyProps> = ({
             </Modal>
           </Overlay>
         )}
-        <StockNewsTitleWrapper>
-          <SentimentIcon sentiment={sentiment} /> {/* SentimentIcon 사용 */}
-          <StockNewsTitle>
-            <StockNewsTitleText>{title}</StockNewsTitleText>
-          </StockNewsTitle>
-        </StockNewsTitleWrapper>
+        <div style={{cursor:'pointer'}} onClick={handleNewsClick}>
+          <StockNewsTitleWrapper>
+            <SentimentIcon sentiment={sentiment} /> {/* SentimentIcon 사용 */}
+            <StockNewsTitle>
+              <StockNewsTitleText>{title}</StockNewsTitleText>
+            </StockNewsTitle>
+          </StockNewsTitleWrapper>
 
-        <StockNewsContent>{content}</StockNewsContent>
+          <StockNewsContent>{content}</StockNewsContent>
 
-        <StockNewsFooter>
-          <MediaWrapper>
-            <MediaLogo
-              src={mediaImageUrl}
-              alt={media}
-              onError={(e) => {
-                e.currentTarget.src = newstockIcon; // 이미지 로드 실패 시 기본 이미지로 대체
-              }}
-            />
-            <FooterText>{media}</FooterText>
-          </MediaWrapper>
-          <FooterText>{formattedDate}</FooterText>
-        </StockNewsFooter>
+          <StockNewsFooter>
+            <MediaWrapper>
+              <MediaLogo
+                src={mediaImageUrl}
+                alt={media}
+                onError={(e) => {
+                  e.currentTarget.src = newstockIcon; // 이미지 로드 실패 시 기본 이미지로 대체
+                }}
+              />
+              <FooterText>{media}</FooterText>
+            </MediaWrapper>
+            <FooterText>{formattedDate}</FooterText>
+          </StockNewsFooter>
+        </div>
 
         <BookmarkedNewsTagWrapper>
           {Array.isArray(keywords) && keywords.length > 0 ? (

@@ -43,7 +43,7 @@ public class Member extends BaseTimeEntity {
         this.providerEmail = providerEmail;
         this.provider = Provider.valueOf(provider.toUpperCase());
         this.profileImageUrl = profileImageUrl;
-        this.point = 0L;
+        this.point = 1_000_000L;
     }
 
     // update name

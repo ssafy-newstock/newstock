@@ -193,16 +193,17 @@ public class IndustryNewsRepository {
             conn = DriverManager.getConnection("jdbc:phoenix:34.64.230.82,34.22.71.84,34.64.42.191:2181:/hbase");
             System.out.println("Connection successful");
 
-            // SQL 쿼리 작성 (id 값 바인딩)
-            String query = "SELECT * " +
-                    "FROM ph_industry_news pin " +
-                    "WHERE pin.news_id IN (" + ids.stream()
-                    .map(String::valueOf)
-                    .collect(Collectors.joining(",")) + ")";
+            // SQL 쿼리 작성
+            StringBuilder query = new StringBuilder("SELECT * FROM ph_industry_news pin WHERE pin.news_id IN (");
+            String placeholders = ids.stream().map(id -> "?").collect(Collectors.joining(","));
+            query.append(placeholders).append(")");
 
-            // PreparedStatement 생성 및 id 값 바인딩
-            pstmt = conn.prepareStatement(query);
+            pstmt = conn.prepareStatement(query.toString());
 
+            // 파라미터 바인딩
+            for (int i = 0; i < ids.size(); i++) {
+                pstmt.setString(i + 1, ids.get(i));  // 바인딩할 id 값을 설정
+            }
             // 쿼리 실행
             rst = pstmt.executeQuery();
 

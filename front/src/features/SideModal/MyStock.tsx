@@ -16,6 +16,7 @@ import {
   TextP_14_NOTGRAY,
 } from '@features/SideModal/styledComponent';
 import { getStockImageUrl } from '@utils/getStockImageUrl';
+import useAuthStore from '@store/useAuthStore';
 
 const ColoredText = styled(TextP_14_NOTGRAY)<{ $color: string }>`
   color: ${({ $color }) => $color};
@@ -26,10 +27,14 @@ const MyStock: React.FC = () => {
   const { data: stocks, isLoading, error } = useMyStockHoldingData();
   const theme = useTheme();
   const navigate = useNavigate();
-
+  const { isLogin } = useAuthStore();
   // 스토어에서 allStock과 top10Stock 가져오기
   const allStock = useAllStockStore((state) => state.allStock);
   const top10Stock = useTop10StockStore((state) => state.top10Stock);
+
+  if (!isLogin) {
+    return <CenteredMessage>로그인 후 이용해주세요.</CenteredMessage>;
+  }
 
   if (isLoading) {
     return (
@@ -38,9 +43,8 @@ const MyStock: React.FC = () => {
       </CenteredMessage>
     );
   }
-
   if (error || !stocks) {
-    return <CenteredMessage>Error loading data.</CenteredMessage>;
+    return <CenteredMessage>데이터 불러오는 중 에러 발생</CenteredMessage>;
   }
 
   if (stocks.length === 0) {

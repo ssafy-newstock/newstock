@@ -6,7 +6,7 @@ import { Outlet } from 'react-router-dom';
 
 const SubNewsMainCenter = styled.div`
   display: flex;
-  padding: 1.25rem;
+  padding: 1.25rem 1rem;
   flex-direction: column;
   align-items: flex-start;
   align-self: stretch;
@@ -47,13 +47,14 @@ const CategoryWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   align-items: start;
-  width: 98%;
+  width: 100%;
   padding-left: 0.3rem;
   flex-wrap: nowrap;
   white-space: nowrap;
   /* 넘친 카테고리들을 가리도록 설정 */
   overflow: hidden;
   min-width: 50rem;
+  margin-top: 0.5rem;
 `;
 
 const CategoryText = styled.p<{ $isSelected: boolean }>`

@@ -40,6 +40,7 @@ public class StockNewsService {
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final StockNewsCodeRepository stockNewsCodeRepository;
     private final StockKeywordRepository stockKeywordRepository;
+
     /**
      * 최근 4개의 주식 뉴스를 조회하는 메소드
      * 특정 주식이 아닌 전체 뉴스 중 4개를 조회함
@@ -168,12 +169,29 @@ public class StockNewsService {
 
     @Transactional
     public void insertStockNews(List<StockNewsResponse> stockNewsDtoList) {
-        List<StockNews> list = stockNewsDtoList.stream()
+        // 입력 리스트에서 모든 StockNews ID 추출
+        List<String> ids = stockNewsDtoList.stream()
+                .map(StockNewsResponse::getId)
+                .toList();
+
+        // 데이터베이스에서 이미 존재하는 뉴스 조회
+        List<StockNews> existingStockNews = stockNewsRepository.findAllByIdIn(ids);
+
+        // 존재하는 뉴스의 ID 목록 추출
+        Set<String> existingIds = existingStockNews.stream()
+                .map(StockNews::getId)
+                .collect(Collectors.toSet());
+
+        // 기존 데이터에 없는 새로운 뉴스만 필터링
+        List<StockNews> newStockNewsList = stockNewsDtoList.stream()
+                .filter(stockNewsDto -> !existingIds.contains(stockNewsDto.getId()))  // 중복 체크
                 .map(stockNewsDto -> {
                     StockNews entity = StockNews.of(stockNewsDto);
 
+                    // 먼저 StockNews 엔티티 저장
                     stockNewsRepository.save(entity);
 
+                    // StockKeywords와 StockCodes 처리
                     List<String> stringStockKeywords = stockNewsDto.getStockKeywords();
                     List<String> stringStockCodes = stockNewsDto.getStockNewsStockCodes();
 
@@ -184,14 +202,17 @@ public class StockNewsService {
                             .map(s -> StockKeyword.of(entity, s))
                             .collect(Collectors.toSet());
 
+                    // 관련된 StockNewsStockCode와 StockKeyword 저장
                     stockNewsCodeRepository.saveAll(stockCodes);
                     stockKeywordRepository.saveAll(stockKeywords);
 
+                    // entity에 키워드와 코드 주입
                     entity.injectEntity(stockCodes, stockKeywords);
                     return entity;
                 })
                 .toList();
 
-        stockNewsRepository.saveAll(list);
+        // 새로운 뉴스 항목 저장
+        stockNewsRepository.saveAll(newStockNewsList);
     }
 }

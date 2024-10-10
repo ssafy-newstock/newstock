@@ -5,11 +5,16 @@ import { bookmarkedIcon, unbookmarkedIcon } from '@features/News/NewsIconTag';
 import { formatChange } from '@utils/formatChange';
 import { formatNumber } from '@utils/formatNumber';
 import blueLogo from '@assets/Stock/blueLogo.png';
+import { useFindStockByCode } from '@utils/uesFindStockByCode';
+import { Fragment, useState } from 'react';
+import { FlexGap, FlexGapCenter } from '@components/styledComponent';
+import { useNavigate } from 'react-router-dom';
 
 const StockNewsOuter = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
+  gap: 2rem;
   align-items: center;
   align-self: stretch;
 `;
@@ -25,7 +30,7 @@ const StockNewsCorpText = styled.p`
 const CustomStockImage = styled(StockImage)`
   width: 2.25rem;
   height: 2.25rem;
-  margin-right: 0.7rem;
+  cursor: pointer;
 `;
 
 const StockNewsPrice = styled.div`
@@ -36,16 +41,6 @@ const StockNewsPrice = styled.div`
 
 const CustomStockPrev = styled(StockPrev)`
   font-size: 1.5rem;
-`;
-
-const EconomicSubNewsHeader = styled.div`
-  display: flex;
-  width: 100%;
-  /* padding: 0 0.625rem 0.625rem 0.625rem; */
-  justify-content: flex-start;
-  align-items: center;
-  gap: 0.4rem;
-  margin-left: 0.5rem;
 `;
 
 const EconomicSubNewsPNG = styled.img`
@@ -63,68 +58,96 @@ const EconomicSubNewsPNG = styled.img`
   }
 `;
 
-interface IStockDetail {
-  stockCode: string;
-  stockName: string;
-  stockIndustry: string;
-  stckPrpr: number;
-  prdyVrss: number;
-  prdyCtrt: number;
-  acmlVol: number;
-  acmlTrPbmn: number;
-}
-
 interface StockNewsHeaderProps {
-  header: string;
-  stockDetail: IStockDetail;
   isBookmarked: boolean;
   onBookmarkIconClick: (event: React.MouseEvent) => void;
   onSummaryClick: (event: React.MouseEvent) => void;
+  stockNewsStockCodes: string[];
 }
 
 const StockNewsHeader: React.FC<StockNewsHeaderProps> = ({
-  header,
-  stockDetail,
   isBookmarked,
   onBookmarkIconClick,
   onSummaryClick,
+  stockNewsStockCodes,
 }) => {
-  if (!stockDetail) {
-    console.log('stockDetail이 아직 정의되지 않음.');
-    return null; // 또는 로딩 상태 등을 반환할 수 있습니다.
+  const [selectedStockCode, setSelectedStockCode] = useState(
+    stockNewsStockCodes[0]
+  );
+  const navigate = useNavigate();
+
+  const stock = useFindStockByCode(selectedStockCode);
+
+  if (!stock) {
+    return <div>Loading...</div>; // Handle loading or empty state
   }
+
+  const handleStockClick = (stockCode: string) => {
+    setSelectedStockCode(stockCode);
+  };
+
+  // 주식 상세 페이지 + 월봉 차트 조회
+  const handleNavigate = () => {
+    navigate(`/stock-detail/${stock.stockCode}/day-chart`, { state: { stock } });
+  };
 
   return (
     <StockNewsOuter>
-      <CustomStockImage
-        src={`https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stockDetail.stockCode}.png`}
-        alt="stock image"
-        onError={(e) => {
-          e.currentTarget.src = blueLogo;
-        }} // 이미지 로드 실패 시 기본 이미지로 대체
-      />
-      <StockNewsCorpText>{header}</StockNewsCorpText>
-      <EconomicSubNewsHeader>
-        <EconomicSubNewsPNG
-          src={summaryIcon}
-          alt="summaryIcon"
-          onClick={onSummaryClick}
+      <FlexGap $gap="0.5rem">
+        <CustomStockImage
+          src={`https://thumb.tossinvest.com/image/resized/96x0/https%3A%2F%2Fstatic.toss.im%2Fpng-icons%2Fsecurities%2Ficn-sec-fill-${stock.stockCode}.png`}
+          alt="stock image"
+          onError={(e) => {
+            e.currentTarget.src = blueLogo;
+          }}
+          onClick={handleNavigate} // Add onClick event handler
         />
-        <div onClick={onBookmarkIconClick}>
-          {isBookmarked ? bookmarkedIcon : unbookmarkedIcon}
-        </div>
-      </EconomicSubNewsHeader>
+        <FlexGapCenter $gap="0.5rem">
+          {stockNewsStockCodes.slice(0, 3).map((code, index) => (
+            <Fragment key={code}>
+              <StockNewsCorpText
+                onClick={() => handleStockClick(code)}
+                style={{
+                  color: selectedStockCode === code ? 'black' : 'gray',
+                  cursor: 'pointer',
+                }}
+              >
+                {useFindStockByCode(code)?.stockName}
+              </StockNewsCorpText>
+              {index !== stockNewsStockCodes.slice(0, 3).length - 1 && (
+                <span
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  ·
+                </span>
+              )}
+            </Fragment>
+          ))}
+          <FlexGapCenter $gap="1rem">
+            <EconomicSubNewsPNG
+              src={summaryIcon}
+              alt="summaryIcon"
+              onClick={onSummaryClick}
+            />
+            <div onClick={onBookmarkIconClick}>
+              {isBookmarked ? bookmarkedIcon : unbookmarkedIcon}
+            </div>
+          </FlexGapCenter>
+        </FlexGapCenter>
+      </FlexGap>
+
       <StockNewsPrice>
         <StockNewsCorpText>
-          {formatNumber(stockDetail.stckPrpr)}원
+          {formatNumber(stock.stckPrpr)}원
         </StockNewsCorpText>
-        {/* <StockNewsPriceText>-300 (-0.3%)</StockNewsPriceText> */}
         <CustomStockPrev
-          $isPositive={stockDetail.prdyVrss.toString().startsWith('-')}
+          $isPositive={stock.prdyVrss.toString().startsWith('-')}
         >
-          {formatChange(formatNumber(stockDetail.prdyVrss))} (
-          {stockDetail.prdyCtrt}
-          %)
+          {formatChange(formatNumber(stock.prdyVrss))} (
+          {stock.prdyCtrt}%)
         </CustomStockPrev>
       </StockNewsPrice>
     </StockNewsOuter>

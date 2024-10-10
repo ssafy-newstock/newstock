@@ -56,7 +56,7 @@ const Login: React.FC<ILoginProps> = ({ closeLogin }) => {
     if (closeLogin) {
       closeLogin();
     } else {
-      navigate('/');
+      navigate('/home');
     }
   };
 

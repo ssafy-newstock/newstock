@@ -11,7 +11,7 @@ export const RightTitleBottomDiv = styled.div`
   width: 100%;
   justify-content: flex-start;
   align-items: center;
-  margin-top: 0.5rem;
+  /* margin-top: 0.5rem; */
   gap: 2rem;
 `;
 

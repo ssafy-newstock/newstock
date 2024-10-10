@@ -39,18 +39,19 @@ const SubCenter = styled.div`
   max-width: 100rem;
   min-width: 50rem;
   width: 100%;
-  gap: 0.5rem;
+  gap: 2rem;
 `;
 
 const EconomicNewsWrapper = styled.div<{ $showSummary: boolean }>`
   display: flex;
-  margin: 0 1.25rem;
+  /* background-color: ${({ theme }) => theme.newsBackgroundColor}; */
+  /* margin: 0 1.25rem; */
   align-items: center;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   align-self: stretch;
   border-radius: 2rem;
-  width: 98%;
-  gap: 2rem;
+  width: 100%;
+  gap: 1rem;
 
   cursor: pointer;
 

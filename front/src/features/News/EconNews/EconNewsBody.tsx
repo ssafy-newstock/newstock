@@ -16,8 +16,8 @@ import { useShortQuery } from '@hooks/useShortQuery';
 const EconomicNewsBody = styled.div`
   display: flex;
   /* max-width: 72%; */
-  width: 72%;
-  margin-right: 1.25rem;
+  width: 90%;
+  /* margin-right: 1.25rem; */
   flex-direction: column;
   align-items: flex-start;
   gap: 0.5rem;
@@ -191,14 +191,13 @@ const EconNewsBody: React.FC<EconNewsBodyProps> = ({
     }
   }, [fetchBookmarkedNews, isLogin]);
 
-    // 쿼리 훅 사용하여 데이터 가져오기
-    const { data, refetch } = useShortQuery(
-      { id: id, newsType: 'industry' },
-      {
-        enabled: false, // 자동 실행 방지
-      }
-    );
-
+  // 쿼리 훅 사용하여 데이터 가져오기
+  const { data, refetch } = useShortQuery(
+    { id: id, newsType: 'industry' },
+    {
+      enabled: false, // 자동 실행 방지
+    }
+  );
 
   const handleSummaryClick = async (event: React.MouseEvent) => {
     event.stopPropagation(); // 상위 클릭 이벤트 중지
