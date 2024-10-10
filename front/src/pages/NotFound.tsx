@@ -81,7 +81,7 @@ const NotFound = () => {
       <GlobalStyle />
       <Main>
         <Container $isOnboarding={isOnboarding}>
-          <Header isOpen={activeComponent !== null} />
+          <Header isOpen={activeComponent !== null} isOnboarding={isOnboarding}/>
           <Content>
             {!isOnboarding && <Left />}
             <Center>
