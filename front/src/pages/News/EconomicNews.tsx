@@ -44,7 +44,8 @@ const SubCenter = styled.div`
 
 const EconomicNewsWrapper = styled.div<{ $showSummary: boolean }>`
   display: flex;
-  margin: 0 1.25rem;
+  /* background-color: ${({ theme }) => theme.newsBackgroundColor}; */
+  /* margin: 0 1.25rem; */
   align-items: center;
   justify-content: space-between;
   align-self: stretch;

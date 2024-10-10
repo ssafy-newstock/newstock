@@ -14,8 +14,8 @@ import { useShortQuery } from '@hooks/useShortQuery';
 const StockNewsBodyWrapper = styled.div`
   display: flex;
   /* max-width: 72%; */
-  width: 76.5%;
-  margin-right: 1.5rem;
+  width: 74.5%;
+  /* margin-right: 1.5rem; */
   flex-direction: column;
   align-items: flex-start;
   padding: 0.625rem;

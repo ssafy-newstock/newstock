@@ -40,7 +40,7 @@ const SubCenter = styled.div`
 
 const StockNewsWrapper = styled.div<{ $showSummary: boolean }>`
   display: flex;
-  margin: 0 1.25rem;
+  /* margin: 0 1.25rem; */
   align-items: center;
   justify-content: space-between;
   align-self: stretch;
