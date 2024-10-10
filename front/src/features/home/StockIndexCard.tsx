@@ -13,7 +13,7 @@ const StockIndexCard = ({ kospiInfo }: { kospiInfo: IKospiData }) => {
     'https://thumb.tossinvest.com/image/resized/16x0/https%3A%2F%2Fstatic.toss.im%2Ficons%2Fpng%2F4x%2Ficon-flag-kr.png';
   const kospi = kospiInfo?.kospi;
   return (
-    <MainCardRow>
+    <MainCardRow style={{cursor:'none'}}>
       <FlexGapColumn $gap="0.4rem">
         <FlexGapCenter $gap="0.5rem">
           <Text>{kospi.industryName}</Text>
