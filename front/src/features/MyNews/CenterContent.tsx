@@ -100,13 +100,6 @@ const CenterContent: React.FC<CenterContentProps> = ({ selectedDateRange }) => {
     }
   }, [selectedDateRange, economicNews, stockNews]);
 
-  useEffect(() => {
-    console.log('my-news의 시황 스크랩 : ', scraps);
-    console.log('my-news의 시황 뉴스 : ', scrapNews);
-    console.log('my-news의 종목 스크랩 : ', stockScraps);
-    console.log('my-news의 종목 뉴스 : ', scrapStockNews);
-  }, [scraps, stockScraps, scrapNews, scrapStockNews]);
-
   return (
     <CenterContentDiv>
       <NewsSection title={'시황 뉴스'} datas={filteredEconomicNews} />

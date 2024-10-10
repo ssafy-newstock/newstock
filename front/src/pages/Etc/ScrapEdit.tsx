@@ -23,10 +23,6 @@ const ScrapEditPage = () => {
     fetchBookmarkedDetailStockNews();
   }, [fetchBookmarkedDetailNews, fetchBookmarkedDetailStockNews]);
 
-  // useEffect(() => {
-  //   console.log('조회된 스크랩:', selectedCard);
-  //   console.log('관련 뉴스:', selectedNewsCard);
-  // }, [selectedCard, selectedNewsCard]);
   return (
     <>
       <Center>

@@ -15,7 +15,6 @@ const RightTitle: React.FC = () => {
     <TitleDiv>
       <RightTitleTopDiv>
         <TitleP_15>관심 뉴스</TitleP_15>
-        {/* <GoIcon /> */}
       </RightTitleTopDiv>
     </TitleDiv>
   );
