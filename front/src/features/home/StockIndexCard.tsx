@@ -13,7 +13,7 @@ const StockIndexCard = ({ kospiInfo }: { kospiInfo: IKospiData }) => {
     'https://thumb.tossinvest.com/image/resized/16x0/https%3A%2F%2Fstatic.toss.im%2Ficons%2Fpng%2F4x%2Ficon-flag-kr.png';
   const kospi = kospiInfo?.kospi;
   return (
-    <MainCardRow style={{cursor:'none'}}>
+    <MainCardRow style={{cursor:'default'}}>
       <FlexGapColumn $gap="0.4rem">
         <FlexGapCenter $gap="0.5rem">
           <Text>{kospi.industryName}</Text>
@@ -26,7 +26,7 @@ const StockIndexCard = ({ kospiInfo }: { kospiInfo: IKospiData }) => {
           {kospi.bstpNmixPrdyVrss} ({kospi.bstpNmixPrdyCtrt}%)
         </StockPrev>
       </FlexGapColumn>
-      <LineChart kospiChart={kospiInfo.kospiChart}/>
+      <LineChart kospiChart={kospiInfo.kospiChart} $isPositive={kospi.bstpNmixPrdyVrss.toString().startsWith('-')}/>
     </MainCardRow>
   );
 };

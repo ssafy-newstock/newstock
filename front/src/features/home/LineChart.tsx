@@ -1,112 +1,104 @@
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
-import { Line } from 'react-chartjs-2';
+import Chart from 'react-apexcharts';
+import { ApexOptions } from 'apexcharts';
+import LoadingSpinner from '@components/LoadingSpinner';
+import { Suspense } from 'react';
+import { useTheme } from 'styled-components';
 import { IKospiChart } from '@hooks/useKospiQuery';
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
+const LinChart = ({
+  kospiChart,
+  $isPositive,
+}: {
+  kospiChart: IKospiChart[];
+  $isPositive: boolean;
+}) => {
+  const theme = useTheme();
+  // 9:00부터 15:30까지의 타임스탬프 계산
+  const startTime = new Date();
+  startTime.setHours(9, 0, 0, 0); // 9시 00분 00초
+  const endTime = new Date();
+  endTime.setHours(15, 30, 0, 0); // 15시 30분 00초
 
-interface IData {
-  date: string;
-  price: number;
-}
-
-const LINE_COLORS = {
-  stock: '#FF0000',
-};
-
-const createDataset = (
-  label: string,
-  data: number[] | undefined,
-  color: string
-) => ({
-  label,
-  data,
-  borderColor: color,
-  backgroundColor: color,
-});
-
-const filterEvenIndices = (data: IData[]) => {
-  return data.filter((_, index) => index % 2 === 0);
-};
-
-const LineChart = ({ kospiChart }: { kospiChart: IKospiChart[] }) => {
-  const options = {
-    responsive: true,
-    animation: {
-      duration: 0,
+  const series = [
+    {
+      name: '',
+      data: kospiChart
+        ? kospiChart
+            .filter((item) => {
+              const time = new Date(item.time).getTime();
+              return time >= startTime.getTime() && time <= endTime.getTime(); // 9:00 ~ 15:30 사이의 데이터만 포함
+            })
+            .map((item) => ({
+              x: new Date(item.time).getTime(),
+              y: item.bstpNmixPrpr,
+            }))
+        : [],
     },
-    elements: {
-      line: {
-        tension: 0.4, // 이 설정은 선을 부드럽게 만듭니다
-      },
-      point: {
-        radius: 0, // 점을 제거합니다
-        hoverRadius: 0, // 마우스 오버 시 점도 제거합니다
-      },
-    },
-    plugins: {
-      legend: {
-        display: false,
-      },
-    },
-    scales: {
-      x: {
-        display: false,
-      },
-      y: {
-        display: false,
-      },
-    },
-  };
-
-
-
-  // kospiChart 데이터가 비어 있거나 빈 배열인 경우 더미 데이터를 사용
-  const chartData: IData[] = kospiChart.length > 0
-    ? kospiChart.map(item => ({
-        date: item.time, // kospiChart의 시간
-        price: parseFloat(item.bstpNmixPrpr), // 가격을 숫자로 변환
-      }))
-    : [];
-
-  // 선택된 데이터에서 짝수 인덱스의 데이터 필터링
-  const evenData = filterEvenIndices(chartData);
-  const labels = evenData.map((item) => item.date);
-
-  const datasets = [
-    createDataset(
-      '지수',
-      evenData.map((item) => item.price),
-      LINE_COLORS.stock
-    ),
   ];
 
-  const data = {
-    labels,
-    datasets,
+  const isPositive = $isPositive ? '#0000FF' : '#FF0000';
+
+  // ApexCharts 옵션 설정
+  const options: ApexOptions = {
+    chart: {
+      type: 'line', // 차트 종류 (선형 차트)
+      zoom: {
+        enabled: false,
+      },
+      toolbar: {
+        show: false,
+      },
+    },
+    colors: [isPositive],
+    stroke: {
+      width: 2, // 선 두께 설정
+      curve: 'smooth', // 선을 부드럽게
+    },
+    xaxis: {
+      type: 'datetime', // 시간 데이터를 datetime으로 설정
+      min: startTime.getTime(), // x축의 최소값 (9시)
+      max: endTime.getTime(), // x축의 최대값 (15시 30분)
+      labels: {
+        show: false,
+      },
+      axisBorder: {
+        show: true, // x축 경계선 제거
+      },
+      axisTicks: {
+        show: false, // x축 눈금 제거
+      },
+    },
+    yaxis: {
+      show: false,
+      title: {
+        style: { color: theme.textColor },
+      },
+      labels: {
+        show: false,
+        style: { colors: theme.textColor },
+      },
+    },
+    grid: {
+      show: false, // Hide grid lines
+    },
+    tooltip: {
+      enabled: false,
+    },
   };
 
   return (
-    <div style={{ width: '5rem' }}>
-      <Line options={options} data={data} />
+    <div id="chart">
+      <Suspense fallback={<LoadingSpinner />}>
+        <Chart
+          options={options}
+          series={series}
+          type="line"
+          width={140}
+          height={100}
+        />
+      </Suspense>
     </div>
   );
 };
 
-export default LineChart;
+export default LinChart;
