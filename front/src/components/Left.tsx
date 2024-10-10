@@ -154,6 +154,7 @@ const Left: React.FC = () => {
         '/subnews-main/economic-news',
         '/subnews-main/stock-news',
         '/scrap-detail',
+        '/scrap-create',
         '/my-news',
       ].includes(location.pathname) ||
       location.pathname.includes('/subnews-main/economic-news/') ||
@@ -481,11 +482,19 @@ const Left: React.FC = () => {
             width="24"
             height="24"
             viewBox="0 0 24 24"
-            $active={activeMenu === '/scrap-detail'}
+            $active={
+              activeMenu === '/scrap-detail' || activeMenu === '/scrap-create'
+            }
           >
             <path d="M5 21V5C5 4.45 5.196 3.97933 5.588 3.588C5.98 3.19667 6.45067 3.00067 7 3H17C17.55 3 18.021 3.196 18.413 3.588C18.805 3.98 19.0007 4.45067 19 5V21L12 18L5 21ZM7 17.95L12 15.8L17 17.95V5H7V17.95Z" />
           </StyledSVG>
-          <TextP $active={activeMenu === '/scrap-detail'}>뉴스 스크랩</TextP>
+          <TextP
+            $active={
+              activeMenu === '/scrap-detail' || activeMenu === '/scrap-create'
+            }
+          >
+            뉴스 스크랩
+          </TextP>
         </TextDiv>
       </DropdownMenu>
       <MenuSection
