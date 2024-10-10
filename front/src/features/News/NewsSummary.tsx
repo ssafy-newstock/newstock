@@ -45,7 +45,6 @@ const NewsSummaryBody = styled.div`
 `;
 
 const NewsSummaryBodyText = styled.div`
-  color: #000000;
   font-size: 1.3rem;
   font-weight: 600;
   line-height: 1.8;
