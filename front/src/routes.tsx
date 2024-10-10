@@ -30,12 +30,15 @@ import AllStockPage from '@pages/Stock/AllStock';
 import SectionStockPage from '@pages/Stock/SectionStock';
 import Auth from '@pages/Auth';
 import Home from '@pages/Home';
+import NotFound from '@pages/NotFound';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <App />,
-    // errorElement: <NotFound />,
+    element: (
+        <App />
+    ),
+    errorElement: <NotFound />,
     children: [
       { index: true, element: <Navigate to="/onboarding" replace /> },
       { path: 'onboarding', element: <OnBoardingPage /> },
