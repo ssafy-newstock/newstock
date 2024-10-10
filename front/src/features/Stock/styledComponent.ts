@@ -25,6 +25,8 @@ export const StockGridColumn = styled.div`
 `;
 
 export const MainGridColumn = styled.div<{ $gap: string }>`
+width: 100%;
+  height: 100%;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: ${({ $gap }) => $gap};
