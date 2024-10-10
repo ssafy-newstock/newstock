@@ -152,12 +152,11 @@ const SectionSecond: React.FC<SectionProps> = ({
                 <CardContentTitle>부가 기능</CardContentTitle>
                 <CardDescription as="ul">
                   <CardContentItem>
-                    Newstock은 방대한 양의 데이터를 실시간으로 분석하여
-                    투자자에게 시장의 주요 트렌드와 변동성을 제공합니다.
+                    AI 요약 기능을 통해 방대한 양의 뉴스 데이터와 주식 데이터를
+                    간단하게 요약하여 제공합니다.
                   </CardContentItem>
                   <CardContentItem>
-                    빅데이터 기반의 유사도 분석 기능을 통해 과거 시장 상황과
-                    현재 시장을 비교하여 투자에 필요한 인사이트를 제공합니다.
+                    북마크한 뉴스를 스크랩하여 공부할 수 있는 기능을 제공합니다.
                   </CardContentItem>
                 </CardDescription>
                 <MoreButton onClick={scrollToSectionSixth}>

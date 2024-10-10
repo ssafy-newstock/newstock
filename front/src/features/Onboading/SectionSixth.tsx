@@ -11,6 +11,9 @@ import {
   TextWrapper,
   SectionTitle,
 } from '@features/Onboading/OnboadingStyledComponent';
+import videoAIChatBot from '@assets/OnBoarding/videoAIChatBot.gif';
+import videoScrap from '@assets/OnBoarding/videoScrap.gif';
+import videoEasy from '@assets/OnBoarding/videoEasy.gif';
 
 interface SectionProps {
   $isVisible: boolean;
@@ -20,22 +23,19 @@ interface SectionProps {
 // 이미지와 관련된 텍스트 데이터를 배열로 관리
 const slides = [
   {
-    image:
-      'https://via.placeholder.com/960x540/828282/FFFFFF?text=960x540 Image+1',
+    image: videoAIChatBot,
     title: 'AI 챗봇',
-    text: 'Newstock은 과거 데이터와 현재 데이터를 비교하여 시장 흐름과 패턴을분석하는 기능을 제공합니다. 이 기능을 통해 투자자는 과거와 유사한시장 상황을 식별하고, 이를 기반으로 미래를 예측할 수 있습니다.',
+    text: 'Newstock의 AI 챗봇은 학습된 데이터를 활용해 사용자의 경제 및 금융 질문에 신속하게 답변하며, 관련 뉴스와 시장 동향을 실시간으로 제공합니다. 투자자가 필요한 정보를 빠르게 얻을 수 있도록 지원합니다.',
   },
   {
-    image:
-      'https://via.placeholder.com/960x540/808080/FFFFFF?text=960x540 Image+2',
+    image: videoScrap,
     title: '스크랩',
-    text: '사용자는 종목별 차트 및 데이터를 분석하여 투자할 종목을 선택할 수있습니다. 각 주식의 성장 가능성을 감정 분석과 함께 제공하며,다양한 분석 도구를 통해 더 깊은 인사이트를 얻을 수 있습니다.',
+    text: '뉴스 스크랩 기능을 통해 사용자는 관심 있는 경제 및 금융 뉴스를 손쉽게 저장하고 관리할 수 있습니다. 스크랩한 뉴스는 언제든지 다시 확인할 수 있어 중요한 정보를 놓치지 않고 활용할 수 있습니다.',
   },
   {
-    image:
-      'https://via.placeholder.com/960x540/808080/FFFFFF?text=960x540 Image+3',
-    title: '편리한 정보 제공',
-    text: '우측 사이드바를 통하여 사용자는 편리하게 어느 페이지에서든 자신의 정보 및 랭킹을 확인할 수 있습니다.',
+    image: videoEasy,
+    title: '편리한 기능',
+    text: '그 외 사용자 친화적인 기능을 통해 사용자는 자신의 정보와 다양한 경제 뉴스를 손쉽게 관리하고 편리하게 제공받을 수 있으며, 개인 맞춤형 설정을 통해 필요한 정보만 빠르게 확인할 수 있습니다.',
   },
 ];
 

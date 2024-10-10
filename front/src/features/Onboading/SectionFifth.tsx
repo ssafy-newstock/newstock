@@ -13,6 +13,7 @@ import {
 } from '@features/Onboading/OnboadingStyledComponent';
 import videoStockFirst from '@assets/OnBoarding/실시간 주식.gif';
 import videoStockSecond from '@assets/OnBoarding/주식 매수.gif';
+import videoSimilaritySearch from '@assets/OnBoarding/videoSimilaritySearch.gif';
 
 interface SectionProps {
   $isVisible: boolean;
@@ -32,10 +33,9 @@ const slides = [
     text: '가상의 포인트를 사용해 실제 시장 데이터를 기반으로 모의 투자를진행할 수 있습니다. 이를 통해 사용자는 리스크 없이 다양한 투자전략을 실험해볼 수 있으며, 실제 시장 상황에 대한 감각을 키울 수있습니다.',
   },
   {
-    image:
-      'https://via.placeholder.com/960x540/808080/FFFFFF?text=960x540 Image+3',
-    title: '주식 분석',
-    text: '사용자는 종목별 차트 및 데이터를 분석하여 투자할 종목을 선택할 수있습니다. 각 주식의 성장 가능성을 감정 분석과 함께 제공하며,다양한 분석 도구를 통해 더 깊은 인사이트를 얻을 수 있습니다.',
+    image: videoSimilaritySearch,
+    title: '유사도 분석',
+    text: 'Newstock은 과거 데이터와 현재 데이터를 비교하여 시장 흐름과 패턴을분석하는 유사도 분석을 제공합니다. 이 기능을 통해 투자자는 과거와 유사한시장 상황을 식별하고,유사도 분석을 통하여 사용자의 주식 분석에 도움을 줍니다.',
   },
 ];
 
