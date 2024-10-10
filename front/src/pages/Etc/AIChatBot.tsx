@@ -72,6 +72,7 @@ const StyledDatePicker = styled(DatePicker as any)``;
 
 const AIChatBotPage: React.FC = () => {
   const [input, setInput] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false); // 로딩 상태 추가
   const chatBodyRef = useRef<HTMLDivElement>(null);
   const theme = useTheme();
 
@@ -97,7 +98,7 @@ const AIChatBotPage: React.FC = () => {
   const fetchNewsAI = async (query: string) => {
     try {
       if (!startDate || !endDate) return;
-
+      setLoading(true); // 로딩 시작
       const formattedStartDate = startDate.toISOString().split('T')[0];
       const formattedEndDate = endDate.toISOString().split('T')[0];
 
@@ -119,6 +120,8 @@ const AIChatBotPage: React.FC = () => {
       addMessage(aiResponse);
     } catch (error) {
       console.error('API 호출 에러:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -192,6 +195,12 @@ const AIChatBotPage: React.FC = () => {
                 )}
               </ChatMessageOuterWrapper>
             ))}
+            {loading && (
+              <ChatMessageInnerWrapper $isMine={false}>
+                <ChatImage src={chatbotImg} alt="userImg" />
+                <ChatMessage $isMine={false}>답변 기다리는 중...</ChatMessage>
+              </ChatMessageInnerWrapper>
+            )}
           </ChatBodyWrapper>
           <DatePickerWrapper>
             {showDatePicker && (
@@ -233,7 +242,8 @@ const AIChatBotPage: React.FC = () => {
               value={input}
               onChange={handleInputChange}
               onKeyDown={handleKeyPress}
-              placeholder="Type a message..."
+              placeholder="메시지를 입력해주세요."
+              disabled={loading}
             />
             <SendIconWrapper onClick={handleSendClick}>
               {sendIcon}
