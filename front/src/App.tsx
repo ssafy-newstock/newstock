@@ -24,11 +24,6 @@ const Main = styled.div`
   width: 100%;
   height: 100vh;
   transition: all 0.5s ease;
-  overflow: auto;
-  &::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-  }
 `;
 
 const Container = styled.div<{ $isOnboarding: boolean }>`
@@ -45,6 +40,11 @@ const Content = styled.div`
   flex-direction: row;
   width: 100%;
   transition: all 0.5s ease;
+  overflow: auto;
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
 `;
 
 const RightVacantWrapper = styled.div<{
@@ -56,7 +56,7 @@ const RightVacantWrapper = styled.div<{
       ? '500px'
       : $isScrapDetail
         ? '0px'
-        : '250px'}; /* scrap-detail 페이지에서 모달이 닫혀있을 때는 여백이 0px */
+        : '200px'}; /* scrap-detail 페이지에서 모달이 닫혀있을 때는 여백이 0px */
   opacity: ${({ $isOpen }) =>
     $isOpen ? '0' : '1'}; /* 모달이 열리면 투명도 조정 */
   transition:
@@ -69,7 +69,6 @@ const App = () => {
   const { theme } = useThemeStore();
   const currentTheme = theme === 'light' ? lightTheme : darkTheme;
   const location = useLocation();
-
   const { setAllStock } = useAllStockStore();
   const { setCategoryStock } = useCategoryStockStore();
   const { setTop10Stock } = useTop10StockStore();
@@ -88,7 +87,7 @@ const App = () => {
   const isOnboarding = location.pathname === '/onboarding';
 
   // scrap-detail 페이지인지 확인하는 변수
-  const isScrapDetail = location.pathname.includes('scrap');
+  const isScrapDetail = location.pathname.includes('/scrap');
 
   // Modal 열기/닫기 기능 추가
   return (
@@ -96,7 +95,10 @@ const App = () => {
       <GlobalStyle />
       <Main>
         <Container $isOnboarding={isOnboarding}>
-          <Header isOpen={activeComponent !== null} />
+          <Header
+            isOpen={activeComponent !== null}
+            isOnboarding={isOnboarding}
+          />
           <Content>
             {!isOnboarding && <Left />}
             <Outlet />

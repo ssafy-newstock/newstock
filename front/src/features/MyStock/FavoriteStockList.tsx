@@ -18,6 +18,7 @@ import useTop10StockStore from '@store/useTop10StockStore';
 import { formatNumber } from '@utils/formatNumber';
 import { formatChange } from '@utils/formatChange';
 import { getStockImageUrl } from '@utils/getStockImageUrl';
+import { useTheme } from 'styled-components';
 
 interface stockFavoriteDto {
   stockFavoriteId: number;
@@ -32,7 +33,7 @@ interface FavoriteStockProps {
 
 const FavoriteStock: React.FC<FavoriteStockProps> = ({ stock }) => {
   const navigate = useNavigate();
-
+  const theme = useTheme();
   // 주식 상세 페이지 + 월봉 차트 조회
   const handleNavigate = () => {
     navigate(`/stock-detail/${stock.stockCode}/day-chart`, {
@@ -50,9 +51,9 @@ const FavoriteStock: React.FC<FavoriteStockProps> = ({ stock }) => {
     top10Stock.find((s) => s.stockCode === stock.stockCode);
 
   const getTextColor = (priceChange: number | undefined) => {
-    if (priceChange === undefined) return '';
-    if (priceChange > 0) return 'red'; // 상승일 때 빨간색
-    if (priceChange < 0) return 'blue'; // 하락일 때 파란색
+    if (priceChange === undefined) return theme.textColor;
+    if (priceChange > 0) return theme.stockRed || 'red'; // 상승일 때 빨간색
+    if (priceChange < 0) return theme.stockBlue || 'blue'; // 하락일 때 파란색
     return ''; // 변화가 없을 때는 색상 없음
   };
   return (
