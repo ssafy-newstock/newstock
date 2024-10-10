@@ -1,8 +1,4 @@
-import {
-  TextP_16,
-  TitleP_15,
-  TitleDiv,
-} from '@features/Scrap/scrapStyledComponent';
+import { TextP_16, TitleP_15 } from '@features/Scrap/scrapStyledComponent';
 import { CalendarIcon } from '@features/Scrap/create/Icon';
 import {
   RightTitleBottomDiv,
@@ -12,12 +8,23 @@ import {
 import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import { ko } from 'date-fns/locale';
+import styled from 'styled-components';
+
+const TitleDiv = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  /* gap: 0.625rem; */
+  align-self: stretch;
+`;
 
 const RightTitle: React.FC<{
   onDateRangeChange: (dates: [Date | null, Date | null]) => void;
 }> = ({ onDateRangeChange }) => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const [isVisible, setIsVisible] = useState<boolean>(false); // 상태를 추가
 
   const handleDateChange = (dates: [Date | null, Date | null] | null) => {
     const [start, end] = dates || [null, null];
@@ -48,7 +55,6 @@ const RightTitle: React.FC<{
     </div>
   ));
 
-
   return (
     <TitleDiv>
       <RightTitleTopDiv>
@@ -56,22 +62,26 @@ const RightTitle: React.FC<{
         {/* <GoIcon /> */}
       </RightTitleTopDiv>
       <RightTitleBottomDiv>
-        <TextP_16 onClick={handleReset} style={{ cursor: 'pointer' }}>
-          전체
-        </TextP_16>
-        <RightTitleBottomFilterDiv style={{ cursor: 'pointer' }}>
-          <DatePicker
-            selected={startDate || undefined}
-            onChange={handleDateChange} // 날짜 범위 선택
-            startDate={startDate || undefined}
-            endDate={endDate || undefined}
-            selectsRange
-            dateFormat="yyyy.MM.dd"
-            shouldCloseOnSelect={false}
-            customInput={<CustomInput />} // 사용자 정의 입력 컴포넌트
-            locale={ko} // 한국어 로케일 설정
-          />
-        </RightTitleBottomFilterDiv>
+        {isVisible && (
+          <>
+            <TextP_16 onClick={handleReset} style={{ cursor: 'pointer' }}>
+              전체
+            </TextP_16>
+            <RightTitleBottomFilterDiv style={{ cursor: 'pointer' }}>
+              <DatePicker
+                selected={startDate || undefined}
+                onChange={handleDateChange} // 날짜 범위 선택
+                startDate={startDate || undefined}
+                endDate={endDate || undefined}
+                selectsRange
+                dateFormat="yyyy.MM.dd"
+                shouldCloseOnSelect={false}
+                customInput={<CustomInput />} // 사용자 정의 입력 컴포넌트
+                locale={ko} // 한국어 로케일 설정
+              />
+            </RightTitleBottomFilterDiv>
+          </>
+        )}
       </RightTitleBottomDiv>
     </TitleDiv>
   );

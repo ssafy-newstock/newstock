@@ -7,6 +7,7 @@ import {
   Text,
 } from '@features/Onboading/OnboadingStyledComponent';
 import { AllowIcon } from '@features/Onboading/Icon';
+import LastImg from '@assets/OnBoarding/LastImg.jpg';
 
 const SectionLastContainer = styled(SectionContainerDefault)<{
   $isExpanded: boolean;
@@ -47,6 +48,8 @@ const ImageContainer = styled.div<{ $isExpanded: boolean }>`
     width 1s ease,
     height 1s ease;
   cursor: ${({ $isExpanded }) => ($isExpanded ? 'default' : 'pointer')};
+  border: ${({ $isExpanded }) => ($isExpanded ? 'none' : '1px solid #828282')};
+  border-radius: 2rem;
 
   /* 반응형 디자인 - 이미지 크기 조정 */
   @media (max-width: 1600px) {
@@ -170,7 +173,7 @@ const SectionLast: React.FC<SectionProps> = ({
           onClick={!isExpanded ? handleImageClick : handleStartClick}
         >
           <BackgroundImage
-            src="https://via.placeholder.com/1280x720"
+            src={LastImg}
             alt="배경 이미지"
             $tiltX={tiltX}
             $tiltY={tiltY}
