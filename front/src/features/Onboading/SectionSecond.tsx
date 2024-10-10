@@ -8,6 +8,7 @@ import {
   SectionTitle,
 } from '@features/Onboading/OnboadingStyledComponent';
 import { RightIcon } from '@features/Onboading/Icon';
+import { useState } from 'react';
 
 // 카드 내용 래퍼 스타일
 const CardContentWrapper = styled.div`
@@ -38,6 +39,36 @@ const CardContentItem = styled.p`
   line-height: 1.5;
 `;
 
+interface LazyIframe {
+  src: any;
+  width: any;
+  height: any;
+}
+
+const LazyIframe: React.FC<LazyIframe> = ({ src, width, height }) => {
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
+
+  const handleLoad = () => {
+    setLoaded(true);
+  };
+
+  const handleError = () => {
+    setError(true);
+  };
+
+  return !error ? (
+    <iframe
+      src={src}
+      width={width}
+      height={height}
+      onLoad={handleLoad}
+      onError={handleError}
+      style={{ display: loaded ? 'block' : 'none' }}
+    ></iframe>
+  ) : null;
+};
+
 interface SectionProps {
   $isVisible: boolean;
   sectionRef: React.RefObject<HTMLDivElement>;
@@ -65,11 +96,11 @@ const SectionSecond: React.FC<SectionProps> = ({
           {
             front: (
               <CardContentWrapper>
-                <iframe
+                <LazyIframe
                   src="https://lottie.host/embed/100a9330-a472-46b5-99aa-0b7920b4050d/HHxJgpXD6z.json"
                   width="300"
                   height="300"
-                ></iframe>
+                ></LazyIframe>
                 <CardTitle>뉴스</CardTitle>
                 <CardDescription>한눈에 파악하는 경제 뉴스</CardDescription>
               </CardContentWrapper>
@@ -99,12 +130,11 @@ const SectionSecond: React.FC<SectionProps> = ({
           {
             front: (
               <CardContentWrapper>
-                <iframe
+                <LazyIframe
                   src="https://lottie.host/embed/687b168d-6cf4-4357-a3a9-f3ef3a4efc8f/6aJfpOudUD.json"
                   width="300"
                   height="300"
-                  style={{ border: 'none' }}
-                ></iframe>
+                ></LazyIframe>
                 <CardTitle>주식</CardTitle>
                 <CardDescription>
                   실시간 주식 데이터 기반 모의 투자
@@ -136,11 +166,11 @@ const SectionSecond: React.FC<SectionProps> = ({
           {
             front: (
               <CardContentWrapper>
-                <iframe
+                <LazyIframe
                   src="https://lottie.host/embed/478bd268-09fa-444c-a0fb-ca0418b653b5/4s6kRdSWYV.json"
                   width="300"
                   height="300"
-                ></iframe>
+                ></LazyIframe>
                 <CardTitle>부가 기능</CardTitle>
                 <CardDescription>
                   AI 챗봇, 일일 레포트, 스크랩, 랭킹 등
@@ -152,12 +182,11 @@ const SectionSecond: React.FC<SectionProps> = ({
                 <CardContentTitle>부가 기능</CardContentTitle>
                 <CardDescription as="ul">
                   <CardContentItem>
-                    Newstock은 방대한 양의 데이터를 실시간으로 분석하여
-                    투자자에게 시장의 주요 트렌드와 변동성을 제공합니다.
+                    AI 요약 기능을 통해 방대한 양의 뉴스 데이터와 주식 데이터를
+                    간단하게 요약하여 제공합니다.
                   </CardContentItem>
                   <CardContentItem>
-                    빅데이터 기반의 유사도 분석 기능을 통해 과거 시장 상황과
-                    현재 시장을 비교하여 투자에 필요한 인사이트를 제공합니다.
+                    북마크한 뉴스를 스크랩하여 공부할 수 있는 기능을 제공합니다.
                   </CardContentItem>
                 </CardDescription>
                 <MoreButton onClick={scrollToSectionSixth}>

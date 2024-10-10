@@ -59,6 +59,34 @@ const RightVacantWrapper = styled.div<{
     opacity 0.5s ease; /* 너비와 불투명도를 함께 전환 */
   overflow: hidden; /* 애니메이션 시 내용이 넘치지 않도록 설정 */
 `;
+interface LazyIframe {
+  src: any;
+  width: any;
+  height: any;
+}
+const LazyIframe: React.FC<LazyIframe> = ({ src, width, height }) => {
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
+
+  const handleLoad = () => {
+    setLoaded(true);
+  };
+
+  const handleError = () => {
+    setError(true);
+  };
+
+  return !error ? (
+    <iframe
+      src={src}
+      width={width}
+      height={height}
+      onLoad={handleLoad}
+      onError={handleError}
+      style={{ display: loaded ? 'block' : 'none' }}
+    ></iframe>
+  ) : null;
+};
 
 const NotFound = () => {
   const { theme } = useThemeStore();
@@ -81,12 +109,15 @@ const NotFound = () => {
       <GlobalStyle />
       <Main>
         <Container $isOnboarding={isOnboarding}>
-          <Header isOpen={activeComponent !== null} isOnboarding={isOnboarding}/>
+          <Header
+            isOpen={activeComponent !== null}
+            isOnboarding={isOnboarding}
+          />
           <Content>
             {!isOnboarding && <Left />}
             <Center>
               <FlexColumnStartCenter style={{ width: '100%', height: '100%' }}>
-                <iframe
+                <LazyIframe
                   src="https://lottie.host/embed/a0a44ae6-3254-4fa6-8db5-df5aa632ebb6/S4solNithH.json"
                   width="80%"
                   height="80%"
