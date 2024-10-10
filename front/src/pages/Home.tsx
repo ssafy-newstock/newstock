@@ -23,7 +23,7 @@ import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 export const DividedSection = styled.div`
-  margin: 1rem 0rem;
+  margin: 1rem 0rem 2rem 0rem;
 `;
 
 const Home = () => {
@@ -65,26 +65,6 @@ const Home = () => {
         </MainGridColumn>
       </DividedSection>
 
-      <DividedSection>
-        <StockHeaderWrapper>
-          <StockHeader>실시간 차트</StockHeader>
-          <More handlClick={allStockNavigate} />
-        </StockHeaderWrapper>
-        <HrTag />
-        <DividedSection>
-          <StockGridRow>
-            <RealTimeStockFirstRow />
-            {top10Stock.length > 0 ? (
-              top10Stock?.map((stock: IStock, index: number) => (
-                <RealTimeStock key={index} stock={stock} />
-              ))
-            ) : (
-              <RealTimeStockSkeleton />
-            )}
-          </StockGridRow>
-        </DividedSection>
-      </DividedSection>
-
       <StockHeaderWrapper>
         <StockHeader>주요 뉴스</StockHeader>
         <More handlClick={stockNewsNavigate} />
@@ -107,6 +87,24 @@ const Home = () => {
                 <NewsCard key={news.id} news={news} />
               ))}
         </MainGridColumn>
+      </DividedSection>
+
+      <StockHeaderWrapper>
+        <StockHeader>실시간 차트</StockHeader>
+        <More handlClick={allStockNavigate} />
+      </StockHeaderWrapper>
+      <HrTag />
+      <DividedSection>
+        <StockGridRow>
+          <RealTimeStockFirstRow />
+          {top10Stock.length > 0 ? (
+            top10Stock?.map((stock: IStock, index: number) => (
+              <RealTimeStock key={index} stock={stock} />
+            ))
+          ) : (
+            <RealTimeStockSkeleton />
+          )}
+        </StockGridRow>
       </DividedSection>
     </Center>
   );
