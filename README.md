@@ -203,7 +203,7 @@ Newstock은 주식 투자와 경제 뉴스를 보다 쉽고 효율적으로 접�
 
 ### NewStock 영상
 
-[![NewStock Web](http://img.youtube.com/vi/zpk5nVSYzbk/0.jpg)](https://youtu.be/DVBAKg1N4L8)
+[![NewStock Web]()]()
 
 </div>
 
