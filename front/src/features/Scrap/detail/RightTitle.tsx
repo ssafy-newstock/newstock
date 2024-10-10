@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   TextP_16,
   TitleDiv,
-  TitleP_15
+  TitleP_15,
 } from '@features/Scrap/scrapStyledComponent';
 import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
@@ -17,7 +17,7 @@ import { ko } from 'date-fns/locale';
 import styled from 'styled-components';
 
 const CustomTitleDiv = styled(TitleDiv)`
-  gap: 1.2rem;
+  gap: 0.8rem;
 `;
 
 const RightTitle: React.FC<{
@@ -25,6 +25,7 @@ const RightTitle: React.FC<{
 }> = ({ onDateRangeChange }) => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const [isVisible, setIsVisible] = useState<boolean>(false); // 상태를 추가
 
   const handleDateChange = (dates: [Date | null, Date | null]) => {
     const [start, end] = dates;
@@ -65,22 +66,26 @@ const RightTitle: React.FC<{
       </RightTitleTopDiv>
       <TextP_16>뉴스를 스크랩하고 스크랩한 뉴스를 관리할 수 있어요.</TextP_16>
       <RightTitleBottomDiv>
-        <TextP_16 onClick={handleReset} style={{ cursor: 'pointer' }}>
-          전체
-        </TextP_16>
-        <RightTitleBottomFilterDiv style={{ cursor: 'pointer' }}>
-          <DatePicker
-            selected={startDate || undefined}
-            onChange={handleDateChange}
-            startDate={startDate || undefined}
-            endDate={endDate || undefined}
-            selectsRange
-            dateFormat="yyyy.MM.dd"
-            shouldCloseOnSelect={false}
-            customInput={<CustomInput />}
-            locale={ko}
-          />
-        </RightTitleBottomFilterDiv>
+        {isVisible && (
+          <>
+            <TextP_16 onClick={handleReset} style={{ cursor: 'pointer' }}>
+              전체
+            </TextP_16>
+            <RightTitleBottomFilterDiv style={{ cursor: 'pointer' }}>
+              <DatePicker
+                selected={startDate || undefined}
+                onChange={handleDateChange}
+                startDate={startDate || undefined}
+                endDate={endDate || undefined}
+                selectsRange
+                dateFormat="yyyy.MM.dd"
+                shouldCloseOnSelect={false}
+                customInput={<CustomInput />}
+                locale={ko}
+              />
+            </RightTitleBottomFilterDiv>
+          </>
+        )}
       </RightTitleBottomDiv>
     </CustomTitleDiv>
   );
