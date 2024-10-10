@@ -1,11 +1,9 @@
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import StockNewsBody from '@features/News/StockNews/StockNewsBody';
 import EconSubNewsBody from '@features/News/EconNews/EconSubNewsBody';
 import axios, { AxiosResponse } from 'axios';
-import useAllStockStore from '@store/useAllStockStore';
-import useTop10StockStore from '@store/useTop10StockStore';
 import StockNewsSkeleton from '@features/News/skeleton/StockNewsSkeleton';
 import { UpIcon, UpIconWrapper } from '@features/News/UpIcon';
 
@@ -159,12 +157,8 @@ const StockNewsPage: React.FC = () => {
   const [page, setPage] = useState<number>(1); // API 페이지 번호
   const [initialLoadComplete, setInitialLoadComplete] =
     useState<boolean>(false);
-
-  const { allStock } = useAllStockStore();
-  const { top10Stock } = useTop10StockStore();
-
   const observerRef = useRef<HTMLDivElement | null>(null);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const firstNewsRef = useRef<HTMLDivElement | null>(null);
 
   const fetchNews = useCallback(async () => {
@@ -208,10 +202,10 @@ const StockNewsPage: React.FC = () => {
     };
   }, [fetchNews, loading, initialLoadComplete]);
 
-  const handleNewsClick = (id: string) => {
-    console.log(`Navigating to: /subnews-main/stock-news/${id}`);
-    navigate(`/subnews-main/stock-news/${id}`);
-  };
+  // const handleNewsClick = (id: string) => {
+  //   console.log(`Navigating to: /subnews-main/stock-news/${id}`);
+  //   navigate(`/subnews-main/stock-news/${id}`);
+  // };
 
   const handleShowSummaryChange = (newShowSummary: boolean) => {
     setShowSummary(newShowSummary);
@@ -230,18 +224,10 @@ const StockNewsPage: React.FC = () => {
       <SubCenter>
         {newsList.length > 0
           ? newsList.map((news, index) => {
-              // stockNewsStockCodes의 첫 번째 stockCode를 기반으로 stockDetail 찾기
-              const stockCode = news.stockNewsStockCodes?.[0];
-              const stockDetail =
-                allStock?.find((s) => s.stockCode === stockCode) ||
-                top10Stock?.find((s) => s.stockCode === stockCode);
-              const stockName = stockDetail?.stockName || 'Unknown Stock';
-
               return (
                 <StockNewsWrapper
                   key={news.id}
                   ref={index === 0 ? firstNewsRef : null}
-                  onClick={() => handleNewsClick(news.id)}
                   $showSummary={showSummary}
                 >
                   <EconSubNewsBody thumbnail={news.thumbnail} />
@@ -254,8 +240,7 @@ const StockNewsPage: React.FC = () => {
                     keywords={news.stockKeywords}
                     sentiment={news.sentiment}
                     onShowSummaryChange={handleShowSummaryChange}
-                    header={stockName}
-                    stockDetail={stockDetail!}
+                    stockNewsStockCodes={news.stockNewsStockCodes || []}
                   />
                 </StockNewsWrapper>
               );

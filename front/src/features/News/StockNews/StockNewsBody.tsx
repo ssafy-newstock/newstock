@@ -13,12 +13,9 @@ import { useShortQuery } from '@hooks/useShortQuery';
 
 const StockNewsBodyWrapper = styled.div`
   display: flex;
-  /* max-width: 72%; */
   width: 90%;
-  /* margin-right: 1.5rem; */
   flex-direction: column;
   align-items: flex-start;
-  /* padding: 0.625rem; */
 `;
 
 const StockNewsTitleWrapper = styled.div`
@@ -97,17 +94,6 @@ const MediaLogo = styled.img`
   border-radius: 50%;
 `;
 
-interface IStockDetail {
-  stockCode: string;
-  stockName: string;
-  stockIndustry: string;
-  stckPrpr: number;
-  prdyVrss: number;
-  prdyCtrt: number;
-  acmlVol: number;
-  acmlTrPbmn: number;
-}
-
 interface StockNewsBodyProps {
   id: string;
   title: string;
@@ -117,8 +103,7 @@ interface StockNewsBodyProps {
   keywords: string[];
   sentiment: string;
   onShowSummaryChange: (showSummary: boolean) => void;
-  header: string;
-  stockDetail: IStockDetail;
+  stockNewsStockCodes: string[];
 }
 
 const StockNewsBody: React.FC<StockNewsBodyProps> = ({
@@ -130,8 +115,7 @@ const StockNewsBody: React.FC<StockNewsBodyProps> = ({
   keywords,
   sentiment,
   onShowSummaryChange,
-  header,
-  stockDetail,
+  stockNewsStockCodes,
 }) => {
   const formattedDate = date.split('T')[0].replace(/-/g, '.');
   const [showSummary, setShowSummary] = useState<boolean>(false);
@@ -216,11 +200,10 @@ const StockNewsBody: React.FC<StockNewsBodyProps> = ({
       <StockNewsBodyWrapper>
         {/* stockName을 전달 */}
         <StockNewsHeader
-          header={header}
-          stockDetail={stockDetail!}
           isBookmarked={isBookmarked}
           onBookmarkIconClick={handleBookmarkIconClick}
           onSummaryClick={handleSummaryClick}
+          stockNewsStockCodes={stockNewsStockCodes}
         />
         {showSummary && (
           <Overlay>
