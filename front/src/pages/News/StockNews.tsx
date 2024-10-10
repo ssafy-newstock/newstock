@@ -225,7 +225,7 @@ const StockNewsPage: React.FC = () => {
           ? newsList.map((news, index) => {
               return (
                 <StockNewsWrapper
-                  key={news.id}
+                  key={index}
                   ref={index === 0 ? firstNewsRef : null}
                   $showSummary={showSummary}
                 >
