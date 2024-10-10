@@ -23,6 +23,6 @@ export default defineConfig({
     global: 'window',
   },
   optimizeDeps: {
-    exclude: ['chunk-TNX624PD'], // 문제가 발생한 디펜던시를 여기에 추가
+    exclude: ['chunk-TNX624PD', 'chunk-D2V2U44X.js'], // 문제가 발생한 디펜던시를 여기에 추가
   },
 });
