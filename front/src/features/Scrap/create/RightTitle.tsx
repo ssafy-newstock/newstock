@@ -24,7 +24,7 @@ const RightTitle: React.FC<{
 }> = ({ onDateRangeChange }) => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const [isVisible, setIsVisible] = useState<boolean>(false); // 상태를 추가
+  const [isVisible] = useState<boolean>(false); // 상태를 추가
 
   const handleDateChange = (dates: [Date | null, Date | null] | null) => {
     const [start, end] = dates || [null, null];
