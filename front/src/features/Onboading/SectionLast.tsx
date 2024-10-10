@@ -38,37 +38,21 @@ const SectionLastTitle = styled(SectionTitle)`
   }
 `;
 
-// 섹션 이미지 컨테이너
-const ImageContainer = styled.div<{ $isExpanded: boolean }>`
-  width: ${({ $isExpanded }) => ($isExpanded ? '1280px' : '426px')};
-  height: ${({ $isExpanded }) =>
-    $isExpanded ? '720px' : '240px'}; /* 16:9 비율 */
-  position: relative;
+const ImageContainer = styled.div<{
+  $isFullScreen: boolean;
+  $isExpanded: boolean;
+}>`
+  width: ${({ $isFullScreen, $isExpanded }) =>
+    $isFullScreen ? '100vw' : $isExpanded ? '1280px' : '426px'};
+  height: ${({ $isFullScreen, $isExpanded }) =>
+    $isFullScreen ? '100vh' : $isExpanded ? '720px' : '240px'};
   transition:
     width 1s ease,
     height 1s ease;
-  cursor: ${({ $isExpanded }) => ($isExpanded ? 'default' : 'pointer')};
-  border: ${({ $isExpanded }) => ($isExpanded ? 'none' : '1px solid #828282')};
-  border-radius: 2rem;
-
-  /* 반응형 디자인 - 이미지 크기 조정 */
-  @media (max-width: 1600px) {
-    width: ${({ $isExpanded }) => ($isExpanded ? '1280px' : '426px')};
-    height: ${({ $isExpanded }) =>
-      $isExpanded ? '720px' : '240px'}; /* 16:9 비율 */
-  }
-
-  @media (max-width: 1200px) {
-    width: ${({ $isExpanded }) => ($isExpanded ? '800px' : '256px')};
-    height: ${({ $isExpanded }) =>
-      $isExpanded ? '450px' : '144px'}; /* 16:9 비율 */
-  }
-
-  @media (max-width: 768px) {
-    width: ${({ $isExpanded }) => ($isExpanded ? '400px' : '200px')};
-    height: ${({ $isExpanded }) =>
-      $isExpanded ? '225px' : '112px'}; /* 16:9 비율 */
-  }
+  position: relative;
+  z-index: ${({ $isFullScreen }) => ($isFullScreen ? 1000 : 'auto')};
+  border-radius: ${({ $isFullScreen }) => ($isFullScreen ? '0' : '2rem')};
+  cursor: pointer;
 `;
 // 이미지 스타일
 const BackgroundImage = styled.img<{ $tiltX: number; $tiltY: number }>`
@@ -115,6 +99,7 @@ const SectionLast: React.FC<SectionProps> = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const [tiltX, setTiltX] = useState(0); // X축 기울기
   const [tiltY, setTiltY] = useState(0); // Y축 기울기
+  const [isFullScreen, setIsFullScreen] = useState(false);
 
   // 섹션이 보일 때 상태 초기화
   useEffect(() => {
@@ -124,7 +109,16 @@ const SectionLast: React.FC<SectionProps> = ({
   }, [$isVisible]);
 
   const handleStartClick = () => {
-    onStart();
+    if (!isExpanded) {
+      // 처음 클릭 시 1280x720으로 확장
+      setIsExpanded(true);
+    } else if (!isFullScreen) {
+      // 두 번째 클릭 시 화면 전체로 확장
+      setIsFullScreen(true);
+      setTimeout(() => {
+        onStart(); // 화면 전체로 덮인 후 '/home'으로 이동
+      }, 1000); // 애니메이션 완료 후 1초 후에 이동
+    }
   };
 
   const handleImageClick = () => {
@@ -168,6 +162,7 @@ const SectionLast: React.FC<SectionProps> = ({
         )}
         <ImageContainer
           $isExpanded={isExpanded}
+          $isFullScreen={isFullScreen}
           onMouseMove={isExpanded ? handleMouseMove : undefined}
           onMouseLeave={isExpanded ? handleMouseLeave : undefined}
           onClick={!isExpanded ? handleImageClick : handleStartClick}
