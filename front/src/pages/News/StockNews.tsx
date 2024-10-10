@@ -40,15 +40,15 @@ const SubCenter = styled.div`
 
 const StockNewsWrapper = styled.div<{ $showSummary: boolean }>`
   display: flex;
-  margin: 0 1.25rem;
+  /* margin: 0 1.25rem; */
   align-items: center;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   align-self: stretch;
   border-radius: 2rem;
   /* background-color: ${({ theme }) => theme.newsBackgroundColor}; */
   /* box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.1); */
   width: 100%;
-  gap: 2rem;
+  gap: 1rem;
 
   cursor: pointer;
 

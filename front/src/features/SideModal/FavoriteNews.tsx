@@ -6,6 +6,7 @@ import { bookmarkedIcon } from '@features/News/NewsIconTag';
 import { useNavigate } from 'react-router-dom';
 import { CenteredMessage } from '@features/SideModal/styledComponent';
 import LoadingSpinner from '@components/LoadingSpinner';
+import useAuthStore from '@store/useAuthStore';
 // import noDataPng from '@assets/News/noDataPng.png';
 
 const FavoriteNewsCenter = styled.div`
@@ -77,6 +78,7 @@ const BookmarkedNewsFooter = styled.div`
 `;
 
 const FavoriteNews: React.FC = () => {
+  const { isLogin } = useAuthStore();
   const navigate = useNavigate();
   const {
     bookmarkedDetailNews,
@@ -135,6 +137,10 @@ const FavoriteNews: React.FC = () => {
       await removeBookmark(id); // 시황 뉴스 북마크 삭제
     }
   };
+
+  if (!isLogin) {
+    return <CenteredMessage>로그인 후 이용해주세요.</CenteredMessage>;
+  }
 
   if (isLoading) {
     return (

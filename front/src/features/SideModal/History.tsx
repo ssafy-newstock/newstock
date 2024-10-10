@@ -14,6 +14,7 @@ import {
   TextP_14_NOTGRAY,
 } from '@features/SideModal/styledComponent';
 import { getStockImageUrl } from '@utils/getStockImageUrl';
+import useAuthStore from '@store/useAuthStore';
 
 const TransactionCardLeftTopDiv = styled.div`
   display: flex;
@@ -22,7 +23,8 @@ const TransactionCardLeftTopDiv = styled.div`
 `;
 
 const TransactionTypeText = styled.p<{ $type: string }>`
-  color: ${({ $type }) => ($type === 'BUY' ? 'red' : 'blue')};
+  color: ${({ $type, theme }) =>
+    $type === 'BUY' ? theme.stockRed || 'red' : theme.stockBlue || 'blue'};
 `;
 
 const DateTitle = styled.h3`
@@ -37,8 +39,13 @@ const HistoryhrDiv = styled.div`
 `;
 
 const History: React.FC = () => {
+  const { isLogin } = useAuthStore();
   // 커스텀 훅으로 거래 내역 데이터를 가져옴
   const { data: transactions, isLoading, error } = useMyTransactionData();
+
+  if (!isLogin) {
+    return <CenteredMessage>로그인 후 이용해주세요.</CenteredMessage>;
+  }
 
   if (isLoading) {
     return (
@@ -49,7 +56,7 @@ const History: React.FC = () => {
   }
 
   if (error || !transactions) {
-    return <CenteredMessage>Error loading data.</CenteredMessage>;
+    return <CenteredMessage>데이터 불러오는 중 에러 발생</CenteredMessage>;
   }
 
   if (transactions.length === 0) {
@@ -96,7 +103,7 @@ const History: React.FC = () => {
   return (
     <ContentDiv>
       {sortedDates.map((dateKey) => (
-        <ContainerDiv key={dateKey}>
+        <ContainerDiv key={`date-${dateKey}`}>
           {/* 날짜 표시 */}
           <DateTitle>{dateKey}</DateTitle>
 
@@ -110,12 +117,12 @@ const History: React.FC = () => {
                   addNineHours(new Date(a.stockTransactionDate))
                 ).getTime()
             ) // 시간을 기준으로 내림차순 정렬
-            .map((transaction) => {
+            .map((transaction, index) => {
               const transactionDate = addNineHours(
                 new Date(transaction.stockTransactionDate)
               );
               return (
-                <CardDiv key={transaction.stockId}>
+                <CardDiv key={`${transaction.stockId}-${index}`}>
                   <CardLeftDiv>
                     <StockImage
                       src={getStockImageUrl(transaction.stockCode)}

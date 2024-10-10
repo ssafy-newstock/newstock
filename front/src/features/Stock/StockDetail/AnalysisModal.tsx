@@ -17,21 +17,6 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { IAnalysisResponse } from '@hooks/useAnalysisQuery';
 
-// interface IRelatedNews {
-//   id: string;
-//   upload_datetime: string;
-//   title: string;
-//   sentiment: number;
-//   thumbnail: string;
-//   media: string;
-// }
-
-// interface IAnalysisResponse {
-//   macroReport: string;
-//   microReport: string;
-//   relatedNews: IRelatedNews[];
-// }
-
 interface AnalysisModalProps {
   onClose?: () => void;
   analysisData?: IAnalysisResponse;
@@ -43,7 +28,6 @@ const ModalOverlay = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  /* background: rgba(0, 0, 0, 0.5); */
   display: flex;
   justify-content: center;
   align-items: center;

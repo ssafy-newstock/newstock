@@ -26,7 +26,7 @@ interface NewsData {
 // 스타일드 컴포넌트 정의
 const NewsMainCenter = styled.div`
   display: flex;
-  width: 95%;
+  width: 100%;
   // 화면 퍼지는거 보기 싫어서 일단 최댓값 박아둠.
   max-width: 100rem;
   min-width: 65rem;

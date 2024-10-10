@@ -8,6 +8,29 @@ import SectionFourth from '@features/Onboading/SectionFourth';
 import SectionFifth from '@features/Onboading/SectionFifth';
 import SectionSixth from '@features/Onboading/SectionSixth';
 import SectionLast from '@features/Onboading/SectionLast';
+import { UpIcon } from '@features/News/UpIcon';
+
+// 위로 가기 버튼 스타일
+const ScrollToTopButton = styled.div`
+  position: fixed;
+  bottom: 1.5rem;
+  right: 6rem;
+  background-color: ${({ theme }) => theme.backgroundColor};
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  width: 3.5rem;
+  height: 3.5rem;
+  &:hover {
+    transform: scale(1.1);
+  }
+  svg {
+    fill: ${({ theme }) => theme.highlightColor};
+  }
+`;
 
 // 스크롤 컨테이너 스타일: 스크롤이 발생하고 각 섹션이 스냅되는 스타일
 const Container = styled.div`
@@ -28,9 +51,9 @@ const SectionContainer = styled.div`
   height: 100vh; // 섹션이 화면 크기에 맞도록 설정
 `;
 
-const OnBoardingPage = () => {
+const OnBoardingPage: React.FC = () => {
   const navigate = useNavigate();
-
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
   // 각 섹션의 가시성 상태를 관리하는 상태 (섹션별로 true/false 설정)
   const [isSectionVisible, setIsSectionVisible] = useState({
     SectionFirst: false,
@@ -54,16 +77,20 @@ const OnBoardingPage = () => {
   };
 
   useEffect(() => {
-    // IntersectionObserver 생성
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           const section = entry.target.getAttribute('data-section')!;
+
+          // 첫 번째 섹션 가시성 체크
+          if (section === 'SectionFirst') {
+            setShowScrollToTop(!entry.isIntersecting);
+          }
+
+          // 각 섹션 가시성 상태 업데이트
           if (entry.isIntersecting) {
-            // 섹션이 화면에 보일 때 가시성 true로 설정
             setIsSectionVisible((prev) => ({ ...prev, [section]: true }));
           } else {
-            // 섹션이 화면에서 벗어날 때 가시성 false로 설정
             setIsSectionVisible((prev) => ({ ...prev, [section]: false }));
           }
         });
@@ -83,6 +110,10 @@ const OnBoardingPage = () => {
       });
     };
   }, []);
+
+  const scrollToTop = () => {
+    sectionRefs.SectionFirst.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   // 특정 섹션으로 스크롤 이동하는 함수
   const scrollToSection = (section: keyof typeof sectionRefs) => {
@@ -179,6 +210,11 @@ const OnBoardingPage = () => {
           onStart={handleStart} // 시작하기 버튼에 이벤트 추가
         />
       </SectionContainer>
+      {showScrollToTop && (
+        <ScrollToTopButton onClick={scrollToTop}>
+          <UpIcon />
+        </ScrollToTopButton>
+      )}
     </Container>
   );
 };
