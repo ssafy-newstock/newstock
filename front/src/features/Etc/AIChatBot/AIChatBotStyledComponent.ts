@@ -66,12 +66,15 @@ export const ChatMessage = styled.div<{ $isMine: boolean }>`
   margin: 0.31rem 0;
   padding: 0.625rem;
   background-color: ${({ $isMine, theme }) =>
-    $isMine ? theme.chatBalloonColor : 'transparent'};
+    $isMine ? theme.chatBalloonColor : theme.newsBackgroundColor};
+  font-size: 1.3rem;
   color: ${({ theme }) => theme.textColor};
-  max-width: ${({ $isMine }) => ($isMine ? '60%' : '100%')};
+  max-width: ${({ $isMine }) => ($isMine ? '60%' : '70%')};
   word-wrap: break-word;
-  border-radius: ${({ $isMine }) => ($isMine ? '0.5rem' : '0')};
+  border-radius: ${({ $isMine }) => ($isMine ? '1rem' : '1rem')};
   text-align: ${({ $isMine }) => ($isMine ? 'right' : 'left')};
+  border: 1px solid #d1d1d1;
+  line-height: 2rem;
 `;
 
 export const ChatInputWrapper = styled.div`
@@ -183,15 +186,15 @@ export const NewsItemWrapper = styled.div`
 `;
 
 export const NewsMedia = styled.h3`
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 600;
 `;
 
 export const NewsTitle = styled.p`
-  font-size: 1.2rem;
+  font-size: 1.3rem;
 `;
 
 export const NewsDate = styled.p`
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   margin-bottom: 1rem;
 `;

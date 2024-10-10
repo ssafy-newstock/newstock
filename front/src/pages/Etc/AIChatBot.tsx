@@ -198,7 +198,7 @@ const AIChatBotPage: React.FC = () => {
             {loading && (
               <ChatMessageInnerWrapper $isMine={false}>
                 <ChatImage src={chatbotImg} alt="userImg" />
-                <ChatMessage $isMine={false}>답변 기다리는 중...</ChatMessage>
+                <ChatMessage $isMine={false}>답변 생성 중...</ChatMessage>
               </ChatMessageInnerWrapper>
             )}
           </ChatBodyWrapper>
