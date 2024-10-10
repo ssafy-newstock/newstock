@@ -1,12 +1,13 @@
 import styled, { keyframes } from 'styled-components';
+import BlueLogo from '@assets/Stock/blueLogo.png';
+import { TextP_14 } from '@features/SideModal/styledComponent';
 
-// 애니메이션 정의
-const spin = keyframes`
+const waveAnimation = keyframes`
   0% {
-    transform: rotate(0deg);
+    mask-position: 0%;
   }
   100% {
-    transform: rotate(360deg);
+    mask-position: 200%;
   }
 `;
 
@@ -14,25 +15,29 @@ const SpinnerWrapper = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 `;
 
-// 스피너 스타일 정의
-const Spinner = styled.div`
-  border: 1rem solid #192340; /* 외부 색상 */
-  border-top: 1rem solid #453de0; /* 상단 색상 */
-  border-radius: 50%;
-  width: 10rem;
-  height: 10rem;
-  animation: ${spin} 1s linear infinite;
-  /* margin: 5rem auto; */
+const AnimatedLogo = styled.img`
+  width: 120%; /* 로고 크기 */
+  height: 120%;
+  animation: ${waveAnimation} 2s linear infinite;
+  mask-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 1) 50%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  mask-size: 200%;
+  mask-position: 0%;
 `;
 
 const LoadingSpinner: React.FC = () => {
   return (
     <SpinnerWrapper>
-      <Spinner />
+      <AnimatedLogo src={BlueLogo} alt="Loading" />
     </SpinnerWrapper>
   );
 };
