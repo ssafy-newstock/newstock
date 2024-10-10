@@ -25,6 +25,8 @@ export const StockGridColumn = styled.div`
 `;
 
 export const MainGridColumn = styled.div<{ $gap: string }>`
+width: 100%;
+  height: 100%;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: ${({ $gap }) => $gap};
@@ -66,7 +68,7 @@ export const MainCardRow = styled.div`
   align-items: center;
   width: 100%;
   gap: 1rem;
-  padding: 1rem 0.5rem;
+  padding: 0rem 0.5rem;
   border-radius: 1.25rem;
   background-color: ${({ theme }) => theme.stockBackgroundColor};
   box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
@@ -517,6 +519,7 @@ const pulse = keyframes`
 `;
 
 export const ErrorBuuton = styled(SimilarityButton)`
+  font-family:"Toss Product Sans";
   font-size: 2rem;
   font-weight: 500;
   animation: ${pulse} 1.5s infinite;

@@ -79,7 +79,7 @@ const SectionFirst: React.FC<SectionFirstProps> = ({
       <CenterDiv>
         <TitleP>뉴스와 함께 하는 똑똑한 투자!</TitleP>
         <SubTitleP>
-          뉴스로 키우는 투자 안목, 모의 투자로 다니는 실전 감각
+          뉴스로 키우는 투자 안목, 모의 투자로 다지는 실전 감각
         </SubTitleP>
       </CenterDiv>
       <BackgroundVideo autoPlay muted loop>

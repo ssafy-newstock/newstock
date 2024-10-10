@@ -16,10 +16,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.ssafy.news.domain.service.validator.NewsValidator.validateNewsContent;
@@ -96,6 +93,7 @@ public class IndustryNewsService {
 
     /**
      * 시황 뉴스 조회 확인 메소드
+     *
      * @param newsId
      * @param token
      */
@@ -106,7 +104,8 @@ public class IndustryNewsService {
 
             industryNewsRedisRepository.findById(newsId + "|" + memberId)
                     .ifPresentOrElse(
-                            industryNewsRedis -> {},
+                            industryNewsRedis -> {
+                            },
                             () -> {
                                 industryNewsRedisRepository.save(new IndustryNewsRedis(newsId, memberId));
 
@@ -126,16 +125,30 @@ public class IndustryNewsService {
      */
     @Transactional
     @Scheduled(cron = "0 0 0 * * *")
-    public void deleteReadIndustryNews(){
+    public void deleteReadIndustryNews() {
         newsSchedulerService.deleteIndustryNewsRedis();
     }
 
     @Transactional
     public void insertIndustryNews(List<IndustryNewsDto> industryNewsList) {
-
-        List<IndustryNews> list = industryNewsList.stream()
-                .map(IndustryNews::of)
+        // 입력 리스트에서 모든 ID 추출
+        List<String> ids = industryNewsList.stream()
+                .map(IndustryNewsDto::getId)
                 .toList();
-        industryNewsRepository.saveAll(list);
+
+        List<IndustryNews> existingIndustryNews = industryNewsRepository.findAllByIdIn(ids);
+
+        // 존재하는 뉴스의 ID 목록 추출
+        Set<String> existingIds = existingIndustryNews.stream()
+                .map(IndustryNews::getId)
+                .collect(Collectors.toSet());
+
+        // 기존 데이터에 없는 새로운 뉴스만 필터링
+        List<IndustryNews> newIndustryNews = industryNewsList.stream()
+                .filter(dto -> !existingIds.contains(dto.getId()))  // 중복 체크
+                .map(IndustryNews::of)  // 새로운 데이터 변환
+                .toList();
+
+        industryNewsRepository.saveAll(newIndustryNews);
     }
 }

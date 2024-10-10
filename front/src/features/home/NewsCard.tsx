@@ -4,10 +4,10 @@ import newstockIcon from '@assets/Stock/Logo.png';
 import { useNavigate } from 'react-router-dom';
 
 const NewsCardContainer = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: cen;
-  align-items: start;
+  justify-content: flex-start;
   cursor: pointer;
   transition: transform 0.3s ease;
   &:hover {
@@ -17,7 +17,7 @@ const NewsCardContainer = styled.div`
 
 const ImgTag = styled.img`
   width: 100%;
-  height: 50%;
+  height: 10rem;
   border-radius: 1.25rem;
 `;
 
@@ -52,7 +52,7 @@ const timeAgo = (uploadDatetime: string) => {
   } else {
     return `${diffSeconds}초 전`;
   }
-}
+};
 
 const NewsCard = ({ news }: { news: IStockNews }) => {
   const navigate = useNavigate();
@@ -61,9 +61,11 @@ const NewsCard = ({ news }: { news: IStockNews }) => {
   };
   return (
     <NewsCardContainer onClick={onNewsClick}>
-      <ImgTag src={news.thumbnail || newstockIcon} alt=""/>
+      <ImgTag src={news.thumbnail || newstockIcon} alt="" />
       <NewsTitle>{news.title}</NewsTitle>
-      <NewsInfo>{news.media} · {timeAgo(news.uploadDatetime)}</NewsInfo>
+      <NewsInfo>
+        {news.media} · {timeAgo(news.uploadDatetime)}
+      </NewsInfo>
       {/* <div>{news.stockNewsStockCodes}</div> */}
     </NewsCardContainer>
   );
