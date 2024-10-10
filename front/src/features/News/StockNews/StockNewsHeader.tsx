@@ -27,6 +27,15 @@ const StockNewsCorpText = styled.p`
   white-space: nowrap; /* 텍스트가 줄바꿈되지 않도록 설정 */
 `;
 
+const StockNewsText = styled.p<{ selected: boolean }>`
+color: ${({ theme, selected }) => (selected ? theme.textColor : 'gray')};
+font-size: 1.5rem;
+font-weight: 600;
+line-height: 1.875rem;
+white-space: nowrap; /* 텍스트가 줄바꿈되지 않도록 설정 */
+cursor: pointer;
+`;
+
 const CustomStockImage = styled(StockImage)`
   width: 2.25rem;
   height: 2.25rem;
@@ -105,15 +114,12 @@ const StockNewsHeader: React.FC<StockNewsHeaderProps> = ({
         <FlexGapCenter $gap="0.5rem">
           {stockNewsStockCodes.slice(0, 3).map((code, index) => (
             <Fragment key={code}>
-              <StockNewsCorpText
+              <StockNewsText
+                selected={code === selectedStockCode}
                 onClick={() => handleStockClick(code)}
-                style={{
-                  color: selectedStockCode === code ? 'black' : 'gray',
-                  cursor: 'pointer',
-                }}
               >
                 {useFindStockByCode(code)?.stockName}
-              </StockNewsCorpText>
+              </StockNewsText>
               {index !== stockNewsStockCodes.slice(0, 3).length - 1 && (
                 <span
                   style={{
