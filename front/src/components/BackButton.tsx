@@ -31,7 +31,7 @@ const BackButton: React.FC = () => {
             clip-rule="evenodd"
           />
         </svg>
-        <TextTitle>뒤로 가기</TextTitle>
+        <TextTitle>BACK</TextTitle>
       </MenuSection>
     </Button>
   );
