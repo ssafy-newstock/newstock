@@ -48,7 +48,6 @@ const StockNewsWrapper = styled.div<{ $showSummary: boolean }>`
   width: 100%;
   gap: 1rem;
 
-  cursor: pointer;
 
   transition: ${({ $showSummary }) =>
     $showSummary ? 'none' : 'transform 0.3s ease'};

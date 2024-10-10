@@ -10,6 +10,7 @@ import { useBookmarkStore } from '@store/useBookmarkStore';
 import useAuthStore from '@store/useAuthStore';
 import { toast } from 'react-toastify';
 import { useShortQuery } from '@hooks/useShortQuery';
+import { useNavigate } from 'react-router-dom';
 
 const StockNewsBodyWrapper = styled.div`
   display: flex;
@@ -120,6 +121,11 @@ const StockNewsBody: React.FC<StockNewsBodyProps> = ({
   const formattedDate = date.split('T')[0].replace(/-/g, '.');
   const [showSummary, setShowSummary] = useState<boolean>(false);
   const mediaImageUrl = `https://stock.vaiv.kr/resources/images/news/${media}.png`;
+  const navigate = useNavigate();
+  
+  const handleNewsClick: React.MouseEventHandler<HTMLDivElement> = (_event) => {
+    navigate(`/subnews-main/stock-news/${id}`);
+  };
 
   // zustand store에서 북마크 상태 관리 함수와 데이터 가져오기
   const {
@@ -214,28 +220,30 @@ const StockNewsBody: React.FC<StockNewsBodyProps> = ({
             </Modal>
           </Overlay>
         )}
-        <StockNewsTitleWrapper>
-          <SentimentIcon sentiment={sentiment} /> {/* SentimentIcon 사용 */}
-          <StockNewsTitle>
-            <StockNewsTitleText>{title}</StockNewsTitleText>
-          </StockNewsTitle>
-        </StockNewsTitleWrapper>
+        <div style={{cursor:'pointer'}} onClick={handleNewsClick}>
+          <StockNewsTitleWrapper>
+            <SentimentIcon sentiment={sentiment} /> {/* SentimentIcon 사용 */}
+            <StockNewsTitle>
+              <StockNewsTitleText>{title}</StockNewsTitleText>
+            </StockNewsTitle>
+          </StockNewsTitleWrapper>
 
-        <StockNewsContent>{content}</StockNewsContent>
+          <StockNewsContent>{content}</StockNewsContent>
 
-        <StockNewsFooter>
-          <MediaWrapper>
-            <MediaLogo
-              src={mediaImageUrl}
-              alt={media}
-              onError={(e) => {
-                e.currentTarget.src = newstockIcon; // 이미지 로드 실패 시 기본 이미지로 대체
-              }}
-            />
-            <FooterText>{media}</FooterText>
-          </MediaWrapper>
-          <FooterText>{formattedDate}</FooterText>
-        </StockNewsFooter>
+          <StockNewsFooter>
+            <MediaWrapper>
+              <MediaLogo
+                src={mediaImageUrl}
+                alt={media}
+                onError={(e) => {
+                  e.currentTarget.src = newstockIcon; // 이미지 로드 실패 시 기본 이미지로 대체
+                }}
+              />
+              <FooterText>{media}</FooterText>
+            </MediaWrapper>
+            <FooterText>{formattedDate}</FooterText>
+          </StockNewsFooter>
+        </div>
 
         <BookmarkedNewsTagWrapper>
           {Array.isArray(keywords) && keywords.length > 0 ? (
