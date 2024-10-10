@@ -76,7 +76,7 @@ const SideModal: React.FC<StockModalProps> = ({ activeComponent, isOpen }) => {
             {activeComponent === 'Star' && <TextP_24>관심 뉴스</TextP_24>}
             {activeComponent === 'Rank' && (
               <>
-                <TextP_24>랭킹</TextP_24>
+                <TextP_24>랭킹 TOP 10</TextP_24>
                 <TextP_14>{timeText}</TextP_14>
               </>
             )}
