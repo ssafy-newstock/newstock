@@ -12,7 +12,7 @@
 
 ### 2. 로고 및 이미지
 
-![image (20).png](Picture/logo.png)
+![image (21).png](Picture/blueLogo.png)
 
 ### 3. 프로젝트 정보 🗂
 
