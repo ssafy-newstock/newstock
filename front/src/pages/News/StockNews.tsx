@@ -35,20 +35,20 @@ const SubCenter = styled.div`
   max-width: 100rem;
   min-width: 50rem;
   width: 100%;
-  gap: 2.5rem;
+  gap: 2rem;
 `;
 
 const StockNewsWrapper = styled.div<{ $showSummary: boolean }>`
   display: flex;
   /* margin: 0 1.25rem; */
   align-items: center;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   align-self: stretch;
   border-radius: 2rem;
   /* background-color: ${({ theme }) => theme.newsBackgroundColor}; */
   /* box-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.1); */
   width: 100%;
-  gap: 2rem;
+  gap: 1.5rem;
 
   cursor: pointer;
 
