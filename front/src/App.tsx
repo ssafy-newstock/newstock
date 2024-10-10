@@ -53,10 +53,12 @@ const RightVacantWrapper = styled.div<{
 }>`
   min-width: ${({ $isOpen, $isScrapDetail }) =>
     $isOpen
-      ? '500px'
+      ? $isScrapDetail
+        ? '350px'
+        : '500px'
       : $isScrapDetail
         ? '0px'
-        : '200px'}; /* scrap-detail 페이지에서 모달이 닫혀있을 때는 여백이 0px */
+        : '200px'};
   opacity: ${({ $isOpen }) =>
     $isOpen ? '0' : '1'}; /* 모달이 열리면 투명도 조정 */
   transition:

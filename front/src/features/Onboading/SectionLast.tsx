@@ -51,9 +51,11 @@ const ImageContainer = styled.div<{
     height 1s ease;
   position: relative;
   z-index: ${({ $isFullScreen }) => ($isFullScreen ? 1000 : 'auto')};
+  border: ${({ $isExpanded }) => ($isExpanded ? 'none' : '1px solid #828282')};
   border-radius: ${({ $isFullScreen }) => ($isFullScreen ? '0' : '2rem')};
   cursor: pointer;
 `;
+
 // 이미지 스타일
 const BackgroundImage = styled.img<{ $tiltX: number; $tiltY: number }>`
   width: 100%;
