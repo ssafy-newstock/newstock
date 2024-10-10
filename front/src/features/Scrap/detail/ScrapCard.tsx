@@ -15,7 +15,7 @@ import { ScrapData, NewsData } from '@features/News/ScrapNewsInterface';
 const CardContainer = styled.div`
   display: flex;
   padding: 0.8rem 1rem;
-  width: 90%;
+  width: 100%;
   height: auto; /* 모든 카드의 높이를 일정하게 유지 */
   align-items: center;
   gap: 1rem;
@@ -39,7 +39,6 @@ const CustomFontStyle = styled(FontStyle)`
   color: ${({ theme }) => theme.grayTextColor};
   font-size: 0.8rem;
 `;
-
 
 const EconomicNewsContent = styled.p`
   display: -webkit-box;

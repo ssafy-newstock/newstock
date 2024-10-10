@@ -14,6 +14,7 @@ import {
 import { useScrapStore } from '@store/useScrapStore';
 import { ScrapData, NewsData } from '@features/News/ScrapNewsInterface';
 import styled from 'styled-components';
+import { CenteredMessage } from '@features/SideModal/styledComponent'; // CenteredMessage 임포트
 
 const CustomCenterDiv = styled(CenterDiv)`
   min-width: 30rem;
@@ -30,9 +31,6 @@ const ScrapDetailPage: React.FC = () => {
   const [selectedNewsCard, setSelectedNewsCard] = useState<NewsData | null>(
     null
   );
-  const [selectedDateRange, setSelectedDateRange] = useState<
-    [Date | null, Date | null]
-  >([null, null]);
 
   const {
     scraps,
@@ -45,46 +43,41 @@ const ScrapDetailPage: React.FC = () => {
 
   const [scrapList, setScrapList] = useState<ScrapData[]>([]);
   const [scrapNewsList, setScrapNewsList] = useState<NewsData[]>([]);
-
-  // 날짜 범위 변경 핸들러
-  const handleDateRangeChange = (dates: [Date | null, Date | null]) => {
-    setSelectedDateRange(dates);
-  };
+  const [error, setError] = useState<string | null>(null); // 에러 상태 추가
 
   // 스크랩 데이터 가져오기 (시황 및 종목 뉴스 모두)
   useEffect(() => {
-    fetchScrapData(); // 시황 뉴스 스크랩 데이터 가져오기
-    fetchScrapStockData(); // 종목 뉴스 스크랩 데이터 가져오기
+    const fetchData = async () => {
+      setError(null);
+      try {
+        await fetchScrapData(); // 시황 뉴스 스크랩 데이터 가져오기
+        await fetchScrapStockData(); // 종목 뉴스 스크랩 데이터 가져오기
+      } catch (err) {
+        setError('데이터를 불러오는 중 문제가 발생했습니다.');
+      } finally {
+      }
+    };
+
+    fetchData();
   }, [fetchScrapData, fetchScrapStockData]);
 
   // scraps + stockScraps 통합 및 scrapNews + scrapStockNews 통합
   useEffect(() => {
-    console.log('scrap-detail의 시황 및 종목 스크랩 : ', scraps);
-    console.log('scrap-detail의 시황 뉴스 : ', scrapNews);
-    console.log('scrap-detail의 종목 스크랩 : ', stockScraps);
-    console.log('scrap-detail의 종목 뉴스 : ', scrapStockNews);
     const combinedScraps = [...scraps, ...stockScraps]; // 시황 및 종목 스크랩 통합
     const combinedScrapNews = [...scrapNews, ...scrapStockNews]; // 시황 및 종목 뉴스 통합
     setScrapList(combinedScraps); // 스크랩 데이터
     setScrapNewsList(combinedScrapNews); // 뉴스 데이터
   }, [scraps, stockScraps, scrapNews, scrapStockNews]);
 
-  useEffect(() => {
-    console.log('scrap-detail의 스크랩 통합 : ', scrapList);
-    console.log('scrap-detail의 뉴스 통합 : ', scrapNewsList);
-  }, [scrapList, scrapNewsList]);
-
   const handleCardClick = async (scrap: ScrapData, scrapNews: NewsData) => {
-    console.log('scrap : ', scrap);
-    console.log('scrapNews : ', scrapNews);
     setSelectedCard(scrap);
     setSelectedNewsCard(scrapNews);
   };
 
-  useEffect(() => {
-    console.log('selectedCard : ', selectedCard);
-    console.log('selectedNewsCard : ', selectedNewsCard);
-  }, [selectedCard, selectedNewsCard, setSelectedCard, setSelectedNewsCard]);
+  // 에러가 발생한 경우 에러 메시지 표시
+  if (error) {
+    return <CenteredMessage>{error}</CenteredMessage>;
+  }
 
   return (
     <>
@@ -107,14 +100,17 @@ const ScrapDetailPage: React.FC = () => {
       </Center>
       <Right>
         <CustomRightDiv>
-          <RightTitle onDateRangeChange={handleDateRangeChange} />
+          <RightTitle />
           <ScrapHr />
-          <RightContent
-            onCardClick={handleCardClick}
-            selectedDateRange={selectedDateRange}
-            scrapDatas={scrapList} // 통합된 스크랩 데이터 전달
-            scrapNewsDatas={scrapNewsList} // 통합된 뉴스 데이터 전달
-          />
+          {scrapList.length === 0 ? (
+            <CenteredMessage>스크랩한 뉴스가 없습니다.</CenteredMessage>
+          ) : (
+            <RightContent
+              onCardClick={handleCardClick}
+              scrapDatas={scrapList} // 통합된 스크랩 데이터 전달
+              scrapNewsDatas={scrapNewsList} // 통합된 뉴스 데이터 전달
+            />
+          )}
         </CustomRightDiv>
       </Right>
     </>
