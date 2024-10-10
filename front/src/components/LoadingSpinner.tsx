@@ -1,6 +1,5 @@
 import styled, { keyframes } from 'styled-components';
 import BlueLogo from '@assets/Stock/blueLogo.png';
-import { TextP_14 } from '@features/SideModal/styledComponent';
 
 const waveAnimation = keyframes`
   0% {
