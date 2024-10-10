@@ -8,10 +8,10 @@ spring:
   #    driver-class-name: com.mysql.cj.jdbc.Driver
   #    username: ssafy1234
   #    password: ssafy1234
-    url: jdbc:mysql://svc.sel4.cloudtype.app:30947/news
+    url: jdbc:mysql://j11c207a.p.ssafy.io:3307/news-jisuk
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: ssafy
+    username: ssafy1234
+    password: ssafy1234
   jpa:
     show-sql: true
     hibernate:
