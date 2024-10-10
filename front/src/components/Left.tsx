@@ -2,7 +2,8 @@ import useAuthStore from '@store/useAuthStore';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import Login from './Login';
+import Login from '@components/Login';
+import BackButton from '@components/BackButton';
 
 const LeftDiv = styled.div`
   display: flex;
@@ -13,7 +14,7 @@ const LeftDiv = styled.div`
   align-self: stretch;
 `;
 
-const MenuSection = styled.div`
+export const MenuSection = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -45,7 +46,7 @@ const TextDiv = styled.div`
   margin-bottom: 0.5rem;
 `;
 
-const TextTitle = styled.p`
+export const TextTitle = styled.p`
   color: #828282;
   font-size: 1.3rem;
   font-weight: 600;
@@ -526,6 +527,7 @@ const Left: React.FC = () => {
           AI 챗봇
         </ActiveTitle>
       </MenuSection>
+      <BackButton />
       {loginOpen && <Login closeLogin={closeLogin} />}
     </LeftDiv>
   );
