@@ -11,7 +11,7 @@ import {
 
 // NewsItem 타입 정의
 interface NewsItem {
-  id: number;
+  id: string;
   upload_datetime: string;
   title: string;
   media: string;
@@ -27,7 +27,7 @@ interface AINewsProps {
 
 const AINews: React.FC<AINewsProps> = ({ newsList }) => {
   const navigate = useNavigate();
-
+  console.log(newsList);
   // 뉴스 아이템 클릭 핸들러
   const handleNewsClick = (news: NewsItem) => {
     if (news.type === 'industry') {

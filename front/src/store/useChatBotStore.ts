@@ -2,7 +2,7 @@
 import { create } from 'zustand';
 
 interface NewsItem {
-  id: number;
+  id: string;
   upload_datetime: string;
   title: string;
   media: string;
