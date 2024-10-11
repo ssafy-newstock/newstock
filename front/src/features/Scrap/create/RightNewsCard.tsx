@@ -31,16 +31,33 @@ interface RightNewsProps {
 const RightNewsCard: React.FC<RightNewsProps> = ({ data }) => {
   const navigate = useNavigate();
 
+  console.log(data);
+
+  // const stockCode = 'stockNewsStockCodes' in data ? data.stockNewsStockCodes[0] : null;
+
   const stockCode =
-    'stockNewsStockCodes' in data && data.stockNewsStockCodes?.[0]?.stockCode
-      ? data.stockNewsStockCodes[0].stockCode
+    'stockNewsStockCodes' in data && data.stockNewsStockCodes.length > 0
+      ? data.stockNewsStockCodes[0]
       : '';
+
+  // const stockCode =
+  //   'stockNewsStockCodes' in data && data.stockNewsStockCodes?.[0]?.stockCode
+  //     ? data.stockNewsStockCodes[0].stockCode
+  //     : '';
+
+  // const stockCode =
+  //   'stockNewsStockCodes' in data && data.stockNewsStockCodes.length > 0
+  //     ? data.stockNewsStockCodes[0]?.stockCode || ''
+  //     : '';
+
+  console.log(stockCode);
 
   // 주식 상세 정보
   const stockDetail = useFindStockByCode(stockCode);
   const stockName = stockDetail?.stockName || 'Unknown Stock';
 
   const newsType = stockCode ? 'stock' : 'industry';
+  console.log(newsType);
 
   const handleDetail = () => {
     if (newsType === 'stock') {

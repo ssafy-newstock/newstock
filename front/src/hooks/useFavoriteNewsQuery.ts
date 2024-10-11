@@ -14,10 +14,7 @@ export interface StockNews {
   thumbnail: string;
   title: string;
   uploadDatetime: string;
-  stockNewsStockCodes: {
-    stockCode: string;
-    stockName: string;
-  }[];
+  stockNewsStockCodes: string[];
   stockKeywords: string[];
 }
 

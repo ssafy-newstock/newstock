@@ -152,8 +152,12 @@ const CenterContent: React.FC = () => {
       // 드롭된 카드 유형에 따라 API 호출
       if (droppedCard.type === 'stock') {
         await createStockScrap(title, droppedCard.id, 'stock', contentAsHTML); // 종목 뉴스 작성 API 호출
+        console.log('종목 스크랩 작성');
+        console.log(droppedCard.type);
       } else {
         await createScrap(title, droppedCard.id, 'industry', contentAsHTML); // 기존 시황 뉴스 작성 API 호출
+        console.log('시황 스크랩 작성');
+        console.log(droppedCard.type);
       }
       // alert('스크랩 작성 완료!');
       navigate(`../scrap-detail/`);
