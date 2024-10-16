@@ -49,7 +49,7 @@ Newstock은 주식 투자와 경제 뉴스를 보다 쉽고 효율적으로 접�
 
 ### 📌 뉴스 제공 기능
 
-    - Newstock은 경제 뉴스를 **'시황 뉴스'**와 **'종목 뉴스'**로 구분하여 제공합니다.
+    - Newstock은 경제 뉴스를 "시황 뉴스"와 "종목 뉴스"로 구분하여 제공합니다.
       - 시황 뉴스: 경제와 금융 시장의 거시적인 흐름을 보여주는 뉴스
       - 종목 뉴스: 특정 기업이나 종목의 실적, 이슈와 관련된 뉴스
     - 감정 분석 기술을 통해 뉴스가 긍정적인지 부정적인지를 파악하여 사용자가 더 나은 투자 결정을 할 수 있도록 지원합니다.
@@ -170,15 +170,13 @@ Newstock은 주식 투자와 경제 뉴스를 보다 쉽고 효율적으로 접�
 
 ### AI 챗봇(AIChatBot)
 
-  <img src="Picture/AIChat.jpg" alt="Logo" width="300px"/>
+  <img src="Picture/Chat.JPG" alt="Logo" width="300px"/>
 
 ### 그 외 편의 기능
 
 ### NewStock의 차별점 👍
 
 </div>
-
-위 표를 통해 담다는 기존의 쇼핑 시스템과 비교하여 다음 다섯가지의 불편함을 해소할 수 있다.
 
 1. 뉴스와 모의 투자의 통합 플랫폼
 
@@ -210,7 +208,7 @@ Newstock은 주식 투자와 경제 뉴스를 보다 쉽고 효율적으로 접�
 
 </div>
 
-## 팀 소개 👨‍👨‍👦
+## 팀 소개 및 역할 👨‍👨‍👦
 
 <div align="center">
 
@@ -225,35 +223,12 @@ Newstock은 주식 투자와 경제 뉴스를 보다 쉽고 효율적으로 접�
       <td align="center">
         <img src="Picture/minho.png" alt="BE 부팀장 : 고민호" width="100px"/>
         <br />
-        <sub><b>BE LEADER 부팀장 : 고민호</b></sub>
+        <sub><b>BE LEADER 팀원 : 고민호</b></sub>
       </td>
       <td align="center">
         <img src="Picture/jisuck.png" alt="BE 팀원 : 손지석" width="100px"/>
         <br />
         <sub><b>BE/INFRA 팀원 : 손지석</b></sub>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <ul>
-          <li><strong>SSAFY 11th Java</strong></li>
-          <li>뉴스 데이터 수집 및 처리</li>
-          <li>분산 처리 파이프 라인 구축</li>
-        </ul>
-      </td>
-      <td>
-        <ul>
-          <li><strong>SSAFY 11th Java</strong></li>
-          <li>모의 투자 서버 담당</li>
-          <li>채워주세용</li>
-        </ul>
-      </td>
-      <td>
-        <ul>
-          <li><strong>SSAFY 11th Java</strong></li>
-          <li>인프라 담당</li>
-          <li>채워주세용</li>
-        </ul>
       </td>
     </tr>
     <tr>
@@ -273,32 +248,31 @@ Newstock은 주식 투자와 경제 뉴스를 보다 쉽고 효율적으로 접�
         <sub><b>FE 팀원 : 이주호</b></sub>
       </td>
     </tr>
-    <tr>
-      <td>
-        <ul>
-          <li><strong>SSAFY 11th Python</strong></li>
-          <li>모의 투자 담당</li>
-          <li>프론트 환경 구축</li>
-        </ul>
-      </td>
-      <td>
-        <ul>
-          <li><strong>SSAFY 11th Python</strong></li>
-          <li>뉴스 담당</li>
-          <li>스크랩 담당</li>
-        </ul>
-      </td>
-      <td>
-        <ul>
-          <li><strong>SSAFY 11th Python</strong></li>
-          <li>마이 페이지 담당</li>
-          <li>사이드 바 담당</li>
-        </ul>
-      </td>
-    </tr>
   </tbody>
 </table>
-
+<hr/>
 </div>
+
+✔ 박선홍
+  - 데이터
+
+✔ 고민호
+  - 주식
+
+✔ 손지석
+  - Auth 서버 개발
+  - Member 서버 개발
+  - News 서버 개발
+  - 아키텍쳐 설계, 구축 및 쿠버네티스 적용
+  - 로그인 기능 구현
+
+✔ 이명욱
+  - 주식
+
+✔ 이정준
+  - 뉴스
+
+✔ 이주호
+  - 소방관
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=BDBDC8&height=150&section=footer" width="100%" >
