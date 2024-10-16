@@ -261,13 +261,13 @@ Newstock은 주식 투자와 경제 뉴스를 보다 쉽고 효율적으로 접�
   - 주식
 
 ✔ 손지석
-  - Kakao, Google OAuth 기반의 OAuth 서버 구축
-  - Java 및 Springboot 기반의 Member 서버 구축
-  - HBase 및 Apache Phoenix 기반의 뉴스데이터 서버 구축
-  - JPA 및 MySQL 기반의 [뉴스, 관심 뉴스, 뉴스 스크랩] 서버 구축
-  - Jenkins, k8s를 통한 자동 배포 파이프라인 구축
   - MSA 아키텍쳐 설계 및 배포
   - k8s 아키텍쳐 설계 및 구현
+  - HBase 및 Apache Phoenix 기반의 뉴스데이터 서버 구축
+  - Jenkins, k8s를 통한 자동 배포 파이프라인 구축
+  - JPA 및 MySQL 기반의 [뉴스, 관심 뉴스, 뉴스 스크랩] 서버 구축
+  - Java 및 Springboot 기반의 Member 서버 구축
+  - Kakao, Google OAuth 기반의 OAuth 서버 구축
   
 ✔ 이명욱
   - 전체 페이지 스켈레톤 UI 구현 및 리액트 쿼리를 활용한 응답 데이터 캐싱으로 사용자 경험 향상
