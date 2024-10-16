@@ -254,18 +254,25 @@ Newstock은 주식 투자와 경제 뉴스를 보다 쉽고 효율적으로 접�
 </div>
 
 ✔ 박선홍
-  - 데이터
+  - Airflow를 활용한 데이터 수집, 전처리 워크플로우 제작
+  - 경제 뉴스 스크레이핑 및 수집, 전처리
+  - 수집한 경제 뉴스 HBase 및 ElasticSearch에 적재
+  - 데이터 전처리 시 광고 필터링 모델 transfer-learning
+  - Hadoop Ecosystem 기반 fully-distributed system 인프라 구축
+  - 뉴스 3줄 요약, 유사 차트 검색, 시황 요약 서비스 및 API 개발
+  - RAG 기반 챗봇 제작
 
 ✔ 고민호
   - 주식
 
 ✔ 손지석
-  - Auth 서버 개발
-  - Member 서버 개발
-  - News 서버 개발
-  - 아키텍쳐 설계, 구축 및 쿠버네티스 적용
-  - 로그인 기능 구현
-
+  - Kakao, Google OAuth 기반의 OAuth 서버 구축
+  - Java 및 Springboot 기반의 Member 서버 구축
+  - HBase 및 Apache Phoenix 기반의 뉴스데이터 서버 구축
+  - JPA 및 MySQL 기반의 [뉴스, 관심 뉴스, 뉴스 스크랩] 서버 구축
+  - Jenkins, k8s를 통한 자동 배포 파이프라인 구축
+  - MSA 아키텍쳐 설계 및 배포
+  - k8s 아키텍쳐 설계 및 구현
 ✔ 이명욱
   - 주식
 
