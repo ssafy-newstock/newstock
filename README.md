@@ -286,5 +286,12 @@ Newstock은 주식 투자와 경제 뉴스를 보다 쉽고 효율적으로 접�
 
 ✔ 이주호
   - 소방관
+  - 주식 마이페이지 UI 및 API 연결
+  - LeftNavBar UI 구현
+  - (RightNav)보유 주식, 거래내역, 관심 종목, 관심 뉴스, 주식 랭킹 API 연결
+  - 사용자 포인트 웹소켓 연결
+  - BoardingPage UI 구현
+  - AI 챗봇 API 연결
+
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=BDBDC8&height=150&section=footer" width="100%" >
