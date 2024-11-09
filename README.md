@@ -166,7 +166,7 @@
 
 ## 4. 시연 영상
 <details>
- <summary>📢 화면 소개</summary>
+ <summary>📢 기능 GIF</summary>
  <div markdonw="1">
   
 ### 뉴스
