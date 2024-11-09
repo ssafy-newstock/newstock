@@ -146,9 +146,10 @@
 ![요구사항명세서](https://github.com/user-attachments/assets/ab43c099-70f7-4f5b-bcd5-f5465ed09d0f)
 
 ## 4. 시연 영상
-<div align="center">
- <summary>📢 기능 소개</summary>
+<details>
+ <summary>📢 화면 소개</summary>
  <div markdonw="1">
+  
 ### 뉴스
 ![뉴스_조회](/uploads/49ba90a17bbdd05e4a8e40664d25025b/뉴스_조회.gif) 
 ### 3줄 요약
@@ -165,9 +166,12 @@
 ![유사도_검색](/uploads/14da743aca57f0425666fa6e85a16316/유사도_검색.gif)
 
  </div>
- <summary>📢 서비스 영상</summary>
- <div markdonw="2">
+</details>
 
+<details>
+ <summary>📢 화면 소개</summary>
+ <div markdonw="1">
+  
 ![뉴스](/uploads/ab5096b60567ca04b05ecd719cf30774/뉴스.mov)
 
 ![주식](/uploads/18385272fa830f240fecda95a0421842/주식.mov)
@@ -181,7 +185,8 @@
 ![다크모드](/uploads/3c2d051ea54814748a7f371a155d8c41/다크모드.mov)
 
  </div>
-</div>
+</details>
+
 
 
 # 👨‍👨‍👧‍👦 팀원 구성
