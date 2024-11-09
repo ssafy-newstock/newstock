@@ -170,19 +170,17 @@
  <div markdonw="1">
   
 ### 뉴스
-![뉴스_조회](/uploads/49ba90a17bbdd05e4a8e40664d25025b/뉴스_조회.gif) 
+![뉴스 조회](https://github.com/user-attachments/assets/693a2d11-7893-432f-b0de-b64fdfebde7d)
 ### 3줄 요약
-![뉴스_3줄_요약](/uploads/27a56e2eef926a20b9129618c8d0af21/뉴스_3줄_요약.gif)
-### 뉴스 북마크
-![뉴스_저장](/uploads/645ea50a249de72bec24f54a33ff93fb/뉴스_저장.gif)
+![뉴스 3줄 요약](https://github.com/user-attachments/assets/606c9b8f-2c2d-4e93-94a5-d0cbc04fd307)
 ### 실시간 주식
-![실시간_주식](/uploads/6c069306f83c36ad0021ca63dec2d859/실시간_주식.gif)
-### 주식 매수
-![주식_매수](/uploads/446a7f81e85fcb3ee3b4ab2a733882f5/주식_매수.gif)
+![실시간 주식](https://github.com/user-attachments/assets/47b83be1-db0e-4f6a-a233-98dba04666b2)
+### 모의투자
+![모의투자 시연](https://github.com/user-attachments/assets/6ba45a95-e09b-43e1-9752-925b71df52cf)
 ### 차트 분석
-![차트_분석](/uploads/34bcbe8846f6f88c90aa681fed4923e6/차트_분석.gif)
+![차트 분석](https://github.com/user-attachments/assets/3bb6bb4b-f9fb-4464-82b1-500fcdde59e8)
 ### 유사도 검색
-![유사도_검색](/uploads/14da743aca57f0425666fa6e85a16316/유사도_검색.gif)
+![유사도 검색](https://github.com/user-attachments/assets/c7163cad-a366-4dcd-bdd5-9a685093d8c8)
 
  </div>
 </details>
