@@ -1,20 +1,8 @@
 <img src="https://capsule-render.vercel.app/api?type=waving&color=BDBDC8&height=150&section=header" width="100%" >
 
-<div align="center">
 
-# 프로젝트에 대한 정보
-
----
-
-### 1. 프로젝트 제목
-
+# Newstock
 뉴스와 함께 하는 똑똑한 투자! “**NewStock**”
-
-### 2. 로고 및 이미지
-
-![image (21).png](Picture/blueLogo.png)
-
-### 3. 프로젝트 정보 🗂
 
 경제 뉴스로 투자 안목을 키우고, 모의 투자로 실전 감각까지 다지는 빅데이터 플랫폼
 
@@ -22,26 +10,37 @@
 
 `개발기간: 24.08.26 ~ 24.10.11 (7주)`
 
-### 4. 배포 주소 🌐
+![image (21).png](Picture/blueLogo.png)
 
-개발버전 : 1. 0. 0
 
-도메인: "newstock.info"
+# 목차
+1. [서비스 소개](#-서비스-소개)
+2. [화면 소개](#-화면-소개)
+3. [기술 스택](#-기술-스택)
+4. [서비스 아키텍처](#-서비스-아키텍처)
+5. [프로젝트 산출물](#-프로젝트-산출물)
+6. [팀원 구성](#-팀원-구성)
 
-</div>
-<div>
 
-## 프로젝트 소개 🛒
+---
 
-### 개요
-
-Newstock은 주식 투자와 경제 뉴스를 보다 쉽고 효율적으로 접근할 수 있는 빅데이터 기반의 투자 플랫폼입니다. 주식 시장에 관심 있는 사용자들이 방대한 뉴스와 시장 데이터를 손쉽게 분석하고, 모의 투자를 통해 실전 감각을 키울 수 있도록 설계되었습니다. 초보 투자자뿐만 아니라 경험이 있는 투자자들도 투자 인사이트를 얻을 수 있도록 다양한 기능을 제공합니다.
-
-### 기획 배경
+# ✨ 서비스 소개
+![메인페이지](https://github.com/user-attachments/assets/db6ec033-055f-4520-9414-09c8921afdbf)
+## 기획 배경
 
 많은 투자자들이 주식 투자를 할 때 최신 경제 뉴스와 산업 동향을 참고하지만, 기존의 정보 제공 플랫폼은 정보가 지나치게 많고 비효율적으로 제공되는 경우가 많았습니다. 이를 해결하기 위해, 우리는 뉴스와 주식 정보를 하나의 플랫폼에서 통합하여 누구나 쉽게 이해하고 활용할 수 있도록 기획하였습니다.
 
-</div>
+**AS-IS**
+- 뉴스 어쩌구저쩌구
+
+**TO-BE**
+- 투비 어쩌구 저쩌구
+
+### 타켓
+- 타겟층 적기
+
+
+
 
 ## 주요기능 🔍
 
@@ -68,8 +67,18 @@ Newstock은 주식 투자와 경제 뉴스를 보다 쉽고 효율적으로 접�
 
 </div>
 
-## 기술 스택 📖
+# 💻 화면 소개
+<details>
+ <summary>📢 화면 소개</summary>
+ <div markdonw="1">
+  
+![슬라이드1](https://github.com/user-attachments/assets/c96bc0e0-7cc8-42b7-83fa-5aea529b1ca3)
 
+ </div>
+</details>
+
+
+# 🛠 기술 스택
 <div align="center">
 
 ### Frontend
@@ -106,100 +115,37 @@ Newstock은 주식 투자와 경제 뉴스를 보다 쉽고 효율적으로 접�
 
 </div>
 
-## 아키텍쳐 📑
+## 1. WebRTC
 
-<div align="center">
-  <img src="Picture/architecture.png" alt="Logo" width="300px"/>
-</div>
+### WebRTC란?
+> WebRTC (Web Real-Time Communication)는 웹 브라우저 간에 플러그인의 도움 없이 서로 통신할 수 있도록 설계된 API 입니다. 음성 통화, 영상 통화, P2P 파일 공유 등으로 활용될 수 있습니다.
 
-## ERD
+### openvidu
+> 무료 오픈 소스 멀티 플랫폼 화상 회의 솔루션으로, 모든 하위 수준의 작업들을 래핑함으로써 사용자로 하여금 WebRTC를 보다 간단하게 적용할 수 있게 합니다. Zooting은 Openvidu를 통해 화상 시스템을 구축합니다.
 
-<div align="center">
-  <img src="" alt="Logo" width="300px"/>
-</div>
+# 🎨 서비스 아키텍처
+- 수정하기
+![](https://i.imgur.com/yinPQjZ.png)
 
-<div>
 
-## 웹사이트 NewStock
+- 사용자의 요청이 `nginx`의 `reverse proxy`를 이용하여 라우팅 됨.
+  - `/` 주소에 대해서 frontend page로 라우팅
+  - `/api` 주소에 대해서 backend api 요청`주황색` 라인에 대해서 `gitlab-runner`를 이용하여 자동 배포를 위한 `cicd` 구축
+  - `openvidu` 는 backend에서 사용자 인증 후에 `8443` 포트의 openvidu backend server에서 `token` 반환
+- `Jenkinsfile` 을 통한 깃허브, 깃랩 자동 CI/CD 구현
 
-<div align="center">
+# 📚 프로젝트 산출물
 
-### 온보딩(OnBoarding)
+## 1. Figma(https://ko.fm/7HO)
+![사르르-프로토타입](https://github.com/user-attachments/assets/4d057112-9fc5-4685-bb22-89094c2c223f)
 
-  <img src="Picture/on1.JPG" alt="Logo" width="300px"/>
+## 2. ERD
+![ERD](https://github.com/user-attachments/assets/a4abc0a0-c634-49ad-bb9f-0ac908a22fc4)
 
-  <img src="Picture/on2.JPG" alt="Logo" width="300px"/>
+## 3. 요구사항 명세서
+![요구사항명세서](https://github.com/user-attachments/assets/ab43c099-70f7-4f5b-bcd5-f5465ed09d0f)
 
-  <img src="Picture/on3.JPG" alt="Logo" width="300px"/>
-
-  <img src="Picture/on4.JPG" alt="Logo" width="300px"/>
-
-  <img src="Picture/on5.JPG" alt="Logo" width="300px"/>
-
-  <img src="Picture/on6.JPG" alt="Logo" width="300px"/>
-  
-  <img src="Picture/on7.JPG" alt="Logo" width="300px"/>
-
-  <img src="Picture/on8.JPG" alt="Logo" width="300px"/>
-
-### 홈(Home)
-
-  <img src="Picture/home.JPG" alt="Logo" width="300px"/>
-
-### 주식(Stock)
-
-  <img src="Picture/stockMain.JPG" alt="Logo" width="300px"/>
-
-  <img src="Picture/allStock.JPG" alt="Logo" width="300px"/>
-
-  <img src="Picture/sectionStock.JPG" alt="Logo" width="300px"/>
-
-  <img src="Picture/stockDetail.JPG" alt="Logo" width="300px"/>
-
-  <img src="Picture/stockU.JPG" alt="Logo" width="300px"/>
-  
-  <img src="Picture/stockCa.JPG" alt="Logo" width="300px"/>
-
-### 뉴스(News)
-
-  <img src="Picture/newsMain.JPG" alt="Logo" width="300px"/>
-
-  <img src="Picture/ecoNews.JPG" alt="Logo" width="300px"/>
-
-  <img src="Picture/stockNews.JPG" alt="Logo" width="300px"/>
-
-### AI 챗봇(AIChatBot)
-
-  <img src="Picture/Chat.JPG" alt="Logo" width="300px"/>
-
-### 그 외 편의 기능
-
-### NewStock의 차별점 👍
-
-</div>
-
-1. 뉴스와 모의 투자의 통합 플랫폼
-
-   - 대부분의 기존 플랫폼은 주식 정보와 경제 뉴스를 개별적으로 제공하거나, 단순한 정보 제공에 그치는 경우가 많습니다. Newstock은 경제 뉴스와 모의 투자를 하나의 플랫폼에서 통합하여 사용자들이 뉴스를 통해 투자 안목을 키우고, 모의 투자로 실전 감각을 다질 수 있도록 지원합니다.
-
-2. 감정 분석을 통한 뉴스 평가
-
-   - 기존의 뉴스 제공 서비스는 뉴스의 양과 범위가 방대하여 사용자가 중요한 정보를 가려내기 어려운 경우가 많습니다. Newstock은 뉴스에 대한 감정 분석을 적용하여 각 뉴스가 긍정적인지 부정적인지 평가하고, 이를 통해 사용자들이 뉴스의 투자 가치를 직관적으로 판단할 수 있도록 돕습니다.
-
-3. AI 기반 차트 검색 및 유사도 분석
-
-   - 일반적인 모의 투자 서비스는 기본적인 거래 기능에 국한되어 있지만, Newstock은 AI 기반 차트 검색과 유사도 분석을 제공하여 보다 정교한 투자 전략 수립을 지원합니다. 사용자가 설정한 기간의 뉴스와 시황을 자동으로 분석하고 요약해주며, 과거 주가 패턴과 유사한 차트를 탐색해 투자 전략에 참고할 수 있도록 합니다.
-
-4. 실시간 데이터 처리와 분산 시스템 도입
-
-   - Newstock은 HDFS와 Spark 등 분산 처리 시스템을 활용하여 대량의 뉴스와 주가 데이터를 실시간으로 빠르게 처리합니다. 이로 인해 기존 RDBMS 기반 시스템보다 더욱 신속하고 안정적으로 데이터를 제공할 수 있습니다.
-
-5. 다양한 편의 기능과 게이미피케이션 요소
-
-   - Newstock은 투자자들이 더 효율적으로 플랫폼을 사용할 수 있도록 스크랩 기능, AI 챗봇, 랭킹 시스템 등 다양한 편의 기능을 제공하며, 게이미피케이션 요소를 통해 사용자가 모의 투자를 즐기면서 실전 감각을 키울 수 있도록 유도합니다.
-
-## 시연 영상
-
+## 4. 시연 영상
 <div align="center">
 
 ### NewStock 영상
@@ -208,7 +154,8 @@ Newstock은 주식 투자와 경제 뉴스를 보다 쉽고 효율적으로 접�
 
 </div>
 
-## 팀 소개 및 역할 👨‍👨‍👦
+
+# 👨‍👨‍👧‍👦 팀원 구성
 
 <table>
   <tbody>
