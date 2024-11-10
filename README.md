@@ -194,18 +194,140 @@
   - 각각의 NameNode는 **Active-Standby** 구성을 통해 하나의 NameNode가 종료되어도 다른 NameNode가 작동하게 하는 고가용성(High Avaliability) 구현
 - 
 
+## 4. ✔ MSA 아키텍쳐
+### Spring 서버 및 DB를 기능별로 분리
 
-# 🎨 서비스 아키텍처
-- 수정하기
-![](https://i.imgur.com/yinPQjZ.png)
+MSA란 `MicroService Architecture`의 약자로, 기존의 Monolithic Architecture의 한계를 벗어나 애플리케이션을 느슨하게 결합된 서비스의 모임으로 구조화하는 서비스 지향 아키텍처(SOA) 스타일의 일종인 소프트웨어 개발 기법입니다.
 
+기능을 크게 6가지로 분류하고, 서버와 데이터베이스를 각 기능에 맞게 분류하여 구현하였습니다.
 
-- 사용자의 요청이 `nginx`의 `reverse proxy`를 이용하여 라우팅 됨.
-  - `/` 주소에 대해서 frontend page로 라우팅
-  - `/api` 주소에 대해서 backend api 요청`주황색` 라인에 대해서 `gitlab-runner`를 이용하여 자동 배포를 위한 `cicd` 구축
-  - `openvidu` 는 backend에서 사용자 인증 후에 `8443` 포트의 openvidu backend server에서 `token` 반환
-- `Jenkinsfile` 을 통한 깃허브, 깃랩 자동 CI/CD 구현
+| 기능     | Server           | DB             |
+| ------ | ---------------- | -------------- |
+| 사용자    | Member Server    | Member DB      |
+| 주식     | Stock Server     | Stock DB       |
+| 뉴스     | News Server      | News DB        |
+| 뉴스 데이터 | News-Data Server | Hadoop         |
+| 인증     | Auth Server      | Redis          |
+| 챗봇     | News-AI Server   | AI DB & Hadoop |
 
+### MSA 설계도
+
+![](https://i.imgur.com/dW3dhTr.png)
+![](https://i.imgur.com/kh0ktLZ.png)
+
+저희는 `MSA` 를 통해 다음과 같은 장점을 가질 수 있었습니다.
+
+1. 배포
+    - 서비스별 개별 배포가 가능합니다.
+    - 특정 서비스의 요구사항만을 반영하여, 빠르게 배포 가능합니다.
+    - 특히, 젠킨스와 쿠버네티스, Mattermost로 이어지는 배포 파이프라인을 구축하여 빠르고 간편한 배포가 수행되게 하였습니다.
+2. 확장
+    - 특정 서비스에 대한 확장성(scale-out)이 유리합니다.
+    - 클라우드 기반 서비스 사용에 적합합니다.
+    - 특히, 뉴스와 뉴스 데이터(하둡 기반) 서버를 분리하여 최신 뉴스 데이터와 관련된 기능들을 빠르게 처리할 수 있게 했습니다.
+3. 장애
+    - 일부 장애가 전체 서비스로 확장될 가능성이 적습니다.
+    - 부분적으로 발생하는 장애에 대한 격리가 수월합니다.
+    - 특히, 한국투자증권의 실시간 가격 데이터와 대용량의 뉴스 데이터를 한 서버에서 처리할 경우 장애가 발생할 확률이 높은데, 이를 분리하여 처리했습니다.
+4. 그 외
+    - 새로운 기술을 적용하기 유연합니다.
+    - 각각의 서비스에 대한 구조 파악 및 분석이 모놀리식 구조에 비해 쉽습니다.
+
+### Feign Client를 이용한 서버 간 통신
+
+MSA를 적용함으로써 서버들이 기능별로 분리됨에 따라 각 서버는 자신이 관할하는 DB에만 직접 접근할 수 있게 되었습니다. 그로 인해 자신이 관할하지 않는 DB의 데이터가 필요할 경우, 해당 DB를 담당하고 있는 서버에게 데이터를 요청해야합니다.  
+저희는 서버 간 통신을 하기 위해 `Feign Client`를 사용하여 기존의 RestTemplate 보다 Rest API를 사용하는데 필요한 설정을 간소화하였고, 이로 인해 비지니스 로직에 더 집중할 수 있었습니다.
+
+- Feign - Netflix 에서 개발된 Http client binder
+- 웹 서비스 클라이언트를 보다 쉽게 작성하여 사용
+- interface 를 작성하고 annotation 을 선언하여 사용
+- `@EnableFeignClients` 을 통해 `@FeignClient`의 구현체를 구현
+### NGINX Ingrees Controller
+
+저희는 API Gateway Server를 NGINX로 활용하였습니다.
+
+다음과 같은 규칙으로 URL 기반 라우팅을 수행하였습니다.
+- 인증이 필요한 요청 URL의 경우 Ingress.yaml 에 정의
+- 인증이 필요하지 않은 요청 URL의 경우 front-inress.yaml 에 정의
+
+![](https://i.imgur.com/iUscTZW.png)
+
+추가적으로 다음과 같은 기능들도 적용하였습니다.
+- nginx ingress의 auth-url 옵션을 통해 auth 처리 후 라우팅
+- tls 옵션을 통해 HTTPS 적용
+- API Gateway용 CORS 헤더를 추가
+
+``` yaml
+apiVersion: networking.k8s.io/v1  
+kind: Ingress  
+metadata:  
+  name: my-app-ingress  
+  namespace: default  
+  annotations:  
+    nginx.ingress.kubernetes.io/auth-url: "http://${인증_URL}/api/auth/verify"  
+    nginx.ingress.kubernetes.io/use-regex: "true"  
+    nginx.ingress.kubernetes.io/enable-cors: "true"  
+    nginx.ingress.kubernetes.io/cors-allow-origin: "http://localhost:5173, https://newstock.info"  
+    nginx.ingress.kubernetes.io/cors-allow-methods: "PUT, GET, POST, DELETE, OPTIONS"  
+    nginx.ingress.kubernetes.io/cors-allow-headers: "Authorization, Content-Type"  
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"  
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"  
+spec:  
+  tls:  
+    - hosts:  
+        - newstock.info  
+      secretName: tls-secret   # 앞서 생성한 시크릿 이름  
+  ingressClassName: nginx
+```
+
+## 5. Kubernetes
+
+**쿠버네티스 아키텍쳐**
+
+![](https://i.imgur.com/2xiuQm6.png)
+
+저희는 MSA 서버들을 쉽게 관리 및 배포하기 위해 Kubernetes를 활용했습니다.
+- **Member Service** : 회원 정보와 포인트 관련 비즈니스 로직 수행
+- **Auth Service** : OAuth 관련 비즈니스 로직 수행
+- **Stock Service** : 모의투자 관련 비즈니스 로직 수행
+- **News Service** : 경제 뉴스와 관련된 비즈니스 로직 수행
+- **AI Service** : LLM 챗봇과 관련된 비즈니스 로직 수행
+- **Kafka Service** : SAGA (MSA의 트랜잭션 복구 패턴) 구조와 관련된 이벤트 처리 로직 수행
+- **Redis Service** : 실시간 주가 정보와 회원의 Refresh Token(JWT) 저장 및 처리 로직 수행
+
+### 오토 스케일링
+- Deployment에서 Pod의 CPU 초기 사용량 및 오토 스케일링 시점을 기재합니다.
+  
+``` yaml
+spec:
+  containers:
+  - name: server
+    image: server
+    resources:
+      requests:
+	    cpu: "200m"
+      limits:
+        cpu: "500m"
+```
+
+- 지정해둔 CPU 사용량을 초과하면 Pod 수를 증가시켜 부하를 분산 시킵니다.
+
+``` yaml
+spec: 
+  scaleTargetRef: 
+    apiVersion: apps/v1 
+    kind: Deployment 
+    name: nginx-deployment 
+  minReplicas: 1 # 최소 Pod 수 
+  maxReplicas: 10 # 최대 Pod 수 
+  metrics: 
+  - type: Resource 
+    resource: 
+      name: cpu 
+      target: 
+        type: Utilization 
+        averageUtilization: 50 # 평균 CPU 사용률 50%를 초과하면 스케일링
+```
 # 📚 프로젝트 산출물
 
 ## 1. Figma(https://ko.fm/7HO)
@@ -318,7 +440,7 @@
   - Jenkins, k8s를 통한 자동 배포 파이프라인 구축
   - JPA 및 MySQL 기반의 [뉴스, 관심 뉴스, 뉴스 스크랩] 서버 구축
   - Java 및 Springboot 기반의 Member 서버 구축
-  - Kakao, Google OAuth 기반의 OAuth 서버 구축
+  - OAuth 기반의 Auth 서버 구축 및 로그인 로직 구현
   
 ✔ 이명욱
   - 전체 페이지 스켈레톤 UI 구현 및 리액트 쿼리를 활용한 응답 데이터 캐싱으로 사용자 경험 향상
