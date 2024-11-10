@@ -115,7 +115,12 @@
 
 </div>
 
-## 1. 코스피 주식 정보
+# 📌 기술 상세 설명
+
+## 1. 전체적인 아키텍쳐
+![](https://i.imgur.com/iPJHuXS.png)
+
+## 2. 코스피 주식 정보
 ![한투증 정보](https://github.com/user-attachments/assets/b85ea2b4-722f-4754-b1a7-1239c4e6d95d)
 ### WebSocket
 > Websocket이란 ws 프로토콜을 기반으로 클라이언트와 서버 사이에 지속적인 양방향 연결 스트림을 만들어주는 기술입니다. 이는 stateless한 성질을 가지는 HTTP 일부 통신의 한계를 극복해 주는 것으로 서버는 클라이언트에 데이터를 실시간으로 전달할 수 있게 됩니다.
@@ -140,7 +145,7 @@
 4. **캐시 미스 처리**
   - 사용자가 특정 주식 정보를 조회할 때 Redis에 해당 정보가 없을 경우, MySQL DB에서 데이터를 조회하여 Redis에 저장하고 사용자에게 제공하여 조회 성능을 향상시킵니다.
 
-## 2. 데이터 파이프라인 설계
+## 3. 데이터 파이프라인 설계
 ![데이터 파이프라인 아키텍처](https://github.com/user-attachments/assets/08b2de8c-e9df-4ad2-a865-5e826b153a7e)
 
 - 수집 데이터 : 5년치의 경제 시황 뉴스 및 종목 뉴스(2019.09.01 ~ 2024.10.12) - 약 10,000,000건
@@ -291,7 +296,7 @@ spec:
 - **Auth Service** : OAuth 관련 비즈니스 로직 수행
 - **Stock Service** : 모의투자 관련 비즈니스 로직 수행
 - **News Service** : 경제 뉴스와 관련된 비즈니스 로직 수행
-- **AI Service** : LLM 챗봇과 관련된 비즈니스 로직 수행
+- **AI Service** : LLM 챗봇과 차트 유사도에 관련된 비즈니스 로직 수행
 - **Kafka Service** : SAGA (MSA의 트랜잭션 복구 패턴) 구조와 관련된 이벤트 처리 로직 수행
 - **Redis Service** : 실시간 주가 정보와 회원의 Refresh Token(JWT) 저장 및 처리 로직 수행
 
@@ -305,7 +310,7 @@ spec:
     image: server
     resources:
       requests:
-	    cpu: "200m"
+        cpu: "200m"
       limits:
         cpu: "500m"
 ```
