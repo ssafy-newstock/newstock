@@ -25,7 +25,7 @@
 ---
 
 # ✨ 서비스 소개
-![메인페이지](https://github.com/user-attachments/assets/db6ec033-055f-4520-9414-09c8921afdbf)
+https://github.com/user-attachments/assets/c850a5a7-e61d-4873-b734-9c216a1eff65
 ## 기획 배경
 
 많은 투자자들이 주식 투자를 할 때 최신 경제 뉴스와 산업 동향을 참고하지만, 기존의 정보 제공 플랫폼은 정보가 지나치게 많고 비효율적으로 제공되는 경우가 많았습니다. 이를 해결하기 위해, 우리는 뉴스와 주식 정보를 하나의 플랫폼에서 통합하여 누구나 쉽게 이해하고 활용할 수 있도록 기획하였습니다.
@@ -436,7 +436,18 @@ spec:
   - RAG 기반 챗봇 제작
 
 ✔ 고민호
-  - 주식
+  - Java 및 SpringBoot 기반의 Stock 서버 구축
+  - 한국투자증권 API·WebSocket 연결 및 주식 정보 조회 API 개발
+    - 주식 현재가, 등락률, 거래대금, 거래량
+    - 상위 10개 종목 정보 한투증 WebSocket 실시간 갱신
+    - 그 외 KOSPI 전 종목 정보 한투증 API + Spring Scheduler 1분 단위 갱신
+  - 한국투자증권 API 기반의 주식 카테고리 정보 조회 API 개발
+    - 카테고리별 현재가, 전일 대비, 등락률, 누적 거래 대금
+  - Spring Scheduler + Redis 기반 금일 실시간 체결가 차트
+  - FeignClient 기반 Stock&#8596;Member 서버 통신
+    - 주식 매수·매도 API 개발
+  - Kafka + Redis 기반 News&#8596;Member 서버 통신
+    - 금일 뉴스 첫 조회 시 사용자 포인트 증가 요청 로직 구현
 
 ✔ 손지석
   - MSA 아키텍쳐 설계 및 배포
