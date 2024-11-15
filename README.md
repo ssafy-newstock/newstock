@@ -159,6 +159,17 @@ https://github.com/user-attachments/assets/8b02bdad-dfdf-4164-9f63-8914ff309622
 <img src="https://img.shields.io/badge/Apache Hadoop-FFA500?style=flat&logo=apachehadoop&logoColor=white">
 <img src="https://img.shields.io/badge/Apache HBase-BE160C?style=flat&logo=apachehbase&logoColor=white">
 
+### TOOL
+<img src="https://img.shields.io/badge/Postman-FF6C37?style=flat&logo=postman&logoColor=white">
+<img src="https://img.shields.io/badge/GitLab-FC6D26?style=flat&logo=GitLab&logoColor=white">
+<img src="https://img.shields.io/badge/Git-F05032?style=flat&logo=git&logoColor=white">
+<img src="https://img.shields.io/badge/GitBook-BBDDE5?style=flat&logo=GitBook&logoColor=white">
+<img src="https://img.shields.io/badge/Mattermost-0058CC?style=flat&logo=mattermost&logoColor=white">
+<img src="https://img.shields.io/badge/Jira-0052CC?style=flat&logo=jira&logoColor=white">
+<img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white">
+<img src="https://img.shields.io/badge/Intellij IDEA-000000?style=flat&logo=intellijidea&logoColor=white">
+<img src="https://img.shields.io/badge/Notion-000000?style=flat&logo=notion&logoColor=white">
+
 ### Data
 
 ![Python](https://img.shields.io/badge/python-3670A0?style=flat&logo=python&logoColor=ffdd54)
