@@ -167,7 +167,6 @@ https://github.com/user-attachments/assets/8b02bdad-dfdf-4164-9f63-8914ff309622
 <img src="https://img.shields.io/badge/Mattermost-0058CC?style=flat&logo=mattermost&logoColor=white">
 <img src="https://img.shields.io/badge/Jira-0052CC?style=flat&logo=jira&logoColor=white">
 <img src="https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white">
-<img src="https://img.shields.io/badge/Intellij IDEA-000000?style=flat&logo=intellijidea&logoColor=white">
 <img src="https://img.shields.io/badge/Notion-000000?style=flat&logo=notion&logoColor=white">
 
 ### Data
