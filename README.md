@@ -156,8 +156,8 @@ https://github.com/user-attachments/assets/8b02bdad-dfdf-4164-9f63-8914ff309622
 ![SQLite](https://img.shields.io/badge/SQLite-%2307405e.svg?style=flat&logo=sqlite&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1.svg?style=flat&logo=mysql&logoColor=white)
 <img src="https://img.shields.io/badge/Apache Airflow-017CEE?style=flat&logo=Apache Airflow&logoColor=white">
-<img src="https://img.shields.io/badge/Apache Hadoop-FFA500?style=flat&logo=Apache Hadoop&logoColor=white">
-<img src="https://img.shields.io/badge/Apache HBase-BE160C?style=flat&logo=Apache HBase&logoColor=white">
+<img src="https://img.shields.io/badge/Apache Hadoop-FFA500?style=flat&logo=apachehadoop&logoColor=white">
+<img src="https://img.shields.io/badge/Apache HBase-BE160C?style=flat&logo=apachehbase&logoColor=white">
 
 ### Data
 
