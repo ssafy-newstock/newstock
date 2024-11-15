@@ -69,13 +69,50 @@ https://github.com/user-attachments/assets/c850a5a7-e61d-4873-b734-9c216a1eff65
 
 # 💻 화면 소개
 <details>
- <summary>📢 화면 소개</summary>
+ <summary>📢 기능 GIF</summary>
  <div markdonw="1">
-  
-![슬라이드1](https://github.com/user-attachments/assets/c96bc0e0-7cc8-42b7-83fa-5aea529b1ca3)
+
+### 뉴스
+![뉴스 조회](https://github.com/user-attachments/assets/693a2d11-7893-432f-b0de-b64fdfebde7d)
+### 3줄 요약
+![뉴스 3줄 요약](https://github.com/user-attachments/assets/606c9b8f-2c2d-4e93-94a5-d0cbc04fd307)
+### 실시간 주식
+![실시간 주식](https://github.com/user-attachments/assets/47b83be1-db0e-4f6a-a233-98dba04666b2)
+### 모의투자
+![모의투자 시연](https://github.com/user-attachments/assets/6ba45a95-e09b-43e1-9752-925b71df52cf)
+### 차트 분석
+![차트 분석](https://github.com/user-attachments/assets/3bb6bb4b-f9fb-4464-82b1-500fcdde59e8)
+### 유사도 검색
+![유사도 검색](https://github.com/user-attachments/assets/c7163cad-a366-4dcd-bdd5-9a685093d8c8)
 
  </div>
 </details>
+
+<details>
+ <summary>📢 화면 소개</summary>
+ <div markdonw="1">
+
+### 뉴스
+https://github.com/user-attachments/assets/db779ecd-58cf-4025-bce6-e278db24c51c
+
+### 주식
+https://github.com/user-attachments/assets/85e95ce5-fd05-4e6d-b0d1-77e6d3392a21
+
+### 주식 기능
+https://github.com/user-attachments/assets/22e0ecf8-2faa-436d-af34-8a998cb39291
+
+### AI 챗봇
+https://github.com/user-attachments/assets/49e259c5-ca4c-4a81-8940-a5d10533b41e
+
+### 온보딩
+https://github.com/user-attachments/assets/c850a5a7-e61d-4873-b734-9c216a1eff65
+
+### 다크모드
+https://github.com/user-attachments/assets/8b02bdad-dfdf-4164-9f63-8914ff309622
+
+ </div>
+</details>
+
 
 
 # 🛠 기술 스택
@@ -343,46 +380,6 @@ spec:
 
 ## 3. 요구사항 명세서
 ![요구사항명세서](https://github.com/user-attachments/assets/ab43c099-70f7-4f5b-bcd5-f5465ed09d0f)
-
-## 4. 시연 영상
-<details>
- <summary>📢 기능 GIF</summary>
- <div markdonw="1">
-  
-### 뉴스
-![뉴스 조회](https://github.com/user-attachments/assets/693a2d11-7893-432f-b0de-b64fdfebde7d)
-### 3줄 요약
-![뉴스 3줄 요약](https://github.com/user-attachments/assets/606c9b8f-2c2d-4e93-94a5-d0cbc04fd307)
-### 실시간 주식
-![실시간 주식](https://github.com/user-attachments/assets/47b83be1-db0e-4f6a-a233-98dba04666b2)
-### 모의투자
-![모의투자 시연](https://github.com/user-attachments/assets/6ba45a95-e09b-43e1-9752-925b71df52cf)
-### 차트 분석
-![차트 분석](https://github.com/user-attachments/assets/3bb6bb4b-f9fb-4464-82b1-500fcdde59e8)
-### 유사도 검색
-![유사도 검색](https://github.com/user-attachments/assets/c7163cad-a366-4dcd-bdd5-9a685093d8c8)
-
- </div>
-</details>
-
-<details>
- <summary>📢 화면 소개</summary>
- <div markdonw="1">
-  
-![뉴스](/uploads/ab5096b60567ca04b05ecd719cf30774/뉴스.mov)
-
-![주식](/uploads/18385272fa830f240fecda95a0421842/주식.mov)
-
-![주식기능](/uploads/f64df2a8b6ee94f4084609f11f80ded9/주식기능.mov)
-
-![AI챗봇](/uploads/e99c36c40b962e669d6a6c5f5aff46be/AI챗봇.mov)
-
-![온보딩](/uploads/b55f2dd157fb206baff49657789e88a5/온보딩.mov)
-
-![다크모드](/uploads/3c2d051ea54814748a7f371a155d8c41/다크모드.mov)
-
- </div>
-</details>
 
 
 
