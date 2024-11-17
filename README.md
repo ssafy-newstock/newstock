@@ -68,6 +68,36 @@ https://github.com/user-attachments/assets/c850a5a7-e61d-4873-b734-9c216a1eff65
 </div>
 
 # 💻 화면 소개
+
+<details>
+ <summary>📢 페이지 상세설명</summary>
+ <div markdonw="1">
+
+![슬라이드1](https://github.com/user-attachments/assets/1df70413-bf55-41b4-b995-793408a4c348)
+![슬라이드2](https://github.com/user-attachments/assets/56306811-0a1b-47a8-9a35-7913e5a43ad4)
+![슬라이드3](https://github.com/user-attachments/assets/94f80a2e-9627-4f34-b4e1-8e28945e64ea)
+![슬라이드4](https://github.com/user-attachments/assets/197f1d85-b89a-41d8-adce-ef2b6d68bd69)
+![슬라이드5](https://github.com/user-attachments/assets/43cd32f5-0853-4211-a2f2-e8275ca466d4)
+![슬라이드6](https://github.com/user-attachments/assets/022e74e8-c8b7-4559-8375-e2cd27ab4534)
+![슬라이드7](https://github.com/user-attachments/assets/0bbedc6b-24dc-435c-8c51-5588314e1e95)
+![슬라이드8](https://github.com/user-attachments/assets/b2367e93-dde8-406b-a43c-db00aca7b143)
+![슬라이드9](https://github.com/user-attachments/assets/240c4188-bc96-406e-9248-bdb1e5ece431)
+![슬라이드10](https://github.com/user-attachments/assets/d1396b0b-90f2-4247-b199-f6e6cc3bf2ba)
+![슬라이드11](https://github.com/user-attachments/assets/5ed9f75f-67ae-4f54-9d04-98075d9bf8ab)
+![슬라이드12](https://github.com/user-attachments/assets/6e1f33d1-0302-4598-9fa8-b083f8db8a4e)
+![슬라이드13](https://github.com/user-attachments/assets/7d045e7c-9cf8-4e8a-ac78-bdee84fb9f6e)
+![슬라이드14](https://github.com/user-attachments/assets/8e7c0994-6c88-4ada-a926-b8cda1d87713)
+![슬라이드15](https://github.com/user-attachments/assets/a75a9b8b-4d5c-46e4-b1ff-04568ae3c2ea)
+![슬라이드16](https://github.com/user-attachments/assets/b1e6db4c-1c8b-46d2-a284-8a0490da9291)
+![슬라이드17](https://github.com/user-attachments/assets/80de749f-41ad-4822-98b4-6c05a7d7ff5e)
+![슬라이드18](https://github.com/user-attachments/assets/8716f985-b5db-470f-b459-0139caeeebaa)
+![슬라이드19](https://github.com/user-attachments/assets/db4655cb-3ed7-4538-8b20-5c4e142b034c)
+![슬라이드20](https://github.com/user-attachments/assets/28639425-096d-474a-a374-edd057b93cf0)
+![슬라이드21](https://github.com/user-attachments/assets/bfc7a4db-dc16-4e12-844b-68853f908763)
+
+ </div>
+</details>
+
 <details>
  <summary>📢 기능 GIF</summary>
  <div markdonw="1">
