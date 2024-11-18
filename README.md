@@ -426,7 +426,7 @@ spec:
 # 📚 프로젝트 산출물
 
 ## 1. Figma(https://url.kr/gmat7b)
-![NewStock-프로토타입](https://github.com/user-attachments/assets/b718597c-fb80-4759-b895-6569c18c7604)
+![NewStock-프로토타입](https://github.com/user-attachments/assets/2211470d-c124-4b3d-869f-d0a6c329edb9)
 
 ## 2. ERD
 ![ERD](https://github.com/user-attachments/assets/a4abc0a0-c634-49ad-bb9f-0ac908a22fc4)
