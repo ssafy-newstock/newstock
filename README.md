@@ -432,7 +432,7 @@ spec:
 ![ERD](https://github.com/user-attachments/assets/a4abc0a0-c634-49ad-bb9f-0ac908a22fc4)
 
 ## 3. 요구사항 명세서
-![요구사항명세서](https://github.com/user-attachments/assets/ab43c099-70f7-4f5b-bcd5-f5465ed09d0f)
+![요구사항명세서](https://github.com/user-attachments/assets/8b1fd843-e23b-4618-980d-ba6be71e4997)
 
 
 
