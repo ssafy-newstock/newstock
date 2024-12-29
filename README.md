@@ -434,7 +434,8 @@ spec:
 ![NewStock-프로토타입](https://github.com/user-attachments/assets/2211470d-c124-4b3d-869f-d0a6c329edb9)
 
 ## 2. ERD
-![ERD](https://github.com/user-attachments/assets/a4abc0a0-c634-49ad-bb9f-0ac908a22fc4)
+![](https://i.imgur.com/CQMooH0.png)
+
 
 ## 3. 요구사항 명세서
 ![요구사항명세서](https://github.com/user-attachments/assets/8b1fd843-e23b-4618-980d-ba6be71e4997)
